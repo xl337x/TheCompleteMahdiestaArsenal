@@ -4,10 +4,13 @@
 
 Browser-based offensive security reference. Fill your `KALI_IP`, `TARGET`, and creds once — every command across all 15 tools updates live. No scripting. No copy-paste hell.
 
+[![Live Site](https://img.shields.io/badge/live-xl337x.github.io-brightgreen.svg)](https://xl337x.github.io/TheCompleteMahdiestaArsenal/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Static](https://img.shields.io/badge/static-HTML%2FCSS%2FJS-orange.svg)]()
 [![Tools](https://img.shields.io/badge/tools-15-red.svg)]()
 [![No Build](https://img.shields.io/badge/install-none-brightgreen.svg)]()
+
+**[🌐 Open Live Site](https://xl337x.github.io/TheCompleteMahdiestaArsenal/)**
 
 ---
 
