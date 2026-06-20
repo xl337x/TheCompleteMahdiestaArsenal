@@ -1,3 +1,5 @@
+
+
 # TheCompleteMahdiestaArsenal
 
 Browser-based offensive security reference. Fill your `KALI_IP`, `TARGET`, and creds once — every command across all 15 tools updates live. No scripting. No copy-paste hell.
