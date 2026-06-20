@@ -39,3 +39,4 @@ video_shots/frame_*.png
 
 # Raw recording temp files
 *.mkv
+!mahdiesta-arsenal-demo.mp4
