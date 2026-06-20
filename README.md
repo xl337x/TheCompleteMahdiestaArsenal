@@ -11,6 +11,8 @@ Browser-based offensive security reference. Fill your `KALI_IP`, `TARGET`, and c
 
 ---
 
+https://github.com/xl337x/TheCompleteMahdiestaArsenal/raw/main/mahdiesta-arsenal-demo.mp4
+
 ![Arsenal Portal](video_shots/01_intro.png)
 
 ---
