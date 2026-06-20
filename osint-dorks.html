@@ -1,0 +1,806 @@
+
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="OSINT dorks arsenal covering Google, GitHub, Shodan, Censys, and cloud storage reconnaissance.">
+    <meta name="theme-color" content="#020408">
+    <title>OSINT Dorks Arsenal v3.0 | Swiss Army Knife Edition</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --bg-void: #050508; --bg-primary: #0a0a0f; --bg-secondary: #12121a;
+            --bg-tertiary: #1a1a25; --accent-primary: #ff2d55; --accent-secondary: #ff6b8a;
+            --accent-glow: rgba(255, 45, 85, 0.4); --cyber-green: #00ff9d;
+            --cyber-green-dim: #00cc7d; --cyber-green-glow: rgba(0, 255, 157, 0.3);
+            --cyber-blue: #00d4ff; --cyber-orange: #ff9500; --cyber-purple: #bf5af2;
+            --text-primary: #f0f0f5; --text-secondary: #8888a0; --text-muted: #55556a;
+            --border-color: #2a2a3a;
+        }
+        html { scroll-behavior: smooth; }
+        body { background: var(--bg-void); color: var(--text-primary); font-family: 'JetBrains Mono', monospace; min-height: 100vh; line-height: 1.6; }
+        body::before { content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(90deg, rgba(255,45,85,0.02) 1px, transparent 1px), linear-gradient(rgba(255,45,85,0.02) 1px, transparent 1px); background-size: 40px 40px; pointer-events: none; z-index: 0; }
+        
+        .header { background: linear-gradient(180deg, var(--bg-secondary) 0%, var(--bg-void) 100%); border-bottom: 1px solid var(--accent-primary); padding: 15px 25px; position: sticky; top: 0; z-index: 1000; box-shadow: 0 0 30px var(--accent-glow); }
+        .header-content { max-width: 1900px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 15px; }
+        .logo-section { display: flex; align-items: center; gap: 12px; }
+        .logo-icon { width: 45px; height: 45px; background: linear-gradient(135deg, var(--accent-primary), var(--cyber-purple)); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 22px; box-shadow: 0 0 20px var(--accent-glow); }
+        .logo-text h1 { font-family: 'Orbitron', sans-serif; font-size: 1.3em; font-weight: 800; background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: 2px; }
+        .logo-text .subtitle { font-size: 0.65em; color: var(--text-secondary); letter-spacing: 1px; }
+        .header-stats { display: flex; gap: 15px; }
+        .stat-pill { background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: 20px; padding: 6px 14px; display: flex; align-items: center; gap: 6px; font-size: 0.8em; }
+        .stat-pill .num { color: var(--cyber-green); font-weight: 700; }
+        .stat-pill .label { color: var(--text-secondary); }
+        
+        .main-container { display: grid; grid-template-columns: 380px 1fr; min-height: calc(100vh - 75px); position: relative; z-index: 1; }
+        .sidebar { background: var(--bg-primary); border-right: 1px solid var(--border-color); padding: 20px; overflow-y: auto; max-height: calc(100vh - 75px); position: sticky; top: 75px; }
+        .sidebar::-webkit-scrollbar { width: 5px; }
+        .sidebar::-webkit-scrollbar-track { background: var(--bg-void); }
+        .sidebar::-webkit-scrollbar-thumb { background: var(--accent-primary); border-radius: 3px; }
+        
+        .section-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border-color); }
+        .section-header .icon { width: 28px; height: 28px; background: linear-gradient(135deg, var(--accent-primary), transparent); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 12px; }
+        .section-header h2 { font-family: 'Orbitron', sans-serif; font-size: 0.8em; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; }
+        
+        .config-section { margin-bottom: 20px; }
+        .form-grid { display: grid; gap: 10px; }
+        .form-group label { display: block; font-size: 0.7em; color: var(--text-secondary); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .form-group input { width: 100%; padding: 10px 12px; background: var(--bg-void); border: 1px solid var(--border-color); border-radius: 6px; color: var(--cyber-green); font-family: 'JetBrains Mono', monospace; font-size: 0.85em; transition: all 0.3s ease; }
+        .form-group input:focus { outline: none; border-color: var(--accent-primary); box-shadow: 0 0 0 2px var(--accent-glow); }
+        .form-group input::placeholder { color: var(--text-muted); }
+        
+        .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 15px; }
+        .btn { padding: 10px 14px; border: none; border-radius: 6px; font-family: 'JetBrains Mono', monospace; font-size: 0.75em; font-weight: 600; cursor: pointer; transition: all 0.3s ease; text-transform: uppercase; letter-spacing: 0.5px; display: flex; align-items: center; justify-content: center; gap: 6px; }
+        .btn-primary { background: linear-gradient(135deg, var(--accent-primary), var(--cyber-purple)); color: white; grid-column: span 2; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 5px 20px var(--accent-glow); }
+        .btn-secondary { background: var(--bg-tertiary); color: var(--text-primary); border: 1px solid var(--border-color); }
+        .btn-secondary:hover { border-color: var(--accent-primary); }
+        
+        .target-display { background: var(--bg-void); border: 1px solid var(--cyber-green-dim); border-radius: 8px; padding: 12px; margin-top: 15px; display: none; }
+        .target-display.active { display: block; }
+        .target-display h3 { color: var(--cyber-green); font-size: 0.75em; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
+        .target-item { display: flex; justify-content: space-between; padding: 4px 0; font-size: 0.75em; border-bottom: 1px solid var(--border-color); }
+        .target-item:last-child { border-bottom: none; }
+        .target-item .key { color: var(--text-secondary); }
+        .target-item .value { color: var(--cyber-green); word-break: break-all; max-width: 60%; text-align: right; }
+        
+        .quick-actions { margin-top: 20px; padding-top: 15px; border-top: 1px solid var(--border-color); }
+        .quick-actions h3 { font-size: 0.75em; color: var(--text-secondary); margin-bottom: 10px; text-transform: uppercase; }
+        .quick-btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+        .quick-btn { padding: 8px; background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: 5px; color: var(--text-primary); font-size: 0.7em; cursor: pointer; transition: all 0.2s; font-family: 'JetBrains Mono', monospace; }
+        .quick-btn:hover { border-color: var(--cyber-blue); color: var(--cyber-blue); }
+        
+        .main-content { padding: 20px; overflow-y: auto; }
+        .filter-bar { background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 10px; padding: 12px 15px; margin-bottom: 20px; display: flex; gap: 12px; flex-wrap: wrap; align-items: center; position: sticky; top: 0; z-index: 100; }
+        .search-box { flex: 1; min-width: 200px; position: relative; }
+        .search-box input { width: 100%; padding: 8px 12px 8px 35px; background: var(--bg-void); border: 1px solid var(--border-color); border-radius: 6px; color: var(--text-primary); font-family: 'JetBrains Mono', monospace; font-size: 0.85em; }
+        .search-box input:focus { outline: none; border-color: var(--accent-primary); }
+        .search-box::before { content: '🔍'; position: absolute; left: 10px; top: 50%; transform: translateY(-50%); font-size: 12px; opacity: 0.5; }
+        .filter-select { padding: 8px 12px; background: var(--bg-void); border: 1px solid var(--border-color); border-radius: 6px; color: var(--text-primary); font-family: 'JetBrains Mono', monospace; font-size: 0.8em; min-width: 140px; }
+        .filter-select:focus { outline: none; border-color: var(--accent-primary); }
+        .filter-btn { padding: 8px 15px; background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: 6px; color: var(--text-primary); font-family: 'JetBrains Mono', monospace; font-size: 0.8em; cursor: pointer; }
+        .filter-btn:hover { border-color: var(--accent-primary); color: var(--accent-primary); }
+        
+        .category-group { margin-bottom: 25px; }
+        .category-header { background: linear-gradient(90deg, var(--accent-primary), transparent); padding: 12px 20px; border-radius: 8px 8px 0 0; display: flex; align-items: center; justify-content: space-between; cursor: pointer; }
+        .category-header h3 { font-family: 'Orbitron', sans-serif; font-size: 0.9em; font-weight: 700; color: white; letter-spacing: 1px; text-transform: uppercase; }
+        .category-header .count { background: rgba(255,255,255,0.2); padding: 3px 10px; border-radius: 15px; font-size: 0.75em; }
+        
+        .dork-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(420px, 1fr)); gap: 12px; padding: 12px; background: var(--bg-secondary); border: 1px solid var(--border-color); border-top: none; border-radius: 0 0 8px 8px; }
+        .dork-grid.collapsed { display: none; }
+        
+        .dork-card { background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: 8px; padding: 15px; transition: all 0.3s ease; position: relative; }
+        .dork-card::before { content: ''; position: absolute; top: 0; left: 0; width: 3px; height: 100%; background: var(--accent-primary); opacity: 0; transition: opacity 0.3s; border-radius: 8px 0 0 8px; }
+        .dork-card:hover { border-color: var(--accent-primary); transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.3); }
+        .dork-card:hover::before { opacity: 1; }
+        .dork-card.marked { border-color: var(--cyber-green); box-shadow: 0 0 20px var(--cyber-green-glow); }
+        .dork-card.marked::before { opacity: 1; background: var(--cyber-green); }
+        
+        .card-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 8px; }
+        .card-title { font-size: 0.9em; font-weight: 600; color: var(--accent-secondary); flex: 1; }
+        .card-badges { display: flex; gap: 4px; flex-wrap: wrap; }
+        
+        .badge { font-size: 0.6em; padding: 2px 6px; border-radius: 3px; text-transform: uppercase; letter-spacing: 0.3px; font-weight: 600; }
+        .badge-google { background: rgba(0,212,255,0.15); color: var(--cyber-blue); border: 1px solid var(--cyber-blue); }
+        .badge-github { background: rgba(191,90,242,0.15); color: var(--cyber-purple); border: 1px solid var(--cyber-purple); }
+        .badge-shodan { background: rgba(255,149,0,0.15); color: var(--cyber-orange); border: 1px solid var(--cyber-orange); }
+        .badge-censys { background: rgba(0,255,157,0.15); color: var(--cyber-green); border: 1px solid var(--cyber-green-dim); }
+        .badge-other { background: rgba(255,45,85,0.15); color: var(--accent-secondary); border: 1px solid var(--accent-primary); }
+        
+        .card-description { font-size: 0.75em; color: var(--text-secondary); margin-bottom: 10px; line-height: 1.4; }
+        .card-meta { display: flex; gap: 6px; margin-bottom: 10px; flex-wrap: wrap; }
+        .meta-tag { font-size: 0.65em; padding: 3px 8px; background: var(--bg-tertiary); border-radius: 3px; color: var(--text-secondary); }
+        
+        .dork-box { background: var(--bg-void); border: 1px solid var(--border-color); border-radius: 6px; padding: 10px 12px; margin-bottom: 10px; }
+        .dork-text { color: var(--cyber-green); font-size: 0.75em; line-height: 1.7; word-break: break-word; white-space: pre-wrap; max-height: 100px; overflow-y: auto; }
+        .dork-text::-webkit-scrollbar { width: 4px; }
+        .dork-text::-webkit-scrollbar-thumb { background: var(--cyber-green-dim); border-radius: 2px; }
+        
+        .action-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+        .action-btn { padding: 8px 12px; border: none; border-radius: 5px; font-family: 'JetBrains Mono', monospace; font-size: 0.7em; font-weight: 600; cursor: pointer; transition: all 0.3s; text-transform: uppercase; display: flex; align-items: center; justify-content: center; gap: 4px; }
+        .launch-btn { background: linear-gradient(135deg, var(--accent-primary), var(--cyber-purple)); color: white; grid-column: span 2; }
+        .launch-btn:hover:not(:disabled) { transform: scale(1.02); box-shadow: 0 4px 12px var(--accent-glow); }
+        .launch-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+        .mark-btn { background: var(--bg-tertiary); color: var(--text-primary); border: 1px solid var(--border-color); }
+        .mark-btn:hover { border-color: var(--cyber-green); color: var(--cyber-green); }
+        .dork-card.marked .mark-btn { background: var(--cyber-green); color: var(--bg-void); border-color: var(--cyber-green); }
+        .copy-btn { background: var(--bg-tertiary); color: var(--text-primary); border: 1px solid var(--border-color); }
+        .copy-btn:hover { border-color: var(--cyber-blue); color: var(--cyber-blue); }
+        
+        .copy-toast { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.8); background: var(--cyber-green); color: var(--bg-void); padding: 15px 30px; border-radius: 8px; font-weight: 700; font-size: 1em; opacity: 0; pointer-events: none; z-index: 10000; transition: all 0.3s ease; box-shadow: 0 0 40px var(--cyber-green-glow); text-transform: uppercase; letter-spacing: 1px; }
+        .copy-toast.show { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        
+        .no-results { text-align: center; padding: 60px 20px; color: var(--text-secondary); }
+        .no-results .icon { font-size: 3em; margin-bottom: 15px; opacity: 0.3; }
+        .no-results h3 { font-size: 1.1em; color: var(--text-primary); }
+        
+        @media (max-width: 1200px) { .main-container { grid-template-columns: 1fr; } .sidebar { max-height: none; position: relative; top: 0; } .dork-grid { grid-template-columns: 1fr; } }
+        @media (max-width: 768px) { .header-content { flex-direction: column; text-align: center; } .filter-bar { flex-direction: column; } .search-box { width: 100%; } .filter-select { width: 100%; } .action-buttons { grid-template-columns: 1fr; } .launch-btn { grid-column: span 1; } }
+    </style>
+
+<style id="mahdiesta-theme-style">
+:root {
+  --mah-bg: #020408;
+  --mah-bg-elevated: #080c14;
+  --mah-bg-card: #0d111c;
+  --mah-text: #e2e8f0;
+  --mah-text-secondary: #94a3b8;
+  --mah-border: #1e2740;
+  --mah-accent: #22d3ee;
+}
+[data-theme="light"] {
+  --mah-bg: #f8fafc;
+  --mah-bg-elevated: #ffffff;
+  --mah-bg-card: #ffffff;
+  --mah-text: #0f172a;
+  --mah-text-secondary: #475569;
+  --mah-border: #e2e8f0;
+  --mah-accent: #0891b2;
+}
+html, body {
+  background: var(--mah-bg) !important;
+  color: var(--mah-text) !important;
+}
+#theme-toggle-btn {
+  position: fixed;
+  bottom: 1rem;
+  right: 1rem;
+  z-index: 9999;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  border: 1px solid var(--mah-border);
+  background: var(--mah-bg-card);
+  color: var(--mah-text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  transition: all 0.25s ease;
+}
+#theme-toggle-btn:hover {
+  border-color: var(--mah-accent);
+  color: var(--mah-accent);
+}
+</style>
+</head>
+<body>
+<header class="header">
+    <div class="header-content">
+        <div class="logo-section">
+            <div class="logo-icon">🔍</div>
+            <div class="logo-text">
+                <h1>OSINT Dorks Arsenal</h1>
+                <div class="subtitle">By @mahdiesta</div>
+            </div>
+        </div>
+        <div class="header-stats">
+            <div class="stat-pill"><span class="num" id="totalDorks">0</span><span class="label">Total</span></div>
+            <div class="stat-pill"><span class="num" id="visibleDorks">0</span><span class="label">Visible</span></div>
+            <div class="stat-pill"><span class="num" id="markedDorks">0</span><span class="label">Marked</span></div>
+            <div class="stat-pill"><span class="num" id="engineCount">0</span><span class="label">Engines</span></div>
+        </div>
+    </div>
+</header>
+
+<div class="main-container">
+    <aside class="sidebar">
+        <div class="config-section">
+            <div class="section-header"><div class="icon">🎯</div><h2>Target Configuration</h2></div>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Target Domain</label>
+                    <input type="text" id="domain" placeholder="example.com, github.com">
+                </div>
+                <div class="form-group">
+                    <label>Target IP (Optional)</label>
+                    <input type="text" id="targetIP" placeholder="192.168.1.1">
+                </div>
+                <div class="form-group">
+                    <label>Company Name (Optional)</label>
+                    <input type="text" id="company" placeholder="Example Corp">
+                </div>
+                <div class="form-group">
+                    <label>Person Name (Optional)</label>
+                    <input type="text" id="person" placeholder="John Doe">
+                </div>
+            </div>
+        </div>
+        
+        <div class="btn-grid">
+            <button class="btn btn-primary" onclick="applyTarget()">⚡ Load Target</button>
+            <button class="btn btn-secondary" onclick="clearTarget()">🔄 Clear</button>
+            <button class="btn btn-secondary" onclick="exportMarked()">💾 Export</button>
+        </div>
+        
+        <div class="target-display" id="targetDisplay">
+            <h3>📡 Active Target</h3>
+            <div id="targetItems"></div>
+        </div>
+        
+        <div class="quick-actions">
+            <h3>⚡ Quick Filters</h3>
+            <div class="quick-btn-grid">
+                <button class="quick-btn" onclick="quickFilter('Google')">Google</button>
+                <button class="quick-btn" onclick="quickFilter('GitHub')">GitHub</button>
+                <button class="quick-btn" onclick="quickFilter('Shodan')">Shodan</button>
+                <button class="quick-btn" onclick="quickFilter('Censys')">Censys</button>
+                <button class="quick-btn" onclick="quickFilter('recon')">Recon</button>
+                <button class="quick-btn" onclick="quickFilter('security')">Security</button>
+                <button class="quick-btn" onclick="quickFilter('files')">Files</button>
+                <button class="quick-btn" onclick="quickFilter('cloud')">Cloud</button>
+            </div>
+        </div>
+    </aside>
+    
+    <main class="main-content">
+        <div class="filter-bar">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Search dorks..." oninput="applyFilters()">
+            </div>
+            <select class="filter-select" id="categoryFilter" onchange="applyFilters()">
+                <option value="">All Categories</option>
+            </select>
+            <select class="filter-select" id="engineFilter" onchange="applyFilters()">
+                <option value="">All Engines</option>
+            </select>
+            <button class="filter-btn" onclick="resetFilters()">Clear Filters</button>
+            <button class="filter-btn" onclick="showMarkedOnly()">Show Marked</button>
+        </div>
+        <div id="dorkContainer"></div>
+    </main>
+</div>
+
+<div class="copy-toast" id="copyToast">✓ Copied!</div>
+
+<script>
+const dorkLibrary = [
+    // GOOGLE SEARCH OPERATORS
+    { title: "Site Search", engine: "Google", cat: "Basic", desc: "Restrict results to specific domain", template: "site:{domain}" },
+    { title: "URL Pattern Search", engine: "Google", cat: "Basic", desc: "Find URLs containing keyword", template: "site:{domain} inurl:admin" },
+    { title: "Title Search", engine: "Google", cat: "Basic", desc: "Find pages with keyword in title", template: "site:{domain} intitle:index" },
+    { title: "Content Search", engine: "Google", cat: "Basic", desc: "Search within page content", template: "site:{domain} intext:password" },
+    { title: "File Type Search", engine: "Google", cat: "Files", desc: "Find specific file types", template: "site:{domain} filetype:pdf" },
+    { title: "Cached Pages", engine: "Google", cat: "Basic", desc: "View Google's cached version", template: "cache:{domain}" },
+    { title: "Extension Search", engine: "Google", cat: "Files", desc: "Search by file extension", template: "site:{domain} ext:sql" },
+    { title: "All in Title", engine: "Google", cat: "Basic", desc: "All words must be in title", template: "site:{domain} allintitle:admin panel" },
+    { title: "All in URL", engine: "Google", cat: "Basic", desc: "All words must be in URL", template: "site:{domain} allinurl:admin backup" },
+    { title: "Related Sites", engine: "Google", cat: "Recon", desc: "Find similar websites", template: "related:{domain}" },
+    { title: "Link Search", engine: "Google", cat: "Recon", desc: "Find pages linking to target", template: "link:{domain}" },
+    
+    // ADMIN PANELS & LOGIN PAGES
+    { title: "Admin Login Pages", engine: "Google", cat: "Admin", desc: "Find admin login interfaces", template: "site:{domain} inurl:admin intitle:login" },
+    { title: "Admin Panels", engine: "Google", cat: "Admin", desc: "Discover admin panels", template: "site:{domain} inurl:administrator" },
+    { title: "CPanel Login", engine: "Google", cat: "Admin", desc: "Find cPanel login pages", template: "site:{domain} intitle:cpanel" },
+    { title: "PHPMyAdmin", engine: "Google", cat: "Admin", desc: "Find phpMyAdmin instances", template: "site:{domain} intitle:phpmyadmin" },
+    { title: "WordPress Login", engine: "Google", cat: "Admin", desc: "Find WordPress admin pages", template: "site:{domain} inurl:wp-admin" },
+    { title: "Joomla Admin", engine: "Google", cat: "Admin", desc: "Find Joomla admin panels", template: "site:{domain} inurl:administrator" },
+    { title: "Drupal Admin", engine: "Google", cat: "Admin", desc: "Find Drupal admin pages", template: "site:{domain} inurl:user/login" },
+    { title: "Dashboard Pages", engine: "Google", cat: "Admin", desc: "Find dashboard interfaces", template: "site:{domain} intitle:dashboard" },
+    { title: "Control Panels", engine: "Google", cat: "Admin", desc: "Find control panels", template: "site:{domain} inurl:controlpanel" },
+    { title: "Web Shells", engine: "Google", cat: "Security", desc: "Find potential web shells", template: "site:{domain} inurl:shell.php" },
+    
+    // DATABASE & SQL
+    { title: "SQL Errors", engine: "Google", cat: "SQLi", desc: "Find SQL error messages", template: "site:{domain} intext:'sql error'" },
+    { title: "MySQL Errors", engine: "Google", cat: "SQLi", desc: "Find MySQL error disclosure", template: "site:{domain} intext:'mysql_fetch'" },
+    { title: "Database Dumps", engine: "Google", cat: "Database", desc: "Find exposed database dumps", template: "site:{domain} filetype:sql" },
+    { title: "SQLite Files", engine: "Google", cat: "Database", desc: "Find SQLite database files", template: "site:{domain} filetype:sqlite" },
+    { title: "MDB Files", engine: "Google", cat: "Database", desc: "Find Access database files", template: "site:{domain} filetype:mdb" },
+    { title: "PostgreSQL Errors", engine: "Google", cat: "SQLi", desc: "Find PostgreSQL errors", template: "site:{domain} intext:'PostgreSQL query failed'" },
+    { title: "Oracle Errors", engine: "Google", cat: "SQLi", desc: "Find Oracle error messages", template: "site:{domain} intext:'ORA-' error" },
+    { title: "DB Connection Strings", engine: "Google", cat: "Database", desc: "Find connection strings", template: "site:{domain} intext:'connectionString'" },
+    
+    // CONFIGURATION FILES
+    { title: "Config Files", engine: "Google", cat: "Config", desc: "Find configuration files", template: "site:{domain} filetype:conf" },
+    { title: "INI Files", engine: "Google", cat: "Config", desc: "Find INI configuration files", template: "site:{domain} filetype:ini" },
+    { title: "ENV Files", engine: "Google", cat: "Config", desc: "Find environment files", template: "site:{domain} filetype:env" },
+    { title: "YAML Config", engine: "Google", cat: "Config", desc: "Find YAML configurations", template: "site:{domain} filetype:yml" },
+    { title: "XML Config", engine: "Google", cat: "Config", desc: "Find XML configurations", template: "site:{domain} filetype:xml config" },
+    { title: "Properties Files", engine: "Google", cat: "Config", desc: "Find .properties files", template: "site:{domain} filetype:properties" },
+    { title: "JSON Config", engine: "Google", cat: "Config", desc: "Find JSON config files", template: "site:{domain} filetype:json config" },
+    { title: "Apache Config", engine: "Google", cat: "Config", desc: "Find Apache configurations", template: "site:{domain} filetype:conf httpd" },
+    { title: "Nginx Config", engine: "Google", cat: "Config", desc: "Find Nginx configurations", template: "site:{domain} filetype:conf nginx" },
+    { title: "Web Config", engine: "Google", cat: "Config", desc: "Find web.config files", template: "site:{domain} filetype:config" },
+    
+    // BACKUP FILES
+    { title: "Backup Files", engine: "Google", cat: "Backup", desc: "Find backup files", template: "site:{domain} ext:bak OR ext:backup" },
+    { title: "Old Files", engine: "Google", cat: "Backup", desc: "Find .old files", template: "site:{domain} ext:old" },
+    { title: "Zip Archives", engine: "Google", cat: "Backup", desc: "Find zip files", template: "site:{domain} filetype:zip" },
+    { title: "RAR Archives", engine: "Google", cat: "Backup", desc: "Find RAR archives", template: "site:{domain} filetype:rar" },
+    { title: "TAR Archives", engine: "Google", cat: "Backup", desc: "Find TAR files", template: "site:{domain} filetype:tar" },
+    { title: "GZ Archives", engine: "Google", cat: "Backup", desc: "Find GZ compressed files", template: "site:{domain} filetype:gz" },
+    { title: "7z Archives", engine: "Google", cat: "Backup", desc: "Find 7-Zip archives", template: "site:{domain} filetype:7z" },
+    { title: "SQL Backups", engine: "Google", cat: "Backup", desc: "Find SQL backup files", template: "site:{domain} filetype:sql backup" },
+    
+    // LOG FILES
+    { title: "Log Files", engine: "Google", cat: "Logs", desc: "Find application logs", template: "site:{domain} filetype:log" },
+    { title: "Error Logs", engine: "Google", cat: "Logs", desc: "Find error log files", template: "site:{domain} filetype:log error" },
+    { title: "Access Logs", engine: "Google", cat: "Logs", desc: "Find access logs", template: "site:{domain} filetype:log access" },
+    { title: "Debug Logs", engine: "Google", cat: "Logs", desc: "Find debug logs", template: "site:{domain} intext:debug.log" },
+    { title: "System Logs", engine: "Google", cat: "Logs", desc: "Find system logs", template: "site:{domain} filetype:log system" },
+    
+    // DIRECTORY LISTINGS
+    { title: "Index Listings", engine: "Google", cat: "Directory", desc: "Find directory listings", template: "site:{domain} intitle:index.of" },
+    { title: "Parent Directory", engine: "Google", cat: "Directory", desc: "Find parent directories", template: "site:{domain} intitle:'Index of /' parent directory" },
+    { title: "Backup Directory", engine: "Google", cat: "Directory", desc: "Find backup directories", template: "site:{domain} intitle:index.of backup" },
+    { title: "Download Directory", engine: "Google", cat: "Directory", desc: "Find download directories", template: "site:{domain} intitle:index.of downloads" },
+    { title: "Upload Directory", engine: "Google", cat: "Directory", desc: "Find upload directories", template: "site:{domain} intitle:index.of uploads" },
+    { title: "Private Directory", engine: "Google", cat: "Directory", desc: "Find private directories", template: "site:{domain} intitle:index.of private" },
+    
+    // SENSITIVE FILES
+    { title: "Password Files", engine: "Google", cat: "Sensitive", desc: "Find password files", template: "site:{domain} filetype:txt password" },
+    { title: "Private Keys", engine: "Google", cat: "Sensitive", desc: "Find SSH/SSL keys", template: "site:{domain} filetype:pem" },
+    { title: "Key Files", engine: "Google", cat: "Sensitive", desc: "Find key files", template: "site:{domain} filetype:key" },
+    { title: "Credential Files", engine: "Google", cat: "Sensitive", desc: "Find credential files", template: "site:{domain} filetype:txt credentials" },
+    { title: "Token Files", engine: "Google", cat: "Sensitive", desc: "Find API tokens", template: "site:{domain} intext:'api_key' OR intext:'apikey'" },
+    { title: "Secret Files", engine: "Google", cat: "Sensitive", desc: "Find files with secrets", template: "site:{domain} intext:secret" },
+    { title: "SSH Config", engine: "Google", cat: "Sensitive", desc: "Find SSH configurations", template: "site:{domain} filetype:config ssh" },
+    { title: "AWS Keys", engine: "Google", cat: "Sensitive", desc: "Find AWS credentials", template: "site:{domain} intext:aws_access_key_id" },
+    
+    // SOURCE CODE & VERSION CONTROL
+    { title: ".Git Exposure", engine: "Google", cat: "Source", desc: "Find exposed git repositories", template: "site:{domain} inurl:.git" },
+    { title: ".SVN Exposure", engine: "Google", cat: "Source", desc: "Find exposed SVN repos", template: "site:{domain} inurl:.svn" },
+    { title: ".Gitignore Files", engine: "Google", cat: "Source", desc: "Find .gitignore files", template: "site:{domain} filetype:gitignore" },
+    { title: "Composer.json", engine: "Google", cat: "Source", desc: "Find Composer files", template: "site:{domain} filetype:json composer" },
+    { title: "Package.json", engine: "Google", cat: "Source", desc: "Find NPM package files", template: "site:{domain} filetype:json package" },
+    { title: "Requirements.txt", engine: "Google", cat: "Source", desc: "Find Python requirements", template: "site:{domain} filetype:txt requirements" },
+    { title: "Gemfile", engine: "Google", cat: "Source", desc: "Find Ruby Gemfiles", template: "site:{domain} filename:Gemfile" },
+    { title: "Dockerfile", engine: "Google", cat: "Source", desc: "Find Dockerfiles", template: "site:{domain} filename:Dockerfile" },
+    
+    // API & ENDPOINTS
+    { title: "API Endpoints", engine: "Google", cat: "API", desc: "Find API endpoints", template: "site:{domain} inurl:/api/" },
+    { title: "API Documentation", engine: "Google", cat: "API", desc: "Find API docs", template: "site:{domain} intitle:api documentation" },
+    { title: "Swagger/OpenAPI", engine: "Google", cat: "API", desc: "Find Swagger UI", template: "site:{domain} inurl:swagger" },
+    { title: "GraphQL Endpoints", engine: "Google", cat: "API", desc: "Find GraphQL endpoints", template: "site:{domain} inurl:graphql" },
+    { title: "REST API", engine: "Google", cat: "API", desc: "Find REST endpoints", template: "site:{domain} inurl:rest/api" },
+    { title: "Postman Collections", engine: "Google", cat: "API", desc: "Find Postman files", template: "site:{domain} filetype:json postman" },
+    
+    // DOCUMENTS & MEDIA
+    { title: "PDF Documents", engine: "Google", cat: "Documents", desc: "Find PDF files", template: "site:{domain} filetype:pdf" },
+    { title: "Word Documents", engine: "Google", cat: "Documents", desc: "Find Word files", template: "site:{domain} filetype:doc OR filetype:docx" },
+    { title: "Excel Files", engine: "Google", cat: "Documents", desc: "Find Excel spreadsheets", template: "site:{domain} filetype:xls OR filetype:xlsx" },
+    { title: "PowerPoint Files", engine: "Google", cat: "Documents", desc: "Find PowerPoint files", template: "site:{domain} filetype:ppt OR filetype:pptx" },
+    { title: "CSV Files", engine: "Google", cat: "Documents", desc: "Find CSV data files", template: "site:{domain} filetype:csv" },
+    { title: "Text Files", engine: "Google", cat: "Documents", desc: "Find text files", template: "site:{domain} filetype:txt" },
+    
+    // EMAIL & CONTACTS
+    { title: "Email Addresses", engine: "Google", cat: "Email", desc: "Find email addresses", template: "site:{domain} intext:@{domain}" },
+    { title: "Contact Info", engine: "Google", cat: "Email", desc: "Find contact information", template: "site:{domain} intitle:contact" },
+    { title: "Email Lists", engine: "Google", cat: "Email", desc: "Find email list files", template: "site:{domain} filetype:csv email" },
+    
+    // ERROR PAGES & DEBUG
+    { title: "404 Pages", engine: "Google", cat: "Errors", desc: "Find 404 error pages", template: "site:{domain} intitle:'404'" },
+    { title: "500 Errors", engine: "Google", cat: "Errors", desc: "Find 500 error pages", template: "site:{domain} intitle:'500'" },
+    { title: "Stack Traces", engine: "Google", cat: "Errors", desc: "Find stack traces", template: "site:{domain} intext:'Stack trace'" },
+    { title: "Debug Mode", engine: "Google", cat: "Errors", desc: "Find debug mode enabled", template: "site:{domain} intext:'debug mode'" },
+    { title: "PHP Errors", engine: "Google", cat: "Errors", desc: "Find PHP error messages", template: "site:{domain} intext:'Warning: mysql_'" },
+    { title: "ASP Errors", engine: "Google", cat: "Errors", desc: "Find ASP error pages", template: "site:{domain} intext:'Microsoft OLE DB Provider'" },
+    
+    // CLOUD STORAGE
+    { title: "AWS S3 Buckets", engine: "Google", cat: "Cloud", desc: "Find AWS S3 buckets", template: "site:s3.amazonaws.com {domain}" },
+    { title: "Google Cloud Storage", engine: "Google", cat: "Cloud", desc: "Find GCS buckets", template: "site:storage.googleapis.com {domain}" },
+    { title: "Azure Blob Storage", engine: "Google", cat: "Cloud", desc: "Find Azure storage", template: "site:blob.core.windows.net {domain}" },
+    { title: "DigitalOcean Spaces", engine: "Google", cat: "Cloud", desc: "Find DO Spaces", template: "site:digitaloceanspaces.com {domain}" },
+    { title: "Dropbox Files", engine: "Google", cat: "Cloud", desc: "Find Dropbox files", template: "site:dropbox.com {domain}" },
+    { title: "Box.com Files", engine: "Google", cat: "Cloud", desc: "Find Box.com files", template: "site:box.com {domain}" },
+    
+    // GITHUB SEARCH
+    { title: "GitHub Repos", engine: "GitHub", cat: "Code", desc: "Find repositories", template: "{domain}" },
+    { title: "GitHub Code", engine: "GitHub", cat: "Code", desc: "Search code", template: "{domain} in:file" },
+    { title: "GitHub Filename", engine: "GitHub", cat: "Code", desc: "Search by filename", template: "filename:config.json {domain}" },
+    { title: "GitHub Language", engine: "GitHub", cat: "Code", desc: "Search by language", template: "language:python {domain}" },
+    { title: "GitHub API Keys", engine: "GitHub", cat: "Sensitive", desc: "Find API keys in code", template: "api_key {domain}" },
+    { title: "GitHub Passwords", engine: "GitHub", cat: "Sensitive", desc: "Find passwords in code", template: "password {domain}" },
+    { title: "GitHub Secrets", engine: "GitHub", cat: "Sensitive", desc: "Find secrets in code", template: "secret {domain}" },
+    { title: "GitHub Tokens", engine: "GitHub", cat: "Sensitive", desc: "Find tokens in code", template: "token {domain}" },
+    { title: "GitHub AWS Keys", engine: "GitHub", cat: "Sensitive", desc: "Find AWS keys", template: "aws_access_key_id {domain}" },
+    { title: "GitHub Database", engine: "GitHub", cat: "Code", desc: "Find database configs", template: "db_password {domain}" },
+    
+    // SHODAN QUERIES
+    { title: "Shodan Hostname", engine: "Shodan", cat: "IoT", desc: "Search by hostname", template: "hostname:{domain}" },
+    { title: "Shodan Port 22", engine: "Shodan", cat: "IoT", desc: "SSH services", template: "port:22 hostname:{domain}" },
+    { title: "Shodan Port 80", engine: "Shodan", cat: "IoT", desc: "HTTP services", template: "port:80 hostname:{domain}" },
+    { title: "Shodan Port 443", engine: "Shodan", cat: "IoT", desc: "HTTPS services", template: "port:443 hostname:{domain}" },
+    { title: "Shodan Port 3306", engine: "Shodan", cat: "IoT", desc: "MySQL services", template: "port:3306 hostname:{domain}" },
+    { title: "Shodan Port 27017", engine: "Shodan", cat: "IoT", desc: "MongoDB services", template: "port:27017 hostname:{domain}" },
+    { title: "Shodan Port 6379", engine: "Shodan", cat: "IoT", desc: "Redis services", template: "port:6379 hostname:{domain}" },
+    { title: "Shodan Apache", engine: "Shodan", cat: "IoT", desc: "Apache servers", template: "hostname:{domain} product:Apache" },
+    { title: "Shodan Nginx", engine: "Shodan", cat: "IoT", desc: "Nginx servers", template: "hostname:{domain} product:nginx" },
+    { title: "Shodan IIS", engine: "Shodan", cat: "IoT", desc: "IIS servers", template: "hostname:{domain} product:IIS" },
+    { title: "Shodan Webcams", engine: "Shodan", cat: "IoT", desc: "Find webcams", template: "hostname:{domain} webcam" },
+    { title: "Shodan IoT Devices", engine: "Shodan", cat: "IoT", desc: "Find IoT devices", template: "hostname:{domain} device" },
+    
+    // CENSYS QUERIES
+    { title: "Censys Domain", engine: "Censys", cat: "Certs", desc: "Search domain", template: "services.tls.certificates.leaf_data.subject.common_name:{domain}" },
+    { title: "Censys SSL Certs", engine: "Censys", cat: "Certs", desc: "SSL certificates", template: "parsed.subject.organization:{domain}" },
+    { title: "Censys Services", engine: "Censys", cat: "Certs", desc: "Find services", template: "services.service_name:HTTP AND {domain}" },
+    
+    // WAYBACK MACHINE
+    { title: "Wayback URLs", engine: "Archive", cat: "Historical", desc: "Find archived URLs", template: "site:{domain}" },
+    
+    // SOCIAL MEDIA
+    { title: "LinkedIn Employees", engine: "LinkedIn", cat: "People", desc: "Find employees", template: "site:linkedin.com {company}" },
+    { title: "Twitter Mentions", engine: "Twitter", cat: "Social", desc: "Find mentions", template: "{domain}" },
+    { title: "Facebook Pages", engine: "Facebook", cat: "Social", desc: "Find pages", template: "{company}" },
+    
+    // PASTEBIN & CODE PASTES
+    { title: "Pastebin Leaks", engine: "Google", cat: "Leaks", desc: "Find pastebin leaks", template: "site:pastebin.com {domain}" },
+    { title: "GitHub Gists", engine: "Google", cat: "Leaks", desc: "Find GitHub gists", template: "site:gist.github.com {domain}" },
+    { title: "PasteBin Passwords", engine: "Google", cat: "Leaks", desc: "Find password leaks", template: "site:pastebin.com {domain} password" },
+    
+    // IOT & CAMERAS
+    { title: "CCTV Cameras", engine: "Google", cat: "IoT", desc: "Find IP cameras", template: "site:{domain} inurl:view.shtml" },
+    { title: "Webcams", engine: "Google", cat: "IoT", desc: "Find webcams", template: "site:{domain} intitle:webcam" },
+    { title: "Network Cameras", engine: "Google", cat: "IoT", desc: "Find network cameras", template: "site:{domain} inurl:ViewerFrame" },
+    
+    // CMS SPECIFIC
+    { title: "WordPress xmlrpc", engine: "Google", cat: "CMS", desc: "Find xmlrpc.php", template: "site:{domain} inurl:xmlrpc.php" },
+    { title: "WordPress Uploads", engine: "Google", cat: "CMS", desc: "Find uploads directory", template: "site:{domain} inurl:wp-content/uploads" },
+    { title: "Joomla Config", engine: "Google", cat: "CMS", desc: "Find Joomla config", template: "site:{domain} inurl:configuration.php" },
+    { title: "Drupal Install", engine: "Google", cat: "CMS", desc: "Find Drupal install", template: "site:{domain} inurl:install.php" },
+];
+
+let currentTarget = {};
+let markedDorks = new Set();
+let filteredDorks = [...dorkLibrary];
+
+function applyTarget() {
+    currentTarget = {
+        domain: document.getElementById('domain').value.trim() || '{domain}',
+        ip: document.getElementById('targetIP').value.trim() || '{ip}',
+        company: document.getElementById('company').value.trim() || '{company}',
+        person: document.getElementById('person').value.trim() || '{person}'
+    };
+    
+    displayTargetInfo();
+    populateFilters();
+    renderDorks();
+}
+
+function clearTarget() {
+    ['domain', 'targetIP', 'company', 'person'].forEach(id => document.getElementById(id).value = '');
+    currentTarget = {};
+    document.getElementById('targetDisplay').classList.remove('active');
+    filteredDorks = [...dorkLibrary];
+    renderDorks();
+}
+
+function displayTargetInfo() {
+    const items = document.getElementById('targetItems');
+    items.innerHTML = '';
+    
+    [
+        ['Domain', currentTarget.domain],
+        ['IP', currentTarget.ip],
+        ['Company', currentTarget.company],
+        ['Person', currentTarget.person]
+    ].forEach(([k, v]) => {
+        if (v && v !== `{${k.toLowerCase()}}`) {
+            items.innerHTML += `<div class="target-item"><span class="key">${k}</span><span class="value">${v}</span></div>`;
+        }
+    });
+    
+    document.getElementById('targetDisplay').classList.add('active');
+}
+
+function populateFilters() {
+    const catSel = document.getElementById('categoryFilter');
+    const engSel = document.getElementById('engineFilter');
+    
+    catSel.innerHTML = '<option value="">All Categories</option>';
+    engSel.innerHTML = '<option value="">All Engines</option>';
+    
+    const cats = [...new Set(dorkLibrary.map(d => d.cat))].sort();
+    const engs = [...new Set(dorkLibrary.map(d => d.engine))].sort();
+    
+    cats.forEach(c => catSel.innerHTML += `<option value="${c}">${c}</option>`);
+    engs.forEach(e => engSel.innerHTML += `<option value="${e}">${e}</option>`);
+}
+
+function applyFilters() {
+    const search = document.getElementById('searchInput').value.toLowerCase();
+    const cat = document.getElementById('categoryFilter').value;
+    const eng = document.getElementById('engineFilter').value;
+    
+    filteredDorks = dorkLibrary.filter(d =>
+        (!search || d.title.toLowerCase().includes(search) || d.desc.toLowerCase().includes(search) || d.cat.toLowerCase().includes(search)) &&
+        (!cat || d.cat === cat) &&
+        (!eng || d.engine === eng)
+    );
+    
+    renderDorks();
+}
+
+function resetFilters() {
+    document.getElementById('searchInput').value = '';
+    document.getElementById('categoryFilter').value = '';
+    document.getElementById('engineFilter').value = '';
+    filteredDorks = [...dorkLibrary];
+    renderDorks();
+}
+
+function quickFilter(term) {
+    if (['Google', 'GitHub', 'Shodan', 'Censys'].includes(term)) {
+        document.getElementById('engineFilter').value = term;
+        document.getElementById('searchInput').value = '';
+    } else {
+        document.getElementById('categoryFilter').value = '';
+        document.getElementById('engineFilter').value = '';
+        document.getElementById('searchInput').value = term;
+    }
+    applyFilters();
+}
+
+function showMarkedOnly() {
+    if (markedDorks.size === 0) {
+        alert('No dorks marked yet!');
+        return;
+    }
+    filteredDorks = dorkLibrary.filter((d, i) => markedDorks.has(i));
+    renderDorks();
+}
+
+function renderDorks() {
+    const container = document.getElementById('dorkContainer');
+    
+    if (!filteredDorks.length) {
+        container.innerHTML = '<div class="no-results"><div class="icon">🔍</div><h3>No dorks found matching your filters</h3></div>';
+        updateStats();
+        return;
+    }
+    
+    const groups = {};
+    filteredDorks.forEach(d => {
+        if (!groups[d.cat]) groups[d.cat] = [];
+        groups[d.cat].push(d);
+    });
+    
+    container.innerHTML = '';
+    Object.keys(groups).sort().forEach(cat => {
+        container.innerHTML += `
+            <div class="category-group">
+                <div class="category-header" onclick="toggleCategory(this)">
+                    <h3>${cat}</h3>
+                    <span class="count">${groups[cat].length}</span>
+                </div>
+                <div class="dork-grid">
+                    ${groups[cat].map(d => createCard(d)).join('')}
+                </div>
+            </div>
+        `;
+    });
+    
+    updateStats();
+}
+
+function createCard(dork) {
+    const idx = dorkLibrary.indexOf(dork);
+    let processed = dork.template;
+    
+    if (Object.keys(currentTarget).length) {
+        Object.keys(currentTarget).forEach(k => {
+            processed = processed.replace(new RegExp(`\\{${k}\\}`, 'g'), currentTarget[k]);
+        });
+    }
+    
+    const engineBadge = dork.engine === 'Google' ? 'badge-google' : 
+                       dork.engine === 'GitHub' ? 'badge-github' :
+                       dork.engine === 'Shodan' ? 'badge-shodan' :
+                       dork.engine === 'Censys' ? 'badge-censys' : 'badge-other';
+    
+    const hasTarget = currentTarget.domain && currentTarget.domain !== '{domain}';
+    const isMarked = markedDorks.has(idx);
+    
+    return `
+        <div class="dork-card ${isMarked ? 'marked' : ''}" data-idx="${idx}">
+            <div class="card-header">
+                <div class="card-title">${dork.title}</div>
+                <div class="card-badges">
+                    <span class="badge ${engineBadge}">${dork.engine}</span>
+                </div>
+            </div>
+            <div class="card-description">${dork.desc}</div>
+            <div class="card-meta">
+                <span class="meta-tag">${dork.cat}</span>
+            </div>
+            <div class="dork-box">
+                <div class="dork-text">${escapeHtml(processed)}</div>
+            </div>
+            <div class="action-buttons">
+                <button class="action-btn launch-btn" onclick="launchDork(${idx})" ${!hasTarget ? 'disabled' : ''}>
+                    🚀 Launch
+                </button>
+                <button class="action-btn mark-btn" onclick="toggleMark(${idx})">
+                    ${isMarked ? '✓' : '⭐'} Mark
+                </button>
+                <button class="action-btn copy-btn" onclick="copyDork(${idx})">
+                    📋 Copy
+                </button>
+            </div>
+        </div>
+    `;
+}
+
+function launchDork(idx) {
+    if (!currentTarget.domain || currentTarget.domain === '{domain}') {
+        alert('Please set a target domain first!');
+        return;
+    }
+    
+    const dork = dorkLibrary[idx];
+    let query = dork.template;
+    
+    Object.keys(currentTarget).forEach(k => {
+        query = query.replace(new RegExp(`\\{${k}\\}`, 'g'), currentTarget[k]);
+    });
+    
+    const encoded = encodeURIComponent(query);
+    const engines = {
+        'Google': `https://www.google.com/search?q=${encoded}`,
+        'GitHub': `https://github.com/search?q=${encoded}`,
+        'Shodan': `https://www.shodan.io/search?query=${encoded}`,
+        'Censys': `https://search.censys.io/search?q=${encoded}`,
+        'LinkedIn': `https://www.linkedin.com/search/results/?keywords=${encoded}`,
+        'Twitter': `https://twitter.com/search?q=${encoded}`,
+        'Facebook': `https://www.facebook.com/search/top?q=${encoded}`,
+        'Archive': `https://web.archive.org/web/*/${currentTarget.domain}`
+    };
+    
+    const url = engines[dork.engine] || engines['Google'];
+    window.open(url, '_blank');
+}
+
+function toggleMark(idx) {
+    if (markedDorks.has(idx)) {
+        markedDorks.delete(idx);
+    } else {
+        markedDorks.add(idx);
+    }
+    renderDorks();
+}
+
+function copyDork(idx) {
+    const dork = dorkLibrary[idx];
+    let text = dork.template;
+    
+    if (Object.keys(currentTarget).length) {
+        Object.keys(currentTarget).forEach(k => {
+            text = text.replace(new RegExp(`\\{${k}\\}`, 'g'), currentTarget[k]);
+        });
+    }
+    
+    if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text).then(() => showCopyToast());
+    } else {
+        const textarea = document.createElement('textarea');
+        textarea.value = text;
+        textarea.style.position = 'fixed';
+        textarea.style.left = '-9999px';
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+        showCopyToast();
+    }
+}
+
+function showCopyToast() {
+    const toast = document.getElementById('copyToast');
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 1500);
+}
+
+function toggleCategory(header) {
+    header.nextElementSibling.classList.toggle('collapsed');
+}
+
+function exportMarked() {
+    if (markedDorks.size === 0) {
+        alert('No dorks marked to export!');
+        return;
+    }
+    
+    let text = '# OSINT Dorks Arsenal - Marked Dorks\n';
+    text += `# Exported: ${new Date().toISOString()}\n`;
+    text += `# Target: ${currentTarget.domain || 'Not Set'}\n\n`;
+    
+    markedDorks.forEach(idx => {
+        const dork = dorkLibrary[idx];
+        let query = dork.template;
+        
+        if (Object.keys(currentTarget).length) {
+            Object.keys(currentTarget).forEach(k => {
+                query = query.replace(new RegExp(`\\{${k}\\}`, 'g'), currentTarget[k]);
+            });
+        }
+        
+        text += `## ${dork.title}\n`;
+        text += `Engine: ${dork.engine}\n`;
+        text += `Category: ${dork.cat}\n`;
+        text += `Description: ${dork.desc}\n`;
+        text += `Query: ${query}\n\n`;
+    });
+    
+    const blob = new Blob([text], { type: 'text/plain' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `osint_dorks_marked_${currentTarget.domain || 'export'}.txt`;
+    a.click();
+}
+
+function escapeHtml(text) {
+    return text.replace(/[&<>"']/g, m => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039;'
+    })[m]);
+}
+
+function updateStats() {
+    document.getElementById('totalDorks').textContent = dorkLibrary.length;
+    document.getElementById('visibleDorks').textContent = filteredDorks.length;
+    document.getElementById('markedDorks').textContent = markedDorks.size;
+    document.getElementById('engineCount').textContent = new Set(dorkLibrary.map(d => d.engine)).size;
+}
+
+window.onload = () => {
+    populateFilters();
+    applyTarget();
+};
+</script>
+<button id="theme-toggle-btn" title="Toggle theme (t)">☀</button>
+
+<script>
+(function(){
+  function setTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    var btn = document.getElementById('theme-toggle-btn');
+    if (btn) btn.textContent = theme === 'dark' ? '☀' : '🌙';
+    try { localStorage.setItem('mahdiesta-theme', theme); } catch(e) {}
+  }
+  function toggleTheme() {
+    var current = document.documentElement.getAttribute('data-theme') || 'dark';
+    setTheme(current === 'dark' ? 'light' : 'dark');
+  }
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 't' || e.key === 'T') toggleTheme();
+  });
+  var btn = document.getElementById('theme-toggle-btn');
+  if (btn) btn.addEventListener('click', toggleTheme);
+  var saved = 'dark';
+  try { saved = localStorage.getItem('mahdiesta-theme') || 'dark'; } catch(e) {}
+  setTheme(saved);
+})();
+</script>
+
+<footer style="text-align:center;padding:1.5rem;border-top:1px solid var(--mah-border);color:var(--mah-text-secondary);font-size:0.75rem;font-family:'JetBrains Mono',monospace;margin-top:2rem;">
+  Built with <span style="color:#f87171;">&hearts;</span> by Mahdiesta — Offensive Security Toolkit
+</footer>
+
+</body>
+</html>

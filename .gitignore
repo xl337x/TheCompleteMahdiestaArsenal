@@ -1,0 +1,41 @@
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor / IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+venv/
+.env
+
+# Node
+node_modules/
+package-lock.json
+yarn.lock
+
+# Logs
+*.log
+
+# Backup files
+*.bak
+*.tmp
+
+# Screenshots / assets not meant for repo
+screenshots/
+*.mp4
+*.mov
+
+# Raw video frames and webm segments (large, generated)
+video_shots/*.webm
+video_shots/frame_*.png
+
+# Raw recording temp files
+*.mkv

