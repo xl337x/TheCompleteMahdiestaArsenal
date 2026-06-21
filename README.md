@@ -151,6 +151,3 @@ This project is a reference interface - it does not redistribute any tool binari
 | [nikto](https://github.com/sullo/nikto) | sullo |
 | [nuclei](https://github.com/projectdiscovery/nuclei) | ProjectDiscovery |
 
----
-
-MIT - [@mahdiesta](https://github.com/xl337x)
