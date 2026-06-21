@@ -7934,7 +7934,7 @@ function parseSIWindows(raw, out) {
 
   let html = '<div class="si-os-header">';
   if (osM) html += `<div class="si-os-name">${escHtml(osM[1].trim())}</div>`;
-  if (build) html += `<div class="si-build">Build ${build} &mdash; ${WIN_BUILDS_MAP[build] || 'Unknown OS version'}</div>`;
+  if (build) html += `<div class="si-build">Build ${build}  -  ${WIN_BUILDS_MAP[build] || 'Unknown OS version'}</div>`;
   if (archM) html += `<div class="si-arch">${escHtml(archM[1].trim())}</div>`;
   if (hotfixNA) {
     html += `<div class="si-arch" style="margin-top:6px;color:var(--orange)">&#9888; Hotfix(s): N/A - no patches installed, all CVEs in range are potentially exploitable.</div>`;
@@ -7946,7 +7946,7 @@ function parseSIWindows(raw, out) {
   if (!build) {
     out.innerHTML = html + `<div class="si-msg warn" style="line-height:1.8">
   &#9888; Could not extract Windows build number.<br><br>
-  <strong>Quick fix &mdash; run this on the target and paste the result:</strong><br>
+  <strong>Quick fix  -  run this on the target and paste the result:</strong><br>
   <code style="color:var(--cyan)">systeminfo | findstr /i "OS Version"</code><br><br>
   <strong>Or get just the build number:</strong><br>
   <code style="color:var(--cyan)">[System.Environment]::OSVersion.Version</code><br>

