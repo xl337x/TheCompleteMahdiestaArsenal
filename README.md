@@ -1,6 +1,6 @@
 # TheCompleteMahdiestaArsenal
 
-Static browser-based reference for offensive security operations. Set `KALI_IP`, `TARGET`, `USER`, `PASS`, `DOMAIN`, `PORT` once — every command across all 15 modules updates in real time.
+Static browser-based reference for offensive security operations. Set `KALI_IP`, `TARGET`, `USER`, `PASS`, `DOMAIN`, `PORT` once - every command across all 15 modules updates in real time.
 
 [![Live](https://img.shields.io/badge/live-xl337x.github.io-brightgreen)](https://xl337x.github.io/TheCompleteMahdiestaArsenal/)
 [![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
@@ -16,33 +16,33 @@ https://github.com/xl337x/TheCompleteMahdiestaArsenal/raw/main/mahdiesta-arsenal
 
 | Module | Coverage |
 |---|---|
-| **AD Boom** `v5.0` | 325+ commands — NTLM relay, Kerberoasting, AS-REP roasting, RBCD, DCSync, Pass-the-Hash, Pass-the-Ticket, secretsdump |
-| **ADCS Arsenal** | ESC1–ESC16 — certipy, PKINIT, shadow credentials, CA/template abuse |
-| **NetExec Guide** | SMB / LDAP / RDP / WinRM — credential spray, shares, LSA dump, NTDS, SAM |
-| **BloodHound Arsenal** | Attack path methodology + full Cypher query library — shortest paths, owned objects, ACL chains |
-| **bloodyAD Arsenal** | DACL/ACL abuse — GenericAll, WriteDACL, GenericWrite, shadow creds, targeted Kerberoast |
-| **Rubik's Cube Injector** `v5` | UNION / Blind / Time-based / OOB / Error-based — WAF bypass encodings, sqlmap builder, 1000+ payloads |
+| **AD Boom** `v5.0` | 325+ commands - NTLM relay, Kerberoasting, AS-REP roasting, RBCD, DCSync, Pass-the-Hash, Pass-the-Ticket, secretsdump |
+| **ADCS Arsenal** | ESC1-ESC16 - certipy, PKINIT, shadow credentials, CA/template abuse |
+| **NetExec Guide** | SMB / LDAP / RDP / WinRM - credential spray, shares, LSA dump, NTDS, SAM |
+| **BloodHound Arsenal** | Attack path methodology + full Cypher query library - shortest paths, owned objects, ACL chains |
+| **bloodyAD Arsenal** | DACL/ACL abuse - GenericAll, WriteDACL, GenericWrite, shadow creds, targeted Kerberoast |
+| **Rubik's Cube Injector** `v5` | UNION / Blind / Time-based / OOB / Error-based - WAF bypass encodings, sqlmap builder, 1000+ payloads |
 | **SQLi → RCE** | `INTO OUTFILE`, `xp_cmdshell`, `LOAD DATA INFILE`, stacked queries |
 | **Web Arsenal** | Reverse shells, LFI/RFI, SSRF, file upload bypass, SSTI, path traversal |
 | **WebEnum Arsenal** | vhosts, directory brute, tech fingerprinting, API endpoint discovery |
 | **AuthBreaker** | JWT manipulation, OAuth abuse, IDOR, session fixation, password reset flaws |
 | **Command Injection** | Blind/OOB, filter bypass (space, pipe, semicolon, wildcard) |
-| **OSINT Dorks** `v3.0` | Google / Shodan / GitHub / Censys / Fofa — recon, exposed secrets, infra mapping |
-| **PrivEsc Toolkit** | Windows: token privs, service hijacking, DLL hijack, unquoted paths, AlwaysInstallElevated, SAM — Linux: SUID, sudo, cron, capabilities |
-| **TokenPriv Operator** | SeImpersonate, SeDebug, SeRestore, SeTakeOwnership — GodPotato, PrintSpoofer, RoguePotato |
-| **Transfer Arsenal** | File transfer one-liners — HTTP, SMB, FTP, certutil, Base64, PowerShell |
+| **OSINT Dorks** `v3.0` | Google / Shodan / GitHub / Censys / Fofa - recon, exposed secrets, infra mapping |
+| **PrivEsc Toolkit** | Windows: token privs, service hijacking, DLL hijack, unquoted paths, AlwaysInstallElevated, SAM - Linux: SUID, sudo, cron, capabilities |
+| **TokenPriv Operator** | SeImpersonate, SeDebug, SeRestore, SeTakeOwnership - GodPotato, PrintSpoofer, RoguePotato |
+| **Transfer Arsenal** | File transfer one-liners - HTTP, SMB, FTP, certutil, Base64, PowerShell |
 
 ---
 
 ## Variable System
 
-Fill once at the top of any module. Every command — certipy, netexec, msfvenom, sqlmap, wget — renders with your values substituted.
+Fill once at the top of any module. Every command - certipy, netexec, msfvenom, sqlmap, wget - renders with your values substituted.
 
 ```
 KALI_IP   TARGET   USER   PASS   DOMAIN   PORT   RPORT   WPATH   LFILE
 ```
 
-PrivEsc Toolkit adapts per OS — Windows fields (WPATH, SVCBIN) hide on Linux mode, Linux fields (LFILE) hide on Windows mode.
+PrivEsc Toolkit adapts per OS - Windows fields (WPATH, SVCBIN) hide on Linux mode, Linux fields (LFILE) hide on Windows mode.
 
 ---
 
@@ -54,7 +54,7 @@ cd TheCompleteMahdiestaArsenal
 python3 -m http.server 8000
 ```
 
-Or open `index.html` directly — no server required.
+Or open `index.html` directly - no server required.
 
 Live: [xl337x.github.io/TheCompleteMahdiestaArsenal](https://xl337x.github.io/TheCompleteMahdiestaArsenal/)
 
@@ -112,7 +112,7 @@ The author assumes no liability for misuse of any content, commands, or techniqu
 
 ## Credits & References
 
-This project is a reference interface — it does not redistribute any tool binaries. All tools, projects, and research referenced belong to their respective authors and maintainers.
+This project is a reference interface - it does not redistribute any tool binaries. All tools, projects, and research referenced belong to their respective authors and maintainers.
 
 | Tool | Author / Project |
 |---|---|
@@ -153,4 +153,4 @@ This project is a reference interface — it does not redistribute any tool bina
 
 ---
 
-MIT — [@mahdiesta](https://github.com/xl337x)
+MIT - [@mahdiesta](https://github.com/xl337x)

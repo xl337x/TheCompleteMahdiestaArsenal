@@ -1,4 +1,4 @@
-# MahiestaPrivEsc — OSCP+ Local Privilege Escalation Toolkit
+# MahiestaPrivEsc - OSCP+ Local Privilege Escalation Toolkit
 
 > The most complete, battle-tested local privilege escalation reference and toolkit for OSCP+. Built to guarantee the 3 standalone boxes.
 
@@ -8,32 +8,32 @@
 
 | File | Purpose |
 |------|---------|
-| `privesc-toolkit.html` | Self-contained interactive cheatsheet — all Windows + Linux privesc vectors with live variable substitution |
-| `ToolKitDownloader.py` | One-command toolkit downloader — downloads 140+ tools, serves them via HTTP |
+| `privesc-toolkit.html` | Self-contained interactive cheatsheet - all Windows + Linux privesc vectors with live variable substitution |
+| `ToolKitDownloader.py` | One-command toolkit downloader - downloads 140+ tools, serves them via HTTP |
 | `install_toolkit.sh` | Quick installer script |
 
 ---
 
-## privesc-toolkit.html — Interactive Cheatsheet
+## privesc-toolkit.html - Interactive Cheatsheet
 
 A **single self-contained HTML file** you open in any browser. No internet required during exam.
 
 ### Features
 
-- **Live variable substitution** — type your `KALI_IP`, `TARGET`, `RPORT`, `WPATH` once at the top and every command in the guide updates instantly
-- **Pipeline steps** — every attack has DETECT → CONFIRM → EXPLOIT → VERIFY → RESTORE stages
-- **One-click copy** — every command block has a copy button
+- **Live variable substitution** - type your `KALI_IP`, `TARGET`, `RPORT`, `WPATH` once at the top and every command in the guide updates instantly
+- **Pipeline steps** - every attack has DETECT → CONFIRM → EXPLOIT → VERIFY → RESTORE stages
+- **One-click copy** - every command block has a copy button
 - **Dark/light mode toggle**
-- **Notes per section** — persistent notes saved in `localStorage`
-- **Progress tracking** — mark sections as tried / working / done
-- **Auto-transfer block** — detects tools referenced in commands and generates the exact `iwr` / `wget` download command
-- **GTFOBins lookup** — built-in JSON lookup for SUID/sudo/capabilities exploitation
+- **Notes per section** - persistent notes saved in `localStorage`
+- **Progress tracking** - mark sections as tried / working / done
+- **Auto-transfer block** - detects tools referenced in commands and generates the exact `iwr` / `wget` download command
+- **GTFOBins lookup** - built-in JSON lookup for SUID/sudo/capabilities exploitation
 
 ### Windows Coverage (30+ sections)
 
 | Section | Vectors |
 |---------|---------|
-| Enumeration | winPEAS, Seatbelt, PowerUp, SharpUp, PrivescCheck — with CLM bypass alternatives |
+| Enumeration | winPEAS, Seatbelt, PowerUp, SharpUp, PrivescCheck - with CLM bypass alternatives |
 | Service Binary Abuse | PowerUp automation, manual accesschk, SharpUp (CLM-safe) |
 | Unquoted Service Path | Detection, writable path injection, restart/reboot |
 | DLL Hijacking | Process Monitor approach, hijackable DLL list |
@@ -125,7 +125,7 @@ python3 ToolKitDownloader.py --list
 
 ### On-target download commands
 
-After running the server, it prints these commands — just copy-paste onto the target:
+After running the server, it prints these commands - just copy-paste onto the target:
 
 ```powershell
 # Windows PowerShell
@@ -155,7 +155,7 @@ firefox ~/privesc-toolkit/privesc-toolkit.html
 # OR serve via the running server: http://KALI_IP:PORT/privesc-toolkit.html
 
 # 3. Fill in the variables at the top of the cheatsheet:
-#    KALI_IP, TARGET, RPORT, WPATH, USER — every command updates automatically
+#    KALI_IP, TARGET, RPORT, WPATH, USER - every command updates automatically
 
 # 4. Follow the pipeline steps for each vector
 ```
@@ -165,7 +165,7 @@ firefox ~/privesc-toolkit/privesc-toolkit.html
 ## Key Design Decisions
 
 **Why a single HTML file?**
-No dependencies, works offline, opens instantly, no Node/Python server needed during exam. Everything is self-contained — CSS, JavaScript, all content in one file.
+No dependencies, works offline, opens instantly, no Node/Python server needed during exam. Everything is self-contained - CSS, JavaScript, all content in one file.
 
 **Why `{{VARIABLE}}` substitution instead of static text?**
 Every command in the guide contains placeholder variables. When you type your actual IP/path at the top, all 500+ commands update in real time. No more copy-paste errors or manual find-replace.

@@ -34,7 +34,7 @@
 1. Import the OBS recording
 2. Add the `VIDEO_SCRIPT.md` captions at each timestamp
 3. Add background music (low volume)
-4. Add the final CTA screen: "Mahdiesta Arsenal — link in comments"
+4. Add the final CTA screen: "Mahdiesta Arsenal - link in comments"
 5. Export as MP4, 1080p, 30fps
 
 ---
