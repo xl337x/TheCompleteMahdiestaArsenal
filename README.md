@@ -89,4 +89,3 @@ Live: [xl337x.github.io/TheCompleteMahdiestaArsenal](https://xl337x.github.io/Th
 
 
 
-[@mahdiesta](https://github.com/xl337x)
