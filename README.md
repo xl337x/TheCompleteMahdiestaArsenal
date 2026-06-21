@@ -87,17 +87,6 @@ Live: [xl337x.github.io/TheCompleteMahdiestaArsenal](https://xl337x.github.io/Th
 | `T` | Toggle dark / light theme |
 | `Esc` | Clear / close |
 
----
 
-## Related
 
-| Repo | Description |
-|---|---|
-| [uploadpwner](https://github.com/xl337x/uploadpwner) | File upload exploitation framework `v6.0` |
-| [AuthFinder](https://github.com/xl337x/AuthFinder) | Multi-protocol access discovery + command execution |
-| [ligolo-helper](https://github.com/xl337x/ligolo-helper) | Ligolo-ng tunnel setup |
-| [transfer_files](https://github.com/xl337x/transfer_files) | File transfer one-liners |
-
----
-
-MIT — [@mahdiesta](https://github.com/xl337x)
+[@mahdiesta](https://github.com/xl337x)
