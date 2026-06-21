@@ -8,7 +8,7 @@ Static browser-based reference for offensive security operations. Set `KALI_IP`,
 
 ---
 
-https://github.com/xl337x/TheCompleteMahdiestaArsenal/raw/main/mahdiesta-arsenal-demo.mp4
+![TheCompleteMahdiestaArsenal Demo](demo.gif)
 
 ---
 
