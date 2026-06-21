@@ -114,28 +114,42 @@ The author assumes no liability for misuse of any content, commands, or techniqu
 
 This project is a reference interface — it does not redistribute any tool binaries. All tools, projects, and research referenced belong to their respective authors and maintainers.
 
-| Tool | Author / Project | License |
-|---|---|---|
-| [Impacket](https://github.com/fortra/impacket) | Fortra (SecureAuth) | Apache 2.0 |
-| [NetExec](https://github.com/Pennyw0rth/NetExec) | Pennyw0rth | BSD-2 |
-| [BloodHound](https://github.com/BloodHoundAD/BloodHound) | BloodHound Enterprise / SpecterOps | Apache 2.0 |
-| [SharpHound](https://github.com/BloodHoundAD/SharpHound) | BloodHoundAD | Apache 2.0 |
-| [bloodyAD](https://github.com/CravateRouge/bloodyAD) | CravateRouge | MIT |
-| [Certipy](https://github.com/ly4k/Certipy) | ly4k | MIT |
-| [Certify](https://github.com/GhostPack/Certify) | Will Schroeder / GhostPack | BSD-3 |
-| [Rubeus](https://github.com/GhostPack/Rubeus) | Will Schroeder / GhostPack | BSD-3 |
-| [PowerSploit / PowerUp](https://github.com/PowerShellMafia/PowerSploit) | PowerShellMafia | BSD-3 |
-| [winPEAS / linPEAS](https://github.com/carlospolop/PEASS-ng) | carlospolop | MIT |
-| [GodPotato](https://github.com/BeichenDream/GodPotato) | BeichenDream | MIT |
-| [PrintSpoofer](https://github.com/itm4n/PrintSpoofer) | itm4n | MIT |
-| [RoguePotato](https://github.com/antonioCoco/RoguePotato) | antonioCoco | — |
-| [ligolo-ng](https://github.com/nicocha30/ligolo-ng) | nicocha30 | GPL-3.0 |
-| [sqlmap](https://github.com/sqlmapproject/sqlmap) | sqlmapproject | GPL-2.0 |
-| [Metasploit Framework](https://github.com/rapid7/metasploit-framework) | Rapid7 | BSD-3 |
-| [evil-winrm](https://github.com/Hackplayers/evil-winrm) | Hackplayers | MIT |
-| [kerbrute](https://github.com/ropnop/kerbrute) | ropnop | MIT |
-| [ffuf](https://github.com/ffuf/ffuf) | joohoi | MIT |
-| [feroxbuster](https://github.com/epi052/feroxbuster) | epi052 | MIT |
+| Tool | Author / Project |
+|---|---|
+| [Impacket](https://github.com/fortra/impacket) | Fortra (SecureAuth) |
+| [NetExec](https://github.com/Pennyw0rth/NetExec) | Pennyw0rth |
+| [BloodHound](https://github.com/BloodHoundAD/BloodHound) | BloodHound Enterprise / SpecterOps |
+| [SharpHound](https://github.com/BloodHoundAD/SharpHound) | BloodHoundAD |
+| [bloodyAD](https://github.com/CravateRouge/bloodyAD) | CravateRouge |
+| [Certipy](https://github.com/ly4k/Certipy) | ly4k |
+| [Certify](https://github.com/GhostPack/Certify) | Will Schroeder / GhostPack |
+| [Rubeus](https://github.com/GhostPack/Rubeus) | Will Schroeder / GhostPack |
+| [PowerSploit / PowerUp](https://github.com/PowerShellMafia/PowerSploit) | PowerShellMafia |
+| [winPEAS / linPEAS](https://github.com/carlospolop/PEASS-ng) | carlospolop |
+| [GodPotato](https://github.com/BeichenDream/GodPotato) | BeichenDream |
+| [PrintSpoofer](https://github.com/itm4n/PrintSpoofer) | itm4n |
+| [RoguePotato](https://github.com/antonioCoco/RoguePotato) | antonioCoco |
+| [SweetPotato](https://github.com/CCob/SweetPotato) | CCob |
+| [ligolo-ng](https://github.com/nicocha30/ligolo-ng) | nicocha30 |
+| [sqlmap](https://github.com/sqlmapproject/sqlmap) | sqlmapproject |
+| [Metasploit Framework](https://github.com/rapid7/metasploit-framework) | Rapid7 |
+| [evil-winrm](https://github.com/Hackplayers/evil-winrm) | Hackplayers |
+| [kerbrute](https://github.com/ropnop/kerbrute) | ropnop |
+| [ffuf](https://github.com/ffuf/ffuf) | joohoi |
+| [feroxbuster](https://github.com/epi052/feroxbuster) | epi052 |
+| [gobuster](https://github.com/OJ/gobuster) | OJ Reeves |
+| [CrackMapExec](https://github.com/byt3bl33d3r/CrackMapExec) | byt3bl33d3r |
+| [enum4linux-ng](https://github.com/cddmp/enum4linux-ng) | cddmp |
+| [Responder](https://github.com/lgandx/Responder) | lgandx |
+| [mitm6](https://github.com/dirkjanm/mitm6) | dirkjanm |
+| [ntlmrelayx](https://github.com/fortra/impacket) | Fortra (SecureAuth) |
+| [pypykatz](https://github.com/skelsec/pypykatz) | skelsec |
+| [LaZagne](https://github.com/AlessandroZ/LaZagne) | AlessandroZ |
+| [mimikatz](https://github.com/gentilkiwi/mimikatz) | gentilkiwi |
+| [chisel](https://github.com/jpillora/chisel) | jpillora |
+| [pwncat-cs](https://github.com/calebstewart/pwncat) | calebstewart |
+| [nikto](https://github.com/sullo/nikto) | sullo |
+| [nuclei](https://github.com/projectdiscovery/nuclei) | ProjectDiscovery |
 
 ---
 
