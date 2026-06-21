@@ -87,5 +87,56 @@ Live: [xl337x.github.io/TheCompleteMahdiestaArsenal](https://xl337x.github.io/Th
 | `T` | Toggle dark / light theme |
 | `Esc` | Clear / close |
 
+---
 
+## Related
 
+| Repo | Description |
+|---|---|
+| [uploadpwner](https://github.com/xl337x/uploadpwner) | File upload exploitation framework `v6.0` |
+| [AuthFinder](https://github.com/xl337x/AuthFinder) | Multi-protocol access discovery + command execution |
+| [ligolo-helper](https://github.com/xl337x/ligolo-helper) | Ligolo-ng tunnel setup |
+| [transfer_files](https://github.com/xl337x/transfer_files) | File transfer one-liners |
+
+---
+
+## Disclaimer
+
+This project is intended **strictly for authorized penetration testing, CTF competitions, and security research** on systems you own or have explicit written permission to test.
+
+Unauthorized use against systems you do not own or have permission to test is illegal under the Computer Fraud and Abuse Act (CFAA), the Computer Misuse Act (CMA), and equivalent laws in your jurisdiction.
+
+The author assumes no liability for misuse of any content, commands, or techniques referenced in this project. Use responsibly.
+
+---
+
+## Credits & References
+
+This project is a reference interface — it does not redistribute any tool binaries. All tools, projects, and research referenced belong to their respective authors and maintainers.
+
+| Tool | Author / Project | License |
+|---|---|---|
+| [Impacket](https://github.com/fortra/impacket) | Fortra (SecureAuth) | Apache 2.0 |
+| [NetExec](https://github.com/Pennyw0rth/NetExec) | Pennyw0rth | BSD-2 |
+| [BloodHound](https://github.com/BloodHoundAD/BloodHound) | BloodHound Enterprise / SpecterOps | Apache 2.0 |
+| [SharpHound](https://github.com/BloodHoundAD/SharpHound) | BloodHoundAD | Apache 2.0 |
+| [bloodyAD](https://github.com/CravateRouge/bloodyAD) | CravateRouge | MIT |
+| [Certipy](https://github.com/ly4k/Certipy) | ly4k | MIT |
+| [Certify](https://github.com/GhostPack/Certify) | Will Schroeder / GhostPack | BSD-3 |
+| [Rubeus](https://github.com/GhostPack/Rubeus) | Will Schroeder / GhostPack | BSD-3 |
+| [PowerSploit / PowerUp](https://github.com/PowerShellMafia/PowerSploit) | PowerShellMafia | BSD-3 |
+| [winPEAS / linPEAS](https://github.com/carlospolop/PEASS-ng) | carlospolop | MIT |
+| [GodPotato](https://github.com/BeichenDream/GodPotato) | BeichenDream | MIT |
+| [PrintSpoofer](https://github.com/itm4n/PrintSpoofer) | itm4n | MIT |
+| [RoguePotato](https://github.com/antonioCoco/RoguePotato) | antonioCoco | — |
+| [ligolo-ng](https://github.com/nicocha30/ligolo-ng) | nicocha30 | GPL-3.0 |
+| [sqlmap](https://github.com/sqlmapproject/sqlmap) | sqlmapproject | GPL-2.0 |
+| [Metasploit Framework](https://github.com/rapid7/metasploit-framework) | Rapid7 | BSD-3 |
+| [evil-winrm](https://github.com/Hackplayers/evil-winrm) | Hackplayers | MIT |
+| [kerbrute](https://github.com/ropnop/kerbrute) | ropnop | MIT |
+| [ffuf](https://github.com/ffuf/ffuf) | joohoi | MIT |
+| [feroxbuster](https://github.com/epi052/feroxbuster) | epi052 | MIT |
+
+---
+
+MIT — [@mahdiesta](https://github.com/xl337x)
